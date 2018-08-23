@@ -139,7 +139,7 @@ var drawAll =(command = "n", game = true)=> {
           drawData[0].push(["undef", xpos, ypos, 0]);
         }
       }
-      if (LLmemory.length && (buildingArr[allData[_y][_x]].supplyable == 2 || (buildingArr[allData[_y][_x]].supplyable == 1 && allLifeLine[_y][_x] == "1"))) {
+      if (command == "drawLL" && (buildingArr[allData[_y][_x]].supplyable == 2 || (buildingArr[allData[_y][_x]].supplyable == 1 && allLifeLine[_y][_x] == "1"))) {
         let m = buildingArr[allData[_y][_x]].height || 0;
         if (!drawData[m]) drawData[m] = [];
         drawData[m].push(["LLfromHere", canvas.width / 2 + ((xpos + (xpos - canvas.width / 2) * (perth ** m)) - canvas.width / 2) / 2, canvas.height / 2 + ((ypos + (ypos - canvas.height / 2) * (perth ** m)) - canvas.height / 2) / 2, 0, 0.45 + Math.sin(Math.PI * (clock % 200 / 100)) * 0.55]);
@@ -213,16 +213,13 @@ var drawPalette =(scroll = 0)=> {
   paletteArr.forEach((x,y)=>{
     if (x != "drawLL" && buildingArr[x].icon) buildingArr[x].icon.forEach((p,q)=>{ctx.drawChip(p, y * dispChipW * 1.5 - scroll, q * dispChipW * -0.125 + paletteH + dispChipH * 1.5 / 2 - dispChipH / 2 - (canvas.height - dispChipH * 1.5 - paletteH) * 0.5, 0);})
     else ctx.drawChip(x, y * dispChipW * 1.5 - scroll, paletteH + dispChipH * 1.5 / 2 - dispChipH / 2 - (canvas.height - dispChipH * 1.5 - paletteH) * 0.75, 0);
-    if ((!selectedCommand || selectedCommand == "+r" || selectedCommand == "drawLL") && paletteH < mouseY && y * dispChipW * 1.5 - scroll < mouseX && mouseX < y * dispChipW * 1.5 + dispChipW - scroll) {
+    if (selectedCommand == x || (!selectedCommand || selectedCommand == "r" || selectedCommand == "drawLL") && paletteH < mouseY && y * dispChipW * 1.5 - scroll < mouseX && mouseX < y * dispChipW * 1.5 + dispChipW - scroll) {
       ctx.fillStyle = "rgba(255,255,255,0.5)";
       ctx.fillRect(y * dispChipW * 1.5 - scroll, paletteH, dispChipW, canvas.height);
       if (mouseState.left) selectedCommand = x;
     }
   });
-  if (selectedCommand == "r") {
-    selectedCommand = "+r"
-  }
-  if (selectedCommand && !(selectedCommand == "+r" || selectedCommand == "drawLL")) {
+  if (selectedCommand && !(selectedCommand == "r" || selectedCommand == "drawLL")) {
     if (buildingArr[selectedCommand].icon) buildingArr[selectedCommand].icon.forEach((p,q)=>{ctx.drawChip(p, mouseX - dispChipW / 2, mouseY - dispChipH / 2 + q * dispChipW * -0.125, 0);})
     else ctx.drawChip(selectedCommand, mouseX - dispChipW / 2, mouseY - dispChipH / 2, 0);
     if (!mouseState.left) {
@@ -308,7 +305,13 @@ var velx = vely = 0, startX = mouseX, startY = mouseY, startScrollX, startScroll
 function game(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   drawAll(selectedCommand);
+  if (selectedCommand == "+r") {
+    selectedCommand = "r"
+  }
   drawPalette(defaultSize * -0.5);
+  if (selectedCommand == "r") {
+    selectedCommand = "+r"
+  }
   getFPS();
   fade(-0.04);
   scrollX += velx; scrollY += vely;
