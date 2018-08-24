@@ -80,7 +80,6 @@ var getFPS =()=> {
   ctx.font = `${15*ratioW}px 'ＭＳ　Ｐゴシック'`;
   ctx.fillStyle = "#ffffff";
   ctx.fillText(timers.length + " FPS", 10, 25);
-  beforeMouseX = mouseX; beforeMouseY = mouseY;
 }
 
 var build =(kind,x,y)=> {
@@ -326,6 +325,7 @@ function game(){
   }
   if (mouseState.right) {scrollX = startScrollX + (mouseX - startX) * -1; scrollY = startScrollY + (mouseY - startY); changeCursor("all-move", 16, 16)}
   else {changeCursor("default")}
+  beforeMouseX = mouseX; beforeMouseY = mouseY;
   requestAnimationFrame(game);
 }
 
