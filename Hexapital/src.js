@@ -1,4 +1,5 @@
 try {
+
 //initialize
 const canvas = document.getElementById("disp");
 const ctx = canvas.getContext("2d");

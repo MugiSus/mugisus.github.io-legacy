@@ -3,3 +3,7 @@ body{
   overflow: hidden;
   background-color: f0f0f0;
 }
+#showErr{
+  background-color: ffbbbb;
+  color: ff0000;
+}
