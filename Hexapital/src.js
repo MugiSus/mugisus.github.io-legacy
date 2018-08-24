@@ -1,5 +1,3 @@
-try {
-
 //initialize
 const canvas = document.getElementById("disp");
 const ctx = canvas.getContext("2d");
@@ -246,6 +244,8 @@ imgName.forEach((x, y) => {
 });
 
 //--------------end loading images-------------//
+
+try {
 
 resetAllData();
 
