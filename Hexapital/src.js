@@ -1,5 +1,4 @@
 //initialize
-//var FPS = 1000/60;
 const canvas = document.getElementById("disp");
 const ctx = canvas.getContext("2d");
 canvas.height = document.body.clientHeight; canvas.width = document.body.clientWidth; // size
@@ -14,7 +13,7 @@ var imgName = ["focus", "flash", "undef", "unLL0", "unLL1", "drawLL", "LLfromHer
 var img = [] //load images
 var roadArr = {"0":"000000", "1":"100000", "2a":"100100", "2b":"101000", "2c":"110000", "3a":"101010", "3b":"101100", "3c":"110100", "3d":"111000", "4a":"110110", "4b":"111010", "4c":"111100", "5":"111110", "6":"111111"}
 var timers = [];
-var mouseState = {"left":false, "wheel":false, "right":false}, mousedown = false;
+var mouseState = {"left":false, "wheel":false, "right":false};
 var keydown = {};
 var fadeAlpha = 0; var faded = false;
 var mouseX, mouseY, beforeMouseX, beforeMouseY;
@@ -22,8 +21,8 @@ var focusedPos = [];
 var LLmemory = [], lastLLM = [], correctLL = false;
 var paletteArr = ["r", "drawLL", "energy", "b0", "b1", "b2"], paletteH = canvas.height * 0.9, selectedCommand = 0;;
 var clockM = clock = 0; setInterval(() => clock = ++clock % 10000, 1000/60);
-canvas.addEventListener("mousedown", (event)=>{mouseState[["left","wheel","right"][event.button]] = true; mousedown = true;});
-canvas.addEventListener("mouseup", (event)=>{mouseState[["left","wheel","right"][event.button]] = false; mousedown = false;});
+canvas.addEventListener("mousedown", (event)=>{mouseState[["left","wheel","right"][event.button]] = true;});
+canvas.addEventListener("mouseup", (event)=>{mouseState[["left","wheel","right"][event.button]] = false;});
 document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
 document.addEventListener("mousemove", (event)=>{mouseX = event.clientX; mouseY = event.clientY;});
@@ -82,8 +81,6 @@ var getFPS =()=> {
   ctx.fillStyle = "#ffffff";
   ctx.fillText(timers.length + " FPS", 10, 25);
   beforeMouseX = mouseX; beforeMouseY = mouseY;
-  ctx.fillStyle = "#ffffff";
-  ctx.fillText(mouseState.left + "," + mouseState.right, 10, 50);
 }
 
 var build =(kind,x,y)=> {
@@ -283,7 +280,7 @@ function startup(smoother = 0) {
   }
 }
 
-function title(n = 0, mouse = mousedown) {
+function title(n = 0, mouse = mouseState.left) {
   let num = (n + 1) % 120;
   ctx.clearRect(0,0,canvas.width,canvas.height);
   drawAll(null, false);
@@ -297,14 +294,14 @@ function title(n = 0, mouse = mousedown) {
   ctx.fillStyle = `rgba(255, 255, 255, ${1 - Math.abs(num - 60) / 60 * 0.5})`; ctx.fillText("- Click to Start -", canvas.width / 2 - (140 * ratioW), canvas.height * 0.75 + Math.abs(num - 60) / 60 * 15);
   ctx.strokeStyle = `rgba(150, 240, 0, ${1 - Math.abs(num - 60) / 60 * 0.5})`; ctx.strokeText("- Click to Start -", canvas.width / 2 - (140 * ratioW), canvas.height * 0.75 + Math.abs(num - 60) / 60 * 15);
   scrollX+=1; scrollY-=1;
-  if ((!mouse && mousedown) || 0 < fadeAlpha) fade(0.04);
+  if ((!mouse && mouseState.left) || 0 < fadeAlpha) fade(0.04);
   if (faded) {
     scrollX = chipW * 500;
     scrollY = chipH * 500 * -0.75;
-    waitUntil("!mousedown", game, 500);
+    waitUntil("!mouseState.left", game, 500);
     return;
   }
-  requestAnimationFrame(title.bind(null, num, mouse? mousedown : false));
+  requestAnimationFrame(title.bind(null, num, mouse? mouseState.left : false));
 }
 
 var velx = vely = 0, startX = mouseX, startY = mouseY, startScrollX, startScrollY, beforeMouse = false, beforeKey = false;
