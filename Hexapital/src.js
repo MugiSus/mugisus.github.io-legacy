@@ -28,7 +28,7 @@ document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
 document.addEventListener("mousemove", (event)=>{mouseX = event.clientX; mouseY = event.clientY;});
 canvas.addEventListener("touchstart", (event)=>{mouseState[["left","right"][(event.touches.length < 2) * 1]] = true;})
-canvas.addEventListener("touchend", ()=>{mouseState = {"left":false, "right":false};});
+canvas.addEventListener("touchend", (event)=>{mouseState = {"left":false, "right":false};});
 canvas.addEventListener('touchmove', (event)=>{mouseX = event.clientX; mouseY = event.clientY; event.preventDefault();});
 canvas.oncontextmenu =()=> {return false;};
 
@@ -327,6 +327,8 @@ function game(){
   if (mouseState.right) {scrollX = startScrollX + (mouseX - startX) * -1; scrollY = startScrollY + (mouseY - startY); changeCursor("all-move", 16, 16)}
   else {changeCursor("default")}
   beforeMouseX = mouseX; beforeMouseY = mouseY;
+  ctx.fillStyle = "#ffffff";
+  ctx.fillText(mouseState.left + "," + mouseState.right, 10, 50);
   requestAnimationFrame(game);
 }
 
