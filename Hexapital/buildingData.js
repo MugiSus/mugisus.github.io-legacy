@@ -22,7 +22,7 @@ const buildingArr = {
     "r":{
         length:0,
         connectable:true,
-        icon:["4a"]
+        icon:["2a"]
     },
     "b0":{
         images:2,

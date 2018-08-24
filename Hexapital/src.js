@@ -27,6 +27,9 @@ canvas.addEventListener("mouseup", (event)=>{mouseState[["left","wheel","right"]
 document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
 document.addEventListener("mousemove", (event)=>{mouseX = event.clientX; mouseY = event.clientY;});
+canvas.addEventListener("touchstart", (event)=>{mouseState[["left","right"][(event.touches.length < 2) * 1]] = true;})
+canvas.addEventListener("touchend", ()=>{mouseState = {"left":false, "right":false};});
+canvas.addEventListener('touchmove', (event)=>{mouseX = event.clientX; mouseY = event.clientY; event.preventDefault();});
 canvas.oncontextmenu =()=> {return false;};
 
 //-----------begin defining functions----------//
