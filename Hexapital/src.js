@@ -81,6 +81,9 @@ var getFPS =()=> {
   ctx.font = `${15*ratioW}px 'ＭＳ　Ｐゴシック'`;
   ctx.fillStyle = "#ffffff";
   ctx.fillText(timers.length + " FPS", 10, 25);
+  beforeMouseX = mouseX; beforeMouseY = mouseY;
+  ctx.fillStyle = "#ffffff";
+  ctx.fillText(mouseState.left + "," + mouseState.right, 10, 50);
 }
 
 var build =(kind,x,y)=> {
@@ -326,9 +329,6 @@ function game(){
   }
   if (mouseState.right) {scrollX = startScrollX + (mouseX - startX) * -1; scrollY = startScrollY + (mouseY - startY); changeCursor("all-move", 16, 16)}
   else {changeCursor("default")}
-  beforeMouseX = mouseX; beforeMouseY = mouseY;
-  ctx.fillStyle = "#ffffff";
-  ctx.fillText(mouseState.left + "," + mouseState.right, 10, 50);
   requestAnimationFrame(game);
 }
 
