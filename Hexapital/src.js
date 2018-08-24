@@ -17,18 +17,18 @@ var mouseState = {"left":false, "wheel":false, "right":false};
 var keydown = {};
 var fadeAlpha = 0; var faded = false;
 var mouseX, mouseY, beforeMouseX, beforeMouseY;
-var focusedPos = [];
+var focusedPos = ["",""];
 var LLmemory = [], flashList = [], correctLL = false;
-var paletteArr = ["r", "drawLL", "energy", "b0", "b1", "b2", "air0"], paletteH = canvas.height * 0.9, selectedCommand = 0;;
+var paletteArr = ["r", "drawLL", "energy", "b0", "b1", "b2", "air0"], paletteH = canvas.height * 0.8, selectedCommand = 0;;
 var clockM = clock = 0; setInterval(() => clock = ++clock % 10000, 1000/60);
 canvas.addEventListener("mousedown", (event)=>{mouseState[["left","wheel","right"][event.button]] = true;});
 canvas.addEventListener("mouseup", (event)=>{mouseState[["left","wheel","right"][event.button]] = false;});
 document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
 document.addEventListener("mousemove", (event)=>{mouseX = event.clientX; mouseY = event.clientY;});
-canvas.addEventListener("touchstart", (event)=>{mouseState[["left","right"][(event.touches.length < 2) * 1]] = true;})
-canvas.addEventListener("touchend", (event)=>{mouseState = {"left":false, "right":false};});
-canvas.addEventListener('touchmove', (event)=>{mouseX = event.clientX; mouseY = event.clientY; event.preventDefault();});
+//canvas.addEventListener("touchstart", (event)=>{mouseState[["left","right"][(event.touches.length < 2) * 1]] = true;})
+//canvas.addEventListener("touchend", (event)=>{mouseState = {"left":false, "right":false};});
+//canvas.addEventListener('touchmove', (event)=>{mouseX = event.clientX; mouseY = event.clientY; event.preventDefault();});
 canvas.oncontextmenu =()=> {return false;};
 
 //-----------begin defining functions----------//
@@ -247,8 +247,6 @@ imgName.forEach((x, y) => {
 
 //--------------end loading images-------------//
 
-try {
-
 resetAllData();
 
 var wayPos = [];
@@ -274,12 +272,12 @@ function startup(smoother = 0) {
   ctx.lineWidth = 2 * ratioW;
   ctx.font = `${72*ratioW}px 'ＭＳ　Ｐゴシック'`;
   ctx.strokeText("Loading...", canvas.width / 2 - (150 * ratioW), canvas.height / 2);
-  let increase = ((img.length / imgName.length) - smoother) / 10;
-  if ( increase > 0.02 ) increase = 0.02;
+  let increase = ((img.length / imgName.length) - smoother) / 1;
+  //if ( increase > 0.02 ) increase = 0.02;
   if ( smoother < 0.9999 ) {
     requestAnimationFrame(startup.bind(null, smoother + increase));
   } else {
-    setTimeout("title()", 500);
+    setTimeout("title()", 1500);
   }
 }
 
@@ -334,8 +332,3 @@ function game(){
 }
 
 startup();
-
-} catch(error) {
-  document.getElementById("showErr").innerHTML = error + ((error.fileName && error.lineNumber) ? " at " + error.lineNumber + " in " + error.fileName : "");
-  throw new Error(error);
-}
