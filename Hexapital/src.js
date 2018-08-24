@@ -1,3 +1,4 @@
+try {
 //initialize
 const canvas = document.getElementById("disp");
 const ctx = canvas.getContext("2d");
@@ -19,7 +20,7 @@ var fadeAlpha = 0; var faded = false;
 var mouseX, mouseY, beforeMouseX, beforeMouseY;
 var focusedPos = [];
 var LLmemory = [], lastLLM = [], correctLL = false;
-var paletteArr = ["r", "drawLL", "energy", "b0", "b1", "b2"], paletteH = canvas.height * 0.9, selectedCommand = 0;;
+var paletteArr = ["r", "drawLL", "energy", "b0", "b1", "b2", "air0"], paletteH = canvas.height * 0.9, selectedCommand = 0;;
 var clockM = clock = 0; setInterval(() => clock = ++clock % 10000, 1000/60);
 canvas.addEventListener("mousedown", (event)=>{mouseState[["left","wheel","right"][event.button]] = true;});
 canvas.addEventListener("mouseup", (event)=>{mouseState[["left","wheel","right"][event.button]] = false;});
@@ -84,7 +85,7 @@ var getFPS =()=> {
 
 var build =(kind,x,y)=> {
   switch (kind) {
-    case "Airport":
+    case "air0":
       allData[y][x] = "air0";
       allData[y][x-1] = "air1"; allData[y-1][x-1+y%2] = "air1"; allData[y-1][x+y%2] = "air1"; allData[y][x+1] = "air1"; allData[y+1][x+y%2] = "air1"; allData[y+1][x-1+y%2] = "air1"
       break;
@@ -225,7 +226,7 @@ var drawPalette =(scroll = 0)=> {
     if (buildingArr[selectedCommand].icon) buildingArr[selectedCommand].icon.forEach((p,q)=>{ctx.drawChip(p, mouseX - dispChipW / 2, mouseY - dispChipH / 2 + q * dispChipW * -0.125, 0);})
     else ctx.drawChip(selectedCommand, mouseX - dispChipW / 2, mouseY - dispChipH / 2, 0);
     if (!mouseState.left) {
-      if (paletteH > mouseY) allData[focusedPos[1]][focusedPos[0]] = selectedCommand;
+      if (paletteH > mouseY) build(selectedCommand,focusedPos[0],focusedPos[1])
       selectedCommand = "";
     }
   }
@@ -253,10 +254,10 @@ wayPos.forEach(x => {
   allData[x[1]][x[0]] = `b${Math.floor(Math.random()*3)}`;
 });
 
-build("Airport",503,503);
-build("Airport",596,503);
-build("Airport",503,596);
-build("Airport",596,596);
+build("air0",503,503);
+build("air0",596,503);
+build("air0",503,596);
+build("air0",596,596);
 build("energy",507,507);
 
 function startup(smoother = 0) {
@@ -330,3 +331,8 @@ function game(){
 }
 
 startup();
+
+} catch(error) {
+  document.getElementById("showErr").innerHTML = error;
+  throw new Error(error);
+}

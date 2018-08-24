@@ -56,7 +56,8 @@ const buildingArr = {
         pattern:[4],
         height:4,
         connectable:false,
-        supplyable:2
+        supplyable:2,
+        icon:["air10","air10","air00"]
     },
     "air1":{
         images:2,
