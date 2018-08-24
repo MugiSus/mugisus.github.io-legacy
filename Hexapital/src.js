@@ -3,7 +3,7 @@ const canvas = document.getElementById("disp");
 const ctx = canvas.getContext("2d");
 canvas.height = document.body.clientHeight; canvas.width = document.body.clientWidth; // size
 const ratioW = canvas.width / 1366 // 1366 is developer's display size
-const perth = 1.04;
+const perth = 1.04
 var chipW, chipH, dispChipW, dispChipH;
 var defaultSize = 75;
 var allData = [];
@@ -18,7 +18,7 @@ var keydown = {};
 var fadeAlpha = 0; var faded = false;
 var mouseX, mouseY, beforeMouseX, beforeMouseY;
 var focusedPos = [];
-var LLmemory = [], lastLLM = [], correctLL = false;
+var LLmemory = [], flashList = [], correctLL = false;
 var paletteArr = ["r", "drawLL", "energy", "b0", "b1", "b2", "air0"], paletteH = canvas.height * 0.9, selectedCommand = 0;;
 var clockM = clock = 0; setInterval(() => clock = ++clock % 10000, 1000/60);
 canvas.addEventListener("mousedown", (event)=>{mouseState[["left","wheel","right"][event.button]] = true;});
@@ -117,41 +117,42 @@ var drawAll =(command = "n", game = true)=> {
       if (0 >= (_x) || (_x) >= allData[0].length - 1 || 0 >= (_y) || (_y) >= allData.length - 1) {drawData[0].push(["undef", xpos, ypos, 0]); continue;}
       switch (allData[_y][_x].charAt(0)) {
         case "r":
-        var k = [allData[_y][_x-1], allData[_y-1][_x-1+_y%2], allData[_y-1][_x+_y%2], allData[_y][_x+1], allData[_y+1][_x+_y%2], allData[_y+1][_x-1+_y%2]].map(x => buildingArr[x].connectable * 1);
-        for (var l = 0; l < 6; l++) {k.push(k.shift()); if (Object.values(roadArr).indexOf(k.join("")) > -1) break;}
-        drawData[0].push([Object.keys(roadArr)[Object.values(roadArr).indexOf(k.join(""))], xpos, ypos, l+1]);
-        break;
+          var k = [allData[_y][_x-1], allData[_y-1][_x-1+_y%2], allData[_y-1][_x+_y%2], allData[_y][_x+1], allData[_y+1][_x+_y%2], allData[_y+1][_x-1+_y%2]].map(x => buildingArr[x].connectable * 1);
+          for (var l = 0; l < 6; l++) {k.push(k.shift()); if (Object.values(roadArr).indexOf(k.join("")) > -1) break;}
+          drawData[0].push([Object.keys(roadArr)[Object.values(roadArr).indexOf(k.join(""))], xpos, ypos, l+1]);
+          break;
         default:
-        if (Object.keys(buildingArr).indexOf(allData[_y][_x]) > -1) {
-          if (buildingArr[allData[_y][_x]].height == 0) drawData[0].push([allData[_y][_x],xpos,ypos,0]);
-          else {
-            drawData[0].push(["n",xpos,ypos,0]);
-            for (let l = m = n = 0; m < buildingArr[allData[_y][_x]].height; m++) {
-              if (!drawData[m+1]) drawData[m+1] = [];
-              while (m - l >= buildingArr[allData[_y][_x]].pattern[n]) {n = (n + 1) % buildingArr[allData[_y][_x]].pattern.length; l = m;}
-              drawData[m+1].push([allData[_y][_x] + (n % buildingArr[allData[_y][_x]].images), canvas.width / 2 + ((xpos + (xpos - canvas.width / 2) * (perth ** m)) - canvas.width / 2) / 2, canvas.height / 2 + ((ypos + (ypos - canvas.height / 2) * (perth ** m)) - canvas.height / 2) / 2, 0]);
+          if (Object.keys(buildingArr).indexOf(allData[_y][_x]) > -1) {
+            if (buildingArr[allData[_y][_x]].height == 0) drawData[0].push([allData[_y][_x],xpos,ypos,0]);
+            else {
+              drawData[0].push(["n",xpos,ypos,0]);
+              for (let l = m = n = 0; m < buildingArr[allData[_y][_x]].height; m++) {
+                if (!drawData[m+1]) drawData[m+1] = [];
+                while (m - l >= buildingArr[allData[_y][_x]].pattern[n]) {n = (n + 1) % buildingArr[allData[_y][_x]].pattern.length; l = m;}
+                drawData[m+1].push([allData[_y][_x] + (n % buildingArr[allData[_y][_x]].images), canvas.width / 2 + ((xpos + (xpos - canvas.width / 2) * (perth ** m)) - canvas.width / 2) / 2, canvas.height / 2 + ((ypos + (ypos - canvas.height / 2) * (perth ** m)) - canvas.height / 2) / 2, 0]);
+              }
             }
+            if (buildingArr[allData[_y][_x]].needsLifeLine && allLifeLine[_y][_x] == "n") {
+              let m = buildingArr[allData[_y][_x]].height;
+              if (!drawData[m]) drawData[m] = [];
+              drawData[m].push(["unLL" + (m > 0) * 1, canvas.width / 2 + ((xpos + (xpos - canvas.width / 2) * (perth ** m)) - canvas.width / 2) / 2, canvas.height / 2 + ((ypos + (ypos - canvas.height / 2) * (perth ** m)) - canvas.height / 2) / 2, 0]);
+            }
+          } else {  
+            drawData[0].push(["undef", xpos, ypos, 0]);
           }
-          if (buildingArr[allData[_y][_x]].needsLifeLine && allLifeLine[_y][_x] == "n") {
-            let m = buildingArr[allData[_y][_x]].height;
-            if (!drawData[m]) drawData[m] = [];
-            drawData[m].push(["unLL" + (m > 0) * 1, canvas.width / 2 + ((xpos + (xpos - canvas.width / 2) * (perth ** m)) - canvas.width / 2) / 2, canvas.height / 2 + ((ypos + (ypos - canvas.height / 2) * (perth ** m)) - canvas.height / 2) / 2, 0]);
-          }
-        } else {
-          drawData[0].push(["undef", xpos, ypos, 0]);
-        }
       }
       if (command == "drawLL" && (buildingArr[allData[_y][_x]].supplyable == 2 || (buildingArr[allData[_y][_x]].supplyable == 1 && allLifeLine[_y][_x] == "1"))) {
         let m = buildingArr[allData[_y][_x]].height || 0;
         if (!drawData[m]) drawData[m] = [];
         drawData[m].push(["LLfromHere", canvas.width / 2 + ((xpos + (xpos - canvas.width / 2) * (perth ** m)) - canvas.width / 2) / 2, canvas.height / 2 + ((ypos + (ypos - canvas.height / 2) * (perth ** m)) - canvas.height / 2) / 2, 0, 0.45 + Math.sin(Math.PI * (clock % 200 / 100)) * 0.55]);
       }
-      if (lastLLM.indexOf(`${_x}:${_y}`) > -1) {
+      if (flashList.indexOf(`${_x}:${_y}`) > -1) {
         if (clock + (clockM[0]+clockM[1] >= 10000) * 10000 < clockM[0]+clockM[1]) {
           let m = buildingArr[allData[_y][_x]].height || 0;
           if (!drawData[m]) drawData[m] = [];
           drawData[m].push(["flash", canvas.width / 2 + ((xpos + (xpos - canvas.width / 2) * (perth ** m)) - canvas.width / 2) / 2, canvas.height / 2 + ((ypos + (ypos - canvas.height / 2) * (perth ** m)) - canvas.height / 2) / 2, 0, (clockM[0]+clockM[1] - clock + (clockM[0]+clockM[1] >= 10000) * 10000) / clockM[1]]);
-        } else lastLLM = [];
+        }
+        else flashList = [];
       }
       if (getDist(beforeMouseX, beforeMouseY, mouseX, mouseY, xpos + chipW / 2, ypos + chipH / 2) < chipW * 0.51 || (focusedPos[0] == _x && focusedPos[1] == _y)) {
         focusedPos = [_x, _y];
@@ -161,16 +162,14 @@ var drawAll =(command = "n", game = true)=> {
         if (!mouseState.right && paletteH > mouseY) {
           switch (command) {
             case "+r":
-            if (mouseState.left && allData[_y][_x] == "n") allData[_y][_x] = "r";
-            break;
+              if (mouseState.left && allData[_y][_x] == "n") allData[_y][_x] = "r";
+              break;
             case "-r":
-            if (mouseState.left && allData[_y][_x] == "r") allData[_y][_x] = "n";
-            break;
+              if (mouseState.left && allData[_y][_x] == "r") allData[_y][_x] = "n";
+              break;
           }
         }
       }
-      ctx.fillStyle = "#ffffff"; ctx.font = `${chipW*0.2}px 'ＭＳ　Ｐゴシック'`;
-      if ((_x) % 10 == 1 && (_y) % 10 == 1) ctx.fillText(`${_x},${_y}`,xpos,ypos+chipH*0.4);
     }
   }
   switch (command) {
@@ -191,7 +190,7 @@ var drawAll =(command = "n", game = true)=> {
       });
     } else {
       if (LLmemory.length) {
-        if (correctLL) {allLifeLine[firsty = LLmemory[LLmemory.length-1].split(":")[1]][LLmemory[LLmemory.length-1].split(":")[0]] = "1"; lastLLM = LLmemory; clockM = [clock, 15 + LLmemory.length * 3];}
+        if (correctLL) {allLifeLine[firsty = LLmemory[LLmemory.length-1].split(":")[1]][LLmemory[LLmemory.length-1].split(":")[0]] = "1"; flashList = LLmemory; clockM = [clock, 15 + LLmemory.length * 3];}
         LLmemory = [], correctLL = false;
       }
     }
@@ -200,7 +199,7 @@ var drawAll =(command = "n", game = true)=> {
   drawData.forEach((x, y) => {
     resizeChip(defaultSize * ((1 + (perth - 1) / 1.5) ** y)); x.forEach((x) => {
       ctx.drawChip(x[0].split("@")[0], x[1], x[2], x[3], x[4] || 1);
-      if (x[0].split("@")[0] == "drawLL") {ctx.font = `${chipW*0.25}px 'ＭＳ　Ｐゴシック'`; ctx.fillText(`${x[0].split("@")[1]}`,x[1]+chipW*0.1,x[2]+chipH*0.42);}
+      if (x[0].split("@")[1]) {ctx.font = `${chipW*0.25}px 'ＭＳ　Ｐゴシック'`; ctx.fillText(`${x[0].split("@")[1]}`,x[1]+chipW*0.1,x[2]+chipH*0.42);}
     });
   });
 }
@@ -222,10 +221,13 @@ var drawPalette =(scroll = 0)=> {
     }
   });
   if (selectedCommand && !(selectedCommand == "r" || selectedCommand == "drawLL")) {
-    if (buildingArr[selectedCommand].icon) buildingArr[selectedCommand].icon.forEach((p,q)=>{ctx.drawChip(p, mouseX - dispChipW / 2, mouseY - dispChipH / 2 + q * dispChipW * -0.125, 0);})
-    else ctx.drawChip(selectedCommand, mouseX - dispChipW / 2, mouseY - dispChipH / 2, 0);
+    if (buildingArr[selectedCommand].icon) buildingArr[selectedCommand].icon.forEach((p,q)=>{ctx.drawChip(p, mouseX - dispChipW / 2, mouseY - dispChipH / 2 + q * dispChipW * -0.125, 0); ctx.drawChip("flash", mouseX - dispChipW / 2, mouseY - dispChipH / 2 + q * dispChipW * -0.125, 0, 0.5 + Math.sin(Math.PI * (clock % 50 / 25)) * 0.25);})
+    else {ctx.drawChip(selectedCommand, mouseX - dispChipW / 2, mouseY - dispChipH / 2, 0); ctx.drawChip("flash", mouseX - dispChipW / 2, mouseY - dispChipH / 2, 0, 0.5 + Math.sin(Math.PI * (clock % 50 / 25)) * 0.25);}
     if (!mouseState.left) {
-      if (paletteH > mouseY) build(selectedCommand,focusedPos[0],focusedPos[1])
+      if (paletteH > mouseY) {
+        build(selectedCommand,focusedPos[0],focusedPos[1])
+        flashList = [`${focusedPos[0]}:${focusedPos[1]}`]; clockM = [clock, 60];
+      }
       selectedCommand = "";
     }
   }
@@ -326,14 +328,14 @@ function game(){
     beforeMouse = mouseState.right;
   }
   if (mouseState.right) {scrollX = startScrollX + (mouseX - startX) * -1; scrollY = startScrollY + (mouseY - startY); changeCursor("all-move", 16, 16)}
-  else {changeCursor("default")}
-  beforeMouseX = mouseX; beforeMouseY = mouseY;
+  else {changeCursor("default"); ctx.fillStyle = "#ffffff"; ctx.font = `16px 'ＭＳ　Ｐゴシック'`; ctx.fillText(`${focusedPos[0]},${focusedPos[1]}`, mouseX + 10, mouseY + 40);}
+  beforeMouseX = mouseX; beforeMouseY = mouseY
   requestAnimationFrame(game);
 }
 
 startup();
 
 } catch(error) {
-  document.getElementById("showErr").innerHTML = error;
+  document.getElementById("showErr").innerHTML = error + ((error.fileName && error.lineNumber) ? " at " + error.lineNumber + " in " + error.fileName : "");
   throw new Error(error);
 }
