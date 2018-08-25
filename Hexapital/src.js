@@ -7,6 +7,7 @@ const perth = 1.04
 var chipW, chipH, dispChipW, dispChipH;
 var defaultSize = 75;
 var allData = [];
+var beforeData = [];
 var allLifeLine = [];
 var scrollX = scrollY = 0; // camera position
 var imgName = ["focus", "flash", "undef", "unLL0", "unLL1", "drawLL", "LLfromHere", "n", "0", "1", "2a", "2b", "2c", "3a", "3b", "3c", "3d", "4a", "4b", "4c", "5", "6", "energy", "b00", "b01", "b10", "b11", "b12", "b20", "b21", "air00", "air10", "air11"]; //load images
@@ -62,8 +63,9 @@ var changeCursor =(cursor, x = 0, y = 0)=> {
 }
 
 var resetAllData =()=> {
-  allData = new Array(1001); for (let i = 0; i < allData.length; i++) {allData[i] = new Array(1001).fill("n");}
-  allLifeLine = new Array(1001); for (let i = 0; i < allLifeLine.length; i++) {allLifeLine[i] = new Array(1001).fill("n");}
+  allData = new Array(1001).fill(0).map(()=>new Array(1001).fill("n"));
+  allData.forEach((x,y)=>allLifeLine[y]=x.slice());
+  allData.forEach((x,y)=>beforeData[y]=x.slice());
 }
 
 var fade =(speed)=> {
@@ -82,14 +84,15 @@ var getFPS =()=> {
   ctx.fillText(timers.length + " FPS", 10, 25);
 }
 
-var build =(kind,x,y)=> {
+var build =(kind,xpos,ypos)=> {
+  if ((buildingArr[kind].buildArea||[[0,0]]).map(x=>allData[ypos+x[1]][xpos+x[0]+(ypos!=0?Math.abs(x[1]%2):0)]!="n").indexOf(true) > -1) return false;
   switch (kind) {
     case "air0":
-      allData[y][x] = "air0";
-      allData[y][x-1] = "air1"; allData[y-1][x-1+y%2] = "air1"; allData[y-1][x+y%2] = "air1"; allData[y][x+1] = "air1"; allData[y+1][x+y%2] = "air1"; allData[y+1][x-1+y%2] = "air1"
+      buildingArr[kind].buildArea.forEach(x=>allData[ypos+x[1]][xpos+x[0]+(ypos!=0?Math.abs(x[1]%2):0)]="air1");
+      allData[ypos][xpos] = "air0";
       break;
     default:
-      allData[y][x] = kind;
+      allData[ypos][xpos] = kind;
   }
 }
 
@@ -146,8 +149,9 @@ var drawAll =(command = "n", game = true)=> {
         if (!drawData[m]) drawData[m] = [];
         drawData[m].push(["LLfromHere", canvas.width / 2 + ((xpos + (xpos - canvas.width / 2) * (perth ** m)) - canvas.width / 2) / 2, canvas.height / 2 + ((ypos + (ypos - canvas.height / 2) * (perth ** m)) - canvas.height / 2) / 2, 0, 0.45 + Math.sin(Math.PI * (clock % 200 / 100)) * 0.55]);
       }
-      if (flashList.indexOf(`${_x}:${_y}`) > -1) {
+      if (beforeData[_y][_x] != allData[_y][_x] || flashList.indexOf(`${_x}:${_y}`) > -1) {
         if (clock + (clockM[0]+clockM[1] >= 10000) * 10000 < clockM[0]+clockM[1]) {
+          if (flashList.indexOf(`${_x}:${_y}`) < 0) {flashList.push(`${_x}:${_y}`); allLifeLine[_y][_x] = "n"}
           let m = buildingArr[allData[_y][_x]].height || 0;
           if (!drawData[m]) drawData[m] = [];
           drawData[m].push(["flash", canvas.width / 2 + ((xpos + (xpos - canvas.width / 2) * (perth ** m)) - canvas.width / 2) / 2, canvas.height / 2 + ((ypos + (ypos - canvas.height / 2) * (perth ** m)) - canvas.height / 2) / 2, 0, (clockM[0]+clockM[1] - clock + (clockM[0]+clockM[1] >= 10000) * 10000) / clockM[1]]);
@@ -202,6 +206,7 @@ var drawAll =(command = "n", game = true)=> {
       if (x[0].split("@")[1]) {ctx.font = `${chipW*0.25}px 'ＭＳ　Ｐゴシック'`; ctx.fillText(`${x[0].split("@")[1]}`,x[1]+chipW*0.1,x[2]+chipH*0.42);}
     });
   });
+  allData.forEach((x,y)=>beforeData[y]=x.slice());
 }
 
 var drawPalette =(scroll = 0)=> {
@@ -225,8 +230,9 @@ var drawPalette =(scroll = 0)=> {
     else {ctx.drawChip(selectedCommand, mouseX - dispChipW / 2, mouseY - dispChipH / 2, 0); ctx.drawChip("flash", mouseX - dispChipW / 2, mouseY - dispChipH / 2, 0, 0.5 + Math.sin(Math.PI * (clock % 50 / 25)) * 0.25);}
     if (!mouseState.left) {
       if (paletteH > mouseY) {
-        build(selectedCommand,focusedPos[0],focusedPos[1])
-        flashList = [`${focusedPos[0]}:${focusedPos[1]}`]; clockM = [clock, 60];
+        build(selectedCommand,focusedPos[0],focusedPos[1]);
+        flashList = [];
+        clockM = [clock, 100];
       }
       selectedCommand = "";
     }
@@ -250,7 +256,7 @@ imgName.forEach((x, y) => {
 resetAllData();
 
 var wayPos = [];
-for (i = 0; i < 1000; i++) wayPos.push([[Math.floor(Math.random()*100)+500],[Math.floor(Math.random()*100)+500]])
+for (i = 0; i < 4000; i++) wayPos.push([[Math.floor(Math.random()*100)+500],[Math.floor(Math.random()*100)+500]])
 wayPos.forEach(x => {
   allData[x[1]][x[0]] = `b${Math.floor(Math.random()*3)}`;
 });
