@@ -1,4 +1,5 @@
 //initialize
+const version = "v1.0.201808171315";
 const canvas = document.getElementById("disp");
 const ctx = canvas.getContext("2d");
 canvas.height = document.body.clientHeight; canvas.width = document.body.clientWidth; // size
@@ -226,8 +227,8 @@ var drawPalette =(scroll = 0)=> {
     }
   });
   if (selectedCommand && !(selectedCommand == "r" || selectedCommand == "drawLL")) {
-    if (buildingArr[selectedCommand].icon) buildingArr[selectedCommand].icon.forEach((p,q)=>{ctx.drawChip(p, mouseX - dispChipW / 2, mouseY - dispChipH / 2 + q * dispChipW * -0.125, 0); ctx.drawChip("flash", mouseX - dispChipW / 2, mouseY - dispChipH / 2 + q * dispChipW * -0.125, 0, 0.5 + Math.sin(Math.PI * (clock % 50 / 25)) * 0.25);})
-    else {ctx.drawChip(selectedCommand, mouseX - dispChipW / 2, mouseY - dispChipH / 2, 0); ctx.drawChip("flash", mouseX - dispChipW / 2, mouseY - dispChipH / 2, 0, 0.5 + Math.sin(Math.PI * (clock % 50 / 25)) * 0.25);}
+    let icon = buildingArr[selectedCommand].icon || selectedCommand;
+    icon.forEach((p,q)=>{ctx.drawChip(p, mouseX - dispChipW / 2, mouseY - dispChipH / 2 + q * dispChipW * -0.125, 0); ctx.drawChip("flash", mouseX - dispChipW / 2, mouseY - dispChipH / 2 + q * dispChipW * -0.125, 0, 0.5 + Math.sin(Math.PI * (clock % 50 / 25)) * 0.25);})
     if (!mouseState.left) {
       if (paletteH > mouseY) {
         build(selectedCommand,focusedPos[0],focusedPos[1]);
@@ -260,7 +261,7 @@ imgName.forEach((x, y) => {
 
 resetAllData();
 
-
+/*
 build("air0",503,503);
 build("air0",596,503);
 build("air0",503,596);
@@ -272,6 +273,7 @@ for (i = 0; i < 4000; i++) wayPos.push([Math.floor(Math.random()*100)+500,Math.f
 wayPos.forEach(x => {
   build(`b${Math.floor(Math.random()*3)}`,x[0],x[1]);
 });
+*/
 
 function startup(smoother = 0) {
   ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -298,6 +300,7 @@ function title(n = 0, mouse = mouseState.left) {
   ctx.clearRect(0,0,canvas.width,canvas.height);
   drawAll(null, false);
   getFPS();
+  ctx.fillText(version, 10, 45);
   ctx.lineWidth = 2 * ratioW;
   ctx.font = `${120*ratioW}px 'ＭＳ　Ｐゴシック'`;
   ctx.fillStyle = "#ffffff"; ctx.fillText("Hexapital", canvas.width / 2 - (280 * ratioW), canvas.height * 0.4);
