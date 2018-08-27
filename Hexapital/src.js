@@ -85,10 +85,10 @@ var getFPS =()=> {
 }
 
 var build =(kind,xpos,ypos)=> {
-  if ((buildingArr[kind].buildArea||[[0,0]]).map(x=>allData[ypos+x[1]][xpos+x[0]+(ypos!=0?Math.abs(x[1]%2):0)]!="n").indexOf(true) > -1) return false;
+  if ((buildingArr[kind].buildArea||[[0,0]]).map(x=>!buildingArr[allData[ypos+x[1]][xpos+x[0]+(x[1]!=0&&ypos%2?1:0)]].overWrite).indexOf(true) > -1) return false;
   switch (kind) {
     case "air0":
-      buildingArr[kind].buildArea.forEach(x=>allData[ypos+x[1]][xpos+x[0]+(ypos!=0?Math.abs(x[1]%2):0)]="air1");
+      buildingArr[kind].buildArea.forEach(x=>allData[ypos+x[1]][xpos+x[0]+(x[1]!=0&&ypos%2?1:0)] = "air1");
       allData[ypos][xpos] = "air0";
       break;
     default:
@@ -202,7 +202,7 @@ var drawAll =(command = "n", game = true)=> {
   }
   drawData.forEach((x, y) => {
     resizeChip(defaultSize * ((1 + (perth - 1) / 1.5) ** y)); x.forEach((x) => {
-      ctx.drawChip(x[0].split("@")[0], x[1], x[2], x[3], x[4] || 1);
+      if (x[4] > 0 || x[4] == undefined) ctx.drawChip(x[0].split("@")[0], x[1], x[2], x[3], x[4] || 1);
       if (x[0].split("@")[1]) {ctx.font = `${chipW*0.25}px 'ＭＳ　Ｐゴシック'`; ctx.fillText(`${x[0].split("@")[1]}`,x[1]+chipW*0.1,x[2]+chipH*0.42);}
     });
   });
@@ -239,6 +239,11 @@ var drawPalette =(scroll = 0)=> {
   }
 }
 
+var playSound =(sound)=> {
+  document.getElementById(sound).currentTime = 0
+  document.getElementById(sound).play();
+}
+
 //------------end defining functions-----------//
 
 //-------------begin loading images------------//
@@ -255,17 +260,18 @@ imgName.forEach((x, y) => {
 
 resetAllData();
 
-var wayPos = [];
-for (i = 0; i < 4000; i++) wayPos.push([[Math.floor(Math.random()*100)+500],[Math.floor(Math.random()*100)+500]])
-wayPos.forEach(x => {
-  allData[x[1]][x[0]] = `b${Math.floor(Math.random()*3)}`;
-});
 
 build("air0",503,503);
 build("air0",596,503);
 build("air0",503,596);
 build("air0",596,596);
 build("energy",507,507);
+
+var wayPos = [];
+for (i = 0; i < 4000; i++) wayPos.push([Math.floor(Math.random()*100)+500,Math.floor(Math.random()*100)+500])
+wayPos.forEach(x => {
+  build(`b${Math.floor(Math.random()*3)}`,x[0],x[1]);
+});
 
 function startup(smoother = 0) {
   ctx.clearRect(0,0,canvas.width,canvas.height);

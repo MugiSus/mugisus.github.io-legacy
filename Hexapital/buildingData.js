@@ -7,11 +7,13 @@
 //LLlimit : ライフラインを伸ばせる長さ
 //icon : パレットで表示する画像名（定義が無けば画像"部品名"を表示）
 //buildArea : 建造物の全部品の相対座標（定義なしなら[[0,0]]で記録）
+//overWrite : 被上書き可能か
 
 const buildingArr = {
     "n":{
         height:0,
-        connectable:false
+        connectable:false,
+        overWrite:true
     },
     "energy":{
         height:0,
@@ -23,7 +25,8 @@ const buildingArr = {
     "r":{
         length:0,
         connectable:true,
-        icon:["2a"]
+        icon:["2a"],
+        overWrite:true
     },
     "b0":{
         images:2,
