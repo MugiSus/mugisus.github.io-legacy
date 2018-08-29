@@ -228,7 +228,7 @@ var drawPalette =(scroll = 0)=> {
   });
   if (selectedCommand && !(selectedCommand == "r" || selectedCommand == "drawLL")) {
     let icon = buildingArr[selectedCommand].icon || selectedCommand;
-    icon.forEach((p,q)=>{ctx.drawChip(p, mouseX - dispChipW / 2, mouseY - dispChipH / 2 + q * dispChipW * -0.125, 0); ctx.drawChip("flash", mouseX - dispChipW / 2, mouseY - dispChipH / 2 + q * dispChipW * -0.125, 0, 0.5 + Math.sin(Math.PI * (clock % 50 / 25)) * 0.25);})
+    icon.forEach((p,q)=>{ctx.drawChip(p, mouseX - dispChipW / 2, mouseY - dispChipH / 2 + q * dispChipW * -0.125, 0); if ((buildingArr[selectedCommand].buildArea||[[0,0]]).map(x=>!buildingArr[allData[focusedPos[1]+x[1]][focusedPos[0]+x[0]+(x[1]!=0&&focusedPos[1]%2?1:0)]].overWrite).indexOf(true) == -1) ctx.drawChip("flash", mouseX - dispChipW / 2, mouseY - dispChipH / 2 + q * dispChipW * -0.125, 0, 0.5 + Math.sin(Math.PI * (clock % 50 / 25)) * 0.25);})
     if (!mouseState.left) {
       if (paletteH > mouseY) {
         build(selectedCommand,focusedPos[0],focusedPos[1]);
