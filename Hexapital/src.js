@@ -10,8 +10,9 @@ var defaultSize = 75;
 var allData = [];
 var beforeData = [];
 var allLifeLine = [];
+var LLData = {};
 var scrollX = scrollY = 0; // camera position
-var imgName = ["focus", "flash", "undef", "unLL0", "unLL1", "drawLL", "LLfromHere", "n", "0", "1", "2a", "2b", "2c", "3a", "3b", "3c", "3d", "4a", "4b", "4c", "5", "6", "energy", "b00", "b01", "b10", "b11", "b12", "b20", "b21", "air00", "air10", "air11"]; //load images
+var imgName = ["focus", "flash", "undef", "unLL0", "unLL1", "drawLL", "LLfromHere", "LifeLine", "n", "0", "1", "2a", "2b", "2c", "3a", "3b", "3c", "3d", "4a", "4b", "4c", "5", "6", "energy", "b00", "b01", "b10", "b11", "b12", "b20", "b21", "air00", "air10", "air11"]; //load images
 var img = [] //load images
 var roadArr = {"0":"000000", "1":"100000", "2a":"100100", "2b":"101000", "2c":"110000", "3a":"101010", "3b":"101100", "3c":"110100", "3d":"111000", "4a":"110110", "4b":"111010", "4c":"111100", "5":"111110", "6":"111111"}
 var timers = [];
@@ -23,6 +24,7 @@ var focusedPos = ["",""];
 var LLmemory = [], flashList = [], correctLL = false;
 var paletteArr = ["r", "drawLL", "energy", "b0", "b1", "b2", "air0"], paletteH = canvas.height * 0.8, selectedCommand = 0;;
 var clockM = clock = 0; setInterval(() => clock = ++clock % 10000, 1000/60);
+var turn = 0;
 canvas.addEventListener("mousedown", (event)=>{mouseState[["left","wheel","right"][event.button]] = true;});
 canvas.addEventListener("mouseup", (event)=>{mouseState[["left","wheel","right"][event.button]] = false;});
 document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
@@ -106,6 +108,7 @@ var getDist =(x0, y0, x1, y1, x2, y2)=> {
 }
 
 var drawAll =(command = "n", game = true)=> {
+  alreadyDrawn = [];
   resizeChip(defaultSize);
   let drawData = [[]];
   var j = Math.ceil(-scrollY / canvas.height) * Math.ceil(canvas.height / (chipH * 0.75));
@@ -163,7 +166,21 @@ var drawAll =(command = "n", game = true)=> {
         focusedPos = [_x, _y];
         let m = buildingArr[allData[_y][_x]].height || 0;
         if (!drawData[m]) drawData[m] = [];
-        drawData[m].push(["focus", canvas.width / 2 + ((xpos + (xpos - canvas.width / 2) * (perth ** m)) - canvas.width / 2) / 2, canvas.height / 2 + ((ypos + (ypos - canvas.height / 2) * (perth ** m)) - canvas.height / 2) / 2, 0]);  
+        drawData[m].push(["focus", canvas.width / 2 + ((xpos + (xpos - canvas.width / 2) * (perth ** m)) - canvas.width / 2) / 2, canvas.height / 2 + ((ypos + (ypos - canvas.height / 2) * (perth ** m)) - canvas.height / 2) / 2, 0]);
+        if (LLData[`${_x}:${_y}`] && !alreadyDrawn.length) {
+          LLData[`${_x}:${_y}`].forEach(x=>{
+            x.forEach(x=>{
+              if (alreadyDrawn.indexOf(x) == -1) {
+                let xpos = (x.split(":")[0]) * chipW + Math.abs((x.split(":")[1]) % 2) * chipW / 2 - scrollX;
+                let ypos = (x.split(":")[1]) * chipH * 0.75 + scrollY;
+                let m = buildingArr[allData[x.split(":")[1]][x.split(":")[0]]].height + 1 || 1;
+                if (!drawData[m]) drawData[m] = [];
+                drawData[m].push(["LifeLine", canvas.width / 2 + ((xpos + (xpos - canvas.width / 2) * (perth ** m)) - canvas.width / 2) / 2, canvas.height / 2 + ((ypos + (ypos - canvas.height / 2) * (perth ** m)) - canvas.height / 2) / 2, 0, 0.4]);
+                alreadyDrawn.push(x);
+              }
+            });
+          });
+        }
         if (!mouseState.right && paletteH > mouseY) {
           switch (command) {
             case "+r":
@@ -195,7 +212,13 @@ var drawAll =(command = "n", game = true)=> {
       });
     } else {
       if (LLmemory.length) {
-        if (correctLL) {allLifeLine[firsty = LLmemory[LLmemory.length-1].split(":")[1]][LLmemory[LLmemory.length-1].split(":")[0]] = "1"; flashList = LLmemory; clockM = [clock, 15 + LLmemory.length * 3];}
+        if (correctLL) {
+          allLifeLine[firsty = LLmemory[LLmemory.length-1].split(":")[1]][LLmemory[LLmemory.length-1].split(":")[0]] = "1"; flashList = LLmemory; clockM = [clock, 15 + LLmemory.length * 3];
+          LLmemory.forEach((x,y,z)=>{
+            if (!LLData[x]) LLData[x] = [];
+            if (buildingArr[allData[z[z.length-1].split(":")[1]][z[z.length-1].split(":")[0]]].supplyable != 1) LLData[x].push(z);
+          });
+        }
         LLmemory = [], correctLL = false;
       }
     }
@@ -227,13 +250,12 @@ var drawPalette =(scroll = 0)=> {
     }
   });
   if (selectedCommand && !(selectedCommand == "r" || selectedCommand == "drawLL")) {
-    let icon = buildingArr[selectedCommand].icon || selectedCommand;
+    let icon = buildingArr[selectedCommand].icon || [selectedCommand];
     icon.forEach((p,q)=>{ctx.drawChip(p, mouseX - dispChipW / 2, mouseY - dispChipH / 2 + q * dispChipW * -0.125, 0); if ((buildingArr[selectedCommand].buildArea||[[0,0]]).map(x=>!buildingArr[allData[focusedPos[1]+x[1]][focusedPos[0]+x[0]+(x[1]!=0&&focusedPos[1]%2?1:0)]].overWrite).indexOf(true) == -1) ctx.drawChip("flash", mouseX - dispChipW / 2, mouseY - dispChipH / 2 + q * dispChipW * -0.125, 0, 0.5 + Math.sin(Math.PI * (clock % 50 / 25)) * 0.25);})
     if (!mouseState.left) {
       if (paletteH > mouseY) {
         build(selectedCommand,focusedPos[0],focusedPos[1]);
-        flashList = [];
-        clockM = [clock, 100];
+        flashList = []; clockM = [clock, 100];
       }
       selectedCommand = "";
     }
@@ -314,6 +336,7 @@ function title(n = 0, mouse = mouseState.left) {
   if (faded) {
     scrollX = chipW * 500;
     scrollY = chipH * 500 * -0.75;
+    turn = 0; clock = 0;
     waitUntil("!mouseState.left", game, 500);
     return;
   }
