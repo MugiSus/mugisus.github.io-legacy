@@ -10,6 +10,10 @@ const version = "v1.3.201809021930";
 //icon : パレットで表示する画像名（定義が無けば画像"部品名"を表示）
 //buildArea : 建造物の全部品の相対座標（定義なしなら[[0,0]]で記録）
 //overWrite : 被上書き可能か
+//cost : 建設費
+//keep : 維持費
+//income : 収入(*人口)
+//popuation : 建設によって増加する人口(雇用とか？)
 
 const buildingArr = {
     "n":{
@@ -28,7 +32,8 @@ const buildingArr = {
         length:0,
         connectable:true,
         icon:["2a"],
-        overWrite:true
+        overWrite:true,
+        cost:1
     },
     "b0":{
         images:2,
@@ -37,7 +42,10 @@ const buildingArr = {
         connectable:false,
         needsLifeLine:true,
         LLlimit:4,
-        icon:["b00","b01"]
+        icon:["b00","b01"],
+        cost:50,
+        keep:10,
+        population:30
     },
     "b1":{
         images:3,
@@ -46,7 +54,10 @@ const buildingArr = {
         connectable:false,
         needsLifeLine:true,
         LLlimit:5,
-        icon:["b10","b11","b12"]
+        icon:["b10","b11","b12"],
+        cost:80,
+        keep:20,
+        population:40
     },
     "b2":{
         images:2,
@@ -55,14 +66,20 @@ const buildingArr = {
         connectable:false,
         needsLifeLine:true,
         LLlimit:6,
-        icon:["b20","b20","b21"]
+        icon:["b20","b20","b21"],
+        cost:120,
+        keep:40,
+        population:60
     },
     "air0":{
         images:1,
         pattern:[4],
         height:4,
         icon:["air10","air10","air00"],
-        buildArea:[[0,0],[-1,0],[-1,-1],[0,-1],[1,0],[0,1],[-1,1]]
+        buildArea:[[0,0],[-1,0],[-1,-1],[0,-1],[1,0],[0,1],[-1,1]],
+        cost:10000,
+        keep:100,
+        income:1
     },
     "air1":{
         images:2,
