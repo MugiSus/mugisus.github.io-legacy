@@ -1,4 +1,4 @@
-const version = "v1.3.201809021930";
+const version = "v2.0.201809040502";
 
 //images : 使用する画像数
 //pattern : 建造物の画像パターン
