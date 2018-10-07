@@ -151,7 +151,7 @@ function start(soundTrack){
     BPM = musicData[soundTrack].match(/bpm:(.*)/i)[1] * 1;
     startTime = new Date().getTime() + 2500 + musicData[soundTrack].match(/offset:(.*)/i)[1] * 1;
     Score = (musicData[soundTrack].match(/score:\n?((.|\n)*)/i)[1].split("/")).map(x=>(x.split(",")).map(x=>x*1));
-    var audio = new Audio(`musics/${musicData[soundTrack].match(/bgm:(.*)/i)[1]}`); audio.currentTime = 0; audio.onload=()=>setTimeout(()=>audio.play(),2500);
+    var audio = new Audio(`musics/${musicData[soundTrack].match(/bgm:(.*)/i)[1]}`); audio.currentTime = 0; setTimeout(()=>audio.play(),2500);
     lastBeat = 0;
     board();
 }
