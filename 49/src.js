@@ -8,13 +8,21 @@ OFFSET:0
 score:
 3,3,0,34,1/0,0,0,2/6,0,4,2/0,6,4,2/6,6,4,2/1,1,4,2/5,1,4,2/1,5,4,2/5,5,4,2/
 2,2,4,2/4,2,0,2/2,4,0,2/4,4,0,2/
-1,1,4,2/5,1,0,2/1,5,0,2/5,5,0,2/3,3,0,2/
-0,0,4,2/6,0,0,2/0,6,0,2/6,6,0,2/3,3,0,2/
+1,1,4,2/5,1,0,2/1,5,0,2/5,5,0,2/3,3,0,2,1/
+0,0,4,2/6,0,0,2/0,6,0,2/6,6,0,2/3,3,0,2,1/
 0,0,4,2,1/0,1,0.5,1.50,1/0,2,0.25,1.25,1/0,3,0.25,1,1/0,4,0.25,0.75,1/0,5,0.25,0.5,1/
-0,0,3,2/6,0,0,2/0,6,0,2/6,6,0,2/3,3,0,2/
-1,1,4,2/5,1,0,2/1,5,0,2/5,5,0,2/3,3,0,2/
-2,2,4,2/4,2,0,2/2,4,0,2/4,4,0,2/3,3,0,2/
-2,3,4,2,1/4,2,0.5,1.50,1/0,6,0.25,1.25,1/0,5,0.25,1,1/6,4,0.25,0.75,1/2,5,0.25,0.5,1/
+0,0,3,2/6,0,0,2/0,6,0,2/6,6,0,2/3,3,0,2,1/
+1,1,4,2/5,1,0,2/1,5,0,2/5,5,0,2/3,3,0,2,1/
+2,2,4,2/4,2,0,2/2,4,0,2/4,4,0,2/3,3,0,2,1/
+2,3,4,2,1/4,2,0.5,1.50,1/4,6,0.25,1.25,1/0,5,0.25,1,1/6,4,0.25,0.75,1/2,5,0.25,0.5,1/
+0,0,2.5,1/1,1,0.25,1/5,5,0.25,1/6,6,0.25,1/
+6,0,7.25,1/5,1,0.25,1/1,5,0.25,1/0,6,0.25,1/
+6,6,7.25,1/5,5,0.25,1/1,1,0.25,1/0,0,0.25,1/
+0,6,7.25,1/1,5,0.25,1/5,1,0.25,1/6,0,0.25,1/
+0,0,7.25,1/1,1,0.25,1/5,5,0.25,1/6,6,0.25,1/
+6,0,7.25,1/5,1,0.25,1/1,5,0.25,1/0,6,0.25,1/
+6,6,7.25,1/5,5,0.25,1/1,1,0.25,1/0,0,0.25,1/
+0,6,7.25,1/1,5,0.25,1/5,1,0.25,1/6,0,0.25,1/
 `
 };
 
@@ -29,6 +37,7 @@ var mouseState = {};
 var click;
 var keydown = {};
 var lasers = [];
+var vibration = 0;
 var BPM, startTime, Time, Score, beat, lastBeat;
 //sensing
 canvas.addEventListener("mousedown", (event)=>{mouseState[["left","wheel","right"][event.button]] = true;});
@@ -92,14 +101,16 @@ var drawBoard =()=> {
         ctx.closePath();
         ctx.fill();
     }
-    ctx.fillStyle = "#bbbbbb";
+    ctx.fillStyle = "#888888";
     lasers.forEach((x,y)=>{
         if ((beat - x[2]) / x[3] >= 1) {
-            ctx.globalAlpha = min((x[2] + x[3] + (x[4]||0) + 1 - beat) / 1, 0);
-            ctx.lineWidth = 15; ctx.strokeStyle = "#ff0000";
+            if (min(x[4],0)) {ctx.strokeStyle = "#ff6600"; vibration += 0.5;}
+            else {ctx.strokeStyle = "#ff0000"; if (x[4] != -1) {vibration += 10; x[4] = -1;}}
+            ctx.globalAlpha = min((x[2] + x[3] + min(x[4],0) + 1 - beat) / 1, 0);
+            ctx.lineWidth = 15;
             ctx.line(-100, (x[1] + 0.5) * height/7, width + 100, (x[1] + 0.5) * height/7);
             ctx.line((x[0] + 0.5) * width/7, -100, (x[0] + 0.5) * width/7, height + 100);
-            if (beat > x[2] + x[3] + (x[4]||0) + 1) {
+            if (beat > x[2] + x[3] + min(x[4],0) + 1) {
                 lasers.splice(y,1)
             }
         }
@@ -108,13 +119,17 @@ var drawBoard =()=> {
         ctx.fill();
         ctx.globalAlpha = 1;
     });
+    vibration = max(vibration, 15);
 }
 
 function board(){
     Time = (new Date().getTime() - startTime) / 1000;
     beat = Time / (60 / BPM);
     ctx.fillStyle = "rgba(20,20,20,0.5)"
-    ctx.fillRect(-100,-100,width+200,height+200);
+    ctx.fillRect(-1000,-1000,2000,2000);
+    ctx.save();
+    vibration += (0 - vibration) / 10
+    ctx.translate(vibration * Math.sin(Math.random()*Math.PI*2), vibration * Math.cos(Math.random()*Math.PI*2))
     ctx.globalAlpha = 1 + Time / 2.5;
     drawBoard();
     while (Score[0] && lastBeat + Score[0][2] <= beat) {
@@ -123,10 +138,11 @@ function board(){
         lasers.push(Score[0]);
         Score.shift();
     }
-    if (keydown.w) {playerY = min(playerY-1,0); keydown.w = false}
-    if (keydown.d) {playerX = max(playerX+1,6); keydown.d = false}
-    if (keydown.s) {playerY = max(playerY+1,6); keydown.s = false}
-    if (keydown.a) {playerX = min(playerX-1,0); keydown.a = false}
+    if (keydown.ArrowUp) {playerY = min(playerY-1,0); keydown.ArrowUp = false}
+    if (keydown.ArrowRight) {playerX = max(playerX+1,6); keydown.ArrowRight = false}
+    if (keydown.ArrowDown) {playerY = max(playerY+1,6); keydown.ArrowDown = false}
+    if (keydown.ArrowLeft) {playerX = min(playerX-1,0); keydown.ArrowLeft = false}
+    ctx.restore();
     requestAnimationFrame(board);
 }
 
@@ -139,4 +155,4 @@ function start(soundTrack){
     board();
 }
 
-canvas.onclick=()=>{start("Evil's Talk");}
+canvas.onclick=()=>{start("Evil's Talk"); canvas.onclick = ""}
