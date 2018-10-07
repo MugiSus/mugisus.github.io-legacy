@@ -1,11 +1,21 @@
 //init
 const musicData = {
     "Evil's Talk":`
-        BGM:Evil's Talk.mp3
-        BPM:128
-        OFFSET:0
+BGM:Evil's Talk.mp3
+BPM:128
+OFFSET:0
 
-    `
+score:
+3,3,0,34,1/0,0,0,2/6,0,4,2/0,6,4,2/6,6,4,2/1,1,4,2/5,1,4,2/1,5,4,2/5,5,4,2/
+2,2,4,2/4,2,0,2/2,4,0,2/4,4,0,2/
+1,1,4,2/5,1,0,2/1,5,0,2/5,5,0,2/3,3,0,2/
+0,0,4,2/6,0,0,2/0,6,0,2/6,6,0,2/3,3,0,2/
+0,0,4,2,1/0,1,0.5,1.50,1/0,2,0.25,1.25,1/0,3,0.25,1,1/0,4,0.25,0.75,1/0,5,0.25,0.5,1/
+0,0,3,2/6,0,0,2/0,6,0,2/6,6,0,2/3,3,0,2/
+1,1,4,2/5,1,0,2/1,5,0,2/5,5,0,2/3,3,0,2/
+2,2,4,2/4,2,0,2/2,4,0,2/4,4,0,2/3,3,0,2/
+2,3,4,2,1/4,2,0.5,1.50,1/0,6,0.25,1.25,1/0,5,0.25,1,1/6,4,0.25,0.75,1/2,5,0.25,0.5,1/
+`
 };
 
 const canvas = document.getElementById("disp");
@@ -16,9 +26,10 @@ const width = height;
 var playerX = playerY = 3;
 var mouseX, mouseY
 var mouseState = {};
+var click;
 var keydown = {};
-var timers = [];
-var BPM, startTime, Time;
+var lasers = [];
+var BPM, startTime, Time, Score, beat, lastBeat;
 //sensing
 canvas.addEventListener("mousedown", (event)=>{mouseState[["left","wheel","right"][event.button]] = true;});
 canvas.addEventListener("mouseup", (event)=>{mouseState[["left","wheel","right"][event.button]] = false;});
@@ -38,6 +49,9 @@ ctx.__proto__.line =(x0, y0, x1, y1)=> {
     ctx.stroke();
 };
 
+var max =(x,y)=> {return x < y ? x : y;};
+var min =(x,y)=> {return x > y ? x : y;}
+
 var drawBoard =()=> {
     ctx.lineWidth = 2;
     ctx.strokeStyle = "#888888";
@@ -56,40 +70,73 @@ var drawBoard =()=> {
         switch (~~(mouseDir / 90)){
             case 0: {
                 ctx.moveTo((playerX + 0.3) * width/7, (playerY - 0.2) * height/7); ctx.lineTo((playerX + 0.7) * width/7, (playerY - 0.2) * height/7); ctx.lineTo((playerX + 0.5) * width/7, (playerY - 0.4) * height/7);
-
+                if (click) {playerY = min(playerY-1,0); click = false}
                 break;
             }
             case 1: {
                 ctx.moveTo((playerX + 1.2) * width/7, (playerY + 0.3) * height/7); ctx.lineTo((playerX + 1.2) * width/7, (playerY + 0.7) * height/7); ctx.lineTo((playerX + 1.4) * width/7, (playerY + 0.5) * height/7);
+                if (click) {playerX = max(playerX+1,7); click = false}
                 break;
             }
             case 2: {
                 ctx.moveTo((playerX + 0.3) * width/7, (playerY + 1.2) * height/7); ctx.lineTo((playerX + 0.7) * width/7, (playerY + 1.2) * height/7); ctx.lineTo((playerX + 0.5) * width/7, (playerY + 1.4) * height/7);
+                if (click) {playerY = max(playerY+1,7); click = false}
                 break;
             }
             case 3: {
                 ctx.moveTo((playerX - 0.2) * width/7, (playerY + 0.3) * height/7); ctx.lineTo((playerX - 0.2) * width/7, (playerY + 0.7) * height/7); ctx.lineTo((playerX - 0.4) * width/7, (playerY + 0.5) * height/7); 
+                if (click) {playerX = min(playerX-1,0); click = false}
                 break;
             }
         }
         ctx.closePath();
         ctx.fill();
     }
+    ctx.fillStyle = "#bbbbbb";
+    lasers.forEach((x,y)=>{
+        if ((beat - x[2]) / x[3] >= 1) {
+            ctx.globalAlpha = min((x[2] + x[3] + (x[4]||0) + 1 - beat) / 1, 0);
+            ctx.lineWidth = 15; ctx.strokeStyle = "#ff0000";
+            ctx.line(-100, (x[1] + 0.5) * height/7, width + 100, (x[1] + 0.5) * height/7);
+            ctx.line((x[0] + 0.5) * width/7, -100, (x[0] + 0.5) * width/7, height + 100);
+            if (beat > x[2] + x[3] + (x[4]||0) + 1) {
+                lasers.splice(y,1)
+            }
+        }
+        ctx.beginPath();
+        ctx.arc((x[0] + 0.5) * width/7, (x[1] + 0.5) * height/7, max(width/14 * (beat - x[2]) / x[3], width/14), 0, Math.PI*2, false);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+    });
 }
 
 function board(){
-    Time = new Date().getTime() - startTime;
-    ctx.clearRect(-1,-1,width+2,height+2);
-    if (Time < 0) {ctx.globalAlpha = 1 + Time / 2500;}
+    Time = (new Date().getTime() - startTime) / 1000;
+    beat = Time / (60 / BPM);
+    ctx.fillStyle = "rgba(20,20,20,0.5)"
+    ctx.fillRect(-100,-100,width+200,height+200);
+    ctx.globalAlpha = 1 + Time / 2.5;
     drawBoard();
+    while (Score[0] && lastBeat + Score[0][2] <= beat) {
+        lastBeat += Score[0][2];
+        Score[0][2] = lastBeat
+        lasers.push(Score[0]);
+        Score.shift();
+    }
+    if (keydown.w) {playerY = min(playerY-1,0); keydown.w = false}
+    if (keydown.d) {playerX = max(playerX+1,6); keydown.d = false}
+    if (keydown.s) {playerY = max(playerY+1,6); keydown.s = false}
+    if (keydown.a) {playerX = min(playerX-1,0); keydown.a = false}
     requestAnimationFrame(board);
 }
 
 function start(soundTrack){
-    BPM = musicData[soundTrack].match(/bpm:(.*)/i)[1];
-    startTime = new Date().getTime() + 2500 + ~~musicData[soundTrack].match(/offset:(.*)/i)[1];
+    BPM = musicData[soundTrack].match(/bpm:(.*)/i)[1] * 1;
+    startTime = new Date().getTime() + 2500 + musicData[soundTrack].match(/offset:(.*)/i)[1] * 1;
+    Score = (musicData[soundTrack].match(/score:\n?((.|\n)*)/i)[1].split("/")).map(x=>(x.split(",")).map(x=>x*1));
     var audio = new Audio(`musics/${musicData[soundTrack].match(/bgm:(.*)/i)[1]}`); audio.currentTime = 0; setTimeout(()=>audio.play(),2500)
+    lastBeat = 0;
     board();
 }
 
-canvas.onclick=()=>{start("Evil's Talk"); canvas.onclick = "";}
+canvas.onclick=()=>{start("Evil's Talk");}
