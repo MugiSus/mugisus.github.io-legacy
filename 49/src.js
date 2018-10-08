@@ -1,7 +1,7 @@
 //init
 const musicData = {
     "Evil's Talk":`
-BGM:Evil's Talk.mp3
+BGM:Evil's Talk.ogg
 BPM:128
 OFFSET:0
 
