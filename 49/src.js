@@ -131,7 +131,8 @@ var drawBoard =()=> {
             }
         }
         ctx.beginPath();
-        ctx.arc((x[0] + 0.5) * width/7, (x[1] + 0.5) * height/7, max(width/14 * (beat - x[2]) / x[3], width/14), 0, Math.PI*2, false);
+        ctx.moveTo((x[0] + 0.5) * width/7, (x[1] + 0.5) * height/7);
+        ctx.arc((x[0] + 0.5) * width/7, (x[1] + 0.5) * height/7, max(width/14 * (beat - x[2]) / x[3], width/14), 0, Math.PI * 2, false);
         ctx.fill();
         ctx.globalAlpha = 1;
     });
@@ -145,7 +146,7 @@ function board(){
     ctx.fillStyle = "rgba(20,20,20,0.5)"
     ctx.fillRect(-1000,-1000,2000,2000);
     ctx.save();
-    vibration += (0 - vibration) / 10
+    vibration += (0 - vibration) / 5
     ctx.translate(vibration * Math.sin(Math.random()*Math.PI*2), vibration * Math.cos(Math.random()*Math.PI*2))
     ctx.globalAlpha = 1 + Time / 2.5;
     drawBoard();
