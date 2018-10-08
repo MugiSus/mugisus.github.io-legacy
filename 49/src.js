@@ -24,6 +24,19 @@ score:
 6,6,7.25,1/5,5,0.25,1/1,1,0.25,1/0,0,0.25,1/2,2,0,2,4/3,3,0,2,4/4,4,0,2,4/
 0,6,7.25,1/1,5,0.25,1/5,1,0.25,1/6,0,0.25,1/
 -1,0,2.5,2,1/7,1,0.5,1.50,1/-1,2,0.25,1.25,1/7,4,0.25,1,1/-1,5,0.25,0.75,1/7,6,0.25,0.5,1/
+0,0,2,2/1,0,2,2/2,0,2,2/3,0,2,2/6,6,2,2/5,6,2,2/4,6,2,2/3,6,2,2/
+0,0,2,2/0,1,2,2/0,2,2,2/0,3,2,2/6,6,2,2/6,5,2,2/6,4,2,2/6,3,2,2/
+3,3,4,6,4/1,1,2,4,4/5,5,2,2,4/6,0,1,2/2,4,1,2/0,4,1,2/2,6,1,2/
+3,3,3,12,6/1,5,2,10,6/5,1,2,8,6/5,5,2,6,4/1,1,2,4,2/0,0,5,2/6,2,1,2/4,4,1,2/0,2,1,2/
+6,0,3,1/5,1,0.25,1/1,5,0.25,1/0,6,0.25,1/2,4,0,2,4/3,3,0,2,4/4,2,0,2,4/
+0,0,7.25,1/1,1,0.25,1/5,5,0.25,1/6,6,0.25,1/2,2,0,2,4/3,3,0,2,4/4,4,0,2,4/
+6,6,7.25,1/5,5,0.25,1/1,1,0.25,1/0,0,0.25,1/2,2,0,2,4/3,3,0,2,4/4,4,0,2,4/
+6,6,7.25,1/5,5,0.25,1/1,1,0.25,1/0,0,0.25,1/2,2,0,2,4/3,3,0,2,4/4,4,0,2,4/
+0,0,7.25,1/1,1,0.25,1/5,5,0.25,1/6,6,0.25,1/2,2,0,2,4/3,3,0,2,4/4,4,0,2,4/
+0,6,7.25,1/1,5,0.25,1/5,1,0.25,1/6,0,0.25,1/2,4,0,2,4/3,3,0,2,4/4,2,0,2,4/
+6,0,7.25,1/5,1,0.25,1/1,5,0.25,1/0,6,0.25,1/2,4,0,2,4/3,3,0,2,4/4,2,0,2,4/
+0,6,7.25,1/1,5,0.25,1/5,1,0.25,1/6,0,0.25,1/
+2,3,4,2,1/4,4,0.5,1.50,1/4,0,0.25,1.25,1/0,1,0.25,1,1/6,2,0.25,0.75,1/2,1,0.25,0.5,1/
 `
 };
 
@@ -60,7 +73,7 @@ ctx.__proto__.line =(x0, y0, x1, y1)=> {
 };
 
 var max =(x,y)=> {return x < y ? x : y;};
-var min =(x,y)=> {return x > y ? x : y;}
+var min =(x,y)=> {return x > y ? x : y;};
 
 var drawBoard =()=> {
     ctx.lineWidth = 2;
@@ -102,17 +115,19 @@ var drawBoard =()=> {
         ctx.closePath();
         ctx.fill();
     }
-    ctx.fillStyle = "#888888";
+    let deleteList = [];
     lasers.forEach((x,y)=>{
+        ctx.fillStyle = "#666666";
         if ((beat - x[2]) / x[3] >= 1) {
+            ctx.fillStyle = "#bbbbbb";
             if (min(x[4],0)) {ctx.strokeStyle = "#ff6600"; vibration += 0.5;}
             else {ctx.strokeStyle = "#ff0000"; if (x[4] != -1) {vibration += 10; x[4] = -1;}}
             ctx.globalAlpha = min((x[2] + x[3] + min(x[4],0) + 1 - beat) / 1, 0);
-            ctx.lineWidth = 15;
+            ctx.lineWidth = width/28;
             ctx.line(-100, (x[1] + 0.5) * height/7, width + 100, (x[1] + 0.5) * height/7);
             ctx.line((x[0] + 0.5) * width/7, -100, (x[0] + 0.5) * width/7, height + 100);
-            if (beat > x[2] + x[3] + min(x[4],0) + 1) {
-                lasers.splice(y,1)
+            if (beat >= x[2] + x[3] + min(x[4],0) + 1) {
+                deleteList.unshift(y);
             }
         }
         ctx.beginPath();
@@ -120,6 +135,7 @@ var drawBoard =()=> {
         ctx.fill();
         ctx.globalAlpha = 1;
     });
+    deleteList.forEach(x=>lasers.splice(x,1));
     vibration = max(vibration, 10);
 }
 
@@ -151,7 +167,7 @@ function start(soundTrack){
     BPM = musicData[soundTrack].match(/bpm:(.*)/i)[1] * 1;
     startTime = new Date().getTime() + 2500 + musicData[soundTrack].match(/offset:(.*)/i)[1] * 1;
     Score = (musicData[soundTrack].match(/score:\n?((.|\n)*)/i)[1].split("/")).map(x=>(x.split(",")).map(x=>x*1));
-    var audio = new Audio(`musics/${musicData[soundTrack].match(/bgm:(.*)/i)[1]}`); audio.currentTime = 0; setTimeout(()=>audio.play(),2500);
+    var audio = new Audio(`musics/${musicData[soundTrack].match(/bgm:(.*)/i)[1]}`); audio.currentTime = 0; setTimeout(()=>audio.play(),2500)
     lastBeat = 0;
     board();
 }
