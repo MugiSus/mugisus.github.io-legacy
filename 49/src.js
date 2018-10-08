@@ -116,10 +116,10 @@ var drawBoard =()=> {
         ctx.fill();
     }
     let deleteList = [];
+    let arcList = [];
     lasers.forEach((x,y)=>{
         ctx.fillStyle = "#666666";
         if ((beat - x[2]) / x[3] >= 1) {
-            ctx.fillStyle = "#bbbbbb";
             if (min(x[4],0)) {ctx.strokeStyle = "#ff6600"; vibration += 0.5;}
             else {ctx.strokeStyle = "#ff0000"; if (x[4] != -1) {vibration += 10; x[4] = -1;}}
             ctx.globalAlpha = min((x[2] + x[3] + min(x[4],0) + 1 - beat) / 1, 0);
@@ -130,12 +130,15 @@ var drawBoard =()=> {
                 deleteList.unshift(y);
             }
         }
-        ctx.beginPath();
-        ctx.moveTo((x[0] + 0.5) * width/7, (x[1] + 0.5) * height/7);
-        ctx.arc((x[0] + 0.5) * width/7, (x[1] + 0.5) * height/7, max(width/14 * (beat - x[2]) / x[3], width/14), 0, Math.PI * 2, false);
-        ctx.fill();
+        arcList.push(x)
         ctx.globalAlpha = 1;
     });
+    arcList.forEach(x=>{
+        ctx.beginPath();
+        ctx.moveTo((x[0] + 0.5) * width/7, (x[1] + 0.5) * height/7);
+        ctx.arc((x[0] + 0.5) * width/7, (x[1] + 0.5) * height/7, max(width/14 * (beat - x[2]) / x[3], width/14), Math.PI/-2, min((x[2] + x[3] + min(x[4],0) + 1 - beat) / 1, 0) * Math.PI * 2 - Math.PI/2, false);
+        ctx.fill();
+    })
     deleteList.forEach(x=>lasers.splice(x,1));
     vibration = max(vibration, 10);
 }
