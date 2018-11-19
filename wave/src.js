@@ -20,6 +20,7 @@ resize();
 //end kit
 
 var scrollX = scrollY = 0;
+var targetX = targetY = 0;
 var time = 0;
 var moveX = moveY = 0;
 var waveList = [], dotList = [];
@@ -84,9 +85,10 @@ var drawBorder =()=> {
 function game(){
     waveList.push(new wave(scrollX + (-2 + Math.random() * 4) * canvas.width, scrollY + (-2 + Math.random() * 4) * canvas.height, "#666666"))
     ctx.clearRect(canvas.width / -2, canvas.height / -2, canvas.width, canvas.height);
-    time--;
-    if (time > 0) {scrollX += moveX; scrollY += moveY;}
+    if (time > 0) {targetX += moveX; targetY += moveY;}
     else if (time < -120) {moveX = Math.sin(Math.random() * Math.PI * 2) * 0.5; moveY = Math.cos(Math.random() * Math.PI * 2) * 0.5; time = 300;}
+    time--;
+    scrollX += (targetX - scrollX) / 50; scrollY += (targetY - scrollY) / 50;
     drawBorder();
     drawWave();
     requestAnimationFrame(game);
