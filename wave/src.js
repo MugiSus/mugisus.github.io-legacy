@@ -83,7 +83,7 @@ var drawBorder =()=> {
 };
 
 function game(){
-    if (time % 5 == 0) waveList.push(new wave(-scrollX + (-2 + Math.random() * 4) * (canvas.width / ratio), -scrollY + (-2 + Math.random() * 4) * (canvas.height / ratio), "#666666"));
+    if (time % 10 == 0) waveList.push(new wave(-scrollX + (-2 + Math.random() * 4) * (canvas.width / ratio), -scrollY + (-2 + Math.random() * 4) * (canvas.height / ratio), "#888888"));
     ctx.clearRect(canvas.width / -2, canvas.height / -2, canvas.width, canvas.height);
     if (time > 0) {targetX += moveX; targetY += moveY;}
     else if (time < -120) {let random = Math.random() * Math.PI * 2; moveX = Math.sin(random) * 0.5; moveY = Math.cos(random) * 0.5; time = 300;}
