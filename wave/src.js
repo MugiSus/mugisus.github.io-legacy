@@ -72,7 +72,7 @@ var drawWave =()=> {
 };
 
 var drawBorder =()=> {
-    ctx.strokeStyle = "#282828";
+    ctx.strokeStyle = "#404040";
     ctx.lineWidth = 0.25;
     for (let i = Math.floor(canvas.width / -40) - 1; i < Math.ceil(canvas.width / 40) + 1; i++) {
         ctx.line(scrollX % 20 + i * 20, canvas.height / 2 / ratio, scrollX % 20 + i * 20, canvas.height / -2 / ratio);
@@ -83,10 +83,10 @@ var drawBorder =()=> {
 };
 
 function game(){
-    if (time % 10 == 0) waveList.push(new wave(-scrollX + (-1 + Math.random() * 2) * (canvas.width / ratio), -scrollY + (-1 + Math.random() * 2) * (canvas.height / ratio), "#666666"));
+    if (time % 5 == 0) waveList.push(new wave(-scrollX + (-2 + Math.random() * 4) * (canvas.width / ratio), -scrollY + (-2 + Math.random() * 4) * (canvas.height / ratio), "#666666"));
     ctx.clearRect(canvas.width / -2, canvas.height / -2, canvas.width, canvas.height);
     if (time > 0) {targetX += moveX; targetY += moveY;}
-    else if (time < -120) {moveX = Math.sin(Math.random() * Math.PI * 2) * 0.5; moveY = Math.cos(Math.random() * Math.PI * 2) * 0.5; time = 300;}
+    else if (time < -120) {let random = Math.random() * Math.PI * 2; moveX = Math.sin(random) * 0.5; moveY = Math.cos(random) * 0.5; time = 300;}
     time--;
     scrollX += (targetX - scrollX) / 50; scrollY += (targetY - scrollY) / 50;
     drawBorder();
