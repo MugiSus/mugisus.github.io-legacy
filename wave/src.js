@@ -94,5 +94,6 @@ function game(){
     requestAnimationFrame(game);
 };
 
-canvas.addEventListener("click", ()=>{waveList.push(new wave(mouseX - scrollX, mouseY - scrollY, `hsl(${hue+=10}, 100%, 75%)`));})
+canvas.addEventListener("click", ()=>{waveList.push(new wave(mouseX - scrollX, mouseY - scrollY, `hsl(${hue+=10}, 100%, 75%)`));});
+canvas.addEventListener("touchstart", ()=>{waveList.push(new wave(mouseX - scrollX, mouseY - scrollY, `hsl(${hue+=10}, 100%, 75%)`));});
 game();
