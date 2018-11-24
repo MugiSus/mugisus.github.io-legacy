@@ -94,6 +94,10 @@ function game(){
     requestAnimationFrame(game);
 };
 
-canvas.addEventListener("click", ()=>{waveList.push(new wave(mouseX - scrollX, mouseY - scrollY, `hsl(${hue+=10}, 100%, 75%)`));});
-canvas.addEventListener("touchstart", ()=>{waveList.push(new wave(mouseX - scrollX, mouseY - scrollY, `hsl(${hue+=10}, 100%, 75%)`));});
+const uAgent = navigator.userAgent;
+if ((uAgent.indexOf('iPhone') > 0 && uAgent.indexOf('iPad') == -1) || uAgent.indexOf('iPod') > 0 || uAgent.indexOf('Android') > 0) {
+    canvas.addEventListener("touchstart", ()=>{waveList.push(new wave(mouseX - scrollX, mouseY - scrollY, `hsl(${hue+=10}, 100%, 75%)`));});  
+} else {
+    canvas.addEventListener("click", ()=>{waveList.push(new wave(mouseX - scrollX, mouseY - scrollY, `hsl(${hue+=10}, 100%, 75%)`));});
+}
 game();
