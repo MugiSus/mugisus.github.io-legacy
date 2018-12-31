@@ -30,16 +30,18 @@ var adjust =(yr,mon,day,hr,min,sec)=> {
 
 //adjust(2018,12,31,23,59,10);
 
+ctx.textAlign = "center";
 ctx.font = `30px 'Hiragino Mincho Pro'`;
 ctx.fillStyle = "#ffffff";
-ctx.fillText("〈クリックして年越す〉", -800, -420);
+ctx.fillText("〈クリックして年越す〉", 0, -420);
 ctx.font = `70px 'Hiragino Mincho Pro'`;
 ctx.strokeStyle = "#888888";
 ctx.lineWidth = 10;
-ctx.strokeText("2 0 1 9 年 完 全 勝 利 U C", -450, 35);
-ctx.fillText("2 0 1 9 年 完 全 勝 利 U C", -450, 35);
+ctx.strokeText("2 0 1 9 年 完 全 勝 利 U C", 0, 35);
+ctx.fillText("2 0 1 9 年 完 全 勝 利 U C", 0, 35);
 
 function draw() {
+    ctx.textAlign = "center";
     nowDate = new Date();
     if (nowDate.getTime() + debugTime > 1548946758700 && !played) {
         document.title = "ん？";
@@ -70,12 +72,12 @@ function draw() {
         ctx.fill();
         ctx.fillStyle = "#ffffff";
         ctx.font = `200px 'Hiragino Mincho Pro'`;
-        ctx.fillText(`賀`, -600, 000);
-        ctx.fillText(`正`, 400, 000);
+        ctx.fillText(`賀`, -500, 000);
+        ctx.fillText(`正`, 500, 000);
         dateList = [nowDate.getHours(), nowDate.getMinutes(), nowDate.getSeconds()].map(x => (x + "").length == 1 ? "0" + x : x);
         ctx.fillStyle = "#ffffff";
         ctx.font = `100px 'Hiragino Mincho Pro'`;
-        ctx.fillText(`${dateList.join(" : ")}`, -300, 50);
+        ctx.fillText(`${dateList.join(" : ")}`, 0, 50);
         if (nowDate.getTime() + debugTime < 1548946807000) {
             ctx.globalAlpha = (1548946807000 - (nowDate.getTime() + debugTime)) / 7000;
             ctx.fillStyle = "#ffffff";
@@ -87,7 +89,7 @@ function draw() {
         dateList = [23 - nowDate.getHours(), 59 - nowDate.getMinutes(), 59 - nowDate.getSeconds()].map(x => (x + "").length == 1 ? "0" + x : x);
         ctx.fillStyle = "#ffffff";
         ctx.font = `100px 'Hiragino Mincho Pro'`;
-        ctx.fillText(`${dateList.join(" : ")}`, -300, 50);
+        ctx.fillText(`${dateList.join(" : ")}`, 0, 50);
         if (nowDate.getTime() + debugTime > 1548946797000) {
             ctx.globalAlpha =  1 - (1548946799000 - (nowDate.getTime() + debugTime)) / 2000;
             ctx.fillStyle = "#ffffff";
