@@ -22,7 +22,7 @@ resize();
 var audio = new Audio(`unicorn.mp3`);
 var nowDate;
 var played;
-var debugTime;
+var debugTime = 0;
 var dateList;
 var adjust =(yr,mon,day,hr,min,sec)=> {
     debugTime = new Date(yr,mon,day,hr,min,sec).getTime() - new Date().getTime();
