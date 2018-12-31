@@ -74,6 +74,9 @@ function draw() {
         ctx.font = `200px 'Hiragino Mincho Pro'`;
         ctx.fillText(`賀`, -500, 000);
         ctx.fillText(`正`, 500, 000);
+        ctx.fillStyle = "#eebb00";
+        ctx.strokeText(`賀`, -500, 000);
+        ctx.strokeText(`正`, 500, 000);
         dateList = [nowDate.getHours(), nowDate.getMinutes(), nowDate.getSeconds()].map(x => (x + "").length == 1 ? "0" + x : x);
         ctx.fillStyle = "#ffffff";
         ctx.font = `100px 'Hiragino Mincho Pro'`;
