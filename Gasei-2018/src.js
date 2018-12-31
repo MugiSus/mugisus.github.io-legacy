@@ -28,7 +28,7 @@ var adjust =(yr,mon,day,hr,min,sec)=> {
     debugTime = new Date(yr,mon,day,hr,min,sec).getTime() - new Date().getTime();
 }
 
-adjust(2018,12,31,23,59,10);
+//adjust(2018,12,31,23,59,10);
 
 ctx.font = `30px 'Hiragino Mincho Pro'`;
 ctx.fillStyle = "#ffffff";
