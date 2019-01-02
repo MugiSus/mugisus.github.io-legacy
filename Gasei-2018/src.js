@@ -73,7 +73,6 @@ function draw() {
         ctx.fill();
         ctx.fillStyle = "#ffffff";
         ctx.font = `200px 'Hiragino Mincho Pro'`;
-        ctx.lineWidth = 10;
         ctx.strokeText(`賀`, -500, 000);
         ctx.strokeText(`正`, 500, 000);
         ctx.fillText(`賀`, -500, 000);
@@ -82,6 +81,7 @@ function draw() {
         dateList = [nowDate.getHours(), nowDate.getMinutes(), nowDate.getSeconds()].map(x => (x + "").length == 1 ? "0" + x : x);
         ctx.fillStyle = "#ffffff";
         ctx.font = `100px 'Hiragino Mincho Pro'`;
+        ctx.strokeText(`${dateList.join(" : ")}`, 0, 50);
         ctx.fillText(`${dateList.join(" : ")}`, 0, 50);
         if (nowDate.getTime() + debugTime < targetTime.getTime() + 7000) {
             ctx.globalAlpha = (targetTime.getTime() + 7000 - (nowDate.getTime() + debugTime)) / 7000;
@@ -94,6 +94,7 @@ function draw() {
         dateList = [23 - nowDate.getHours(), 59 - nowDate.getMinutes(), 59 - nowDate.getSeconds()].map(x => (x + "").length == 1 ? "0" + x : x);
         ctx.fillStyle = "#ffffff";
         ctx.font = `100px 'Hiragino Mincho Pro'`;
+        ctx.strokeText(`${dateList.join(" : ")}`, 0, 50);
         ctx.fillText(`${dateList.join(" : ")}`, 0, 50);
         if (nowDate.getTime() + debugTime > targetTime.getTime() - 3000) {
             ctx.globalAlpha =  1 - (targetTime.getTime() - 1000 - (nowDate.getTime() + debugTime)) / 2000;
