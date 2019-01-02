@@ -24,12 +24,10 @@ var nowDate;
 var played;
 var debugTime = 0;
 var dateList;
-var targetTime = new Date(2019,00,01).getTime();
+var targetTime = new Date(); targetTime.setDate(targetTime.getDate() + 1);
 var adjust =(yr,mon,day,hr,min,sec)=> {
     debugTime = new Date(yr,mon,day,hr,min,sec).getTime() - new Date().getTime();
 }
-
-//adjust(2018,11,31,23,59,10);
 
 ctx.textAlign = "center";
 ctx.font = `30px 'Hiragino Mincho Pro'`;
@@ -38,21 +36,22 @@ ctx.fillText("〈クリックして年越す〉", 0, -420);
 ctx.font = `70px 'Hiragino Mincho Pro'`;
 ctx.strokeStyle = "#888888";
 ctx.lineWidth = 10;
-ctx.strokeText("2 0 1 9 年 完 全 勝 利 U C", 0, 35);
-ctx.fillText("2 0 1 9 年 完 全 勝 利 U C", 0, 35);
+ctx.strokeText(`${targetTime.getMonth() + 1} 月 ${targetTime.getDate()} 日 完 全 勝 利 U C`, 0, 35);
+ctx.fillText(`${targetTime.getMonth() + 1} 月 ${targetTime.getDate()} 日 完 全 勝 利 U C`, 0, 35);
+
+document.title = `まだ${targetTime.getMonth() + 1}月${targetTime.getDate()}日`;
 
 function draw() {
     ctx.textAlign = "center";
     nowDate = new Date();
-    if (nowDate.getTime() + debugTime > targetTime - 41300 && !played) {
+    if (nowDate.getTime() + debugTime > targetTime.getTime() - 41300 && !played) {
         document.title = "ん？";
-        setTimeout(()=>document.title = "流れ変わったな", 10000)
-        audio.currentTime = (nowDate.getTime() + debugTime - targetTime) / 1000 - 41.3;
-
+        setTimeout(()=>document.title = "流れ変わったな", 10000);
+        audio.currentTime = (nowDate.getTime() + debugTime - targetTime.getTime()) / 1000 - 41.3;
         audio.play();
         played = true;
     }
-    if (nowDate.getTime() + debugTime > targetTime) {
+    if (nowDate.getTime() + debugTime > targetTime.getTime()) {
         document.title = "完　全　勝　利";
         ctx.globalAlpha = 1;
         ctx.fillStyle = "#ee8800";
@@ -74,17 +73,18 @@ function draw() {
         ctx.fill();
         ctx.fillStyle = "#ffffff";
         ctx.font = `200px 'Hiragino Mincho Pro'`;
+        ctx.lineWidth = 10;
+        ctx.strokeText(`賀`, -500, 000);
+        ctx.strokeText(`正`, 500, 000);
         ctx.fillText(`賀`, -500, 000);
         ctx.fillText(`正`, 500, 000);
         ctx.fillStyle = "#eebb00";
-        ctx.strokeText(`賀`, -500, 000);
-        ctx.strokeText(`正`, 500, 000);
         dateList = [nowDate.getHours(), nowDate.getMinutes(), nowDate.getSeconds()].map(x => (x + "").length == 1 ? "0" + x : x);
         ctx.fillStyle = "#ffffff";
         ctx.font = `100px 'Hiragino Mincho Pro'`;
         ctx.fillText(`${dateList.join(" : ")}`, 0, 50);
-        if (nowDate.getTime() + debugTime < targetTime + 7000) {
-            ctx.globalAlpha = (targetTime + 7000 - (nowDate.getTime() + debugTime)) / 7000;
+        if (nowDate.getTime() + debugTime < targetTime.getTime() + 7000) {
+            ctx.globalAlpha = (targetTime.getTime() + 7000 - (nowDate.getTime() + debugTime)) / 7000;
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(-canvas.width / 2 / ratio, -canvas.height / 2 / ratio, canvas.width / ratio, canvas.height / ratio);
         }
@@ -95,8 +95,8 @@ function draw() {
         ctx.fillStyle = "#ffffff";
         ctx.font = `100px 'Hiragino Mincho Pro'`;
         ctx.fillText(`${dateList.join(" : ")}`, 0, 50);
-        if (nowDate.getTime() + debugTime > targetTime - 3000) {
-            ctx.globalAlpha =  1 - (targetTime - 1000 - (nowDate.getTime() + debugTime)) / 2000;
+        if (nowDate.getTime() + debugTime > targetTime.getTime() - 3000) {
+            ctx.globalAlpha =  1 - (targetTime.getTime() - 1000 - (nowDate.getTime() + debugTime)) / 2000;
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(-canvas.width / 2 / ratio, -canvas.height / 2 / ratio, canvas.width / ratio, canvas.height / ratio);
         }
