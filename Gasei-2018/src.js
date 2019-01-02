@@ -24,11 +24,12 @@ var nowDate;
 var played;
 var debugTime = 0;
 var dateList;
+var targetTime = new Date(2019,00,01).getTime();
 var adjust =(yr,mon,day,hr,min,sec)=> {
     debugTime = new Date(yr,mon,day,hr,min,sec).getTime() - new Date().getTime();
 }
 
-//adjust(2018,12,31,23,59,10);
+//adjust(2018,11,31,23,59,10);
 
 ctx.textAlign = "center";
 ctx.font = `30px 'Hiragino Mincho Pro'`;
@@ -43,14 +44,14 @@ ctx.fillText("2 0 1 9 年 完 全 勝 利 U C", 0, 35);
 function draw() {
     ctx.textAlign = "center";
     nowDate = new Date();
-    if (nowDate.getTime() + debugTime > 1548946758700 && !played) {
+    if (nowDate.getTime() + debugTime > targetTime - 41300 && !played) {
         document.title = "ん？";
         setTimeout(()=>document.title = "流れ変わったな", 10000)
         audio.currentTime = (nowDate.getTime() + debugTime - 1548946800000) / 1000 + 41.3;
         audio.play();
         played = true;
     }
-    if (nowDate.getTime() + debugTime > 1548946800000) {
+    if (nowDate.getTime() + debugTime > targetTime) {
         document.title = "完　全　勝　利";
         ctx.globalAlpha = 1;
         ctx.fillStyle = "#ee8800";
@@ -81,8 +82,8 @@ function draw() {
         ctx.fillStyle = "#ffffff";
         ctx.font = `100px 'Hiragino Mincho Pro'`;
         ctx.fillText(`${dateList.join(" : ")}`, 0, 50);
-        if (nowDate.getTime() + debugTime < 1548946807000) {
-            ctx.globalAlpha = (1548946807000 - (nowDate.getTime() + debugTime)) / 7000;
+        if (nowDate.getTime() + debugTime < targetTime + 7000) {
+            ctx.globalAlpha = (targetTime + 7000 - (nowDate.getTime() + debugTime)) / 7000;
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(-canvas.width / 2 / ratio, -canvas.height / 2 / ratio, canvas.width / ratio, canvas.height / ratio);
         }
@@ -93,8 +94,8 @@ function draw() {
         ctx.fillStyle = "#ffffff";
         ctx.font = `100px 'Hiragino Mincho Pro'`;
         ctx.fillText(`${dateList.join(" : ")}`, 0, 50);
-        if (nowDate.getTime() + debugTime > 1548946797000) {
-            ctx.globalAlpha =  1 - (1548946799000 - (nowDate.getTime() + debugTime)) / 2000;
+        if (nowDate.getTime() + debugTime > targetTime - 3000) {
+            ctx.globalAlpha =  1 - (targetTime - 1000 - (nowDate.getTime() + debugTime)) / 2000;
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(-canvas.width / 2 / ratio, -canvas.height / 2 / ratio, canvas.width / ratio, canvas.height / ratio);
         }
