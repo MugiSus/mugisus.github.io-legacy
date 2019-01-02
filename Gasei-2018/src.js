@@ -24,7 +24,7 @@ var nowDate;
 var played;
 var debugTime = 0;
 var dateList;
-var targetTime = new Date(); targetTime.setDate(targetTime.getDate() + 1);
+var targetTime = new Date(new Date().getFullYear(),new Date().getMonth(),1,0,0,0); targetTime.setDate(new Date().getDate() + 1);
 var adjust =(yr,mon,day,hr,min,sec)=> {
     debugTime = new Date(yr,mon,day,hr,min,sec).getTime() - new Date().getTime();
 }
