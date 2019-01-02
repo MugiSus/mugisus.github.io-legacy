@@ -47,7 +47,7 @@ function draw() {
     if (nowDate.getTime() + debugTime > targetTime - 41300 && !played) {
         document.title = "ん？";
         setTimeout(()=>document.title = "流れ変わったな", 10000)
-        audio.currentTime = (nowDate.getTime() + debugTime - targetTime) / 1000 - 413;
+        audio.currentTime = (nowDate.getTime() + debugTime - targetTime) / 1000 - 41.3;
 
         audio.play();
         played = true;
