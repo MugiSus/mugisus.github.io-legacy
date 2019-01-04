@@ -26,11 +26,7 @@ var debugTime = 0;
 var effect = 1, lastSec = -1;
 var dateList;
 var targetTime = new Date(new Date().getFullYear(),new Date().getMonth(),1,0,0,0); targetTime.setDate(new Date().getDate() + 1);
-var adjust =(yr,mon,day,hr,min,sec)=> {
-    debugTime = new Date(yr,mon,day,hr,min,sec).getTime() - new Date().getTime();
-}
-
-audio.onload =()=> {console.log("loaded")}
+var adjust =(dateString)=> {debugTime = new Date(dateString).getTime() - new Date().getTime();}
 
 ctx.textAlign = "center";
 ctx.font = `30px 'Hiragino Mincho Pro'`;
@@ -46,6 +42,7 @@ document.title = `まだ${targetTime.getMonth() + 1}月${targetTime.getDate()}�
 
 function draw() {
     nowDate = new Date();
+    nowDate.setTime(nowDate.getTime() + debugTime);
     ctx.clearRect(-canvas.width / 2 / ratio, -canvas.height / 2 / ratio, canvas.width / ratio, canvas.height / ratio);
     effect += 0 - effect / 20;
     ctx.fillStyle = "#ffffff";
@@ -53,15 +50,17 @@ function draw() {
     ctx.fillRect(-canvas.width / 2 / ratio, effect * -25, canvas.width / ratio, effect * 50);
     if (lastSec != nowDate.getSeconds()) {effect = lastSec != -1 ? 1 : 0; lastSec = nowDate.getSeconds()}
     ctx.globalAlpha = 1;
+    ctx.lineWidth = 10;
     ctx.textAlign = "center";
-    if (nowDate.getTime() + debugTime > targetTime.getTime() - 41300 && !played) {
+    ctx.strokeStyle = "#888888";
+    if (nowDate.getTime() > targetTime.getTime() - 41300 && !played) {
         document.title = "ん？";
         setTimeout(()=>document.title = "流れ変わったな", 10000);
-        audio.currentTime = (nowDate.getTime() + debugTime - targetTime.getTime()) / 1000 - 41.3;
+        audio.currentTime = (nowDate.getTime() - targetTime.getTime()) / 1000 + 41.3;
         audio.play();
         played = true;
     }
-    if (nowDate.getTime() + debugTime > targetTime.getTime()) {
+    if (nowDate.getTime() > targetTime.getTime()) {
         document.title = "完　全　勝　利";
         ctx.fillStyle = "#ee8800";
         ctx.fillRect(-canvas.width / 2 / ratio, -canvas.height / 2 / ratio, canvas.width / ratio, canvas.height / ratio);
@@ -92,8 +91,8 @@ function draw() {
         ctx.font = `100px 'Hiragino Mincho Pro'`;
         ctx.strokeText(`${dateList.join(" : ")}`, 0, 40);
         ctx.fillText(`${dateList.join(" : ")}`, 0, 40);
-        if (nowDate.getTime() + debugTime < targetTime.getTime() + 7000) {
-            ctx.globalAlpha = (targetTime.getTime() + 7000 - (nowDate.getTime() + debugTime)) / 7000;
+        if (nowDate.getTime() < targetTime.getTime() + 7000) {
+            ctx.globalAlpha = (targetTime.getTime() + 7000 - nowDate.getTime()) / 7000;
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(-canvas.width / 2 / ratio, -canvas.height / 2 / ratio, canvas.width / ratio, canvas.height / ratio);
         }
@@ -103,8 +102,8 @@ function draw() {
         ctx.fillStyle = "#ffffff";
         ctx.font = `100px 'Hiragino Mincho Pro'`;
         ctx.fillText(`${dateList.join(" : ")}`, 0, 40);
-        if (nowDate.getTime() + debugTime > targetTime.getTime() - 3000) {
-            ctx.globalAlpha =  1 - (targetTime.getTime() - 1000 - (nowDate.getTime() + debugTime)) / 2000;
+        if (nowDate.getTime() > targetTime.getTime() - 3000) {
+            ctx.globalAlpha =  1 - (targetTime.getTime() - 1000 - nowDate.getTime()) / 2000;
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(-canvas.width / 2 / ratio, -canvas.height / 2 / ratio, canvas.width / ratio, canvas.height / ratio);
         }
