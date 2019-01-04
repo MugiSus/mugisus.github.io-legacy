@@ -93,7 +93,7 @@ function draw() {
         ctx.strokeText(`${dateList.join(" : ")}`, 0, 40);
         ctx.fillText(`${dateList.join(" : ")}`, 0, 40);
         if (nowDate.getTime() + debugTime < targetTime.getTime() + 7000) {
-            ctx.globalAlpha = tagetTime.getTime() < nowDate.getTime() ? 41.3 : (targetTime.getTime() + 7000 - (nowDate.getTime() + debugTime)) / 7000;
+            ctx.globalAlpha = (targetTime.getTime() + 7000 - (nowDate.getTime() + debugTime)) / 7000;
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(-canvas.width / 2 / ratio, -canvas.height / 2 / ratio, canvas.width / ratio, canvas.height / ratio);
         }
