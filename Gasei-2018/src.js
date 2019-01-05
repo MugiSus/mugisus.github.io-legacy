@@ -38,7 +38,7 @@ ctx.lineWidth = 10;
 ctx.strokeText(`${targetTime.getMonth() + 1} 月 ${targetTime.getDate()} 日 完 全 勝 利 U C`, 0, 35);
 ctx.fillText(`${targetTime.getMonth() + 1} 月 ${targetTime.getDate()} 日 完 全 勝 利 U C`, 0, 35);
 
-document.title = `まだ${targetTime.getMonth() + 1}月${targetTime.getDate()}日`;
+document.title = `まだ${new Date().getMonth() + 1}月${new Date().getDate()}日`;
 
 function draw() {
     nowDate = new Date();
