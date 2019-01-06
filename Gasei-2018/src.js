@@ -19,7 +19,8 @@ canvas.oncontextmenu =()=> {return false;};
 resize();
 //end kit
 
-var audio = new Audio(`unicorn.mp3`);
+var audio = {"unicorn.mp3" : null, "tick.mp3" : null};
+Object.keys(audio).forEach(x=>{audio[x] = new Audio(x)});
 var nowDate;
 var played;
 var debugTime = 0;
@@ -38,7 +39,7 @@ ctx.lineWidth = 10;
 ctx.strokeText(`${targetTime.getMonth() + 1} 月 ${targetTime.getDate()} 日 完 全 勝 利 U C`, 0, 35);
 ctx.fillText(`${targetTime.getMonth() + 1} 月 ${targetTime.getDate()} 日 完 全 勝 利 U C`, 0, 35);
 
-document.title = `まだ${new Date().getMonth() + 1}月${new Date().getDate()}日`;
+document.title = `まだ${targetTime.getMonth() + 1}月${targetTime.getDate()}日`;
 
 function draw() {
     nowDate = new Date();
@@ -48,7 +49,10 @@ function draw() {
     ctx.fillStyle = "#ffffff";
     ctx.globalAlpha = effect * 0.5;
     ctx.fillRect(-canvas.width / 2 / ratio, effect * -25, canvas.width / ratio, effect * 50);
-    if (lastSec != nowDate.getSeconds()) {effect = lastSec != -1 ? 1 : 0; lastSec = nowDate.getSeconds()}
+    if (lastSec != nowDate.getSeconds()) {
+        effect = lastSec != -1 ? 1 : 0; lastSec = nowDate.getSeconds();
+        if (nowDate.getTime() < targetTime.getTime() - 41300) {audio["tick.mp3"].volume = 0.25; audio["tick.mp3"].currentTime = 0; audio["tick.mp3"].play();}
+    }
     ctx.globalAlpha = 1;
     ctx.lineWidth = 10;
     ctx.textAlign = "center";
@@ -56,8 +60,8 @@ function draw() {
     if (nowDate.getTime() > targetTime.getTime() - 41300 && !played) {
         document.title = "ん？";
         setTimeout(()=>document.title = "流れ変わったな", 10000);
-        audio.currentTime = (nowDate.getTime() - targetTime.getTime()) / 1000 + 41.3;
-        audio.play();
+        audio["unicorn.mp3"].currentTime = (nowDate.getTime() - targetTime.getTime()) / 1000 + 41.3;
+        audio["unicorn.mp3"].play();
         played = true;
     }
     if (nowDate.getTime() > targetTime.getTime()) {
@@ -112,6 +116,8 @@ function draw() {
 }
 
 document.onclick =()=> {
+    audio["tick.mp3"].currentTime = 0;
+    audio["tick.mp3"].play();
     draw();
     document.onclick = "";
 }
