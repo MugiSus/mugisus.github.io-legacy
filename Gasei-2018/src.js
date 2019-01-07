@@ -19,8 +19,9 @@ canvas.oncontextmenu =()=> {return false;};
 resize();
 //end kit
 
-var audio = {"unicorn.mp3" : null, "tick.mp3" : null};
-Object.keys(audio).forEach(x=>{audio[x] = new Audio(x)});
+var audioName = ["unicorn.mp3", "tick.mp3"];
+var audio = {};
+audioName.forEach(x=>{audio[x] = new Audio(x)});
 var nowDate;
 var played;
 var debugTime = 0;
@@ -50,8 +51,9 @@ function draw() {
     ctx.globalAlpha = effect * 0.5;
     ctx.fillRect(-canvas.width / 2 / ratio, effect * -25, canvas.width / ratio, effect * 50);
     if (lastSec != nowDate.getSeconds()) {
-        effect = lastSec != -1 ? 1 : 0; lastSec = nowDate.getSeconds();
-        if (nowDate.getTime() < targetTime.getTime() - 41300) {audio["tick.mp3"].volume = 0.25; audio["tick.mp3"].currentTime = 0; audio["tick.mp3"].play();}
+        effect = lastSec != -1 ? 1 : 0;
+        if (lastSec != -1 && nowDate.getTime() < targetTime.getTime() - 41300) {audio["tick.mp3"].volume = 0.25; audio["tick.mp3"].currentTime = 0; audio["tick.mp3"].play();}
+        lastSec = nowDate.getSeconds();
     }
     ctx.globalAlpha = 1;
     ctx.lineWidth = 10;
@@ -116,8 +118,7 @@ function draw() {
 }
 
 document.onclick =()=> {
-    audio["tick.mp3"].currentTime = 0;
-    audio["tick.mp3"].play();
+    Object.keys(audio).forEach(x=>{audio[x].play(); audio[x].pause();});
     draw();
     document.onclick = "";
 }
