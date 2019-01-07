@@ -33,7 +33,9 @@ var adjust =(dateString)=> {debugTime = new Date(dateString).getTime() - new Dat
 ctx.textAlign = "center";
 ctx.font = `30px 'Hiragino Mincho Pro'`;
 ctx.fillStyle = "#ffffff";
-ctx.fillText("〈クリックして年越す〉", 0, -420);
+ctx.fillText("〈クリックして完全勝利する〉", 0, -420);
+ctx.font = `15px 'Hiragino Mincho Pro'`;
+ctx.fillText("※音が出ないと成り立ちません。音の鳴らせる環境でお楽しみください", 0, -390);
 ctx.font = `70px 'Hiragino Mincho Pro'`;
 ctx.strokeStyle = "#888888";
 ctx.lineWidth = 10;
