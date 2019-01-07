@@ -19,9 +19,8 @@ canvas.oncontextmenu =()=> {return false;};
 resize();
 //end kit
 
-var audioName = ["unicorn.mp3", "tick.mp3"];
 var audio = {};
-audioName.forEach(x=>{audio[x] = new Audio(x)});
+["unicorn.mp3", "tick.mp3"].forEach(x=>{audio[x] = new Audio(x)});
 var nowDate;
 var played;
 var debugTime = 0;
