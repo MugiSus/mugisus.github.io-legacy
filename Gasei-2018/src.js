@@ -19,8 +19,9 @@ canvas.oncontextmenu =()=> {return false;};
 resize();
 //end kit
 
+var audioName = ["unicorn.mp3", "tick.mp3"];
 var audio = {};
-["unicorn.mp3", "tick.mp3"].forEach(x=>{audio[x] = new Audio(x)});
+audioName.forEach(x=>{audio[x] = new Audio(x)});
 var nowDate;
 var played;
 var debugTime = 0;
@@ -34,7 +35,7 @@ ctx.font = `30px 'Hiragino Mincho Pro'`;
 ctx.fillStyle = "#ffffff";
 ctx.fillText("〈クリックして完全勝利する〉", 0, -420);
 ctx.font = `15px 'Hiragino Mincho Pro'`;
-ctx.fillText("※音が出ないと成り立ちません。音の鳴らせる環境でお楽しみください", 0, -390);
+ctx.fillText("※このプログラムは音が出せないと成り立ちません。音の鳴らせる環境でお楽しみください", 0, -390);
 ctx.font = `70px 'Hiragino Mincho Pro'`;
 ctx.strokeStyle = "#888888";
 ctx.lineWidth = 10;
@@ -53,7 +54,7 @@ function draw() {
     ctx.fillRect(-canvas.width / 2 / ratio, effect * -25, canvas.width / ratio, effect * 50);
     if (lastSec != nowDate.getSeconds()) {
         effect = lastSec != -1 ? 1 : 0;
-        if (lastSec != -1 && nowDate.getTime() < targetTime.getTime() - 41300) {audio["tick.mp3"].volume = 0.25; audio["tick.mp3"].currentTime = 0; audio["tick.mp3"].play();}
+        if (lastSec != -1 && nowDate.getTime() < targetTime.getTime() - 41300) {audio["tick.mp3"].currentTime = 0; audio["tick.mp3"].play();}
         lastSec = nowDate.getSeconds();
     }
     ctx.globalAlpha = 1;
@@ -121,5 +122,6 @@ function draw() {
 document.onclick =()=> {
     Object.keys(audio).forEach(x=>{audio[x].play(); audio[x].pause();});
     draw();
+    audio["tick.mp3"].volume = 0.1;
     document.onclick = "";
 }
