@@ -198,11 +198,11 @@ var drawResults =()=> {
     if (musicEnd || life <= 0 || hazwards[hazwards.length-1][hazwards[hazwards.length-1].length-1] + 4 < beat) {
         if (!musicEnd) {
             musicEnd = true;
-            point = [Math.floor(beat*1000)/1000, damage, hazwards[hazwards.length-1][hazwards[hazwards.length-1].length-1] + 4];
+            point = [Math.floor(beat*1000)/1000, Math.floor(damage*1000)/1000, hazwards[hazwards.length-1][hazwards[hazwards.length-1].length-1] + 4];
             if (point[2] < point[0]) {
                 if (point[1] == 0) rank = "SSS";
-                else if (point[1] < 0.2) rank = "SS";
-                else if (point[1] < 0.5) rank = "S";
+                else if (point[1] < 0.5) rank = "SS";
+                else if (point[1] < 1) rank = "S";
                 else rank = "A";
             } else {
                 if (point[0] > point[2] * 0.8) rank = "B";
@@ -221,7 +221,7 @@ var drawResults =()=> {
         ctx.fillText("Results", 0, -200);
         ctx.font = "70px 'Hiragino Mincho Pro'";
         ctx.fillText(`final score: ${point[0]}`, 0, 0);
-        ctx.fillText(`gotten damage: ${point[1]}`, 0, 100);
+        ctx.fillText(`damages you got: ${point[1]}`, 0, 100);
         ctx.font = "100px 'Hiragino Mincho Pro'";
         ctx.fillText(`RANK: ${rank}`, 0, 250)
     }
