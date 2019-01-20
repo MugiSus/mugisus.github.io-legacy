@@ -82,9 +82,9 @@ var drawLines =()=> {
     ctx.fillStyle = "#ffffff";
     ctx.lineWidth = 4;
     for (let i = -4; i < 4; i++) {ctx.line(i*100+50,-350,i*100+50,350); ctx.line(-350,i*100+50,350,i*100+50);}
-    ctx.font = "30px 'Hiragino Mincho Pro'"
-    ctx.fillText(Math.floor(beat*1000)/1000,-400,-400)
-    ctx.textAlign = "right"
+    ctx.font = "30px 'Hiragino Mincho Pro'";
+    ctx.fillText(Math.floor(beat*1000)/1000,-400,-400);
+    ctx.textAlign = "right";
     ctx.fillText(`♫${title}`,400,425);
 }
 
@@ -241,6 +241,11 @@ function start(soundTrack) {
     setTimeout(()=>audio[bgm].play(),2500);
     board();
 }
+
+ctx.fillStyle = "#ffffff"
+ctx.font = "30px 'Hiragino Mincho Pro'";
+ctx.textAlign = "right"
+ctx.fillText(`~click to start~`,400,425);
 
 canvas.onclick=()=>{
   Object.keys(audio).forEach(x=>{audio[x].play(); audio[x].pause();});
