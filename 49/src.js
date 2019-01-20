@@ -198,7 +198,7 @@ var drawResults =()=> {
     if (musicEnd || life <= 0 || hazwards[hazwards.length-1][hazwards[hazwards.length-1].length-1] + 4 < beat) {
         if (!musicEnd) {
             musicEnd = true;
-            point = [beat, damage, hazwards[hazwards.length-1][hazwards[hazwards.length-1].length-1] + 4];
+            point = [Math.floor(beat*1000)/1000, damage, hazwards[hazwards.length-1][hazwards[hazwards.length-1].length-1] + 4];
             if (point[2] < point[0]) {
                 if (point[1] == 0) rank = "SSS";
                 else if (point[1] < 0.2) rank = "SS";
