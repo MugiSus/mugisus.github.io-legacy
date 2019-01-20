@@ -61,6 +61,8 @@ var hazwards = [];
 var hazwardList = [];
 var bullet = [];
 var bgm, bpm;
+var musicEnd = false;
+var point = damage = rank = 0;
 var tags = {};
 
 var audio = {};
@@ -130,7 +132,8 @@ var drawHazards =()=> {
                 ctx.globalAlpha = 1;
                 if (hazwardList[y][4] > 0) {addVib += 25; hazwardList[y][4] = -1;}
                 if ((Math.round(playerX) >= x[1] && Math.round(playerX) <= x[2] && x[0] == "5") || (Math.round(playerY) >= x[1] && Math.round(playerY) <= x[2] && x[0] == "6")) {
-                    life -= 0.01;
+                    life -= 0.025;
+                    damage += 0.025;
                     addVib += 9;
                     damageEffect += 0.05;
                 }
@@ -155,6 +158,7 @@ var drawHazards =()=> {
         bullet[y][1] += bullet[y][3] += bullet[y][5];
         if (((-400+playerX*100 - bullet[y][0])**2+(-400+playerY*100 - bullet[y][1])**2)**0.5 < 35) {
             life -= 0.3;
+            damage += 0.3;
             addVib += 100;
             damageEffect += 0.5;
             delList.unshift(y);
@@ -190,6 +194,39 @@ var drawPlayer =()=> {
     damageEffect += (0 - damageEffect) / 10;
 }
 
+var drawResults =()=> {
+    if (musicEnd || life <= 0 || hazwards[hazwards.length-1][hazwards[hazwards.length-1].length-1] + 4 < beat) {
+        if (!musicEnd) {
+            musicEnd = true;
+            point = [beat, damage, hazwards[hazwards.length-1][hazwards[hazwards.length-1].length-1] + 4];
+            if (point[2] < point[0]) {
+                if (point[1] == 0) rank = "SSS";
+                else if (point[1] < 0.2) rank = "SS";
+                else if (point[1] < 0.5) rank = "S";
+                else rank = "A";
+            } else {
+                if (point[0] > point[2] * 0.8) rank = "B";
+                else if (point[0] > point[2] * 0.5) rank = "C";
+                else if (point[0] > point[2] * 0.2) rank = "D";
+                else rank = "E";
+            }
+        }
+        audio[bgm].volume = Math.max(audio[bgm].volume - 0.0025, 0);
+        ctx.fillStyle = "#202020";
+        ctx.globalAlpha = 1 - audio[bgm].volume;
+        ctx.fillRect(-canvas.width / 2 / ratio, -canvas.height / 2 / ratio, canvas.width / ratio, canvas.height / ratio);
+        ctx.fillStyle = "#ffffff"
+        ctx.font = "140px 'Hiragino Mincho Pro'";
+        ctx.textAlign = "center"
+        ctx.fillText("Results", 0, -200);
+        ctx.font = "70px 'Hiragino Mincho Pro'";
+        ctx.fillText(`final score: ${point[0]}`, 0, 0);
+        ctx.fillText(`gotten damage: ${point[1]}`, 0, 100);
+        ctx.font = "100px 'Hiragino Mincho Pro'";
+        ctx.fillText(`RANK: ${rank}`, 0, 250)
+    }
+}
+
 function board() {
     ctx.globalAlpha = 1;
     ctx.clearRect(-canvas.width / 2 / ratio, -canvas.height / 2 / ratio, canvas.width / ratio, canvas.height / ratio);
@@ -202,13 +239,8 @@ function board() {
     drawLines();
     drawPlayer();
     ctx.restore();
+    drawResults();
     vibration += (0 - vibration) / 5;
-    if (hazwards[hazwards.length-1][hazwards[hazwards.length-1].length-1] + 4 < beat) {
-        audio[bgm].volume = Math.max(audio[bgm].volume - 0.0025, 0);
-        ctx.fillStyle = "#202020";
-        ctx.globalAlpha = 1 - audio[bgm].volume;
-        ctx.fillRect(-canvas.width / 2 / ratio, -canvas.height / 2 / ratio, canvas.width / ratio, canvas.height / ratio);
-    }
     requestAnimationFrame(board);
 }
 
