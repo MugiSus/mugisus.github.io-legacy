@@ -1,68 +1,70 @@
 //init
 const musicData = {
-    "Evil's Talk":`
-BGM:Evil's Talk.ogg
-BPM:128
+    "infetterence":`
+AUTHOR:Shrill Otter/jacknjellify
+BGM:infetterence.mp3
+BPM:177
+MEASURE:4/4
 OFFSET:0
 
 score:
-3,3,0,34,1/0,0,0,2/6,0,4,2/0,6,4,2/6,6,4,2/1,1,4,2/5,1,4,2/1,5,4,2/5,5,4,2/
-2,2,4,2/4,2,0,2/2,4,0,2/4,4,0,2/
-1,1,4,2/5,1,0,2/1,5,0,2/5,5,0,2/3,3,0,2,1/
-0,0,4,2/6,0,0,2/0,6,0,2/6,6,0,2/3,3,0,2,1/
-0,0,4,2,1/0,1,0.5,1.50,1/0,2,0.25,1.25,1/0,3,0.25,1,1/0,4,0.25,0.75,1/0,5,0.25,0.5,1/
-0,0,3,2/6,0,0,2/0,6,0,2/6,6,0,2/3,3,0,2,1/
-1,1,4,2/5,1,0,2/1,5,0,2/5,5,0,2/3,3,0,2,1/
-2,2,4,2/4,2,0,2/2,4,0,2/4,4,0,2/3,3,0,2,1/
-2,3,4,2,1/4,2,0.5,1.50,1/4,6,0.25,1.25,1/0,5,0.25,1,1/6,4,0.25,0.75,1/2,5,0.25,0.5,1/
-0,0,2.5,1/1,1,0.25,1/5,5,0.25,1/6,6,0.25,1/2,2,0,2,4/3,3,0,2,4/4,4,0,2,4/
-6,0,7.25,1/5,1,0.25,1/1,5,0.25,1/0,6,0.25,1/2,4,0,2,4/3,3,0,2,4/4,2,0,2,4/
-6,6,7.25,1/5,5,0.25,1/1,1,0.25,1/0,0,0.25,1/2,2,0,2,4/3,3,0,2,4/4,4,0,2,4/
-0,6,7.25,1/1,5,0.25,1/5,1,0.25,1/6,0,0.25,1/2,4,0,2,4/3,3,0,2,4/4,2,0,2,4/
-0,0,7.25,1/1,1,0.25,1/5,5,0.25,1/6,6,0.25,1/2,2,0,2,4/3,3,0,2,4/4,4,0,2,4/
-6,0,7.25,1/5,1,0.25,1/1,5,0.25,1/0,6,0.25,1/2,4,0,2,4/3,3,0,2,4/4,2,0,2,4/
-6,6,7.25,1/5,5,0.25,1/1,1,0.25,1/0,0,0.25,1/2,2,0,2,4/3,3,0,2,4/4,4,0,2,4/
-0,6,7.25,1/1,5,0.25,1/5,1,0.25,1/6,0,0.25,1/
--1,0,2.5,2,1/7,1,0.5,1.50,1/-1,2,0.25,1.25,1/7,4,0.25,1,1/-1,5,0.25,0.75,1/7,6,0.25,0.5,1/
-0,0,2,2/1,0,2,2/2,0,2,2/3,0,2,2/6,6,2,2/5,6,2,2/4,6,2,2/3,6,2,2/
-0,0,2,2/0,1,2,2/0,2,2,2/0,3,2,2/6,6,2,2/6,5,2,2/6,4,2,2/6,3,2,2/
-3,3,4,6,4/1,1,2,4,4/5,5,2,2,4/6,0,1,2/2,4,1,2/0,4,1,2/2,6,1,2/
-3,3,3,12,6/1,5,2,10,6/5,1,2,8,6/5,5,2,6,4/1,1,2,4,2/0,0,5,2/6,2,1,2/4,4,1,2/0,2,1,2/
-6,0,3,1/5,1,0.25,1/1,5,0.25,1/0,6,0.25,1/2,4,0,2,4/3,3,0,2,4/4,2,0,2,4/
-0,0,7.25,1/1,1,0.25,1/5,5,0.25,1/6,6,0.25,1/2,2,0,2,4/3,3,0,2,4/4,4,0,2,4/
-6,6,7.25,1/5,5,0.25,1/1,1,0.25,1/0,0,0.25,1/2,2,0,2,4/3,3,0,2,4/4,4,0,2,4/
-6,6,7.25,1/5,5,0.25,1/1,1,0.25,1/0,0,0.25,1/2,2,0,2,4/3,3,0,2,4/4,4,0,2,4/
-0,0,7.25,1/1,1,0.25,1/5,5,0.25,1/6,6,0.25,1/2,2,0,2,4/3,3,0,2,4/4,4,0,2,4/
-0,6,7.25,1/1,5,0.25,1/5,1,0.25,1/6,0,0.25,1/2,4,0,2,4/3,3,0,2,4/4,2,0,2,4/
-6,0,7.25,1/5,1,0.25,1/1,5,0.25,1/0,6,0.25,1/2,4,0,2,4/3,3,0,2,4/4,2,0,2,4/
-0,6,7.25,1/1,5,0.25,1/5,1,0.25,1/6,0,0.25,1/
-2,3,4,2,1/4,4,0.5,1.50,1/4,0,0.25,1.25,1/0,1,0.25,1,1/6,2,0.25,0.75,1/2,1,0.25,0.5,1/
+0,0,0,0,
+011027,012026,013025,0000141400000024611a00,0a15000230,016022,017021,0000313100000047000,
+032046,033045,034044,0000353500000043511a00,0a36000420,037041,37041037041036042035433444,110022001400260017000,
+0,0,0,0,
+111200002726,252400003132,33340000410,0000434400,41000001716,151400002122,23240000370,0000003635,
+111200002726,252400003132,33343536,0000434400,41000001716,151400002122,2324000014-240,0,
+017210001127,0262524,232200,0161514,021170002711,0262524,23222322,0161412,
+11121314,15164142,43444546,27262524,2322373635343332,1112131415164142,43444546272625242322373635343332,14-24-34-440014-24-34-440014-24-34-4400011-21-17-2700011-21-17-270,
+512a-567a0a-1112270260,25024023612b-667b0b,512c-567c0c-212217016612d-667d,0d-1402411-21-17-27011-21-17-270,512e-567e0e-3132470460,45-511f044577f430f0,611g-677gg,511h-577h0000000522h566h533h555h0h0,
+544i012-2611-2712-26013-250,12-26011-27012-26644a-i000,635a0a-31-4732-46031-47544c-a,0c-33-45033-4511-23-15-27021-13-25-170,644d000d-11-27017-21011-2700013152523,566e00522e00e0,613f,646f0f0677g666g655g644g
 `
 };
 
+//canvas starter kit
 const canvas = document.getElementById("disp");
 const ctx = canvas.getContext("2d");
-canvas.height = document.body.clientHeight; canvas.width = document.body.clientWidth;
-const height = canvas.height * 0.8;
-const width = height;
-var playerX = playerY = 3;
-var mouseX, mouseY
-var mouseState = {};
-var click;
-var keydown = {};
-var lasers = [];
-var vibration = 0;
-var BPM, startTime, Time, Score, beat, lastBeat;
-//sensing
+var ratio;
+var resize =()=> {
+    canvas.height = document.body.clientHeight; canvas.width = document.body.clientWidth;
+    ratio = Math.min(canvas.width / 1100, canvas.height / 1100);
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.scale(ratio, ratio);
+}
+var mouseState = {}; var keydown = {};
 canvas.addEventListener("mousedown", (event)=>{mouseState[["left","wheel","right"][event.button]] = true;});
 canvas.addEventListener("mouseup", (event)=>{mouseState[["left","wheel","right"][event.button]] = false;});
-canvas.addEventListener("mouseover", ()=>{pause = false;});
-canvas.addEventListener("mouseout", ()=>{pause = true;});
 document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
-document.addEventListener("mousemove", (event)=>{mouseX = event.clientX - (canvas.width - width) / 2; mouseY = event.clientY - (canvas.height - height) / 2;});
+document.addEventListener("mousemove", (event)=>{mouseX = (event.clientX - canvas.width / 2) / ratio; mouseY = (event.clientY - canvas.height / 2) / ratio;});
+window.addEventListener("resize", ()=>{resize()});
+canvas.oncontextmenu =()=> {return false;};
+resize();
+//end kit
 
-ctx.translate((canvas.width - width) / 2, (canvas.height - height) / 2)
+document.title = "49"
+
+//initalize
+var vibration = 0;
+var playerX = playerY = targetPlayerX = targetPlayerY = 0;
+var life = 1;
+var beat = startBeat = 0; //222
+var timer = 0;
+var nowHazward = 0;
+var lastBeat = 0;
+var lineAlpha = 0;
+var damageEffect = 0;
+var vibration = 0;
+var title;
+var score = [];
+var hazwards = [];
+var hazwardList = [];
+var bullet = [];
+var bgm, bpm;
+var tags = {};
+
+var audio = {};
+Object.values(musicData).forEach(x=>{audio[x.match(/bgm:(.*)/i)[1]] = new Audio(`musics/${x.match(/bgm:(.*)/i)[1]}`)});
 
 ctx.__proto__.line =(x0, y0, x1, y1)=> {
     ctx.beginPath();
@@ -72,108 +74,176 @@ ctx.__proto__.line =(x0, y0, x1, y1)=> {
     ctx.stroke();
 };
 
-var max =(x,y)=> {return x < y ? x : y;};
-var min =(x,y)=> {return x > y ? x : y;};
-
-var drawBoard =()=> {
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = "#888888";
-    for (let i = 0; i < 8; i++) {ctx.line(0,height/7*i,width,height/7*i); ctx.line(width/7*i,0,width/7*i,height);}
-    ctx.fillStyle = "#ff8800";
-    ctx.beginPath();
-    ctx.arc((playerX + 0.5) * width/7, (playerY + 0.5) * height/7, width/7 * 0.4, 0, Math.PI*2, false);
-    ctx.fill();
-    ctx.fillStyle = "#ffbb00";
-    ctx.beginPath();
-    ctx.arc((playerX + 0.35) * width/7, (playerY + 0.35) * height/7, width/7 * 0.15, 0, Math.PI*2, false);
-    ctx.fill();
-    if (Math.abs(mouseX - (playerX + 0.5) * width/7) > width/14 || Math.abs((playerY + 0.5) * height/7 - mouseY) > height/14) {
-        let mouseDir = (Math.atan2(mouseX - (playerX + 0.5) * width/7, (playerY + 0.5) * height/7 - mouseY) * 180/Math.PI + 405) % 360;
-        ctx.beginPath();
-        /*switch (~~(mouseDir / 90)){
-            case 0: {
-                ctx.moveTo((playerX + 0.3) * width/7, (playerY - 0.2) * height/7); ctx.lineTo((playerX + 0.7) * width/7, (playerY - 0.2) * height/7); ctx.lineTo((playerX + 0.5) * width/7, (playerY - 0.4) * height/7);
-                if (click) {playerY = min(playerY-1,0); click = false}
-                break;
-            }
-            case 1: {
-                ctx.moveTo((playerX + 1.2) * width/7, (playerY + 0.3) * height/7); ctx.lineTo((playerX + 1.2) * width/7, (playerY + 0.7) * height/7); ctx.lineTo((playerX + 1.4) * width/7, (playerY + 0.5) * height/7);
-                if (click) {playerX = max(playerX+1,7); click = false}
-                break;
-            }
-            case 2: {
-                ctx.moveTo((playerX + 0.3) * width/7, (playerY + 1.2) * height/7); ctx.lineTo((playerX + 0.7) * width/7, (playerY + 1.2) * height/7); ctx.lineTo((playerX + 0.5) * width/7, (playerY + 1.4) * height/7);
-                if (click) {playerY = max(playerY+1,7); click = false}
-                break;
-            }
-            case 3: {
-                ctx.moveTo((playerX - 0.2) * width/7, (playerY + 0.3) * height/7); ctx.lineTo((playerX - 0.2) * width/7, (playerY + 0.7) * height/7); ctx.lineTo((playerX - 0.4) * width/7, (playerY + 0.5) * height/7); 
-                if (click) {playerX = min(playerX-1,0); click = false}
-                break;
-            }
-        }*/
-        ctx.closePath();
-        ctx.fill();
-    }
-    let deleteList = [];
-    let arcList = [];
-    lasers.forEach((x,y)=>{
-        ctx.fillStyle = "#666666";
-        if ((beat - x[2]) / x[3] >= 1) {
-            if (min(x[4],0)) {ctx.strokeStyle = "#ff6600"; vibration += 0.5;}
-            else {ctx.strokeStyle = "#ff0000"; if (x[4] != -1) {vibration += 10; x[4] = -1;}}
-            ctx.globalAlpha = min((x[2] + x[3] + min(x[4],0) + 1 - beat) / 1, 0);
-            ctx.lineWidth = width/28;
-            ctx.line(-100, (x[1] + 0.5) * height/7, width + 100, (x[1] + 0.5) * height/7);
-            ctx.line((x[0] + 0.5) * width/7, -100, (x[0] + 0.5) * width/7, height + 100);
-            if (beat >= x[2] + x[3] + min(x[4],0) + 1) {
-                deleteList.unshift(y);
-            }
-        }
-        arcList.push(x)
-        ctx.globalAlpha = 1;
-    });
-    arcList.forEach(x=>{
-        ctx.beginPath();
-        ctx.moveTo((x[0] + 0.5) * width/7, (x[1] + 0.5) * height/7);
-        ctx.arc((x[0] + 0.5) * width/7, (x[1] + 0.5) * height/7, max(width/14 * (beat - x[2]) / x[3], width/14), Math.PI/-2, min((x[2] + x[3] + min(x[4],0) + 1 - beat) / 1, 0) * Math.PI * 2 - Math.PI/2, false);
-        ctx.fill();
-    })
-    deleteList.forEach(x=>lasers.splice(x,1));
-    vibration = max(vibration, 10);
+var drawLines =()=> {
+    if (beat > -1 && Math.floor(beat) != lastBeat) {lineAlpha = 5; lastBeat = Math.floor(beat);}
+    lineAlpha += (0.5 - lineAlpha) / 5;
+    ctx.globalAlpha = lineAlpha;
+    ctx.strokeStyle = "#ffffff";
+    ctx.fillStyle = "#ffffff";
+    ctx.lineWidth = 4;
+    for (let i = -4; i < 4; i++) {ctx.line(i*100+50,-350,i*100+50,350); ctx.line(-350,i*100+50,350,i*100+50);}
+    ctx.font = "30px 'Hiragino Mincho Pro'"
+    ctx.fillText(Math.floor(beat*1000)/1000,-400,-400)
+    ctx.textAlign = "right"
+    ctx.fillText(`♫${title}`,400,425);
 }
 
-function board(){
-    Time = (new Date().getTime() - startTime) / 1000;
-    beat = Time / (60 / BPM);
-    ctx.fillStyle = "rgba(20,20,20,0.5)"
-    ctx.fillRect(-1000,-1000,2000,2000);
-    ctx.save();
-    vibration += (0 - vibration) / 5
-    ctx.translate(vibration * Math.sin(Math.random()*Math.PI*2), vibration * Math.cos(Math.random()*Math.PI*2))
-    ctx.globalAlpha = 1 + Time / 2.5;
-    drawBoard();
-    while (Score[0] && lastBeat + Score[0][2] <= beat) {
-        lastBeat += Score[0][2];
-        Score[0][2] = lastBeat
-        lasers.push(Score[0]);
-        Score.shift();
+var drawHazards =()=> {
+    ctx.fillStyle = "#ff8800";
+    ctx.strokeStyle = "#ff8800";
+    ctx.lineWidth = 3;
+    while (hazwards[nowHazward] && hazwards[nowHazward][hazwards[nowHazward].length-1] < beat) {
+        hazwards[nowHazward][hazwards[nowHazward].length-1] += 4;
+        if (beat >= startBeat - 4) {
+            if (["1","2","3","4"].indexOf(hazwards[nowHazward][0]) > -1) hazwardList.push(hazwards[nowHazward]);
+            else if (["5","6"].indexOf(hazwards[nowHazward][0]) > -1) {
+                tags[hazwards[nowHazward][hazwards[nowHazward].length-2]] = Infinity;
+                hazwardList.push(hazwards[nowHazward]);
+            }
+            else tags[hazwards[nowHazward][0]] = beat;
+        }
+        nowHazward++;
     }
-    if (keydown.ArrowUp) {playerY = min(playerY-1,0); keydown.ArrowUp = false}
-    if (keydown.ArrowRight) {playerX = max(playerX+1,6); keydown.ArrowRight = false}
-    if (keydown.ArrowDown) {playerY = max(playerY+1,6); keydown.ArrowDown = false}
-    if (keydown.ArrowLeft) {playerX = min(playerX-1,0); keydown.ArrowLeft = false}
+    let delList = [];
+    let addVib = 0;
+    hazwardList.forEach((x,y)=>{
+        if (["1","2","3","4"].indexOf(x[0]) > -1) {
+            ctx.globalAlpha = Math.max(0, 1 - (x[2] - beat) / 2)
+            ctx.beginPath();
+            let pos;
+            switch (x[0]) {
+                case "1": pos = [-400+x[1]*100,-400+(x[2]-beat)*-100]; ctx.line(-400+x[1]*100,-350,-400+x[1]*100,350); break;
+                case "2": pos = [-400+x[1]*100,400+(x[2]-beat)*100]; ctx.line(-400+x[1]*100,-350,-400+x[1]*100,350); break;
+                case "3": pos = [-400+(x[2]-beat)*-100,-400+x[1]*100]; ctx.line(-350,-400+x[1]*100,350,-400+x[1]*100); break;
+                case "4": pos = [400+(x[2]-beat)*100,-400+x[1]*100]; ctx.line(-350,-400+x[1]*100,350,-400+x[1]*100); break;
+            }
+            ctx.arc(...pos,40,0,Math.PI*2,false);
+            ctx.closePath();
+            ctx.fill();
+            if (beat >= x[2]) {
+                delList.unshift(y);
+                bullet.push([...pos,0,0,0,1]); bullet.push([...pos,0,0,0,-1]); bullet.push([...pos,0,0,1,0]); bullet.push([...pos,0,0,-1,0]);
+                addVib += 16;
+            }
+        } if (["5","6"].indexOf(x[0]) > -1) {
+            if (beat >= x[4]) {
+                ctx.globalAlpha = 1;
+                if (hazwardList[y][4] > 0) {addVib += 25; hazwardList[y][4] = -1;}
+                if ((Math.round(playerX) >= x[1] && Math.round(playerX) <= x[2] && x[0] == "5") || (Math.round(playerY) >= x[1] && Math.round(playerY) <= x[2] && x[0] == "6")) {
+                    life -= 0.01;
+                    addVib += 9;
+                    damageEffect += 0.05;
+                }
+            }
+            else ctx.globalAlpha = 0.25 + Math.cos((x[4]+beat)*Math.PI*2) * 0.2;
+            switch (x[0]) {
+                case "5": ctx.fillRect(-450+x[1]*100,-350,(x[2]-x[1])*100+100,700); break;
+                case "6": ctx.fillRect(-350,-450+x[1]*100,700,(x[2]-x[1])*100+100); break;
+            }
+            if (beat >= tags[x[3]]) {addVib += 4; delList.unshift(y);}
+        }
+    });
+    delList.forEach(x=>hazwardList.splice(x,1));
+    delList = [];
+    ctx.globalAlpha = 1;
+    bullet.forEach((x,y)=>{
+        ctx.beginPath();
+        ctx.arc(x[0],x[1],10,0,Math.PI*2,false);
+        ctx.closePath();
+        ctx.fill();
+        bullet[y][0] += bullet[y][2] += bullet[y][4];
+        bullet[y][1] += bullet[y][3] += bullet[y][5];
+        if (((-400+playerX*100 - bullet[y][0])**2+(-400+playerY*100 - bullet[y][1])**2)**0.5 < 35) {
+            life -= 0.3;
+            addVib += 100;
+            damageEffect += 0.5;
+            delList.unshift(y);
+        }
+        if (Math.abs(x[2]) > 120 || Math.abs(x[3]) > 120) delList.unshift(y);
+    });
+    delList.forEach(x=>bullet.splice(x,1));
+    damageEffect = Math.min(damageEffect, 0.75);
+    vibration += addVib ** 0.5;
+}
+
+var drawPlayer =()=> {
+    life = Math.max(Math.min(life + 0.0005, 1), 0);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = "#dd8800";
+    ctx.beginPath();
+    targetPlayerX = Math.min(Math.max(Math.round((mouseX + 400) / 100),1),7);
+    targetPlayerY = Math.min(Math.max(Math.round((mouseY + 400) / 100),1),7);
+    playerX += (targetPlayerX - playerX) / 2;
+    playerY += (targetPlayerY - playerY) / 2;
+    ctx.arc(-400+playerX*100,-400+playerY*100,35,0,Math.PI*2,false);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#ddbb00";
+    ctx.beginPath();
+    ctx.moveTo(-400+playerX*100,-400+playerY*100);
+    ctx.arc(-400+playerX*100,-400+playerY*100,25,Math.PI/-2+Math.PI*2*life,Math.PI/-2,true);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#ffffff";
+    ctx.globalAlpha = damageEffect;
+    ctx.fillRect(-canvas.width / 2 / ratio, -canvas.height / 2 / ratio, canvas.width / ratio, canvas.height / ratio);
+    damageEffect += (0 - damageEffect) / 10;
+}
+
+function board() {
+    ctx.globalAlpha = 1;
+    ctx.clearRect(-canvas.width / 2 / ratio, -canvas.height / 2 / ratio, canvas.width / ratio, canvas.height / ratio);
+    ctx.save();
+    let rand = Math.random() * Math.PI * 2;
+    ctx.translate(vibration * Math.sin(rand), vibration * Math.cos(rand));
+    timer = (new Date().getTime() - startTime) / 1000;
+    beat = timer / (60 / bpm);
+    drawHazards();
+    drawLines();
+    drawPlayer();
     ctx.restore();
+    vibration += (0 - vibration) / 5;
+    if (hazwards[hazwards.length-1][hazwards[hazwards.length-1].length-1] + 4 < beat) {
+        audio[bgm].volume = Math.max(audio[bgm].volume - 0.0025, 0);
+        ctx.fillStyle = "#202020";
+        ctx.globalAlpha = 1 - audio[bgm].volume;
+        ctx.fillRect(-canvas.width / 2 / ratio, -canvas.height / 2 / ratio, canvas.width / ratio, canvas.height / ratio);
+    }
     requestAnimationFrame(board);
 }
 
-function start(soundTrack){
-    BPM = musicData[soundTrack].match(/bpm:(.*)/i)[1] * 1;
-    startTime = new Date().getTime() + 2500 + musicData[soundTrack].match(/offset:(.*)/i)[1] * 1;
-    Score = (musicData[soundTrack].match(/score:\n?((.|\n)*)/i)[1].split("/")).map(x=>(x.split(",")).map(x=>x*1));
-    var audio = new Audio(`musics/${musicData[soundTrack].match(/bgm:(.*)/i)[1]}`); audio.currentTime = 0; setTimeout(()=>audio.play(),2500)
-    lastBeat = 0;
+function start(soundTrack) {
+    bpm = musicData[soundTrack].match(/bpm:(.*)/i)[1] * 1;
+    startTime = new Date().getTime() + 2500 + musicData[soundTrack].match(/offset:(.*)/i)[1] * 1 - (beat * (60 / bpm)) * 1000;
+    measure = musicData[soundTrack].match(/measure:(.*)\/(.*)/i).slice(1,3);
+    score = (musicData[soundTrack].match(/score:\n?((.|\n)*)/i)[1].split(",")).map(x=>x.match(/-?(0|[a-z]|[1-4][1-7]|[5-6][1-7]{2}[a-z])/g));
+    title = `${soundTrack} by ${musicData[soundTrack].match(/author:(.*)/i)[1]}`;
+    if (score[score.length-1] == null) score.splice(score.length-1,1);
+    score.forEach((x,j)=>{
+        for (let i = score[j].length - 1; i > 0; i--) {
+            if (score[j][i].charAt(0) == "-") {
+                score[j][i-1] += score[j][i];
+                score[j].splice(i,1);
+            }
+        }
+        score[j] = score[j].map(x=>x.split("-"));
+    })
+    score.forEach((x,j)=>{
+        x.forEach((x,i)=>{
+            x.forEach(x=>{
+                if (x != "0") hazwards.push([...x.split(""), measure[0] / score[j].length * i + measure[0] * (4 / measure[1]) * j - (["1","2","3","4","5","6"].indexOf(x.charAt(0)) > -1) * 4]);
+            });
+        });
+    });
+    hazwards.sort((x,y)=>{return x[x.length-1] > y[y.length-1] ? 1 : x[x.length-1] < y[y.length-1] ? -1 : 0});
+    bgm = musicData[soundTrack].match(/bgm:(.*)/i)[1];
+    audio[bgm].currentTime = beat * (60 / bpm);
+    setTimeout(()=>audio[bgm].play(),2500);
     board();
 }
 
-canvas.onclick=()=>{start("Evil's Talk"); canvas.onclick = ""}
+canvas.onclick=()=>{
+  Object.keys(audio).forEach(x=>{audio[x].play(); audio[x].pause();});
+  start("infetterence");
+  canvas.onclick = "";
+}
