@@ -40,7 +40,7 @@ canvas.addEventListener("mouseup", (event)=>{mouseState[["left","wheel","right"]
 document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
 document.addEventListener("mousemove", (event)=>{mouseX = (event.clientX - canvas.width / 2) / ratio; mouseY = (event.clientY - canvas.height / 2) / ratio;});
-var updatePos =()=> {mouseX = (event.changedTouches[0].pageX - canvas.width / 2) / ratio - 100 / ratio; mouseY = (event.changedTouches[0].pageY - canvas.height / 2) / ratio - 100 / ratio;};
+var updatePos =()=> {mouseX = (event.changedTouches[0].pageX - canvas.width / 2) / ratio - 50 / ratio; mouseY = (event.changedTouches[0].pageY - canvas.height / 2) / ratio - 50 / ratio;};
 document.addEventListener("touchstart", (event)=>{mouseState["left"] = true; updatePos()});
 document.addEventListener("touchmove", (event)=>{event.preventDefault(); updatePos();}, {passive : false});
 document.addEventListener("touchend", (event)=>{mouseState["left"] = false; updatePos();});
