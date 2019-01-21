@@ -73,7 +73,9 @@ var point = damage = rank = 0;
 var tags = {};
 
 var audio = {};
-Object.values(musicData).forEach(x=>{audio[x.match(/bgm:(.*)/i)[1]] = new Audio(`musics/${x.match(/bgm:(.*)/i)[1]}`)});
+var canplay = {};
+Object.values(musicData).forEach(x=>{audio[x.match(/bgm:(.*)/i)[1]] = new Audio(`musics/${x.match(/bgm:(.*)/i)[1]}`); canplay[x.match(/bgm:(.*)/i)[1]] = false;});
+Object.keys(audio).forEach(x=>{audio[x].addEventListener("canplay", ()=>{canplay[x] = true;})})
 
 ctx.__proto__.line =(x0, y0, x1, y1)=> {
     ctx.beginPath();
@@ -253,7 +255,7 @@ function board() {
 
 function start(soundTrack) {
     bpm = musicData[soundTrack].match(/bpm:(.*)/i)[1] * 1;
-    startTime = new Date().getTime() + 2500 + musicData[soundTrack].match(/offset:(.*)/i)[1] * 1 - (beat * (60 / bpm)) * 1000;
+    startTime = 2500 + musicData[soundTrack].match(/offset:(.*)/i)[1] * 1 - (beat * (60 / bpm)) * 1000;
     measure = musicData[soundTrack].match(/measure:(.*)\/(.*)/i).slice(1,3);
     score = (musicData[soundTrack].match(/score:\n?((.|\n)*)/i)[1].split(",")).map(x=>x.match(/-?(0|[a-z]|[1-4][1-7]|[5-6][1-7]{2}[a-z])/g));
     title = `${soundTrack} by ${musicData[soundTrack].match(/author:(.*)/i)[1]}`;
@@ -277,17 +279,24 @@ function start(soundTrack) {
     hazwards.sort((x,y)=>{return x[x.length-1] > y[y.length-1] ? 1 : x[x.length-1] < y[y.length-1] ? -1 : 0});
     bgm = musicData[soundTrack].match(/bgm:(.*)/i)[1];
     audio[bgm].currentTime = beat * (60 / bpm);
-    setTimeout(()=>audio[bgm].play(),2500);
-    board();
+    loading();
 }
 
-ctx.fillStyle = "#ffffff"
-ctx.font = "30px 'Hiragino Mincho Pro'";
-ctx.textAlign = "right"
-ctx.fillText(`~click to start~`,400,425);
-
-canvas.onclick=()=>{
-  Object.keys(audio).forEach(x=>{audio[x].play(); audio[x].pause();});
-  start("infetterence");
-  canvas.onclick = "";
+function loading() {
+    ctx.globalAlpha = 1;
+    ctx.clearRect(-canvas.width / 2 / ratio, -canvas.height / 2 / ratio, canvas.width / ratio, canvas.height / ratio);
+    ctx.fillStyle = "#ffffff"
+    ctx.font = "30px 'Hiragino Mincho Pro'";
+    ctx.textAlign = "right"
+    ctx.fillText(canplay[bgm] ? `~click to start~` : `loading...`,400,425);
+    if (canplay[bgm]) canvas.onclick=()=>{
+        startTime += new Date().getTime()
+        Object.keys(audio).forEach(x=>{audio[x].play(); audio[x].pause();});
+        setTimeout(()=>audio[bgm].play(),2500);
+        board();
+        canvas.onclick = "";
+    }
+    else requestAnimationFrame(loading);
 }
+
+start("infetterence");
