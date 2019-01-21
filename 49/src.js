@@ -287,8 +287,8 @@ function loading() {
     ctx.clearRect(-canvas.width / 2 / ratio, -canvas.height / 2 / ratio, canvas.width / ratio, canvas.height / ratio);
     ctx.fillStyle = "#ffffff"
     ctx.font = "30px 'Hiragino Mincho Pro'";
-    ctx.textAlign = "right"
-    ctx.fillText(canplay[bgm] ? `~click to start~` : `loading...`,400,425);
+    ctx.textAlign = "left"
+    ctx.fillText(canplay[bgm] ? `~click to start~` : `loading${[".","..","..."][Math.floor(new Date().getTime() / 500) % 3]}`,300,425);
     if (canplay[bgm]) canvas.onclick=()=>{
         startTime += new Date().getTime()
         Object.keys(audio).forEach(x=>{audio[x].play(); audio[x].pause();});
