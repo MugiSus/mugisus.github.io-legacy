@@ -17,7 +17,10 @@ score:
 017210001127,0262524,232200,0161514,021170002711,0262524,23222322,0161412,
 11121314,15164142,43444546,27262524,2322373635343332,1112131415164142,43444546272625242322373635343332,14-24-34-440014-24-34-440014-24-34-4400011-21-17-2700011-21-17-270,
 512a-567a0a-1112270260,25024023612b-667b0b,512c-567c0c-212217016612d-667d,0d-1402411-21-17-27011-21-17-270,512e-567e0e-3132470460,45-511f044577f430f0,611g-677gg,511h-577h0000000522h566h533h555h0h0,
-544i012-2611-2712-26013-250,12-26011-27012-26644a-i000,635a0a-31-4732-46031-47544c-a,0c-33-45033-4511-23-15-27021-13-25-170,644d000d-11-27017-21011-2700013152523,566e00522e00e0,613f,646f0f0677g666g655g644g
+544i012-2611-2712-26013-250,12-26011-27012-26644a-i000,635a0a-31-4732-46031-47544c-a,0c-33-45033-4511-23-15-27021-13-25-170,644d000d-11-27017-21011-2700013152523,566e00522e00e0,613f,646f0f0677g666g655g644g,
+g01201411016,11016121731-43-35-4700,0017131101215,11014022025272102402600,001401613012,1501411161400,3701517-3612016-3513,15-34111213-3312-32-421716-32-4214,
+11221324,15261727,27162514,23122111,1121122213231424,1727162615251424,37363534474645443534333245444342,21-23-25-270022-24-260021-23-25-270627a0000000,
+a
 `
 };
 
@@ -37,6 +40,9 @@ canvas.addEventListener("mouseup", (event)=>{mouseState[["left","wheel","right"]
 document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
 document.addEventListener("mousemove", (event)=>{mouseX = (event.clientX - canvas.width / 2) / ratio; mouseY = (event.clientY - canvas.height / 2) / ratio;});
+document.addEventListener("touchstart", (event)=>{mouseState["left"] = true; mouseX = (event.changedTouches[0].pageX - canvas.width / 2) / ratio; mouseY = (event.changedTouches[0].pageY - canvas.height / 2) / ratio;});
+document.addEventListener("touchmove", (event)=>{mouseX = (event.changedTouches[0].pageX - canvas.width / 2) / ratio; mouseY = (event.changedTouches[0].pageY - canvas.height / 2) / ratio;});
+document.addEventListener("touchend", (event)=>{mouseState["left"] = false; mouseX = (event.changedTouches[0].pageX - canvas.width / 2) / ratio; mouseY = (event.changedTouches[0].pageY - canvas.height / 2) / ratio;});
 window.addEventListener("resize", ()=>{resize()});
 canvas.oncontextmenu =()=> {return false;};
 resize();
@@ -48,10 +54,10 @@ document.title = "49"
 var vibration = 0;
 var playerX = playerY = targetPlayerX = targetPlayerY = 0;
 var life = 1;
-var beat = startBeat = 0; //222
+var beat = startBeat = 320; //222
 var timer = 0;
 var nowHazward = 0;
-var lastBeat = 0;
+var lastBeat = -1;
 var lineAlpha = 0;
 var damageEffect = 0;
 var vibration = 0;
@@ -77,7 +83,7 @@ ctx.__proto__.line =(x0, y0, x1, y1)=> {
 };
 
 var drawLines =()=> {
-    if (beat > -1 && Math.floor(beat) != lastBeat) {lineAlpha = 5; lastBeat = Math.floor(beat);}
+    if (beat >= 0 && Math.floor(beat) != lastBeat) {lineAlpha = 5; lastBeat = Math.floor(beat);}
     lineAlpha += (0.5 - lineAlpha) / 5;
     ctx.globalAlpha = lineAlpha;
     ctx.strokeStyle = "#ffffff";
