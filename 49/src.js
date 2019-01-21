@@ -54,7 +54,7 @@ document.title = "49"
 var vibration = 0;
 var playerX = playerY = targetPlayerX = targetPlayerY = 0;
 var life = 1;
-var beat = startBeat = 320; //222
+var beat = startBeat = 0; //222
 var timer = 0;
 var nowHazward = 0;
 var lastBeat = -1;
