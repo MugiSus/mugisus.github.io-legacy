@@ -19,8 +19,9 @@ score:
 512a-567a0a-1112270260,25024023612b-667b0b,512c-567c0c-212217016612d-667d,0d-1402411-21-17-27011-21-17-270,512e-567e0e-3132470460,45-511f044577f430f0,611g-677gg,511h-577h0000000522h566h533h555h0h0,
 544i012-2611-2712-26013-250,12-26011-27012-26644a-i000,635a0a-31-4732-46031-47544c-a,0c-33-45033-4511-23-15-27021-13-25-170,644d000d-11-27017-21011-2700013152523,566e00522e00e0,613f,646f0f0677g666g655g644g,
 g01201411016,11016121731-43-35-4700,0017131101215,11014022025272102402600,001401613012,1501411161400,3701517-3612016-3513,15-34111213-3312-32-421716-32-4214,
-11221324,15261727,27162514,23122111,1121122213231424,1727162615251424,37363534474645443534333245444342,21-23-25-270022-24-260021-23-25-270627a0000000,
-a
+11221324,15261727,27162514,23122111,1121122213231424,1727162615251424,37363534474645443534333245444342,21-23-25-270022-24-260021-23-25-270627h0000000,
+h-511a-577a,0,a-611b-677b0111715131216-622b-666b,1713110120130,544c-b02327210270,533c00000555c000313233343536,511d-577d-c0141516151413,611e-677e-d0e0567f545f523f0,
+
 `
 };
 
@@ -55,7 +56,7 @@ document.title = "49"
 var vibration = 0;
 var playerX = playerY = targetPlayerX = targetPlayerY = 0;
 var life = 1;
-var beat = startBeat = 0; //222
+var beat = startBeat = 348; //222
 var timer = 0;
 var nowHazward = 0;
 var lastBeat = -1;
@@ -71,11 +72,12 @@ var bgm, bpm;
 var musicEnd = false;
 var point = damage = rank = 0;
 var tags = {};
+var clicked = false;
 
 var audio = {};
 var canplay = {};
 Object.values(musicData).forEach(x=>{audio[x.match(/bgm:(.*)/i)[1]] = new Audio(`musics/${x.match(/bgm:(.*)/i)[1]}`); canplay[x.match(/bgm:(.*)/i)[1]] = false;});
-Object.keys(audio).forEach(x=>{audio[x].addEventListener("canplay", ()=>{canplay[x] = true;})})
+Object.keys(audio).forEach(x=>audio[x].addEventListener("canplay", ()=>canplay[x] = true))
 
 ctx.__proto__.line =(x0, y0, x1, y1)=> {
     ctx.beginPath();
@@ -204,10 +206,10 @@ var drawPlayer =()=> {
 }
 
 var drawResults =()=> {
-    if (musicEnd || life <= 0 || hazwards[hazwards.length-1][hazwards[hazwards.length-1].length-1] + 4 < beat) {
+    if (musicEnd || life <= 0 || hazwards[hazwards.length-1][hazwards[hazwards.length-1].length-1] < beat) {
         if (!musicEnd) {
             musicEnd = true;
-            point = [Math.floor(beat*1000)/1000, Math.floor(damage*1000)/1000, hazwards[hazwards.length-1][hazwards[hazwards.length-1].length-1] + 4];
+            point = [Math.floor(beat*1000)/1000, Math.floor(damage*1000)/1000, hazwards[hazwards.length-1][hazwards[hazwards.length-1].length-1]];
             if (point[2] < point[0]) {
                 if (point[1] == 0) rank = "SSS";
                 else if (point[1] < 0.5) rank = "SS";
@@ -288,15 +290,19 @@ function loading() {
     ctx.fillStyle = "#ffffff"
     ctx.font = "30px 'Hiragino Mincho Pro'";
     ctx.textAlign = "left"
-    ctx.fillText(canplay[bgm] ? `~click to start~` : `loading${[".","..","..."][Math.floor(new Date().getTime() / 500) % 3]}`,300,425);
-    if (canplay[bgm]) canvas.onclick=()=>{
+    ctx.fillText(canplay[bgm] || !clicked ? `~click to start~` : `loading${[".","..","..."][Math.floor(new Date().getTime() / 500) % 3]}`,300,425);
+    if (canplay[bgm] && clicked) {
         startTime += new Date().getTime()
-        Object.keys(audio).forEach(x=>{audio[x].play(); audio[x].pause();});
         setTimeout(()=>audio[bgm].play(),2500);
         board();
         canvas.onclick = "";
     }
     else requestAnimationFrame(loading);
+}
+
+canvas.onclick =()=> {
+    clicked = true;
+    Object.keys(audio).forEach(x=>{audio[x].play(); audio[x].pause();});
 }
 
 start("infetterence");
