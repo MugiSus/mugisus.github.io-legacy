@@ -293,11 +293,10 @@ function loading() {
     ctx.textAlign = "left"
     ctx.fillText(canplay[bgm] || !clicked ? `~click to start~` : `loading${[".","..","..."][Math.floor(new Date().getTime() / 500) % 3]}`,300,425);
     if (canplay[bgm] && clicked) {
-        audio["finger01.mp3"].play();
         startTime += new Date().getTime();
         setTimeout(()=>audio[bgm].play(),2500);
-        board();
         canvas.onclick = "";
+        board();
     }
     else requestAnimationFrame(loading);
 }
@@ -305,6 +304,8 @@ function loading() {
 canvas.onclick =()=> {
     clicked = true;
     Object.keys(audio).forEach(x=>{audio[x].play(); audio[x].pause();});
+    audio["finger01.mp3"].play();
+    canvas.onclick =()=> {audio["finger01.mp3"].play(); audio["finger01.mp3"].currentTime = 0;};
 }
 
 start("infetterence");
