@@ -56,7 +56,7 @@ document.title = "49"
 var vibration = 0;
 var playerX = playerY = targetPlayerX = targetPlayerY = 0;
 var life = 1;
-var beat = startBeat = 0 //348
+var beat = startBeat = 0; //348
 var timer = 0;
 var nowHazward = 0;
 var lastBeat = -1;
@@ -76,8 +76,9 @@ var clicked = false;
 
 var audio = {};
 var canplay = {};
-Object.values(musicData).forEach(x=>{audio[x.match(/bgm:(.*)/i)[1]] = new Audio(`musics/${x.match(/bgm:(.*)/i)[1]}`); canplay[x.match(/bgm:(.*)/i)[1]] = false;});
-Object.keys(audio).forEach(x=>audio[x].addEventListener("canplay", ()=>canplay[x] = true))
+audio["finger01.mp3"] = new Audio(`sounds/finger01.mp3`);
+Object.values(musicData).forEach(x=>{audio[x.match(/bgm:(.*)/i)[1]] = new Audio(`sounds/${x.match(/bgm:(.*)/i)[1]}`); canplay[x.match(/bgm:(.*)/i)[1]] = false;});
+Object.keys(audio).forEach(x=>audio[x].addEventListener("canplay", ()=>canplay[x] = true));
 
 ctx.__proto__.line =(x0, y0, x1, y1)=> {
     ctx.beginPath();
@@ -292,7 +293,8 @@ function loading() {
     ctx.textAlign = "left"
     ctx.fillText(canplay[bgm] || !clicked ? `~click to start~` : `loading${[".","..","..."][Math.floor(new Date().getTime() / 500) % 3]}`,300,425);
     if (canplay[bgm] && clicked) {
-        startTime += new Date().getTime()
+        audio["finger01.mp3"].play();
+        startTime += new Date().getTime();
         setTimeout(()=>audio[bgm].play(),2500);
         board();
         canvas.onclick = "";
