@@ -94,7 +94,7 @@ document.title = "49"
 //initalize
 const endless = false; // for debugging
 
-var vibration, mouseX, playerX, life, beat, timer, nowHazward, lastBeat, lineAlpha, damageEffect, vibration, title, score, hazwards, hazwardList, bullet, bgm, bpm, musicEnd, point, tags, clicked, ended;
+var vibration, mouseX, playerX, life, beat, timer, nowHazward, lastBeat, lineAlpha, damageEffect, vibration, title, score, hazwards, hazwardList, bullet, bgm, bpm, musicEnd, point, tags, clicked, ended, playerSize;
 
 function init() {
     vibration = 0;
@@ -117,6 +117,7 @@ function init() {
     tags = {};
     clicked = false;
     ended = false;
+    playerSize = 1;
 }
 
 init();
@@ -136,7 +137,7 @@ ctx.__proto__.line =(x0, y0, x1, y1)=> {
 };
 
 var drawLines =()=> {
-    if (beat >= 0 && Math.floor(beat) != lastBeat) {lineAlpha = 5; lastBeat = Math.floor(beat);}
+    if (beat >= 0 && Math.floor(beat) != lastBeat) {lineAlpha = 5; playerSize = 1.25; lastBeat = Math.floor(beat);}
     lineAlpha += (0.5 - lineAlpha) / 5;
     ctx.globalAlpha = lineAlpha;
     ctx.strokeStyle = "#ffffff";
@@ -237,6 +238,7 @@ var drawHazards =()=> {
 }
 
 var drawPlayer =()=> {
+    playerSize += (1 - playerSize) / 10;
     life = Math.max(Math.min(life + 0.0005, 1), 0);
     ctx.globalAlpha = 1;
     ctx.fillStyle = "#dd8800";
@@ -245,13 +247,13 @@ var drawPlayer =()=> {
     targetPlayerY = Math.min(Math.max(Math.round((mouseY + 400) / 100),1),7);
     playerX += (targetPlayerX - playerX) / 2;
     playerY += (targetPlayerY - playerY) / 2;
-    ctx.arc(-400+playerX*100,-400+playerY*100,35,0,Math.PI*2,false);
+    ctx.arc(-400+playerX*100,-400+playerY*100,35*playerSize,0,Math.PI*2,false);
     ctx.closePath();
     ctx.fill();
     ctx.fillStyle = "#ddbb00";
     ctx.beginPath();
     ctx.moveTo(-400+playerX*100,-400+playerY*100);
-    ctx.arc(-400+playerX*100,-400+playerY*100,25,Math.PI/-2+Math.PI*2*life,Math.PI/-2,true);
+    ctx.arc(-400+playerX*100,-400+playerY*100,25*playerSize,Math.PI/-2+Math.PI*2*life,Math.PI/-2,true);
     ctx.closePath();
     ctx.fill();
     ctx.fillStyle = "#ffffff";
