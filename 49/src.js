@@ -34,7 +34,7 @@ a-23-1600023-16024-16025-16025-16511a24-160577a-23-160,a-22-1200022-12026-120002
 a-23-1600023-16024-16025-16025-16511a24-160577a-23-160,a-22-1200022-12026-1200026-12511a25-120577a-24-120,a-23-1600023-16024-16025-16025-16511a24-160577a-23-160,a-22-1200022-12026-1200026-12511a25-120577a-24-120,
 a-13-3300013-33014-34015-35015-35511a14-340577a-13-330,a-12-3200012-32016-3600016-36511a15-360577a-14-360,a-13-3300013-33014-34015-35015-35511a14-340577a-13-330,a-12-3200012-32016-3600016-36511a15-360577a-14-360,
 a-13-3300013-33014-34015-35015-35511a14-340577a-13-330,a-12-3200012-32016-3600016-36511a15-360577a-14-360,a-13-3300013-33014-34015-35015-35511a14-340577a-13-330,a-12-3200012-32016-3600016-36511a15-360577a-14-360,
-a-23-4300023-43024-44025-45025-45511a24-440577a-23-430,a-22-4200022-42026-4600026-46511a25-460577a-24-460,a-23-4300023-43024-44025-45025-45511a24-440577a-23-430,a-22-4200022-42026-4600026-46511a25-460577a-24-460,
+a-23-4300023-43024-44025-45025-45511a24-440577a-23-430,a-22-4200022-42026-4600026-46511a2/5-460577a-24-460,a-23-4300023-43024-44025-45025-45511a24-440577a-23-430,a-22-4200022-42026-4600026-46511a25-460577a-24-460,
 a-23-4300023-43024-44025-45025-45511a24-440577a-23-430,a-22-4200022-42026-4600026-46511a25-460577a-24-460,a-23-4300023-43024-44025-45025-45511a24-440577a-23-430,a-22-4200022-42026-4600026-46511a25-460577a-24-460,
 a-3204203304303404403504503604603704700000677b666b655b644b633b622b000000000000000000000000,b
 `,
@@ -95,6 +95,7 @@ document.title = "49"
 const endless = false; // for debugging
 
 var vibration = 0;
+var mouseX = mouseY = 0;
 var playerX = playerY = targetPlayerX = targetPlayerY = 0;
 var life = 1;
 var beat = startBeat = 0;
@@ -306,7 +307,7 @@ function board() {
 
 function start(soundTrack) {
     bpm = musicData[soundTrack].match(/bpm:(.*)/i)[1] * 1;
-    startTime = 2500 + musicData[soundTrack].match(/offset:(.*)/i)[1] * 1 - (beat * (60 / bpm)) * 1000;
+    startTime = 2500 + musicData[soundTrack].match(/offset:(.*)/i)[1] * 1 - (beat * (60 / bpm)) * 1000 + new Date().getTime();
     measure = musicData[soundTrack].match(/measure:(.*)\/(.*)/i).slice(1,3);
     score = (musicData[soundTrack].match(/score:\n?((.|\n)*)/i)[1].split(",")).map(x=>x.match(/-?(0|[a-z]|[1-4][1-7]|[5-6][1-7]{2}[a-z])/g));
     title = `${soundTrack} by ${musicData[soundTrack].match(/author:(.*)/i)[1]}`;
@@ -330,30 +331,43 @@ function start(soundTrack) {
     hazwards.sort((x,y)=>{return x[x.length-1] > y[y.length-1] ? 1 : x[x.length-1] < y[y.length-1] ? -1 : 0});
     bgm = musicData[soundTrack].match(/bgm:(.*)/i)[1];
     audio[bgm].currentTime = beat * (60 / bpm);
-    loading();
+    board();
 }
 
-function loading() {
+function select() {
     ctx.globalAlpha = 1;
     ctx.clearRect(-canvas.width / 2 / ratio, -canvas.height / 2 / ratio, canvas.width / ratio, canvas.height / ratio);
-    ctx.fillStyle = "#ffffff"
+    ctx.fillStyle = "#ffffff";
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 3;
+    ctx.font = "45px 'Hiragino Mincho Pro'";
+    ctx.textAlign = "left";
+    let selected = Math.floor((mouseY+402.5) / 75);
+    Object.keys(musicData).forEach((x,y) => {
+        ctx.fillText(`${x} by ${musicData[x].match(/author:(.*)/i)[1]}`,-350,-350+y*75);
+        if (y == selected) ctx.strokeText(`${x} by ${musicData[x].match(/author:(.*)/i)[1]}`,-350,-350+y*75);
+    });
+    selected = Object.keys(musicData)[selected];
+    console.log(selected)
+    ctx.beginPath();
+    ctx.moveTo(-470,mouseY-25);
+    ctx.lineTo(-425,mouseY);
+    ctx.lineTo(-470,mouseY+25);
+    ctx.closePath();
+    ctx.fill();
     ctx.font = "30px 'Hiragino Mincho Pro'";
-    ctx.textAlign = "left"
-    ctx.fillText(canplay[bgm] || !clicked ? `~click to start~` : `loading${[".","..","..."][Math.floor(new Date().getTime() / 500) % 3]}`,300,425);
-    if (canplay[bgm] && clicked) {
-        startTime += new Date().getTime();
+    ctx.fillText(`~click to start~`,300,425);
+    let bgm = selected ? musicData[selected].match(/bgm:(.*)/i)[1] : 0;
+    ctx.fillStyle = "#888888";
+    ctx.textAlign = "right";
+    ctx.fillText(bgm? canplay[bgm] ? "loaded" : "loading" : "", -490, mouseY+15);
+    if (canplay[bgm] && mouseState.left) {
+        audio["finger01.mp3"].play();
         setTimeout(()=>audio[bgm].play(),2500);
         canvas.onclick = "";
-        board();
+        start(selected);
     }
-    else requestAnimationFrame(loading);
+    else requestAnimationFrame(select);
 }
 
-canvas.onclick =()=> {
-    clicked = true;
-    Object.keys(audio).forEach(x=>{audio[x].play(); audio[x].pause();});
-    audio["finger01.mp3"].play();
-    canvas.onclick =()=> {audio["finger01.mp3"].play(); audio["finger01.mp3"].currentTime = 0;};
-}
-
-start("Exit The Premises");
+select();
