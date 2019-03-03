@@ -290,7 +290,8 @@ var drawResults =()=> {
         ctx.fillText(`damages you got: ${point[1]}`, 0, 100);
         ctx.font = "100px 'Hiragino Mincho Pro'";
         ctx.fillText(`RANK: ${rank}`, 0, 250);
-        if (audio[bgm].volume == 0) {
+        if (ended || audio[bgm].volume <= 0) {
+            audio[bgm].pause();
             ctx.font = "30px 'Hiragino Mincho Pro'";
             ctx.fillText(`~click to back~`,300,425);
             ended = true;
@@ -312,8 +313,12 @@ function board() {
     ctx.restore();
     drawResults();
     vibration += (0 - vibration) / 5;
-    if (ended && mouseState.left) {select(); audio["finger01.mp3"].play(); ended = false;}
-    else requestAnimationFrame(board);
+    if (ended && mouseState.left) {
+        audio["finger01.mp3"].play();
+        ended = false;
+        audio[bgm].volume = 1;
+        select();
+    } else requestAnimationFrame(board);
 }
 
 function start(soundTrack) {
