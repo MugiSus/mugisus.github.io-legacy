@@ -80,7 +80,7 @@ canvas.addEventListener("mouseup", (event)=>{mouseState[["left","wheel","right"]
 document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
 document.addEventListener("mousemove", (event)=>{mouseX = (event.clientX - canvas.width / 2) / ratio; mouseY = (event.clientY - canvas.height / 2) / ratio;});
-var updatePos =()=> {mouseX = (event.changedTouches[0].pageX - canvas.width / 2) / ratio; mouseY = (event.changedTouches[0].pageY - canvas.height / 2) / ratio;};
+var updatePos =()=> {mouseX = (event.changedTouches[0].pageX - canvas.width / 2) / ratio; mouseY = (event.changedTouches[0].pageY - canvas.height / 2 + 100) / ratio;};
 document.addEventListener("touchstart", (event)=>{mouseState["left"] = true; updatePos()});
 document.addEventListener("touchmove", (event)=>{event.preventDefault(); updatePos();}, {passive : false});
 document.addEventListener("touchend", (event)=>{mouseState["left"] = false; updatePos();});
@@ -378,8 +378,8 @@ function select() {
     ctx.fillText(`~click to start~`,300,425);
     let bgm = selected ? musicData[selected].match(/bgm:(.*)/i)[1] : 0;
     ctx.fillStyle = "#888888";
-    ctx.textAlign = "right";
-    ctx.fillText(bgm? canplay[bgm] ? "loaded" : "loading" : "", -490, mouseY+15);
+    ctx.textAlign = "center";
+    ctx.fillText(bgm? canplay[bgm] ? "loaded" : "loading" : "", -450, mouseY-45);
     if (canplay[bgm] && mouseState.left) {
         audio["finger01.mp3"].play();
         setTimeout(()=>audio[bgm].play(),2500);
