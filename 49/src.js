@@ -94,28 +94,32 @@ document.title = "49"
 //initalize
 const endless = false; // for debugging
 
-var vibration = 0;
-var mouseX = mouseY = 0;
-var playerX = playerY = targetPlayerX = targetPlayerY = 0;
-var life = 1;
-var beat = startBeat = 0;
-var timer = 0;
-var nowHazward = 0;
-var lastBeat = -1;
-var lineAlpha = 0;
-var damageEffect = 0;
-var vibration = 0;
-var title;
-var score = [];
-var hazwards = [];
-var hazwardList = [];
-var bullet = [];
-var bgm, bpm;
-var musicEnd = false;
-var point = damage = rank = 0;
-var tags = {};
-var clicked = false;
-var ended = false;
+var vibration, mouseX, playerX, life, beat, timer, nowHazward, lastBeat, lineAlpha, damageEffect, vibration, title, score, hazwards, hazwardList, bullet, bgm, bpm, musicEnd, point, tags, clicked, ended;
+
+function init() {
+    vibration = 0;
+    mouseX = mouseY = 0;
+    playerX = playerY = targetPlayerX = targetPlayerY = 0;
+    life = 1;
+    beat = startBeat = 0;
+    timer = 0;
+    nowHazward = 0;
+    lastBeat = -1;
+    lineAlpha = 0;
+    damageEffect = 0;
+    vibration = 0;
+    score = [];
+    hazwards = [];
+    hazwardList = [];
+    bullet = [];
+    musicEnd = false;
+    point = damage = rank = 0;
+    tags = {};
+    clicked = false;
+    ended = false;
+}
+
+init();
 
 var audio = {};
 var canplay = {};
@@ -313,6 +317,8 @@ function board() {
 }
 
 function start(soundTrack) {
+    init();
+    beat = startBeat;
     bpm = musicData[soundTrack].match(/bpm:(.*)/i)[1] * 1;
     startTime = 2500 + musicData[soundTrack].match(/offset:(.*)/i)[1] * 1 - (beat * (60 / bpm)) * 1000 + new Date().getTime();
     measure = musicData[soundTrack].match(/measure:(.*)\/(.*)/i).slice(1,3);
