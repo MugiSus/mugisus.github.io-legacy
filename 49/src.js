@@ -308,7 +308,7 @@ function board() {
     ctx.restore();
     drawResults();
     vibration += (0 - vibration) / 5;
-    if (ended && mouseState.left) {select(); audio["finger01.mp3"].play();}
+    if (ended && mouseState.left) {select(); audio["finger01.mp3"].play(); ended = false;}
     else requestAnimationFrame(board);
 }
 
@@ -355,7 +355,6 @@ function select() {
         if (y == selected) ctx.strokeText(`${x} by ${musicData[x].match(/author:(.*)/i)[1]}`,-350,-350+y*75);
     });
     selected = Object.keys(musicData)[selected];
-    console.log(selected)
     ctx.beginPath();
     ctx.moveTo(-470,mouseY-25);
     ctx.lineTo(-425,mouseY);
