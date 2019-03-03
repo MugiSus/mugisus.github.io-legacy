@@ -115,6 +115,7 @@ var musicEnd = false;
 var point = damage = rank = 0;
 var tags = {};
 var clicked = false;
+var ended = false;
 
 var audio = {};
 var canplay = {};
@@ -284,7 +285,12 @@ var drawResults =()=> {
         ctx.fillText(`final score: ${point[0]}`, 0, 0);
         ctx.fillText(`damages you got: ${point[1]}`, 0, 100);
         ctx.font = "100px 'Hiragino Mincho Pro'";
-        ctx.fillText(`RANK: ${rank}`, 0, 250)
+        ctx.fillText(`RANK: ${rank}`, 0, 250);
+        if (audio[bgm].volume == 0) {
+            ctx.font = "30px 'Hiragino Mincho Pro'";
+            ctx.fillText(`~click to back~`,300,425);
+            ended = true;
+        }
     }
 }
 
@@ -302,7 +308,8 @@ function board() {
     ctx.restore();
     drawResults();
     vibration += (0 - vibration) / 5;
-    requestAnimationFrame(board);
+    if (ended && mouseState.left) {select(); audio["finger01.mp3"].play();}
+    else requestAnimationFrame(board);
 }
 
 function start(soundTrack) {
