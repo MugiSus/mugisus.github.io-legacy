@@ -246,7 +246,7 @@ var drawHazards =()=> {
         bullet[y][1] += bullet[y][3] += bullet[y][5];
         if (((-400+playerX*100 - bullet[y][0])**2+(-400+playerY*100 - bullet[y][1])**2)**0.5 < 35) {
             life -= 0.25;
-            damage += 0.3;
+            damage += 0.25;
             addVib += 100;
             damageEffect += 0.5;
             delList.unshift(y);
