@@ -158,6 +158,14 @@ ctx.__proto__.line =(x0, y0, x1, y1)=> {
     ctx.stroke();
 };
 
+var getDist =(x0, y0, x1, y1, x2, y2)=> {
+    if ((x0 - x1) * x0 + (y0 - y1) * y0 + -(x0 - x1) * x2 + -(y0 - y1) * y2 > 0 == (x0 - x1) * x1 + (y0 - y1) * y1 + -(x0 - x1) * x2 + -(y0 - y1) * y2 > 0) {
+        if (((x0 - x2) ** 2 + (y0 - y2) ** 2) ** 0.5 < ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5) return ((x0 - x2) ** 2 + (y0 - y2) ** 2) ** 0.5;
+        else return ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5;
+    }
+    return Math.abs((y0 - y1) * x2 + (x1 - x0) * y2 + -(x1 - x0) * y0 + -(y0 - y1) * x0) / ((y0 - y1) ** 2 + (x1 - x0) ** 2) ** 0.5;
+}
+
 var drawLines =()=> {
     if (beat >= 0 && Math.floor(beat) != lastBeat) {lineAlpha = 5; playerSize = 1.25; lastBeat = Math.floor(beat);}
     lineAlpha += (0.5 - lineAlpha) / 5;
@@ -246,7 +254,7 @@ var drawHazards =()=> {
         ctx.fill();
         bullet[y][0] += bullet[y][2] += bullet[y][4];
         bullet[y][1] += bullet[y][3] += bullet[y][5];
-        if (((-400+playerX*100 - bullet[y][0])**2+(-400+playerY*100 - bullet[y][1])**2)**0.5 < 35) {
+        if (((/*-400+playerX*100 - bullet[y][0])**2+(-400+playerY*100 - bullet[y][1])**2)**0.5*/ getDist(...lastPos, -400+playerX*100, -400+playerY*100, bullet[y][0], bullet[y][1]) < 35) {
             if (beat - damagedBeat >= 2) {
                 life -= 0.25;
                 damage += 0.25;
@@ -264,6 +272,7 @@ var drawHazards =()=> {
 }
 
 var drawPlayer =()=> {
+    lastPos = [-400+playerX*100, -400+playerY*100];
     playerSize += (1 - playerSize) / 10;
     life = Math.max(Math.min(life + 0.0001, 1), 0);
     ctx.globalAlpha = beat - damagedBeat >= 2 ? 1 : ((beat - damagedBeat) % 0.25 < 0.125 ? 0.5 : 0.8);
