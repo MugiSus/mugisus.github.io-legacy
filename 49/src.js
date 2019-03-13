@@ -59,7 +59,7 @@ b16015160110,16161413140120,017016170150,17171514150130,1116015160130,1616141314
 21-611a-b22232422-622b-a232425633a-b-23242526644b-a-25000,677a-b-27262524666b-a-26252423655a-b-25242322644b-a-23000,21-611a-b22232422-622b-a242526633a-b-23232425644b-a-27000,677a-b-27262524666b-a-26252423655a-b-26252423644b-a-21000,
 21-611a-b22232422-622b-a232425633a-b-23242526644b-a-25000,677a-b-27262524666b-a-26252423655a-b-24232224644b-a-22000,21-611a-b22232422-622b-a242526633a-b-23232425644b-a-27000,677a-b-27262524666b-a-26252423655a-b-23242321a-22000,
 `,
-
+/*
     "infetterence":`
 AUTHOR:Shrill Otter/jacknjellify (*Unfinished* 348~)
 BGM:infetterence.mp3
@@ -82,7 +82,7 @@ g01201411016,11016121731-43-35-4700,0017131101215,11014022025272102402600,001401
 11221324,15261727,27162514,23122111,1121122213231424,1727162615251424,37363534474645443534333245444342,21-23-25-270022-24-260021-23-25-270627h0000000,
 h-511a-577a,00522a566a533a555a0,a-611b-677b0111715131216-622b-666b,1713110120130,544c-b02327210270,533c00000555c000313233343536,511d-577d-c0141516151413,611e-677e-d0e0567f545f523ff,
 
-`,
+`,*/
 };
 
 //canvas starter kit
@@ -115,7 +115,7 @@ document.title = "49"
 //initalize
 const endless = false; // for debugging
 
-var vibration, mouseX, playerX, life, beat, timer, nowHazward, lastBeat, lineAlpha, damageEffect, vibration, title, score, hazwards, hazwardList, bullet, bgm, bpm, musicEnd, point, tags, clicked, ended, playerSize;
+var vibration, mouseX, playerX, life, beat, timer, nowHazward, lastBeat, lineAlpha, damageEffect, vibration, title, score, hazwards, hazwardList, bullet, bgm, bpm, musicEnd, point, tags, clicked, ended, playerSize, damagedBeat;
 
 function init() {
     vibration = 0;
@@ -139,6 +139,7 @@ function init() {
     clicked = false;
     ended = false;
     playerSize = 1;
+    damagedBeat = -Infinity;
 }
 
 init();
@@ -219,11 +220,12 @@ var drawHazards =()=> {
             if (beat >= x[4]) {
                 ctx.globalAlpha = 1;
                 if (hazwardList[y][4] > 0) {addVib += 25; hazwardList[y][4] = -1; tags[x[3]] = Infinity;}
-                if ((Math.round(playerX) >= x[1] && Math.round(playerX) <= x[2] && x[0] == "5") || (Math.round(playerY) >= x[1] && Math.round(playerY) <= x[2] && x[0] == "6")) {
-                    life -= 0.025;
-                    damage += 0.025;
-                    addVib += 9;
-                    damageEffect += 0.05;
+                if (((Math.round(playerX) >= x[1] && Math.round(playerX) <= x[2] && x[0] == "5") || (Math.round(playerY) >= x[1] && Math.round(playerY) <= x[2] && x[0] == "6")) && beat - damagedBeat >= 2) {
+                    life -= 0.25;
+                    damage += 0.25;
+                    addVib += 100;
+                    damageEffect += 0.5;
+                    damagedBeat = beat;
                 }
                 if (beat >= tags[x[3]]) {addVib += 4; delList.unshift(y);}
             }
@@ -245,10 +247,13 @@ var drawHazards =()=> {
         bullet[y][0] += bullet[y][2] += bullet[y][4];
         bullet[y][1] += bullet[y][3] += bullet[y][5];
         if (((-400+playerX*100 - bullet[y][0])**2+(-400+playerY*100 - bullet[y][1])**2)**0.5 < 35) {
-            life -= 0.25;
-            damage += 0.25;
-            addVib += 100;
-            damageEffect += 0.5;
+            if (beat - damagedBeat >= 2) {
+                life -= 0.25;
+                damage += 0.25;
+                addVib += 100;
+                damageEffect += 0.5;
+                damagedBeat = beat;
+            }
             delList.unshift(y);
         }
         if (Math.abs(x[2]) > 120 || Math.abs(x[3]) > 120) delList.unshift(y);
@@ -260,8 +265,8 @@ var drawHazards =()=> {
 
 var drawPlayer =()=> {
     playerSize += (1 - playerSize) / 10;
-    life = Math.max(Math.min(life + 0.0005, 1), 0);
-    ctx.globalAlpha = 1;
+    life = Math.max(Math.min(life + 0.0001, 1), 0);
+    ctx.globalAlpha = beat - damagedBeat >= 2 ? 1 : ((beat - damagedBeat) % 0.25 < 0.125 ? 0.5 : 0.8);
     ctx.fillStyle = "#dd8800";
     ctx.beginPath();
     targetPlayerX = Math.min(Math.max(Math.round((mouseX + 400) / 100),1),7);
@@ -296,7 +301,7 @@ var drawResults =()=> {
             } else {
                 if (point[0] > point[2] * 0.75) rank = "B";
                 else if (point[0] > point[2] * 0.5) rank = "C";
-                else if (point[0] > point[2] * 0.2) rank = "D";
+                else if (point[0] > point[2] * 0.25) rank = "D";
                 else rank = "E";
             }
         }
