@@ -254,7 +254,7 @@ var drawHazards =()=> {
         ctx.fill();
         bullet[y][0] += bullet[y][2] += bullet[y][4];
         bullet[y][1] += bullet[y][3] += bullet[y][5];
-        if (((/*-400+playerX*100 - bullet[y][0])**2+(-400+playerY*100 - bullet[y][1])**2)**0.5*/ getDist(...lastPos, -400+playerX*100, -400+playerY*100, bullet[y][0], bullet[y][1]) < 35) {
+        if (getDist(...lastPos, -400+playerX*100, -400+playerY*100, bullet[y][0], bullet[y][1]) < 35) {
             if (beat - damagedBeat >= 2) {
                 life -= 0.25;
                 damage += 0.25;
