@@ -39,8 +39,29 @@ a-23-4300023-43024-44025-45025-45511a24-440577a-23-430,a-22-4200022-42026-460002
 a-3204203304303404403504503604603704700000677b666b655b644b633b622b000000000000000000000000,b
 `,
 
+    "Spazzmatica Polka":`
+AUTHOR:Kevin MacLeod
+BGM:spazzmaticaPolka.mp3
+BPM:140
+MEASURE:4/4
+OFFSET:0
+
+score:
+511a-b522b-a533a-b544b-a,577a-b566b-a555a-b544b-a,511a-b522b-a533a-b544b-a,577a-b566b-a555a-b544b-a,
+511a-b522b-a533a-b544b-a,577a-b566b-a555a-b544b-a,511a-b522b-a533a-b544b-a,577a-b566b-a555a-b544b-a,
+b16015160110,16161413140120,017016170150,17171514150130,1116015160130,16161413140120,017016170150,11111213140170,
+21222324222324252324252625000,27262524262524232524232223000,21222324222425262223242527000,27262524262524232625242321000,
+21222324222324252324252625000,27262524262524232423222422000,21222324222425262223242527000,27262524262524232324232122000,
+016015160110,16161413140120,017016170150,17171514150130,1116015160130,16161413140120,017016170150,11111213140170,
+016-36015-3516-36011-310,16-3616-3614-3413-3314-34012-320,017-37016-3617-37015-350,17-3717-3715-3514-3415-35013-330,11-3116-36015-3516-36013-330,16-3616-3614-3413-3314-34012-320,017-37016-3617-37015-350,11-3111-3112-3213-3314-34017-370,
+21222324222324252324252625000,27262524262524232524232223000,21222324222425262223242527000,27262524262524232625242321000,
+21-611a-b22232422-622b-a232425633a-b-23242526644b-a-25000,677a-b-27262524666b-a-26252423655a-b-24232224644b-a-22000,21-611a-b22232422-622b-a242526633a-b-23232425644b-a-27000,677a-b-27262524666b-a-26252423655a-b-23242321644b-a-22000,
+21-611a-b22232422-622b-a232425633a-b-23242526644b-a-25000,677a-b-27262524666b-a-26252423655a-b-25242322644b-a-23000,21-611a-b22232422-622b-a242526633a-b-23232425644b-a-27000,677a-b-27262524666b-a-26252423655a-b-26252423644b-a-21000,
+21-611a-b22232422-622b-a232425633a-b-23242526644b-a-25000,677a-b-27262524666b-a-26252423655a-b-24232224644b-a-22000,21-611a-b22232422-622b-a242526633a-b-23232425644b-a-27000,677a-b-27262524666b-a-26252423655a-b-23242321a-22000,
+`,
+/*
     "infetterence":`
-AUTHOR:Shrill Otter/jacknjellify (*Uncompleted* 348~)
+AUTHOR:Shrill Otter/jacknjellify (*Unfinished* 348~)
 BGM:infetterence.mp3
 BPM:177
 MEASURE:4/4
@@ -61,7 +82,7 @@ g01201411016,11016121731-43-35-4700,0017131101215,11014022025272102402600,001401
 11221324,15261727,27162514,23122111,1121122213231424,1727162615251424,37363534474645443534333245444342,21-23-25-270022-24-260021-23-25-270627h0000000,
 h-511a-577a,00522a566a533a555a0,a-611b-677b0111715131216-622b-666b,1713110120130,544c-b02327210270,533c00000555c000313233343536,511d-577d-c0141516151413,611e-677e-d0e0567f545f523ff,
 
-`,
+`,*/
 };
 
 //canvas starter kit
@@ -80,7 +101,7 @@ canvas.addEventListener("mouseup", (event)=>{mouseState[["left","wheel","right"]
 document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
 document.addEventListener("mousemove", (event)=>{mouseX = (event.clientX - canvas.width / 2) / ratio; mouseY = (event.clientY - canvas.height / 2) / ratio;});
-var updatePos =()=> {mouseX = (event.changedTouches[0].pageX - canvas.width / 2) / ratio; mouseY = (event.changedTouches[0].pageY - canvas.height / 2) / ratio;};
+var updatePos =()=> {mouseX = (event.changedTouches[0].pageX - canvas.width / 2) / ratio; mouseY = (event.changedTouches[0].pageY - canvas.height / 2 - 150) / ratio;};
 document.addEventListener("touchstart", (event)=>{mouseState["left"] = true; updatePos()});
 document.addEventListener("touchmove", (event)=>{event.preventDefault(); updatePos();}, {passive : false});
 document.addEventListener("touchend", (event)=>{mouseState["left"] = false; updatePos();});
@@ -94,7 +115,7 @@ document.title = "49"
 //initalize
 const endless = false; // for debugging
 
-var vibration, mouseX, playerX, life, beat, timer, nowHazward, lastBeat, lineAlpha, damageEffect, vibration, title, score, hazwards, hazwardList, bullet, bgm, bpm, musicEnd, point, tags, clicked, ended;
+var vibration, mouseX, playerX, life, beat, timer, nowHazward, lastBeat, lineAlpha, damageEffect, vibration, title, score, hazwards, hazwardList, bullet, bgm, bpm, musicEnd, point, tags, clicked, ended, playerSize, damagedBeat;
 
 function init() {
     vibration = 0;
@@ -117,6 +138,8 @@ function init() {
     tags = {};
     clicked = false;
     ended = false;
+    playerSize = 1;
+    damagedBeat = -Infinity;
 }
 
 init();
@@ -136,7 +159,7 @@ ctx.__proto__.line =(x0, y0, x1, y1)=> {
 };
 
 var drawLines =()=> {
-    if (beat >= 0 && Math.floor(beat) != lastBeat) {lineAlpha = 5; lastBeat = Math.floor(beat);}
+    if (beat >= 0 && Math.floor(beat) != lastBeat) {lineAlpha = 5; playerSize = 1.25; lastBeat = Math.floor(beat);}
     lineAlpha += (0.5 - lineAlpha) / 5;
     ctx.globalAlpha = lineAlpha;
     ctx.strokeStyle = "#ffffff";
@@ -197,11 +220,12 @@ var drawHazards =()=> {
             if (beat >= x[4]) {
                 ctx.globalAlpha = 1;
                 if (hazwardList[y][4] > 0) {addVib += 25; hazwardList[y][4] = -1; tags[x[3]] = Infinity;}
-                if ((Math.round(playerX) >= x[1] && Math.round(playerX) <= x[2] && x[0] == "5") || (Math.round(playerY) >= x[1] && Math.round(playerY) <= x[2] && x[0] == "6")) {
-                    life -= 0.025;
-                    damage += 0.025;
-                    addVib += 9;
-                    damageEffect += 0.05;
+                if (((Math.round(playerX) >= x[1] && Math.round(playerX) <= x[2] && x[0] == "5") || (Math.round(playerY) >= x[1] && Math.round(playerY) <= x[2] && x[0] == "6")) && beat - damagedBeat >= 2) {
+                    life -= 0.25;
+                    damage += 0.25;
+                    addVib += 100;
+                    damageEffect += 0.5;
+                    damagedBeat = beat;
                 }
                 if (beat >= tags[x[3]]) {addVib += 4; delList.unshift(y);}
             }
@@ -223,10 +247,13 @@ var drawHazards =()=> {
         bullet[y][0] += bullet[y][2] += bullet[y][4];
         bullet[y][1] += bullet[y][3] += bullet[y][5];
         if (((-400+playerX*100 - bullet[y][0])**2+(-400+playerY*100 - bullet[y][1])**2)**0.5 < 35) {
-            life -= 0.25;
-            damage += 0.3;
-            addVib += 100;
-            damageEffect += 0.5;
+            if (beat - damagedBeat >= 2) {
+                life -= 0.25;
+                damage += 0.25;
+                addVib += 100;
+                damageEffect += 0.5;
+                damagedBeat = beat;
+            }
             delList.unshift(y);
         }
         if (Math.abs(x[2]) > 120 || Math.abs(x[3]) > 120) delList.unshift(y);
@@ -237,21 +264,22 @@ var drawHazards =()=> {
 }
 
 var drawPlayer =()=> {
-    life = Math.max(Math.min(life + 0.0005, 1), 0);
-    ctx.globalAlpha = 1;
+    playerSize += (1 - playerSize) / 10;
+    life = Math.max(Math.min(life + 0.0001, 1), 0);
+    ctx.globalAlpha = beat - damagedBeat >= 2 ? 1 : ((beat - damagedBeat) % 0.25 < 0.125 ? 0.5 : 0.8);
     ctx.fillStyle = "#dd8800";
     ctx.beginPath();
     targetPlayerX = Math.min(Math.max(Math.round((mouseX + 400) / 100),1),7);
     targetPlayerY = Math.min(Math.max(Math.round((mouseY + 400) / 100),1),7);
     playerX += (targetPlayerX - playerX) / 2;
     playerY += (targetPlayerY - playerY) / 2;
-    ctx.arc(-400+playerX*100,-400+playerY*100,35,0,Math.PI*2,false);
+    ctx.arc(-400+playerX*100,-400+playerY*100,35*playerSize,0,Math.PI*2,false);
     ctx.closePath();
     ctx.fill();
     ctx.fillStyle = "#ddbb00";
     ctx.beginPath();
     ctx.moveTo(-400+playerX*100,-400+playerY*100);
-    ctx.arc(-400+playerX*100,-400+playerY*100,25,Math.PI/-2+Math.PI*2*life,Math.PI/-2,true);
+    ctx.arc(-400+playerX*100,-400+playerY*100,25*playerSize,Math.PI/-2+Math.PI*2*life,Math.PI/-2,true);
     ctx.closePath();
     ctx.fill();
     ctx.fillStyle = "#ffffff";
@@ -265,15 +293,15 @@ var drawResults =()=> {
         if (!musicEnd) {
             musicEnd = true;
             point = [Math.floor(beat*1000)/1000, Math.floor(damage*1000)/1000, hazwards[hazwards.length-1][hazwards[hazwards.length-1].length-1]];
-            if (point[2] < point[0]) {
+            if (point[2] <= point[0]) {
                 if (point[1] == 0) rank = "SSS";
-                else if (point[1] < 0.5) rank = "SS";
-                else if (point[1] < 1) rank = "S";
+                else if (point[1] < 1) rank = "SS";
+                else if (point[1] < 3) rank = "S";
                 else rank = "A";
             } else {
-                if (point[0] > point[2] * 0.8) rank = "B";
+                if (point[0] > point[2] * 0.75) rank = "B";
                 else if (point[0] > point[2] * 0.5) rank = "C";
-                else if (point[0] > point[2] * 0.2) rank = "D";
+                else if (point[0] > point[2] * 0.25) rank = "D";
                 else rank = "E";
             }
         }
@@ -290,8 +318,8 @@ var drawResults =()=> {
         ctx.fillText(`damages you got: ${point[1]}`, 0, 100);
         ctx.font = "100px 'Hiragino Mincho Pro'";
         ctx.fillText(`RANK: ${rank}`, 0, 250);
-        if (audio[bgm].volume == 0) {
-            audio[bgn].pause(); audio[bgm].volume = 1;
+        if (ended || audio[bgm].volume <= 0) {
+            audio[bgm].pause();
             ctx.font = "30px 'Hiragino Mincho Pro'";
             ctx.fillText(`~click to back~`,300,425);
             ended = true;
@@ -313,8 +341,12 @@ function board() {
     ctx.restore();
     drawResults();
     vibration += (0 - vibration) / 5;
-    if (ended && mouseState.left) {select(); audio["finger01.mp3"].play(); ended = false;}
-    else requestAnimationFrame(board);
+    if (ended && mouseState.left) {
+        audio["finger01.mp3"].play();
+        ended = false;
+        audio[bgm].volume = 1;
+        select();
+    } else requestAnimationFrame(board);
 }
 
 function start(soundTrack) {
@@ -372,8 +404,8 @@ function select() {
     ctx.fillText(`~click to start~`,300,425);
     let bgm = selected ? musicData[selected].match(/bgm:(.*)/i)[1] : 0;
     ctx.fillStyle = "#888888";
-    ctx.textAlign = "right";
-    ctx.fillText(bgm? canplay[bgm] ? "loaded" : "loading" : "", -490, mouseY+15);
+    ctx.textAlign = "center";
+    ctx.fillText(bgm? canplay[bgm] ? "loaded" : "loading" : "", -450, mouseY-45);
     if (canplay[bgm] && mouseState.left) {
         audio["finger01.mp3"].play();
         setTimeout(()=>audio[bgm].play(),2500);
