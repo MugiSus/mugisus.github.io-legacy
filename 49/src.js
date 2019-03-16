@@ -274,7 +274,7 @@ var drawHazards =()=> {
 var drawPlayer =()=> {
     lastPos = [-400+playerX*100, -400+playerY*100];
     playerSize += (1 - playerSize) / 10;
-    life = Math.max(Math.min(life + 0.0001, 1), 0);
+    life = Math.max(Math.min(life + (beat - damagedBeat >= 16 ? 0.0003 : 0), 1), 0);
     ctx.globalAlpha = beat - damagedBeat >= 2 ? 1 : ((beat - damagedBeat) % 0.25 < 0.125 ? 0.5 : 0.8);
     ctx.fillStyle = "#dd8800";
     ctx.beginPath();
@@ -327,12 +327,14 @@ var drawResults =()=> {
         ctx.fillText(`damages you got: ${point[1]}`, 0, 100);
         ctx.font = "100px 'Hiragino Mincho Pro'";
         ctx.fillText(`RANK: ${rank}`, 0, 250);
+        ctx.font = "30px 'Hiragino Mincho Pro'";
         if (ended || audio[bgm].volume <= 0) {
             audio[bgm].pause();
-            ctx.font = "30px 'Hiragino Mincho Pro'";
-            ctx.fillText(`~click to back~`,300,425);
+            ctx.fillText(`~click to back~`,400,375);
             ended = true;
         }
+        ctx.textAlign = "right";
+        ctx.fillText(`♫${title}`,400,425);
     }
 }
 
