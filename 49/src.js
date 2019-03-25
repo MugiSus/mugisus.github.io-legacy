@@ -6,7 +6,6 @@ BGM:exitThePremises.mp3
 BPM:128
 MEASURE:4/4
 OFFSET:-0.5
-
 score:
 a0000000000511a00577a0,a0000000000511a00577a0,a0000000000511a00577a0,a0000000000511a00577a0,
 a-12000230001400511a250577a0,a-16000250001400511a230577a0,a-12000230001400511a250577a0,a-160000025000001400000112213241526,
@@ -45,7 +44,6 @@ BGM:spazzmaticaPolka.mp3
 BPM:140
 MEASURE:4/4
 OFFSET:0
-
 score:
 511a-b522b-a533a-b544b-a,577a-b566b-a555a-b544b-a,511a-b522b-a533a-b544b-a,577a-b566b-a555a-b544b-a,
 511a-b522b-a533a-b544b-a,577a-b566b-a555a-b544b-a,511a-b522b-a533a-b544b-a,577a-b566b-a555a-b544b-a,
@@ -58,7 +56,6 @@ b16015160110,16161413140120,017016170150,17171514150130,1116015160130,1616141314
 21-611a-b22232422-622b-a232425633a-b-23242526644b-a-25000,677a-b-27262524666b-a-26252423655a-b-24232224644b-a-22000,21-611a-b22232422-622b-a242526633a-b-23232425644b-a-27000,677a-b-27262524666b-a-26252423655a-b-23242321644b-a-22000,
 21-611a-b22232422-622b-a232425633a-b-23242526644b-a-25000,677a-b-27262524666b-a-26252423655a-b-25242322644b-a-23000,21-611a-b22232422-622b-a242526633a-b-23232425644b-a-27000,677a-b-27262524666b-a-26252423655a-b-26252423644b-a-21000,
 21-611a-b22232422-622b-a232425633a-b-23242526644b-a-25000,677a-b-27262524666b-a-26252423655a-b-24232224644b-a-22000,21-611a-b22232422-622b-a242526633a-b-23232425644b-a-27000,677a-b-27262524666b-a-26252423655a-b-23242321a-22000,
-
 `,
 
     "RetroFuture dirty":`
@@ -67,7 +64,6 @@ BGM:retroFuture_dirty.mp3
 BPM:182
 MEASURE:4/4
 OFFSET:0
-
 score:
 644a633a-655aa0,633a-655a622a-666aa0,622a-666a611a-677aa0,0,
 644a633a-655aa0,633a-655a622a-666aa0,622a-666a-522a-566a611a-677a-511a-577aa0,000000566a555b544c533d522e511f,
@@ -109,7 +105,6 @@ BGM:infetterence.mp3
 BPM:177
 MEASURE:4/4
 OFFSET:0
-
 score:
 0,0,0,0,
 011027,012026,013025,0000141400000024611a00,0a15000230,016022,017021,0000313100000047000,
@@ -124,7 +119,6 @@ score:
 g01201411016,11016121731-43-35-4700,0017131101215,11014022025272102402600,001401613012,1501411161400,3701517-3612016-3513,15-34111213-3312-32-421716-32-4214,
 11221324,15261727,27162514,23122111,1121122213231424,1727162615251424,37363534474645443534333245444342,21-23-25-270022-24-260021-23-25-270627h0000000,
 h-511a-577a,00522a566a533a555a0,a-611b-677b0111715131216-622b-666b,1713110120130,544c-b02327210270,533c00000555c000313233343536,511d-577d-c0141516151413,611e-677e-d0e0567f545f523ff,
-
 `,*/
 };
 
@@ -231,8 +225,7 @@ var drawLines =()=> {
 }
 
 var drawHazards =()=> {
-    ctx.fillStyle = "#ff8800";
-    ctx.strokeStyle = "#ff8800";
+    ctx.strokeStyle = ctx.fillStyle = "#00bbc0";
     ctx.lineWidth = 3;
     while (hazwards[nowHazward] && hazwards[nowHazward][hazwards[nowHazward].length-1] < beat) {
         hazwards[nowHazward][hazwards[nowHazward].length-1] += 4;
@@ -318,7 +311,7 @@ var drawPlayer =()=> {
     playerSize += (1 - playerSize) / 10;
     life = Math.max(Math.min(life + (beat - damagedBeat >= 16 ? 0.0003 : 0), 1), 0);
     ctx.globalAlpha = beat - damagedBeat >= 2 ? 1 : ((beat - damagedBeat) % 0.25 < 0.125 ? 0.5 : 0.8);
-    ctx.fillStyle = "#dd8800";
+    ctx.fillStyle = "00ccb0";
     ctx.beginPath();
     targetPlayerX = Math.min(Math.max(Math.round((mouseX + 400) / 100),1),7);
     targetPlayerY = Math.min(Math.max(Math.round((mouseY + 400) / 100),1),7);
@@ -327,7 +320,7 @@ var drawPlayer =()=> {
     ctx.arc(-400+playerX*100,-400+playerY*100,35*playerSize,0,Math.PI*2,false);
     ctx.closePath();
     ctx.fill();
-    ctx.fillStyle = "#ddbb00";
+    ctx.fillStyle = "#00ffdd";
     ctx.beginPath();
     ctx.moveTo(-400+playerX*100,-400+playerY*100);
     ctx.arc(-400+playerX*100,-400+playerY*100,25*playerSize,Math.PI/-2+Math.PI*2*life,Math.PI/-2,true);
