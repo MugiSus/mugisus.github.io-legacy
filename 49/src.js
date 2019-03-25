@@ -225,7 +225,7 @@ var drawLines =()=> {
 }
 
 var drawHazards =()=> {
-    ctx.strokeStyle = ctx.fillStyle = "#00bbc0";
+    ctx.strokeStyle = ctx.fillStyle = "#00ccb0";
     ctx.lineWidth = 3;
     while (hazwards[nowHazward] && hazwards[nowHazward][hazwards[nowHazward].length-1] < beat) {
         hazwards[nowHazward][hazwards[nowHazward].length-1] += 4;
