@@ -311,7 +311,7 @@ var drawPlayer =()=> {
     playerSize += (1 - playerSize) / 10;
     life = Math.max(Math.min(life + (beat - damagedBeat >= 16 ? 0.0003 : 0), 1), 0);
     ctx.globalAlpha = beat - damagedBeat >= 2 ? 1 : ((beat - damagedBeat) % 0.25 < 0.125 ? 0.5 : 0.8);
-    ctx.fillStyle = "00ccb0";
+    ctx.fillStyle = "#00ccb0";
     ctx.beginPath();
     targetPlayerX = Math.min(Math.max(Math.round((mouseX + 400) / 100),1),7);
     targetPlayerY = Math.min(Math.max(Math.round((mouseY + 400) / 100),1),7);
