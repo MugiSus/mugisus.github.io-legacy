@@ -6,6 +6,7 @@ BGM:exitThePremises.mp3
 BPM:128
 MEASURE:4/4
 OFFSET:-0.5
+
 score:
 a0000000000511a00577a0,a0000000000511a00577a0,a0000000000511a00577a0,a0000000000511a00577a0,
 a-12000230001400511a250577a0,a-16000250001400511a230577a0,a-12000230001400511a250577a0,a-160000025000001400000112213241526,
@@ -44,6 +45,7 @@ BGM:spazzmaticaPolka.mp3
 BPM:140
 MEASURE:4/4
 OFFSET:0
+
 score:
 511a-b522b-a533a-b544b-a,577a-b566b-a555a-b544b-a,511a-b522b-a533a-b544b-a,577a-b566b-a555a-b544b-a,
 511a-b522b-a533a-b544b-a,577a-b566b-a555a-b544b-a,511a-b522b-a533a-b544b-a,577a-b566b-a555a-b544b-a,
@@ -56,6 +58,7 @@ b16015160110,16161413140120,017016170150,17171514150130,1116015160130,1616141314
 21-611a-b22232422-622b-a232425633a-b-23242526644b-a-25000,677a-b-27262524666b-a-26252423655a-b-24232224644b-a-22000,21-611a-b22232422-622b-a242526633a-b-23232425644b-a-27000,677a-b-27262524666b-a-26252423655a-b-23242321644b-a-22000,
 21-611a-b22232422-622b-a232425633a-b-23242526644b-a-25000,677a-b-27262524666b-a-26252423655a-b-25242322644b-a-23000,21-611a-b22232422-622b-a242526633a-b-23232425644b-a-27000,677a-b-27262524666b-a-26252423655a-b-26252423644b-a-21000,
 21-611a-b22232422-622b-a232425633a-b-23242526644b-a-25000,677a-b-27262524666b-a-26252423655a-b-24232224644b-a-22000,21-611a-b22232422-622b-a242526633a-b-23232425644b-a-27000,677a-b-27262524666b-a-26252423655a-b-23242321a-22000,
+
 `,
 
     "RetroFuture dirty":`
@@ -64,6 +67,7 @@ BGM:retroFuture_dirty.mp3
 BPM:182
 MEASURE:4/4
 OFFSET:0
+
 score:
 644a633a-655aa0,633a-655a622a-666aa0,622a-666a611a-677aa0,0,
 644a633a-655aa0,633a-655a622a-666aa0,622a-666a-522a-566a611a-677a-511a-577aa0,000000566a555b544c533d522e511f,
@@ -105,6 +109,7 @@ BGM:infetterence.mp3
 BPM:177
 MEASURE:4/4
 OFFSET:0
+
 score:
 0,0,0,0,
 011027,012026,013025,0000141400000024611a00,0a15000230,016022,017021,0000313100000047000,
@@ -119,6 +124,7 @@ score:
 g01201411016,11016121731-43-35-4700,0017131101215,11014022025272102402600,001401613012,1501411161400,3701517-3612016-3513,15-34111213-3312-32-421716-32-4214,
 11221324,15261727,27162514,23122111,1121122213231424,1727162615251424,37363534474645443534333245444342,21-23-25-270022-24-260021-23-25-270627h0000000,
 h-511a-577a,00522a566a533a555a0,a-611b-677b0111715131216-622b-666b,1713110120130,544c-b02327210270,533c00000555c000313233343536,511d-577d-c0141516151413,611e-677e-d0e0567f545f523ff,
+
 `,*/
 };
 
@@ -140,7 +146,7 @@ document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
 document.addEventListener("mousemove", (event)=>{mouseX = (event.clientX - canvas.width / 2) / ratio; mouseY = (event.clientY - canvas.height / 2) / ratio;});
 var updatePos =()=> {mouseX = (event.changedTouches[0].pageX - canvas.width / 2) / ratio; mouseY = (event.changedTouches[0].pageY - canvas.height / 2 - 150) / ratio;};
 document.addEventListener("touchstart", (event)=>{mouseState["left"] = true; updatePos()});
-document.addEventListener("touchmove", (event)=>{event.preventDefault(); updatePos();}, {passive : false});
+document.addEventListener("touchmove", (event)=>{event.preventDefault(); updatePos();}, {passive: false});
 document.addEventListener("touchend", (event)=>{mouseState["left"] = false; updatePos();});
 window.addEventListener("resize", ()=>{resize()});
 canvas.oncontextmenu =()=> {return false;};
@@ -150,7 +156,7 @@ resize();
 document.title = "49"
 
 //initalize
-const endless = 0; // for debugging
+const endless = false; // for debugging
 
 var vibration, mouseX, playerX, life, beat, timer, nowHazward, lastBeat, lineAlpha, damageEffect, vibration, title, score, hazwards, hazwardList, bullet, bgm, bpm, musicEnd, point, tags, clicked, ended, playerSize, damagedBeat;
 
@@ -230,10 +236,7 @@ var drawHazards =()=> {
     while (hazwards[nowHazward] && hazwards[nowHazward][hazwards[nowHazward].length-1] < beat) {
         hazwards[nowHazward][hazwards[nowHazward].length-1] += 4;
         if (beat >= startBeat - 4) {
-            if (["1","2","3","4"].indexOf(hazwards[nowHazward][0]) > -1) hazwardList.push(hazwards[nowHazward]);
-            else if (["5","6"].indexOf(hazwards[nowHazward][0]) > -1) {
-                hazwardList.push(hazwards[nowHazward]);
-            }
+            if (["1","2","3","4","5","6"].indexOf(hazwards[nowHazward][0]) > -1) hazwardList.push([...hazwards[nowHazward],0]);
             else tags[hazwards[nowHazward][0]] = beat;
         }
         nowHazward++;
@@ -242,7 +245,7 @@ var drawHazards =()=> {
     let addVib = 0;
     hazwardList.forEach((x,y)=>{
         if (["1","2","3","4"].indexOf(x[0]) > -1) {
-            ctx.globalAlpha = Math.max(0, 1 - (x[2] - beat) / 2)
+            ctx.globalAlpha = Math.max(0, 1 - (x[2] - beat) / 2);
             ctx.beginPath();
             let pos;
             switch (x[0]) {
@@ -262,7 +265,8 @@ var drawHazards =()=> {
         } if (["5","6"].indexOf(x[0]) > -1) {
             if (beat >= x[4]) {
                 ctx.globalAlpha = 1;
-                if (hazwardList[y][4] > 0) {addVib += 25; hazwardList[y][4] = -1; tags[x[3]] = Infinity;}
+                hazwardList[y][5] += (1 - x[5]) / 3;
+                if (x[4] > 0) {addVib += 25; hazwardList[y][4] = -1; tags[x[3]] = Infinity;}
                 if (((Math.round(playerX) >= x[1] && Math.round(playerX) <= x[2] && x[0] == "5") || (Math.round(playerY) >= x[1] && Math.round(playerY) <= x[2] && x[0] == "6")) && beat - damagedBeat >= 2) {
                     life -= 0.25;
                     damage += 0.25;
@@ -271,11 +275,22 @@ var drawHazards =()=> {
                     damagedBeat = beat;
                 }
                 if (beat >= tags[x[3]]) {addVib += 4; delList.unshift(y);}
+                switch (x[0]) {
+                    case "5": ctx.fillRect(-400+((x[1]*1+x[2]*1)/2-x[5]*(x[2]-x[1]+1)/2)*100,canvas.height/2/-ratio,(x[2]-x[1]+1)*100*x[5]/1,canvas.height/ratio*x[5]*1.5); break;
+                    case "6": ctx.fillRect(canvas.width/2/-ratio,-400+((x[1]*1+x[2]*1)/2-x[5]*(x[2]-x[1]+1)/2)*100,canvas.width/ratio*x[5]*1.5,(x[2]-x[1]+1)*100*x[5]/1); break;
+                }
             }
-            else ctx.globalAlpha = 0.25 + Math.cos((x[4]+beat)*Math.PI*2) * 0.2;
-            switch (x[0]) {
-                case "5": ctx.fillRect(-450+x[1]*100,-350,(x[2]-x[1])*100+100,700); break;
-                case "6": ctx.fillRect(-350,-450+x[1]*100,700,(x[2]-x[1])*100+100); break;
+            else {
+                ctx.globalAlpha = 0.25 + Math.cos((x[4]+beat)*Math.PI*2) * 0.2;
+                switch (x[0]) {
+                    case "5": ctx.fillRect(-450+x[1]*100,-350,(x[2]-x[1])*100+100,700); break;
+                    case "6": ctx.fillRect(-350,-450+x[1]*100,700,(x[2]-x[1])*100+100); break;
+                }
+                ctx.globalAlpha = Math.max(0, 1 - (x[4] - beat) / 4);
+                switch (x[0]) {
+                    case "5": ctx.fillRect(-450+x[1]*100,canvas.height/2/-ratio,(x[2]-x[1])*100+100,200*(beat+4-x[4])/4); break;
+                    case "6": ctx.fillRect(canvas.width/2/-ratio,-450+x[1]*100,200*(beat+4-x[4])/4,(x[2]-x[1])*100+100); break;
+                }
             }
         }
     });
