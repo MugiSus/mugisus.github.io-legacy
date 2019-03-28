@@ -125,7 +125,7 @@ g01201411016,11016121731-43-35-4700,0017131101215,11014022025272102402600,001401
 11221324,15261727,27162514,23122111,1121122213231424,1727162615251424,37363534474645443534333245444342,21-23-25-270022-24-260021-23-25-270627h0000000,
 h-511a-577a,00522a566a533a555a0,a-611b-677b0111715131216-622b-666b,1713110120130,544c-b02327210270,533c00000555c000313233343536,511d-577d-c0141516151413,611e-677e-d0e0567f545f523ff,
 
-`,*/
+`,*/  
 };
 
 //canvas starter kit
@@ -263,9 +263,17 @@ var drawHazards =()=> {
                 addVib += 16;
             }
         } if (["5","6"].indexOf(x[0]) > -1) {
-            if (beat >= x[4]) {
+            if (x[5] < 0) {
+                ctx.globalAlpha = 1 + x[5] * 0.2;
+                hazwardList[y][5]--;
+                if (x[5] <= -5) delList.unshift(y);
+                switch (x[0]) {
+                    case "5": ctx.fillRect(-450+x[1]*100,canvas.height/2/-ratio,(x[2]-x[1]+1)*100,canvas.height/ratio); break;
+                    case "6": ctx.fillRect(canvas.width/2/-ratio,-450+x[1]*100,canvas.width/ratio,(x[2]-x[1]+1)*100); break;
+                }
+            } else if (beat >= x[4]) {
                 ctx.globalAlpha = 1;
-                hazwardList[y][5] += (1 - x[5]) / 3;
+                hazwardList[y][5] = Math.min(x[5] + (1.05 - x[5]) / 4, 1)
                 if (x[4] > 0) {addVib += 25; hazwardList[y][4] = -1; tags[x[3]] = Infinity;}
                 if (((Math.round(playerX) >= x[1] && Math.round(playerX) <= x[2] && x[0] == "5") || (Math.round(playerY) >= x[1] && Math.round(playerY) <= x[2] && x[0] == "6")) && beat - damagedBeat >= 2) {
                     life -= 0.25;
@@ -274,13 +282,12 @@ var drawHazards =()=> {
                     damageEffect += 0.5;
                     damagedBeat = beat;
                 }
-                if (beat >= tags[x[3]]) {addVib += 4; delList.unshift(y);}
                 switch (x[0]) {
                     case "5": ctx.fillRect(-400+((x[1]*1+x[2]*1)/2-x[5]*(x[2]-x[1]+1)/2)*100,canvas.height/2/-ratio,(x[2]-x[1]+1)*100*x[5]/1,canvas.height/ratio*x[5]*1.5); break;
                     case "6": ctx.fillRect(canvas.width/2/-ratio,-400+((x[1]*1+x[2]*1)/2-x[5]*(x[2]-x[1]+1)/2)*100,canvas.width/ratio*x[5]*1.5,(x[2]-x[1]+1)*100*x[5]/1); break;
                 }
-            }
-            else {
+                if (beat >= tags[x[3]]) {addVib += 4; hazwardList[y][5] = -1}
+            } else {
                 ctx.globalAlpha = 0.25 + Math.cos((x[4]+beat)*Math.PI*2) * 0.2;
                 switch (x[0]) {
                     case "5": ctx.fillRect(-450+x[1]*100,-350,(x[2]-x[1])*100+100,700); break;
