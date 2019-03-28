@@ -264,7 +264,7 @@ var drawHazards =()=> {
             }
         } if (["5","6"].indexOf(x[0]) > -1) {
             if (x[4] <= -2) {
-                hazwardList[y][5] += (0 - x[5]) / 4;
+                hazwardList[y][5] += (0 - x[5]) / 2.5;
                 ctx.globalAlpha = x[5];
                 switch (x[0]) {
                     case "5": ctx.fillRect(-400+((x[1]*1+x[2]*1)/2-x[5]*(x[2]-x[1]+1)/2)*100,canvas.height/2/-ratio,(x[2]-x[1]+1)*100*x[5]/1,canvas.height/ratio); break;
