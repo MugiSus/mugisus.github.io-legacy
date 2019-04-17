@@ -58,7 +58,50 @@ b16015160110,16161413140120,017016170150,17171514150130,1116015160130,1616141314
 21-611a-b22232422-622b-a232425633a-b-23242526644b-a-25000,677a-b-27262524666b-a-26252423655a-b-24232224644b-a-22000,21-611a-b22232422-622b-a242526633a-b-23232425644b-a-27000,677a-b-27262524666b-a-26252423655a-b-23242321644b-a-22000,
 21-611a-b22232422-622b-a232425633a-b-23242526644b-a-25000,677a-b-27262524666b-a-26252423655a-b-25242322644b-a-23000,21-611a-b22232422-622b-a242526633a-b-23232425644b-a-27000,677a-b-27262524666b-a-26252423655a-b-26252423644b-a-21000,
 21-611a-b22232422-622b-a232425633a-b-23242526644b-a-25000,677a-b-27262524666b-a-26252423655a-b-24232224644b-a-22000,21-611a-b22232422-622b-a242526633a-b-23232425644b-a-27000,677a-b-27262524666b-a-26252423655a-b-23242321a-22000,
+
 `,
+
+    "RetroFuture dirty":`
+AUTHOR:Kevin MacLeod
+BGM:retroFuture_dirty.mp3
+BPM:182
+MEASURE:4/4
+OFFSET:0
+
+score:
+644a633a-655aa0,633a-655a622a-666aa0,622a-666a611a-677aa0,0,
+644a633a-655aa0,633a-655a622a-666aa0,622a-666a-522a-566a611a-677a-511a-577aa0,000000566a555b544c533d522e511f,
+37313431,a-37313431,b-577g-37313431,c-566h-37313431,d-555i-37313431,e-544j-37313431,f-533k-37313431,522l-370003100034000310031,
+l-47414441,k-511a47414441,j-522b-47414441,i-533c-47414441,h-544d-47414441,g-555e-474144-4141,566f00470004100414400041000,fed000cba31-37-41-4700,
+611a622b00,633c644d00,655e666f00,000000fedcba,677a666b00,655c644d00,633e622f00,000000fedcba,
+2400000002400000022,23002425000250000000,270002700027000260026,26002423000210000000,2400000002400000022,23002425000250000000,270002700027000260026,26002423000210000000,
+2400000002400000022,23002425000250000000,270002700027000260026,260024230002300021000,2400000002400000022,23002425000250000000,2727270,27-511a522a533a544a0a577a566a555a544a0a,
+544a533a-555aa0,533a-555a522a-566aa0,522a-566a511a-577aa0,0,544a533a-555aa0,533a-555a522a-566aa0,522a-566a511a-577aa0,611a622a633a644a0a677a666a655a644a0a,
+2100021000220023240025,2100021000220023240025,2100021000220023240025,270000000026002700000000260027000000002600250002400023000,
+2100021000220023240025,2100021000220023240025,2100021000220023240025,270000000026002700000000260027000000002600250002400023000,
+2100021000220023240025,2100021000220023240025,2100021000220023240025,270000000026002700000000260027000000002600250002400023000,
+2100021000220023240025,2100021000220023240025,2100021000220023240025,611a622a633a644a0a677a666a655a644a0a,
+240000000614a-2400000022,a-23002425000647a-250000000,a-2700027000614a-27000260026,a-26002423000647a-210000000,a-240000000614a-2400000022,a-23002425000647a-250000000,a-2700027000614a-27000260026,a-26002423000647a-210000000,
+a-240000000614a-2400000022,a-23002425000647a-250000000,a-2700027000614a-27000260026,a-26002423000647a-2300021000,a-240000000614a-2400000022,a-23002425000647a-250000000,a-2727614a-270,a-27-511a522a533a544a0a577a566a555a544a0a,
+644a-544a633a-533a-655a-555aa0,633a-533a-655a-555a622a-522a-666a-566aa0,622a-522a-666a-566a611a-511a-677a-577aa0,0,
+644a-544a633a-533a-655a-555aa0,633a-533a-655a-555a622a-522a-666a-566aa0,622a-522a-666a-566a611a-511a-677a-577aa0,511a533a555a577a00611a633a655a677a00,
+a-21-3100021-3100022-320023-3324-340025-35,21-3100021-3100022-320023-3324-340025-35,21-3100021-3100022-320023-3324-340025-35,27-370000000026-360027-370000000026-360027-370000000026-360025-3500024-3400023-33000,
+21-4100021-4100022-420023-4324-440025-45,21-4100021-4100022-420023-4324-440025-45,21-4100021-4100022-420023-4324-440025-45,27-470000000026-460027-470000000026-460027-470000000026-460025-4500024-4400023-43000,
+21-3100021-3100022-320023-3324-340025-35,21-3100021-3100022-320023-3324-340025-35,21-3100021-3100022-320023-3324-340025-35,27-370000000026-360027-370000000026-360027-370000000026-360025-3500024-3400023-33000,
+21-4100021-4100022-420023-4324-440025-45,21-4100021-4100022-420023-4324-440025-45,21-4100021-4100022-420023-4324-440025-45,611a622a633a644a0a677a666a655a644a0a,
+a-2100021000647a-220023240025,a-2100021000614a-220023240025,a-2100021000647a-220023240025,a-2700000000260027000000002600614a-27000000002600250002400023000,
+a-2100021000647a-220023240025,a-2100021000614a-220023240025,a-2100021000647a-220023240025,a-2700000000260027000000002600614a-27000000002600250002400023000,
+a-2100021000647a-220023240025,a-2100021000614a-220023240025,a-2100021000647a-220023240025,a-2700000000260027000000002600614a-27000000002600250002400023000,
+a-2100021000647a-220023240025,a-2100021000614a-220023240025,a-2100021000647a-220023240025,a-511a522a533a544a0a577a566a555a544a0a,
+14-240000000614a-14-2400000012-22,a-13-230014-2415-25000647a-15-250000000,a-17-2700017-27000614a-17-2700016-260016-26,a-17-260016-2415-230016647a-15-21001311000,
+a-14-240000000614a-14-2400000012-22,a-13-230014-2415-25000647a-15-250000000,a-17-2700017-27000614a-17-2700016-260016-26,a-16-260014-2413-23000647a-11-210000000,
+a-14-240000000614a-14-2400000012-22,a-13-230014-2415-25000647a-15-250000000,a-17-2700017-27000614a-17-2700016-260016-26,a-16-260014-2415-230016647a-15-23001311-21000,
+a-14-240000000614a-14-2400000012-22,a-13-230014-2415-25000647a-15-250000000,a-17-2727614a-17-270,a-27-17-511a522a533a544a0a577a566a555a544a0a,
+644a633a-655aa0,633a-655a622a-666aa0,622a-666a611a-677aa0,0,
+644a633a-655aa0,633a-655a622a-666aa0,622a-666a611a-677aa0,511a522a533a544a0a577a566a555a544a0a,
+644a635a00,
+`,
+
 /*
     "infetterence":`
 AUTHOR:Shrill Otter/jacknjellify (*Unfinished* 348~)
@@ -82,7 +125,7 @@ g01201411016,11016121731-43-35-4700,0017131101215,11014022025272102402600,001401
 11221324,15261727,27162514,23122111,1121122213231424,1727162615251424,37363534474645443534333245444342,21-23-25-270022-24-260021-23-25-270627h0000000,
 h-511a-577a,00522a566a533a555a0,a-611b-677b0111715131216-622b-666b,1713110120130,544c-b02327210270,533c00000555c000313233343536,511d-577d-c0141516151413,611e-677e-d0e0567f545f523ff,
 
-`,*/
+`,*/  
 };
 
 //canvas starter kit
@@ -103,7 +146,7 @@ document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
 document.addEventListener("mousemove", (event)=>{mouseX = (event.clientX - canvas.width / 2) / ratio; mouseY = (event.clientY - canvas.height / 2) / ratio;});
 var updatePos =()=> {mouseX = (event.changedTouches[0].pageX - canvas.width / 2) / ratio; mouseY = (event.changedTouches[0].pageY - canvas.height / 2 - 150) / ratio;};
 document.addEventListener("touchstart", (event)=>{mouseState["left"] = true; updatePos()});
-document.addEventListener("touchmove", (event)=>{event.preventDefault(); updatePos();}, {passive : false});
+document.addEventListener("touchmove", (event)=>{event.preventDefault(); updatePos();}, {passive: false});
 document.addEventListener("touchend", (event)=>{mouseState["left"] = false; updatePos();});
 window.addEventListener("resize", ()=>{resize()});
 canvas.oncontextmenu =()=> {return false;};
@@ -118,11 +161,11 @@ const endless = false; // for debugging
 var vibration, mouseX, playerX, life, beat, timer, nowHazward, lastBeat, lineAlpha, damageEffect, vibration, title, score, hazwards, hazwardList, bullet, bgm, bpm, musicEnd, point, tags, clicked, ended, playerSize, damagedBeat;
 
 function init() {
+    beat = startBeat = endless || 0;
     vibration = 0;
     mouseX = mouseY = 0;
     playerX = playerY = targetPlayerX = targetPlayerY = 0;
     life = 1;
-    beat = startBeat = 0;
     timer = 0;
     nowHazward = 0;
     lastBeat = -1;
@@ -158,6 +201,26 @@ ctx.__proto__.line =(x0, y0, x1, y1)=> {
     ctx.stroke();
 };
 
+var easing =(i, max, pattern)=> {
+    i = Math.max(0, Math.min(i/max, 1));
+    switch (pattern) {
+        case 1: i = i ** 1.5; break;
+        case 2: i = i ** 2; break;
+        case 3: i = i ** 3; break;
+        case 4: i = (-i) ** 7 +1; break;
+        case 5: i = (-i + 1) ** 5; break;
+    }
+    return Math.max(0, Math.min(i, 1));
+}
+
+var getDist =(x0, y0, x1, y1, x2, y2)=> {
+    if ((x0 - x1) * x0 + (y0 - y1) * y0 + -(x0 - x1) * x2 + -(y0 - y1) * y2 > 0 == (x0 - x1) * x1 + (y0 - y1) * y1 + -(x0 - x1) * x2 + -(y0 - y1) * y2 > 0) {
+        if (((x0 - x2) ** 2 + (y0 - y2) ** 2) ** 0.5 < ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5) return ((x0 - x2) ** 2 + (y0 - y2) ** 2) ** 0.5;
+        else return ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5;
+    }
+    return Math.abs((y0 - y1) * x2 + (x1 - x0) * y2 + -(x1 - x0) * y0 + -(y0 - y1) * x0) / ((y0 - y1) ** 2 + (x1 - x0) ** 2) ** 0.5;
+}
+
 var drawLines =()=> {
     if (beat >= 0 && Math.floor(beat) != lastBeat) {lineAlpha = 5; playerSize = 1.25; lastBeat = Math.floor(beat);}
     lineAlpha += (0.5 - lineAlpha) / 5;
@@ -180,17 +243,12 @@ var drawLines =()=> {
 }
 
 var drawHazards =()=> {
-    ctx.fillStyle = "#ff8800";
-    ctx.strokeStyle = "#ff8800";
+    ctx.strokeStyle = ctx.fillStyle = "#00ccb0";
     ctx.lineWidth = 3;
     while (hazwards[nowHazward] && hazwards[nowHazward][hazwards[nowHazward].length-1] < beat) {
         hazwards[nowHazward][hazwards[nowHazward].length-1] += 4;
         if (beat >= startBeat - 4) {
-            if (["1","2","3","4"].indexOf(hazwards[nowHazward][0]) > -1) hazwardList.push(hazwards[nowHazward]);
-            else if (["5","6"].indexOf(hazwards[nowHazward][0]) > -1) {
-                tags[hazwards[nowHazward][hazwards[nowHazward].length-2]] = Infinity;
-                hazwardList.push(hazwards[nowHazward]);
-            }
+            if (["1","2","3","4","5","6"].indexOf(hazwards[nowHazward][0]) > -1) hazwardList.push([...hazwards[nowHazward],0]);
             else tags[hazwards[nowHazward][0]] = beat;
         }
         nowHazward++;
@@ -199,14 +257,14 @@ var drawHazards =()=> {
     let addVib = 0;
     hazwardList.forEach((x,y)=>{
         if (["1","2","3","4"].indexOf(x[0]) > -1) {
-            ctx.globalAlpha = Math.max(0, 1 - (x[2] - beat) / 2)
+            ctx.globalAlpha = Math.max(0, 1 - (x[2] - beat) / 2);
             ctx.beginPath();
             let pos;
             switch (x[0]) {
-                case "1": pos = [-400+x[1]*100,-400+(x[2]-beat)*-100]; ctx.line(-400+x[1]*100,-350,-400+x[1]*100,350); break;
-                case "2": pos = [-400+x[1]*100,400+(x[2]-beat)*100]; ctx.line(-400+x[1]*100,-350,-400+x[1]*100,350); break;
-                case "3": pos = [-400+(x[2]-beat)*-100,-400+x[1]*100]; ctx.line(-350,-400+x[1]*100,350,-400+x[1]*100); break;
-                case "4": pos = [400+(x[2]-beat)*100,-400+x[1]*100]; ctx.line(-350,-400+x[1]*100,350,-400+x[1]*100); break;
+                case "1": pos = [-400+x[1]*100,-400+easing(x[2]-beat,2,1)*-200]; ctx.line(-400+x[1]*100,-350,-400+x[1]*100,350); break;
+                case "2": pos = [-400+x[1]*100,400+easing(x[2]-beat,2,1)*200]; ctx.line(-400+x[1]*100,-350,-400+x[1]*100,350); break;
+                case "3": pos = [-400+easing(x[2]-beat,2,1)*-200,-400+x[1]*100]; ctx.line(-350,-400+x[1]*100,350,-400+x[1]*100); break;
+                case "4": pos = [400+easing(x[2]-beat,2,1)*200,-400+x[1]*100]; ctx.line(-350,-400+x[1]*100,350,-400+x[1]*100); break;
             }
             ctx.arc(...pos,40,0,Math.PI*2,false);
             ctx.closePath();
@@ -217,9 +275,16 @@ var drawHazards =()=> {
                 addVib += 16;
             }
         } if (["5","6"].indexOf(x[0]) > -1) {
-            if (beat >= x[4]) {
+            if (x[5] == 2) {
+                ctx.globalAlpha = easing(beat - x[4], 1, 5);
+                switch (x[0]) {
+                    case "5": ctx.fillRect(-400+((x[1]*1+x[2]*1)/2-easing(beat-x[4],1,5)*(x[2]-x[1]+1)/2)*100,canvas.height/2/-ratio,(x[2]-x[1]+1)*100*easing(beat-x[4],1,5)/1,canvas.height/ratio); break;
+                    case "6": ctx.fillRect(canvas.width/2/-ratio,-400+((x[1]*1+x[2]*1)/2-easing(beat-x[4],1,5)*(x[2]-x[1]+1)/2)*100,canvas.width/ratio,(x[2]-x[1]+1)*100*easing(beat-x[4],1,5)/1); break;
+                }
+                if (beat - x[4] > 1) delList.unshift(y);
+            } else if (beat >= x[4]) {
                 ctx.globalAlpha = 1;
-                if (hazwardList[y][4] > 0) {addVib += 25; hazwardList[y][4] = -1; tags[x[3]] = Infinity;}
+                if (x[5] == 0) {addVib += 25; hazwardList[y][5] = 1; tags[x[3]] = Infinity;}
                 if (((Math.round(playerX) >= x[1] && Math.round(playerX) <= x[2] && x[0] == "5") || (Math.round(playerY) >= x[1] && Math.round(playerY) <= x[2] && x[0] == "6")) && beat - damagedBeat >= 2) {
                     life -= 0.25;
                     damage += 0.25;
@@ -227,12 +292,22 @@ var drawHazards =()=> {
                     damageEffect += 0.5;
                     damagedBeat = beat;
                 }
-                if (beat >= tags[x[3]]) {addVib += 4; delList.unshift(y);}
-            }
-            else ctx.globalAlpha = 0.25 + Math.cos((x[4]+beat)*Math.PI*2) * 0.2;
-            switch (x[0]) {
-                case "5": ctx.fillRect(-450+x[1]*100,-350,(x[2]-x[1])*100+100,700); break;
-                case "6": ctx.fillRect(-350,-450+x[1]*100,700,(x[2]-x[1])*100+100); break;
+                switch (x[0]) {
+                    case "5": ctx.fillRect(-400+((x[1]*1+x[2]*1)/2-easing(x[4]+1-beat,1,4)*(x[2]-x[1]+1)/2)*100,canvas.height/2/-ratio,(x[2]-x[1]+1)*100*easing(x[4]+1-beat,1,4)/1,canvas.height/ratio*easing(x[4]+1-beat,1,4)*1.5); break;
+                    case "6": ctx.fillRect(canvas.width/2/-ratio,-400+((x[1]*1+x[2]*1)/2-easing(x[4]+1-beat,1,4)*(x[2]-x[1]+1)/2)*100,canvas.width/ratio*easing(x[4]+1-beat,1,4)*1.5,(x[2]-x[1]+1)*100*easing(x[4]+1-beat,1,4)/1); break;
+                }
+                if (beat >= tags[x[3]]) {addVib += 16; hazwardList[y][5] = 2; hazwardList[y][4] = tags[x[3]]}
+            } else {
+                ctx.globalAlpha = 0.25 + Math.cos((x[4]+beat)*Math.PI*2) * 0.2;
+                switch (x[0]) {
+                    case "5": ctx.fillRect(-450+x[1]*100,-350,(x[2]-x[1])*100+100,700); break;
+                    case "6": ctx.fillRect(-350,-450+x[1]*100,700,(x[2]-x[1])*100+100); break;
+                }
+                ctx.globalAlpha = Math.max(0, 1 - (x[4] - beat) / 4);
+                switch (x[0]) {
+                    case "5": ctx.fillRect(-450+x[1]*100,canvas.height/2/-ratio,(x[2]-x[1])*100+100,200*(beat+4-x[4])/4); break;
+                    case "6": ctx.fillRect(canvas.width/2/-ratio,-450+x[1]*100,200*(beat+4-x[4])/4,(x[2]-x[1])*100+100); break;
+                }
             }
         }
     });
@@ -246,7 +321,7 @@ var drawHazards =()=> {
         ctx.fill();
         bullet[y][0] += bullet[y][2] += bullet[y][4];
         bullet[y][1] += bullet[y][3] += bullet[y][5];
-        if (((-400+playerX*100 - bullet[y][0])**2+(-400+playerY*100 - bullet[y][1])**2)**0.5 < 35) {
+        if (getDist(...lastPos, -400+playerX*100, -400+playerY*100, bullet[y][0], bullet[y][1]) < 35) {
             if (beat - damagedBeat >= 2) {
                 life -= 0.25;
                 damage += 0.25;
@@ -264,10 +339,11 @@ var drawHazards =()=> {
 }
 
 var drawPlayer =()=> {
+    lastPos = [-400+playerX*100, -400+playerY*100];
     playerSize += (1 - playerSize) / 10;
-    life = Math.max(Math.min(life + 0.0001, 1), 0);
+    life = Math.max(Math.min(life + (beat - damagedBeat >= 16 ? 0.0003 : 0), 1), 0);
     ctx.globalAlpha = beat - damagedBeat >= 2 ? 1 : ((beat - damagedBeat) % 0.25 < 0.125 ? 0.5 : 0.8);
-    ctx.fillStyle = "#dd8800";
+    ctx.fillStyle = "#00ccb0";
     ctx.beginPath();
     targetPlayerX = Math.min(Math.max(Math.round((mouseX + 400) / 100),1),7);
     targetPlayerY = Math.min(Math.max(Math.round((mouseY + 400) / 100),1),7);
@@ -276,7 +352,7 @@ var drawPlayer =()=> {
     ctx.arc(-400+playerX*100,-400+playerY*100,35*playerSize,0,Math.PI*2,false);
     ctx.closePath();
     ctx.fill();
-    ctx.fillStyle = "#ddbb00";
+    ctx.fillStyle = "#00ffdd";
     ctx.beginPath();
     ctx.moveTo(-400+playerX*100,-400+playerY*100);
     ctx.arc(-400+playerX*100,-400+playerY*100,25*playerSize,Math.PI/-2+Math.PI*2*life,Math.PI/-2,true);
@@ -318,12 +394,14 @@ var drawResults =()=> {
         ctx.fillText(`damages you got: ${point[1]}`, 0, 100);
         ctx.font = "100px 'Hiragino Mincho Pro'";
         ctx.fillText(`RANK: ${rank}`, 0, 250);
+        ctx.font = "30px 'Hiragino Mincho Pro'";
         if (ended || audio[bgm].volume <= 0) {
             audio[bgm].pause();
-            ctx.font = "30px 'Hiragino Mincho Pro'";
-            ctx.fillText(`~click to back~`,300,425);
+            ctx.fillText(`~click to back~`,400,375);
             ended = true;
         }
+        ctx.textAlign = "right";
+        ctx.fillText(`♫${title}`,400,425);
     }
 }
 
@@ -370,7 +448,7 @@ function start(soundTrack) {
     score.forEach((x,j)=>{
         x.forEach((x,i)=>{
             x.forEach(x=>{
-                if (x != "0") hazwards.push([...x.split(""), measure[0] / score[j].length * i + measure[0] * (4 / measure[1]) * j - (["1","2","3","4","5","6"].indexOf(x.charAt(0)) > -1) * 4]);
+                if (x != "0") hazwards.push([...x.split(""), measure[0] * (4 / measure[1]) / score[j].length * i + measure[0] * (4 / measure[1]) * j - (["1","2","3","4","5","6"].indexOf(x.charAt(0)) > -1) * measure[0] * (4 / measure[1])]);
             });
         });
     });
