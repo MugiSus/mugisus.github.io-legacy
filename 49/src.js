@@ -102,30 +102,16 @@ a-14-240000000614a-14-2400000012-22,a-13-230014-2415-25000647a-15-250000000,a-17
 644a635a00,
 `,
 
-/*
-    "infetterence":`
-AUTHOR:Shrill Otter/jacknjellify (*Unfinished* 348~)
-BGM:infetterence.mp3
-BPM:177
+    "Mac n' cheese(draft))" : `
+AUTHOR:Shawn Wasabi
+BGM:mac_n_cheese.mp3
+BPM:124
 MEASURE:4/4
 OFFSET:0
 
 score:
-0,0,0,0,
-011027,012026,013025,0000141400000024611a00,0a15000230,016022,017021,0000313100000047000,
-032046,033045,034044,0000353500000043511a00,0a36000420,037041,37041037041036042035433444,110022001400260017000,
-0,0,0,0,
-111200002726,252400003132,33340000410,0000434400,41000001716,151400002122,23240000370,0000003635,
-111200002726,252400003132,33343536,0000434400,41000001716,151400002122,2324000014-240,0,
-017210001127,0262524,232200,0161514,021170002711,0262524,23222322,0161412,
-11121314,15164142,43444546,27262524,2322373635343332,1112131415164142,43444546272625242322373635343332,14-24-34-440014-24-34-440014-24-34-4400011-21-17-2700011-21-17-270,
-512a-567a0a-1112270260,25024023612b-667b0b,512c-567c0c-212217016612d-667d,0d-1402411-21-17-27011-21-17-270,512e-567e0e-3132470460,45-511f044577f430f0,611g-677gg,511h-577h0000000522h566h533h555h0h0,
-544i012-2611-2712-26013-250,12-26011-27012-26644a-i000,635a0a-31-4732-46031-47544c-a,0c-33-45033-4511-23-15-27021-13-25-170,644d000d-11-27017-21011-2700013152523,566e00522e00e0,613f,646f0f0677g666g655g644g,
-g01201411016,11016121731-43-35-4700,0017131101215,11014022025272102402600,001401613012,1501411161400,3701517-3612016-3513,15-34111213-3312-32-421716-32-4214,
-11221324,15261727,27162514,23122111,1121122213231424,1727162615251424,37363534474645443534333245444342,21-23-25-270022-24-260021-23-25-270627h0000000,
-h-511a-577a,00522a566a533a555a0,a-611b-677b0111715131216-622b-666b,1713110120130,544c-b02327210270,533c00000555c000313233343536,511d-577d-c0141516151413,611e-677e-d0e0567f545f523ff,
-
-`,*/  
+0,240240260222602232032000,243242354645320,240240260222602232032000,243242354645320,21-27037-4737-471201612016120170110,667a645a633a622a0000a-17017000150001501400013000611a000,624a00656a00a-2400023-25022-26024-677a0,646a00623a000000000000
+`, 
 };
 
 //canvas starter kit
@@ -191,7 +177,7 @@ var audio = {};
 var canplay = {};
 audio["finger01.mp3"] = new Audio(`sounds/finger01.mp3`);
 Object.values(musicData).forEach(x=>{audio[x.match(/bgm:(.*)/i)[1]] = new Audio(`sounds/${x.match(/bgm:(.*)/i)[1]}`); canplay[x.match(/bgm:(.*)/i)[1]] = false;});
-Object.keys(audio).forEach(x=>audio[x].addEventListener("canplay", ()=>canplay[x] = true));
+Object.keys(audio).forEach(x=>audio[x].addEventListener("canplaythrough", ()=>canplay[x] = true));
 
 ctx.__proto__.line =(x0, y0, x1, y1)=> {
     ctx.beginPath();
@@ -200,6 +186,18 @@ ctx.__proto__.line =(x0, y0, x1, y1)=> {
     ctx.closePath();
     ctx.stroke();
 };
+
+var easing =(i, max, pattern)=> {
+    i = Math.max(0, Math.min(i/max, 1));
+    switch (pattern) {
+        case 1: i = i ** 1.5; break;
+        case 2: i = i ** 2; break;
+        case 3: i = i ** 3; break;
+        case 4: i = (-i) ** 7 +1; break;
+        case 5: i = (-i + 1) ** 5; break;
+    }
+    return Math.max(0, Math.min(i, 1));
+}
 
 var getDist =(x0, y0, x1, y1, x2, y2)=> {
     if ((x0 - x1) * x0 + (y0 - y1) * y0 + -(x0 - x1) * x2 + -(y0 - y1) * y2 > 0 == (x0 - x1) * x1 + (y0 - y1) * y1 + -(x0 - x1) * x2 + -(y0 - y1) * y2 > 0) {
@@ -249,33 +247,30 @@ var drawHazards =()=> {
             ctx.beginPath();
             let pos;
             switch (x[0]) {
-                case "1": pos = [-400+x[1]*100,-400+(x[2]-beat)*-100]; ctx.line(-400+x[1]*100,-350,-400+x[1]*100,350); break;
-                case "2": pos = [-400+x[1]*100,400+(x[2]-beat)*100]; ctx.line(-400+x[1]*100,-350,-400+x[1]*100,350); break;
-                case "3": pos = [-400+(x[2]-beat)*-100,-400+x[1]*100]; ctx.line(-350,-400+x[1]*100,350,-400+x[1]*100); break;
-                case "4": pos = [400+(x[2]-beat)*100,-400+x[1]*100]; ctx.line(-350,-400+x[1]*100,350,-400+x[1]*100); break;
+                case "1": pos = [-400+x[1]*100,-400+easing(x[2]-beat,2,1)*-200]; ctx.line(-400+x[1]*100,-350,-400+x[1]*100,350); break;
+                case "2": pos = [-400+x[1]*100,400+easing(x[2]-beat,2,1)*200]; ctx.line(-400+x[1]*100,-350,-400+x[1]*100,350); break;
+                case "3": pos = [-400+easing(x[2]-beat,2,1)*-200,-400+x[1]*100]; ctx.line(-350,-400+x[1]*100,350,-400+x[1]*100); break;
+                case "4": pos = [400+easing(x[2]-beat,2,1)*200,-400+x[1]*100]; ctx.line(-350,-400+x[1]*100,350,-400+x[1]*100); break;
             }
             ctx.arc(...pos,40,0,Math.PI*2,false);
             ctx.closePath();
             ctx.fill();
             if (beat >= x[2]) {
                 delList.unshift(y);
-                bullet.push([...pos,0,0,0,1]); bullet.push([...pos,0,0,0,-1]); bullet.push([...pos,0,0,1,0]); bullet.push([...pos,0,0,-1,0]);
+                bullet.push([...pos,0,0,1,0]); bullet.push([...pos,0,0,-1,0]); bullet.push([...pos,0,0,0,1]); bullet.push([...pos,0,0,0,-1]);
                 addVib += 16;
             }
         } if (["5","6"].indexOf(x[0]) > -1) {
-            if (x[4] <= -2) {
-                hazwardList[y][5] += (0 - x[5]) / 2.5;
-                ctx.globalAlpha = x[5];
+            if (x[5] == 2) {
+                ctx.globalAlpha = easing(beat - x[4], 1, 5);
                 switch (x[0]) {
-                    case "5": ctx.fillRect(-400+((x[1]*1+x[2]*1)/2-x[5]*(x[2]-x[1]+1)/2)*100,canvas.height/2/-ratio,(x[2]-x[1]+1)*100*x[5]/1,canvas.height/ratio); break;
-                    case "6": ctx.fillRect(canvas.width/2/-ratio,-400+((x[1]*1+x[2]*1)/2-x[5]*(x[2]-x[1]+1)/2)*100,canvas.width/ratio,(x[2]-x[1]+1)*100*x[5]/1); break;
+                    case "5": ctx.fillRect(-400+((x[1]*1+x[2]*1)/2-easing(beat-x[4],1,5)*(x[2]-x[1]+1)/2)*100,canvas.height/2/-ratio,(x[2]-x[1]+1)*100*easing(beat-x[4],1,5)/1,canvas.height/ratio); break;
+                    case "6": ctx.fillRect(canvas.width/2/-ratio,-400+((x[1]*1+x[2]*1)/2-easing(beat-x[4],1,5)*(x[2]-x[1]+1)/2)*100,canvas.width/ratio,(x[2]-x[1]+1)*100*easing(beat-x[4],1,5)/1); break;
                 }
-                if (x[4] < -7) delList.unshift(y);
-                hazwardList[y][4]--;
+                if (beat - x[4] > 1) delList.unshift(y);
             } else if (beat >= x[4]) {
                 ctx.globalAlpha = 1;
-                hazwardList[y][5] = Math.min(x[5] + (1.05 - x[5]) / 4, 1);
-                if (x[4] > 0) {addVib += 25; hazwardList[y][4] = -1; tags[x[3]] = Infinity;}
+                if (x[5] == 0) {addVib += 25; hazwardList[y][5] = 1; tags[x[3]] = Infinity;}
                 if (((Math.round(playerX) >= x[1] && Math.round(playerX) <= x[2] && x[0] == "5") || (Math.round(playerY) >= x[1] && Math.round(playerY) <= x[2] && x[0] == "6")) && beat - damagedBeat >= 2) {
                     life -= 0.25;
                     damage += 0.25;
@@ -284,10 +279,10 @@ var drawHazards =()=> {
                     damagedBeat = beat;
                 }
                 switch (x[0]) {
-                    case "5": ctx.fillRect(-400+((x[1]*1+x[2]*1)/2-x[5]*(x[2]-x[1]+1)/2)*100,canvas.height/2/-ratio,(x[2]-x[1]+1)*100*x[5]/1,canvas.height/ratio*x[5]*1.5); break;
-                    case "6": ctx.fillRect(canvas.width/2/-ratio,-400+((x[1]*1+x[2]*1)/2-x[5]*(x[2]-x[1]+1)/2)*100,canvas.width/ratio*x[5]*1.5,(x[2]-x[1]+1)*100*x[5]/1); break;
+                    case "5": ctx.fillRect(-400+((x[1]*1+x[2]*1)/2-easing(x[4]+1-beat,1,4)*(x[2]-x[1]+1)/2)*100,canvas.height/2/-ratio,(x[2]-x[1]+1)*100*easing(x[4]+1-beat,1,4)/1,canvas.height/ratio*easing(x[4]+1-beat,1,4)*1.5); break;
+                    case "6": ctx.fillRect(canvas.width/2/-ratio,-400+((x[1]*1+x[2]*1)/2-easing(x[4]+1-beat,1,4)*(x[2]-x[1]+1)/2)*100,canvas.width/ratio*easing(x[4]+1-beat,1,4)*1.5,(x[2]-x[1]+1)*100*easing(x[4]+1-beat,1,4)/1); break;
                 }
-                if (beat >= tags[x[3]]) {addVib += 16; hazwardList[y][4] = -2}
+                if (beat >= tags[x[3]]) {addVib += 16; hazwardList[y][5] = 2; hazwardList[y][4] = tags[x[3]]}
             } else {
                 ctx.globalAlpha = 0.25 + Math.cos((x[4]+beat)*Math.PI*2) * 0.2;
                 switch (x[0]) {
@@ -322,7 +317,7 @@ var drawHazards =()=> {
             }
             delList.unshift(y);
         }
-        if (Math.abs(x[2]) > 120 || Math.abs(x[3]) > 120) delList.unshift(y);
+        if (Math.abs(x[0]) > canvas.width / ratio / 2 || Math.abs(x[1]) > canvas.height / ratio / 2) delList.unshift(y);
     });
     delList.forEach(x=>bullet.splice(x,1));
     damageEffect = Math.min(damageEffect, 0.75);
@@ -439,7 +434,7 @@ function start(soundTrack) {
     score.forEach((x,j)=>{
         x.forEach((x,i)=>{
             x.forEach(x=>{
-                if (x != "0") hazwards.push([...x.split(""), measure[0] / score[j].length * i + measure[0] * (4 / measure[1]) * j - (["1","2","3","4","5","6"].indexOf(x.charAt(0)) > -1) * 4]);
+                if (x != "0") hazwards.push([...x.split(""), measure[0] * (4 / measure[1]) / score[j].length * i + measure[0] * (4 / measure[1]) * j - (["1","2","3","4","5","6"].indexOf(x.charAt(0)) > -1) * measure[0] * (4 / measure[1])]);
             });
         });
     });
