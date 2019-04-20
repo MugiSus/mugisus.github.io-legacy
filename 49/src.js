@@ -141,7 +141,7 @@ document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
 document.addEventListener("mousemove", (event)=>{mouseX = (event.clientX - canvas.width / 2) / ratio; mouseY = (event.clientY - canvas.height / 2) / ratio;});
 var updatePos =()=> {mouseX = (event.changedTouches[0].pageX - canvas.width / 2 + offsetPos[0]) / ratio; mouseY = (event.changedTouches[0].pageY - canvas.height / 2  + offsetPos[1]) / ratio;};
-document.addEventListener("touchstart", (event)=>{mouseState["left"] = true; updatePos(); offsetPos = [playerX * ratio - (event.changedTouches[0].pageX - canvas.width / 2), playerY * ratio - (event.changedTouches[0].pageY - canvas.height / 2)]});
+document.addEventListener("touchstart", (event)=>{mouseState["left"] = true; offsetPos = [playerX * ratio - (event.changedTouches[0].pageX - canvas.width / 2), playerY * ratio - (event.changedTouches[0].pageY - canvas.height / 2)]; updatePos();});
 document.addEventListener("touchmove", (event)=>{event.preventDefault(); updatePos();}, {passive: false});
 document.addEventListener("touchend", (event)=>{mouseState["left"] = false; updatePos();});
 window.addEventListener("resize", ()=>{resize()});
