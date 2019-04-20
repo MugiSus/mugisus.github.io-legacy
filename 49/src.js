@@ -140,8 +140,8 @@ canvas.addEventListener("mouseup", (event)=>{mouseState[["left","wheel","right"]
 document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
 document.addEventListener("mousemove", (event)=>{mouseX = (event.clientX - canvas.width / 2) / ratio; mouseY = (event.clientY - canvas.height / 2) / ratio;});
-var updatePos =()=> {mouseX = (event.changedTouches[0].pageX - canvas.width / 2) / ratio; mouseY = (event.changedTouches[0].pageY - canvas.height / 2 - 150) / ratio;};
-document.addEventListener("touchstart", (event)=>{mouseState["left"] = true; updatePos()});
+var updatePos =()=> {mouseX = (event.changedTouches[0].pageX - canvas.width / 2) / ratio + offsetPos[0]; mouseY = (event.changedTouches[0].pageY - canvas.height / 2) / ratio + offsetPos[1];};
+document.addEventListener("touchstart", (event)=>{mouseState["left"] = true; updatePos(); offsetPos = [playerX - (event.changedTouches[0].pageX - canvas.width / 2) / ratio || 0, playerY - (event.changedTouches[0].pageY - canvas.height / 2) / ratio || 0]});
 document.addEventListener("touchmove", (event)=>{event.preventDefault(); updatePos();}, {passive: false});
 document.addEventListener("touchend", (event)=>{mouseState["left"] = false; updatePos();});
 window.addEventListener("resize", ()=>{resize()});
@@ -154,7 +154,7 @@ document.title = "49"
 //initalize
 const endless = 0; // for debugging
 
-var vibration, mouseX, playerX, life, beat, timer, nowHazward, lastBeat, lineAlpha, damageEffect, vibration, title, score, hazwards, hazwardList, bullet, bgm, bpm, musicEnd, point, tags, clicked, ended, playerSize, damagedBeat;
+var vibration, mouseX, playerX, life, beat, timer, nowHazward, lastBeat, lineAlpha, damageEffect, vibration, title, score, hazwards, hazwardList, bullet, bgm, bpm, musicEnd, point, tags, clicked, ended, playerSize, damagedBeat, offsetPos;
 
 function init() {
     beat = startBeat = endless || 0;
@@ -179,6 +179,7 @@ function init() {
     ended = false;
     playerSize = 1;
     damagedBeat = -Infinity;
+    offsetPos = [];
 }
 
 init();
