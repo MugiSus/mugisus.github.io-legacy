@@ -123,8 +123,8 @@ function main(){
 
     ctx.globalAlpha = 0.5;
     ctx.font = "5px sans-serif";
-    ctx.fillText("・ ... " + Object.keys(morse).filter(x => morse[x].slice(0,stack.length+1) == stack.join("") + ".").join(" "), 0, -37);
-    ctx.fillText("ー ... " + Object.keys(morse).filter(x => morse[x].slice(0,stack.length+1) == stack.join("") + "-").join(" "), 0, -30);
+    ctx.fillText(stack.map(x => x == "-" ? "ー" : "・").join("") + "・ ... " + Object.keys(morse).filter(x => morse[x].slice(0,stack.length+1) == stack.join("") + ".").join(" "), 0, -37);
+    ctx.fillText(stack.map(x => x == "-" ? "ー" : "・").join("") + "ー ... " + Object.keys(morse).filter(x => morse[x].slice(0,stack.length+1) == stack.join("") + "-").join(" "), 0, -30);
 
     requestAnimationFrame(main);
 }
