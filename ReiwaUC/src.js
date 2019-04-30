@@ -90,11 +90,11 @@ function draw() {
         ctx.fillStyle = "#eebb00";
         ctx.fill();
         ctx.fillStyle = "#ffffff";
-        ctx.font = `200px 'Hiragino Mincho Pro'`;
-        ctx.strokeText(`令和`, -500, 000);
-        ctx.strokeText(`元年`, 500, 000);
-        ctx.fillText(`令和`, -500, 000);
-        ctx.fillText(`元年`, 500, 000);
+        ctx.font = `150px 'Hiragino Mincho Pro'`;
+        ctx.strokeText(`令和`, -500, -100);
+        ctx.strokeText(`元年`, 500, -100);
+        ctx.fillText(`令和`, -500, -100);
+        ctx.fillText(`元年`, 500, -100);
         ctx.fillStyle = "#eebb00";
         dateList = [nowDate.getHours(), nowDate.getMinutes(), nowDate.getSeconds()].map(x => (x + "").length == 1 ? "0" + x : x);
         ctx.fillStyle = "#ffffff";
