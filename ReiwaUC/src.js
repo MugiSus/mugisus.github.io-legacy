@@ -43,7 +43,7 @@ ctx.lineWidth = 10;
 ctx.strokeText(`令 和 完 全 勝 利 U C`, 0, 35);
 ctx.fillText(`令 和 完 全 勝 利 U C`, 0, 35);
 
-document.title = `まだ令和`;
+document.title = `まだ平成`;
 
 function draw() {
     nowDate = new Date();
@@ -91,10 +91,10 @@ function draw() {
         ctx.fill();
         ctx.fillStyle = "#ffffff";
         ctx.font = `200px 'Hiragino Mincho Pro'`;
-        ctx.strokeText(`令`, -500, 000);
-        ctx.strokeText(`和`, 500, 000);
-        ctx.fillText(`令`, -500, 000);
-        ctx.fillText(`和`, 500, 000);
+        ctx.strokeText(`令和`, -500, 000);
+        ctx.strokeText(`元年`, 500, 000);
+        ctx.fillText(`令和`, -500, 000);
+        ctx.fillText(`元年`, 500, 000);
         ctx.fillStyle = "#eebb00";
         dateList = [nowDate.getHours(), nowDate.getMinutes(), nowDate.getSeconds()].map(x => (x + "").length == 1 ? "0" + x : x);
         ctx.fillStyle = "#ffffff";
