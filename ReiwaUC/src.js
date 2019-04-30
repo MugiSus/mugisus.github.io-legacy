@@ -27,6 +27,7 @@ var played;
 var debugTime = 0;
 var effect = 1, lastSec = -1;
 var dateList;
+var testFrame = 0;
 var targetTime = new Date("2019/05/01 00:00:00");
 var adjust =(dateString)=> {debugTime = new Date(dateString).getTime() - new Date().getTime();}
 
@@ -65,6 +66,7 @@ function draw() {
         document.title = "ん？";
         setTimeout(()=>document.title = "流れ変わったな", 10000);
         audio["unicorn.mp3"].currentTime = (nowDate.getTime() - targetTime.getTime()) / 1000 + 41.3;
+        audio["unicorn.mp3"].volume = 1;
         audio["unicorn.mp3"].play();
         played = true;
     }
@@ -115,6 +117,21 @@ function draw() {
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(-canvas.width / 2 / ratio, -canvas.height / 2 / ratio, canvas.width / ratio, canvas.height / ratio);
         }
+        if (nowDate.getTime() < targetTime.getTime() - 41300) {
+            ctx.globalAlpha = mouseY > canvas.height / 2 / ratio - 50 ? 1 : 0.25;
+            ctx.fillStyle = "#888888";
+            ctx.fillRect(-canvas.width / 2 / ratio, canvas.height / 2 / ratio - 50, canvas.width / ratio, 50);
+            ctx.fillStyle = "#ffffff";
+            ctx.font = `30px 'Hiragino Mincho Pro'`;
+                ctx.fillText("音声テストをする（ここをクリックしてすぐ流れれば準備完了）", 0, canvas.height / 2 / ratio - 15);
+            if (mouseY > canvas.height / 2 / ratio - 50 && mouseState.left == true && testFrame == 0) {
+                testFrame = 499;
+                audio["unicorn.mp3"].currentTime = 0;
+                audio["unicorn.mp3"].play();
+                audio["unicorn.mp3"].volume = 1;
+            }
+        }
+        if (testFrame > 0) {testFrame--; audio["unicorn.mp3"].volume -= 0.002;}
     }
     requestAnimationFrame(draw);
 }
@@ -123,5 +140,5 @@ document.onclick =()=> {
     Object.keys(audio).forEach(x=>{audio[x].play(); audio[x].pause();});
     draw();
     audio["tick.mp3"].volume = 0.1;
-    document.onclick = "";
+    document.onclick = null;
 }
