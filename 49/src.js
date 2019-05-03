@@ -166,7 +166,7 @@ resize();
 document.title = "49"
 
 //initalize
-const endless = 272; // for debugging
+const endless = 0; // for debugging
 
 var vibration, mouseX, playerX, life, beat, timer, nowHazward, lastBeat, lineAlpha, damageEffect, vibration, title, score, hazwards, hazwardList, bullet, bgm, bpm, musicEnd, point, tags, clicked, ended, playerSize, damagedBeat;
 
