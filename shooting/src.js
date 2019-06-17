@@ -45,9 +45,9 @@ var backGround =()=>{
     ctx.line(900,-1600,900,1600);
     ctx.line(900,1600,-900,1600);
     ctx.line(-900,1600,-900,-1600);
-    while (stars.length < 100) stars.push([-900 + Math.random() * 1800, -1600, 1 + Math.random() * 19, 0.5 + Math.random() * 0.5]);
+    while (stars.length < 100) stars.push([-900 + Math.random() * 1800, -1600 + (Math.random() - 0.5) * speed, 1 + Math.random() * 19]);
     stars.forEach((x,y)=>{
-        ctx.globalAlpha = x[2] / 20;
+        ctx.globalAlpha = x[2] / 40;
         ctx.beginPath();
         ctx.arc(x[0], x[1], x[2], 0, Math.PI * 2, false);
         ctx.closePath();
@@ -59,7 +59,7 @@ var backGround =()=>{
 
 function game(){
     time = new Date().getTime() - started;
-    ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio, canvas.height / ratio);
+    ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);
     if (time % 20000 < 5000) speed;
     else if (time % 20000 < 10000) speed+=1;
     else if (time % 20000 < 15000) speed;
