@@ -59,7 +59,7 @@ var backGround =()=>{
 
 function game(){
     time = new Date().getTime() - started;
-    ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio, canvas.width / ratio);
+    ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio, canvas.height / ratio);
     if (time % 20000 < 5000) speed;
     else if (time % 20000 < 10000) speed+=1;
     else if (time % 20000 < 15000) speed;
