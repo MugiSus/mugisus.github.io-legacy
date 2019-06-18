@@ -25,7 +25,7 @@ resize();
 
 document.title = "Shooting";
 
-var stars = [], started = new Date().getTime(), time = 0, speed = 100, starDen = 0;
+var stars = [], started = new Date().getTime(), time = 0, speed = 5, starDen = 0;
 while (stars.length < 60) stars.push([-900 + Math.random() * 1800, -1600 + Math.random() * 3200, 1 + Math.random() * 19, 0.5 + Math.random() * 0.5]);
 
 ctx.__proto__.line =(x0, y0, x1, y1)=> {
@@ -36,14 +36,11 @@ ctx.__proto__.line =(x0, y0, x1, y1)=> {
     ctx.stroke();
 };
 
+var setValue =(obj)=> Object.keys(obj).forEach(x=>ctx[x] = obj[x]);
+
 var backGround =()=>{
-    ctx.globalAlpha = 1;
-    ctx.fillStyle = "#ffffff"
-    ctx.strokeStyle = "#ffffff"
-    ctx.lineWidth = 3;
-    ctx.line(-900,-1600,900,-1600);
+    setValue({"globalAlpha":1, "fillStyle":"#ffffff", "strokeStyle":"#ffffff", "lineWidth":"10"});
     ctx.line(900,-1600,900,1600);
-    ctx.line(900,1600,-900,1600);
     ctx.line(-900,1600,-900,-1600);
     while (stars.length < 60) stars.push([-900 + Math.random() * 1800, -1600 + (Math.random() - 0.5) * speed, 1 + Math.random() * 19]);
     stars.forEach((x,y)=>{
@@ -57,15 +54,13 @@ var backGround =()=>{
     stars = stars.filter(x=>x[1] < 1600);
 }
 
-function game(){
+function title(){
     time = new Date().getTime() - started;
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);
-    if (time % 20000 < 5000) speed;
-    else if (time % 20000 < 10000) speed+=0.5;
-    else if (time % 20000 < 15000) speed;
-    else if (time % 20000 < 20000) speed-=0.5;
     backGround();
-    requestAnimationFrame(game);
+    setValue({"globalAlpha":0.8, "textAlign":"center", "font":"300px sans-serif"});
+    ctx.fillText("Shooting", 0, -800);
+    requestAnimationFrame(title);
 }
 
-game();
+title();
