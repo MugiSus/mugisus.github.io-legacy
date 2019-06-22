@@ -56,18 +56,19 @@ ctx.__proto__.line =(x0, y0, x1, y1)=> {
 
 var bullet = class {
     constructor (x, y, vx, vy, type) {
-
+        this.x = x;
     }
 
 }
 
 var drawCursor =(x, y)=> {
-    ctxSetValue({"globalAlpha":lowPower ? (time % 0.5 < 0.25 ? 0.25 : 0.75) : 1, "strokeStyle":"#bbbb00", "fillStyle":"#bbbb00", "lineWidth":20});
-    cursorX += ((playerX + mouseX * 2) - cursorX) / 2;
-    cursorY += ((playerY + mouseY * 2) - cursorY) / 2;
+    ctxSetValue({"globalAlpha":lowPower ? (time % 0.5 < 0.25 ? 0.25 : 0.75) : 1, "strokeStyle":"#eeee00", "fillStyle":"#eeee00", "lineWidth":10});
+    cursorX += ((playerX + mouseX * 2) - cursorX) / 3;
+    cursorY += ((playerY + mouseY * 2) - cursorY) / 3;
     ctx.beginPath();
-    ctx.arc(cursorX, cursorY, 15, 0, Math.PI * 2);
+    ctx.arc(cursorX, cursorY, 10, 0, Math.PI * 2);
     ctx.fill();
+
     ctx.beginPath();
     ctx.moveTo(cursorX, cursorY + 75 + 100 * bulletPower);
     ctx.lineTo(cursorX, cursorY + 75);
@@ -78,9 +79,25 @@ var drawCursor =(x, y)=> {
     ctx.moveTo(cursorX - 75 - 100 * bulletPower, cursorY);
     ctx.lineTo(cursorX - 75, cursorY);
     ctx.stroke();
+
+    ctx.globalAlpha *= 0.5
+    ctx.beginPath();
+    ctx.moveTo(cursorX, cursorY + 250);
+    ctx.lineTo(cursorX, 1600);
+    ctx.moveTo(cursorX, cursorY - 250);
+    ctx.lineTo(cursorX, -1600);
+    ctx.moveTo(cursorX + 250, cursorY);
+    ctx.lineTo(900, cursorY);
+    ctx.moveTo(cursorX - 250, cursorY);
+    ctx.lineTo(-900, cursorY);
+    ctx.stroke();
 }
 
 var drawPlayer =(x, y)=> {
+    ctxSetValue({"globalAlpha":lowPower ? (time % 0.5 < 0.25 ? 0.2 : 0.4) : 0.5, "strokeStyle":"#bbbbbb", "lineWidth":10});
+    ctx.beginPath();
+    ctx.arc(playerX, playerY, 130, Math.PI * -0.5, Math.PI * -0.5 + Math.PI * 2 * bulletPower);
+    ctx.stroke();
     ctx.beginPath();
     ctxSetValue({"globalAlpha":1, "fillStyle":"#bbbbbb"});
     ctx.moveTo(x-100, y+50);
@@ -151,14 +168,14 @@ function title() {
 
 function game() {
     initCanvas();
-    drawBullet();
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);
     playerX += ((keydown.d || 0) - (keydown.a || 0)) * 20;
     playerY += ((keydown.s || 0) - (keydown.w || 0)) * 20;
     playerX = Math.min(Math.max(playerX, -800), 800);
     playerY = Math.min(Math.max(playerY, -1550), 1550);
-    drawCursor();
     backGround();
+    drawBullet();
+    drawCursor();
     drawPlayer(playerX, playerY);
     raf(game);
 }
