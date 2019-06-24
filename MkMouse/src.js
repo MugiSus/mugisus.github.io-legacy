@@ -44,7 +44,7 @@ resize();
 
 document.title = "Mk.mouse";
 
-var stars = [], speed = 5, clock = 0, playerX = 0, playerY = 1800, vibration = 0, cursorX = 0, cursorY = 0, bulletPower = 1, lowPower = false;
+var stars = [], speed = 5, clock = 0, playerX = 0, playerY = 1800, vibration = 0, cursorX = 0, cursorY = 0, bulletPower = 1, lowPower = false, bulletData = [];
 while (stars.length < 60) stars.push([-900 + Math.random() * 1800, -1600 + Math.random() * 3200, 1 + Math.random() * 19, 0.5 + Math.random() * 0.5]);
 
 ctx.__proto__.line =(x0, y0, x1, y1)=> {
@@ -55,16 +55,32 @@ ctx.__proto__.line =(x0, y0, x1, y1)=> {
 };
 
 var bullet = class {
-    constructor (x, y, vx, vy, type) {
+    constructor (x, y, vx, vy, vvx, vvy, type) {
         this.x = x;
+        this.y = y;
+        this.vx = vx;
+        this.vy = vy;
+        this.vvx = vvx;
+        this.vvy = vvy;
+        this.type = type;
     }
-
+    draw() {
+        this.x += this.vx += this.vvx;
+        this.y += this.vy += this.vvy;
+        switch (this.type) {
+            case 0: {
+                ctxSetValue({"globalAlpha":1, "fillStyle":"#dddd00"});
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+    }
 }
 
 var drawCursor =(x, y)=> {
     ctxSetValue({"globalAlpha":lowPower ? (time % 0.5 < 0.25 ? 0.25 : 0.75) : 1, "strokeStyle":"#eeee00", "fillStyle":"#eeee00", "lineWidth":10});
-    cursorX += ((playerX + mouseX * 2) - cursorX) / 3;
-    cursorY += ((playerY + mouseY * 2) - cursorY) / 3;
+
     ctx.beginPath();
     ctx.arc(cursorX, cursorY, 10, 0, Math.PI * 2);
     ctx.fill();
@@ -82,14 +98,22 @@ var drawCursor =(x, y)=> {
 
     ctx.globalAlpha *= 0.5
     ctx.beginPath();
-    ctx.moveTo(cursorX, cursorY + 250);
-    ctx.lineTo(cursorX, 1600);
-    ctx.moveTo(cursorX, cursorY - 250);
-    ctx.lineTo(cursorX, -1600);
-    ctx.moveTo(cursorX + 250, cursorY);
-    ctx.lineTo(900, cursorY);
-    ctx.moveTo(cursorX - 250, cursorY);
-    ctx.lineTo(-900, cursorY);
+    ctx.moveTo(cursorX - 250, cursorY - 100);
+    ctx.lineTo(cursorX - 250, cursorY - 200);
+    ctx.lineTo(cursorX - 200, cursorY - 250);
+    ctx.lineTo(cursorX - 100, cursorY - 250);
+    ctx.moveTo(cursorX + 250, cursorY - 100);
+    ctx.lineTo(cursorX + 250, cursorY - 200);
+    ctx.lineTo(cursorX + 200, cursorY - 250);
+    ctx.lineTo(cursorX + 100, cursorY - 250);
+    ctx.moveTo(cursorX - 250, cursorY + 100);
+    ctx.lineTo(cursorX - 250, cursorY + 200);
+    ctx.lineTo(cursorX - 200, cursorY + 250);
+    ctx.lineTo(cursorX - 100, cursorY + 250);
+    ctx.moveTo(cursorX + 250, cursorY + 100);
+    ctx.lineTo(cursorX + 250, cursorY + 200);
+    ctx.lineTo(cursorX + 200, cursorY + 250);
+    ctx.lineTo(cursorX + 100, cursorY + 250);
     ctx.stroke();
 }
 
@@ -139,12 +163,27 @@ var backGround =()=> {
 }
 
 var drawBullet =()=> {
-    bulletPower = Math.max(Math.min(bulletPower, 1), 0); 
     if (bulletPower == 0) lowPower = true;
     if (lowPower) bulletPower += 0.005
-    else if (mouseState.left) bulletPower -= 0.01;
+    else if (mouseState.left) {
+        bulletData.push(new bullet(playerX,playerY,0,-100,0,-1,0));
+        bulletPower -= 0.01;
+    }
     else bulletPower += 0.0075
     if (bulletPower >= 1 && lowPower) lowPower = false;
+    bulletPower = Math.max(Math.min(bulletPower, 1), 0);
+    bulletData.forEach(x=>x.draw());
+}
+
+var sense =()=> {
+    playerX += ((keydown.d || 0) - (keydown.a || 0)) * 20;
+    playerY += ((keydown.s || 0) - (keydown.w || 0)) * 20;
+    playerX = Math.min(Math.max(playerX, -800), 800);
+    playerY = Math.min(Math.max(playerY, -1550), 1550);
+    cursorX += ((playerX + mouseX * 2) - cursorX) / 3;
+    cursorY += ((playerY + mouseY * 2) - cursorY) / 3;
+    cursorX = Math.min(Math.max(cursorX, -900), 900);
+    cursorY = Math.min(Math.max(cursorY, -1600), 1600);
 }
 
 function title() {
@@ -168,11 +207,7 @@ function title() {
 
 function game() {
     initCanvas();
-    ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);
-    playerX += ((keydown.d || 0) - (keydown.a || 0)) * 20;
-    playerY += ((keydown.s || 0) - (keydown.w || 0)) * 20;
-    playerX = Math.min(Math.max(playerX, -800), 800);
-    playerY = Math.min(Math.max(playerY, -1550), 1550);
+    sense();
     backGround();
     drawBullet();
     drawCursor();
