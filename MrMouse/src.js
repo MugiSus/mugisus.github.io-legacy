@@ -92,38 +92,47 @@ var drawCursor =(x, y)=> {
     ctxSetValue({"globalAlpha":lowPower ? (time % 0.5 < 0.25 ? 0.25 : 0.75) : 1, "strokeStyle":"#eeee00", "fillStyle":"#eeee00", "lineWidth":10});
 
     ctx.beginPath();
-    ctx.arc(cursorX, cursorY, 10, 0, Math.PI * 2);
+    ctx.arc(x, y, 10, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.beginPath();
-    ctx.moveTo(cursorX, cursorY + 75 + 100 * bulletPower);
-    ctx.lineTo(cursorX, cursorY + 75);
-    ctx.moveTo(cursorX, cursorY - 75 - 100 * bulletPower);
-    ctx.lineTo(cursorX, cursorY - 75);
-    ctx.moveTo(cursorX + 75 + 100 * bulletPower, cursorY);
-    ctx.lineTo(cursorX + 75, cursorY);
-    ctx.moveTo(cursorX - 75 - 100 * bulletPower, cursorY);
-    ctx.lineTo(cursorX - 75, cursorY);
+    ctx.moveTo(x, y + 75 + 100 * bulletPower);
+    ctx.lineTo(x, y + 75);
+    ctx.moveTo(x, y - 75 - 100 * bulletPower);
+    ctx.lineTo(x, y - 75);
+    ctx.moveTo(x + 75 + 100 * bulletPower, y);
+    ctx.lineTo(x + 75, y);
+    ctx.moveTo(x - 75 - 100 * bulletPower, y);
+    ctx.lineTo(x - 75, y);
     ctx.stroke();
 
     ctx.globalAlpha *= 0.5
     ctx.beginPath();
-    ctx.moveTo(cursorX - 250, cursorY - 100);
-    ctx.lineTo(cursorX - 250, cursorY - 200);
-    ctx.lineTo(cursorX - 200, cursorY - 250);
-    ctx.lineTo(cursorX - 100, cursorY - 250);
-    ctx.moveTo(cursorX + 250, cursorY - 100);
-    ctx.lineTo(cursorX + 250, cursorY - 200);
-    ctx.lineTo(cursorX + 200, cursorY - 250);
-    ctx.lineTo(cursorX + 100, cursorY - 250);
-    ctx.moveTo(cursorX - 250, cursorY + 100);
-    ctx.lineTo(cursorX - 250, cursorY + 200);
-    ctx.lineTo(cursorX - 200, cursorY + 250);
-    ctx.lineTo(cursorX - 100, cursorY + 250);
-    ctx.moveTo(cursorX + 250, cursorY + 100);
-    ctx.lineTo(cursorX + 250, cursorY + 200);
-    ctx.lineTo(cursorX + 200, cursorY + 250);
-    ctx.lineTo(cursorX + 100, cursorY + 250);
+    ctx.moveTo(x - 250, y - 100);
+    ctx.lineTo(x - 250, y - 200);
+    ctx.lineTo(x - 200, y - 250);
+    ctx.lineTo(x - 100, y - 250);
+    ctx.moveTo(x + 250, y - 100);
+    ctx.lineTo(x + 250, y - 200);
+    ctx.lineTo(x + 200, y - 250);
+    ctx.lineTo(x + 100, y - 250);
+    ctx.moveTo(x - 250, y + 100);
+    ctx.lineTo(x - 250, y + 200);
+    ctx.lineTo(x - 200, y + 250);
+    ctx.lineTo(x - 100, y + 250);
+    ctx.moveTo(x + 250, y + 100);
+    ctx.lineTo(x + 250, y + 200);
+    ctx.lineTo(x + 200, y + 250);
+    ctx.lineTo(x + 100, y + 250);
+
+    ctx.moveTo(x + 125 + 100 * bulletPower, y);
+    ctx.lineTo(900, y);
+    ctx.moveTo(x - 125 - 100 * bulletPower, y, y);
+    ctx.lineTo(-900, y);
+    ctx.moveTo(x, y + 125 + 100 * bulletPower);
+    ctx.lineTo(x, 1600);
+    ctx.moveTo(x, y - 125 - 100 * bulletPower);
+    ctx.lineTo(x, -1600);
     ctx.stroke();
 }
 
@@ -224,7 +233,7 @@ function game() {
     sense();
     backGround();
     drawBullet();
-    drawCursor();
+    drawCursor(cursorX, cursorY);
     drawPlayer(playerX, playerY);
     raf(game);
 }
