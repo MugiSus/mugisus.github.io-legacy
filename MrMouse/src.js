@@ -1,5 +1,5 @@
 //canvas starter kit
-var mouseState = {}, keydown = {}, paused = [0, 0], time, started = new Date().getTime();
+var mouseState = {}, keydown = {w:false, a:false, s:false, d:false}, paused = [0, 0], time, started = new Date().getTime();
 const canvas = document.getElementById("disp");
 const ctx = canvas.getContext("2d");
 var ctxSetValue =(obj)=> Object.keys(obj).forEach(x=>ctx[x] = obj[x]);
@@ -126,13 +126,13 @@ var drawCursor =(x, y)=> {
     ctx.lineTo(x + 100, y + 250);
 
     ctx.moveTo(x + 125 + 100 * bulletPower, y);
-    ctx.lineTo(900, y);
+    ctx.lineTo(canvas.width / 2 / ratio, y);
     ctx.moveTo(x - 125 - 100 * bulletPower, y, y);
-    ctx.lineTo(-900, y);
+    ctx.lineTo(canvas.width / -2 / ratio, y);
     ctx.moveTo(x, y + 125 + 100 * bulletPower);
-    ctx.lineTo(x, 1600);
+    ctx.lineTo(x, canvas.height / 2 / ratio);
     ctx.moveTo(x, y - 125 - 100 * bulletPower);
-    ctx.lineTo(x, -1600);
+    ctx.lineTo(x, canvas.height / -2 / ratio);
     ctx.stroke();
 }
 
@@ -199,8 +199,8 @@ var drawBullet =()=> {
 }
 
 var sense =()=> {
-    playerX += ((keydown.d || 0) - (keydown.a || 0)) * 20;
-    playerY += ((keydown.s || 0) - (keydown.w || 0)) * 20;
+    playerX += (keydown.d - keydown.a) * 20;
+    playerY += (keydown.s - keydown.w) * 20;
     playerX = Math.min(Math.max(playerX, -800), 800);
     playerY = Math.min(Math.max(playerY, -1550), 1550);
     cursorX += ((playerX + mouseX * 2) - cursorX) / 3;
