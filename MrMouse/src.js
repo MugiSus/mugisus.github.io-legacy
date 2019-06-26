@@ -1,5 +1,5 @@
 //canvas starter kit
-var mouseState = {}, keydown = {w:false, a:false, s:false, d:false}, paused = [0, 0], time, started = new Date().getTime();
+var mouseState = {}, keydown = {}, paused = [0, 0], time, started = new Date().getTime();
 const canvas = document.getElementById("disp");
 const ctx = canvas.getContext("2d");
 var ctxSetValue =(obj)=> Object.keys(obj).forEach(x=>ctx[x] = obj[x]);
@@ -46,6 +46,7 @@ document.title = "Mr.mouse";
 
 var stars = [], speed = 5, clock = 0, playerX = 0, playerY = 1800, vibration = 0, cursorX = 0, cursorY = 0, bulletPower = 1, lowPower = false, bulletData = [], lastBullet = 0, rate = 5, bulletCost = 0.005;
 while (stars.length < 60) stars.push([-900 + Math.random() * 1800, -1600 + Math.random() * 3200, 1 + Math.random() * 19, 0.5 + Math.random() * 0.5]);
+keydown = {w:false, a:false, s:false, d:false};
 
 ctx.__proto__.line =(x0, y0, x1, y1)=> {
     ctx.beginPath();
@@ -63,21 +64,27 @@ var bullet = class {
         this.x2 = x2;
         this.y2 = y2;
         this.type = type;
+        this.lastX = x0;
+        this.lastY = y0;
     }
-
     draw() {
+        this.lastX = this.x0;
+        this.lastY = this.y0;
         switch (this.type) {
             case 0: {
                 this.x0 += this.x1 * Math.sin(this.y1);
                 this.y0 += this.x1 * Math.cos(this.y1) * -1;
                 let dir = Math.atan2(this.x2 - this.x0, this.y0 - this.y2);
-                if (Math.abs(this.y1 - dir) < Math.PI * (2 / 360)) this.y1 = dir;
-                else if (this.y1 - dir < 0) this.y1 += Math.PI * (2 / 360);
-                else if (this.y1 - dir > 0) this.y1 -= Math.PI * (2 / 360);
-                ctxSetValue({"globalAlpha":1, "fillStyle":"#dddd00"});
+                if (Math.abs(this.y1 - dir) < Math.PI * (4 / 360)) this.y1 = dir;
+                else if (this.y1 - dir < 0) this.y1 += Math.PI * (4 / 360);
+                else if (this.y1 - dir > 0) this.y1 -= Math.PI * (4 / 360);
+                ctxSetValue({"globalAlpha":1, "strokeStyle":"#dddd00", "lineWidth":30});
                 ctx.beginPath();
-                ctx.arc(this.x0, this.y0, 20, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.moveTo(this.x0, this.y0);
+                ctx.lineTo(this.x0 + 150 * Math.sin(this.y1), this.y0 + 150 * Math.cos(this.y1) * -1);
+                ctx.stroke();
+                ctxSetValue({"strokeStyle":"#eeeeee", "lineWidth":10});
+                ctx.stroke();
                 break;
             }
             default: {
@@ -183,14 +190,14 @@ var backGround =()=> {
 
 var drawBullet =()=> {
     if (bulletPower == 0) lowPower = true;
-    if (lowPower) bulletPower += bulletCost * 0.75;
+    if (lowPower) bulletPower += bulletCost * 0.5;
     else if (mouseState.left || keydown[" "]) {
         bulletPower -= bulletCost;
         if (Math.floor(bulletPower / (rate * bulletCost)) != lastBullet) {
-            bulletData.push(new bullet(playerX, playerY, 100, 0, cursorX, cursorY, 0));
+            bulletData.push(new bullet(playerX, playerY, 150, 0, cursorX, cursorY, 0));
             vibration = 7;
         }
-    } else bulletPower += bulletCost * 0.75;
+    } else bulletPower += bulletCost * 1.25;
     if (bulletPower >= 1 && lowPower) lowPower = false;
     lastBullet = Math.floor(bulletPower / (rate * bulletCost));
     bulletPower = Math.max(Math.min(bulletPower, 1), 0);
@@ -215,9 +222,10 @@ function title() {
     if (mouseState.left && !clock) clock = time;
     ctx.globalAlpha = Math.max(clock ? 1 - (time - clock) / 1 : 1, 0) * 0.8;
     ctxSetValue({"textAlign":"center", "font":"300px sans-serif"});
-    ctx.fillText("Mr.mouse", 0, -800);
+    ctx.fillText("Mr.mouse", 0, -650);
     ctxSetValue({"font":"100px sans-serif"});
     ctx.fillText("-click to start-", 0, 800);
+    if (!location.href.match(/^https/)) ctx.fillText("-editable edition-", 0, -400);
     drawPlayer(playerX, playerY);
     if (clock) {
         if (time - clock < 3) {speed = 10 + (time - clock) / 3 * 490; vibration = (time - clock) / 3 * 8}
