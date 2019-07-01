@@ -44,9 +44,12 @@ resize();
 
 document.title = "Mr.mouse";
 
-var stars = [], speed = 5, clock = 0, playerX = 0, playerY = 1800, vibration = 0, cursorX = 0, cursorY = 0, bulletPower = 1, lowPower = false, bulletData = [], lastBullet = 0, rate = 5, bulletCost = 0.005;
+var stars = [], speed = 5, clock = 0, playerX = 0, playerY = 1800, vibration = 0, cursorX = 0, cursorY = 0, bulletPower = 1, lowPower = false, bulletData = [], lastBullet = 0;
 while (stars.length < 60) stars.push([-900 + Math.random() * 1800, -1600 + Math.random() * 3200, 1 + Math.random() * 19, 0.5 + Math.random() * 0.5]);
 keydown = {w:false, a:false, s:false, d:false};
+
+//rate = 5, bulletCost = 0.005;
+rate = 15, bulletCost = 0.002;
 
 ctx.__proto__.line =(x0, y0, x1, y1)=> {
     ctx.beginPath();
@@ -56,40 +59,67 @@ ctx.__proto__.line =(x0, y0, x1, y1)=> {
 };
 
 var bullet = class {
-    constructor (x0, y0, x1, y1, x2, y2, type) {
-        this.x0 = x0;
-        this.y0 = y0;
+    constructor (x, y, x1, y1, x2, y2, type) {
+        this.x = x;
+        this.y = y;
         this.x1 = x1;
         this.y1 = y1;
         this.x2 = x2;
         this.y2 = y2;
         this.type = type;
-        this.lastX = x0;
-        this.lastY = y0;
+        this.lastX = x;
+        this.lastY = y;
     }
     draw() {
-        this.lastX = this.x0;
-        this.lastY = this.y0;
+        this.lastX = this.x;
+        this.lastY = this.y;
         switch (this.type) {
             case 0: {
-                this.x0 += this.x1 * Math.sin(this.y1);
-                this.y0 += this.x1 * Math.cos(this.y1) * -1;
-                let dir = Math.atan2(this.x2 - this.x0, this.y0 - this.y2);
-                if (Math.abs(this.y1 - dir) < Math.PI * (4 / 360)) this.y1 = dir;
-                else if (this.y1 - dir < 0) this.y1 += Math.PI * (4 / 360);
-                else if (this.y1 - dir > 0) this.y1 -= Math.PI * (4 / 360);
+                this.x += this.x1 * Math.sin(this.y1);
+                this.y += this.x1 * Math.cos(this.y1) * -1;
+                let dir = Math.atan2(this.x2 - this.x, (this.y2 - this.y) * -1);
+                if (this.y1 > 0 && dir < Math.PI / -2) dir += Math.PI * 2;
+                else if (this.y1 < 0 && dir > Math.PI / 2) dir -= Math.PI * 2;
+                if (Math.abs(this.y1 - dir) < Math.PI * (2 / 180)) this.y1 = dir;
+                else if (this.y1 - dir < 0) this.y1 += Math.PI * (2 / 180);
+                else if (this.y1 - dir > 0) this.y1 -= Math.PI * (2 / 180);
+                if (this.y1 > Math.PI) this.y1 -= Math.PI * 2;
+                else if (this.y1 < -Math.PI) this.y1 += Math.PI * 2;
                 ctxSetValue({"globalAlpha":1, "strokeStyle":"#dddd00", "lineWidth":30});
                 ctx.beginPath();
-                ctx.moveTo(this.x0, this.y0);
-                ctx.lineTo(this.x0 + 150 * Math.sin(this.y1), this.y0 + 150 * Math.cos(this.y1) * -1);
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.x + 150 * Math.sin(this.y1), this.y + 150 * Math.cos(this.y1) * -1);
                 ctx.stroke();
                 ctxSetValue({"strokeStyle":"#eeeeee", "lineWidth":10});
                 ctx.stroke();
-                break;
-            }
+            } break;
+            case 1:{
+                if (this.x1 == -1) {
+                    this.x2 += 0.04;
+                    ctxSetValue({"globalAlpha":Math.max(0, 1 - this.x2), "strokeStyle":"#dddd00", "fillStyle":"#ffffff", "lineWidth":150 * (1 - this.x2)});
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, (1 - (this.x2 - 1) ** 2) * 200, 0, Math.PI*2);
+                    ctx.stroke();
+                    if (this.x2 > 1) this.x = Infinity;
+                } else {
+                    this.x1 += 0.04;
+                    this.y = this.y1 - (1 - (this.x1 - 1) ** 2) * 800
+                    ctxSetValue({"globalAlpha":1, "strokeStyle":"#dddd00", "fillStyle":"#ffffff", "lineWidth":20});
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, 40, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.stroke();
+                    if (this.x1 > 1) {
+                        vibration = 20;
+                        for (let i = -4; i < 4; i++) bulletData.push(new bullet(this.x, this.y, 50, i * Math.PI * (45 / 180), this.x2, this.y2, 0))
+                        this.x1 = -1;
+                        this.x2 = 0;
+                    }
+                }
+            } break;
             default: {
-                this.x0 += this.x1 += this.x2;
-                this.y0 += this.y1 += this.y2;
+                this.x += this.x1 += this.x2;
+                this.y += this.y1 += this.y2;
             }
         }
     }
@@ -170,7 +200,7 @@ var initCanvas =()=> {
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);
     let rand = Math.random() * Math.PI * 2;
     ctx.translate(vibration * Math.sin(rand), vibration * Math.cos(rand));
-    vibration += (0 - vibration) / 5;
+    vibration += (0 - vibration) / 10;
 }
 
 var backGround =()=> {
@@ -194,15 +224,16 @@ var drawBullet =()=> {
     else if (mouseState.left || keydown[" "]) {
         bulletPower -= bulletCost;
         if (Math.floor(bulletPower / (rate * bulletCost)) != lastBullet) {
-            bulletData.push(new bullet(playerX, playerY, 150, 0, cursorX, cursorY, 0));
-            vibration = 7;
+            //bulletData.push(new bullet(playerX, playerY, 150, 0, cursorX, cursorY, 0));
+            bulletData.push(new bullet(playerX, playerY, 0, playerY, cursorX, cursorY, 1))
+            vibration = 4;
         }
     } else bulletPower += bulletCost * 1.25;
-    if (bulletPower >= 1 && lowPower) lowPower = false;
+    if (bulletPower >= 0.5 && lowPower) lowPower = false;
     lastBullet = Math.floor(bulletPower / (rate * bulletCost));
     bulletPower = Math.max(Math.min(bulletPower, 1), 0);
     bulletData.forEach(x=>x.draw());
-    bulletData = bulletData.filter(x=>Math.abs(x.x0) < 900 && Math.abs(x.y0) < 1600);
+    bulletData = bulletData.filter(x=>Math.abs(x.x) < 900 && Math.abs(x.y) < 1600);
 }
 
 var sense =()=> {
