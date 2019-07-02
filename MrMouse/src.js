@@ -1,5 +1,5 @@
 //canvas starter kit
-var mouseState = {}, keydown = {}, paused = [0, 0], time, started = new Date().getTime(), timeStamp = [], mouseX = 0, mouseY = 0, touchX, touchY;
+var mouseState = {}, keydown = {}, paused = [0, 0], time, started = new Date().getTime(), timeStamp = [], mouseX = 0, mouseY = 0, touchX = [], touchY = [];
 const canvas = document.getElementById("disp");
 const ctx = canvas.getContext("2d");
 var ctxSetValue =(obj)=> Object.keys(obj).forEach(x=>ctx[x] = obj[x]);
@@ -35,8 +35,8 @@ canvas.addEventListener("mouseup", (event)=>{mouseState[["left","wheel","right"]
 document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
 document.addEventListener("mousemove", (event)=>{mouseX = (event.clientX - canvas.width / 2) / ratio; mouseY = (event.clientY - canvas.height / 2) / ratio;});
-var updatePos =()=> {event.changedTouches.forEach((x,y)=>{touchX[y] = (x.pageX - canvas.width / 2) / ratio; touchY[y] = (x.pageY - canvas.height / 2) / ratio;})};
-document.addEventListener("touchstart", ()=>{mouseState["left"] = true; updatePos();});
+var updatePos =(event)=> {event.changedTouches.forEach((x,y)=>{touchX[y] = (x.pageX - canvas.width / 2) / ratio; touchY[y] = (x.pageY - canvas.height / 2) / ratio;})};
+document.addEventListener("touchstart", ()=>{mouseState["left"] = true; updatePos(event);});
 document.addEventListener("touchmove", (event)=>{event.preventDefault(); updatePos();}, {passive: false});
 document.addEventListener("touchend", ()=>{mouseState["left"] = false; updatePos();});
 window.addEventListener("resize", ()=>{resize()});
@@ -242,8 +242,7 @@ var drawBullet =()=> {
 }
 
 var sense =()=> {
-    if (touchX) {
-        ctx.fillText(`FPS${touchX[0]}${touchX[1]}`, -890, -1520);
+    if (touchX.length) {
         playerX = touchX[0];
         playerY = touchY[0];
         cursorX = touchX[1];
