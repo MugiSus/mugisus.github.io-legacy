@@ -1,8 +1,13 @@
 //canvas starter kit
-var mouseState = {}, keydown = {}, paused = [0, 0], time, started = new Date().getTime();
+var mouseState = {}, keydown = {}, paused = [0, 0], time, started = new Date().getTime(), timeStamp = [];
 const canvas = document.getElementById("disp");
 const ctx = canvas.getContext("2d");
 var ctxSetValue =(obj)=> Object.keys(obj).forEach(x=>ctx[x] = obj[x]);
+var getFPS =(sec = 1)=> {
+    timeStamp.push(time);
+    timeStamp = timeStamp.filter(x => time - x <= sec);
+    return timeStamp.length / sec;
+}
 var ratio, resize =()=> {
     canvas.height = document.body.clientHeight; canvas.width = document.body.clientWidth;
     ratio = Math.min(canvas.width / 1800, canvas.height / 3200);
@@ -125,6 +130,17 @@ var bullet = class {
     }
 }
 
+var initCanvas =()=> {
+    ctx.restore();
+    ctx.save();
+    ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);
+    let rand = Math.random() * Math.PI * 2;
+    ctx.translate(vibration * Math.sin(rand), vibration * Math.cos(rand));
+    ctxSetValue({"globalAlpha":0.8, "fillStyle":"#ffffff", "font":"80px sans-serif"});
+    ctx.fillText(`FPS:${getFPS()}`, -890, -1520);
+    vibration += (0 - vibration) / 10;
+}
+
 var drawCursor =(x, y)=> {
     ctxSetValue({"globalAlpha":lowPower ? (time % 0.5 < 0.25 ? 0.25 : 0.75) : 1, "strokeStyle":"#eeee00", "fillStyle":"#eeee00", "lineWidth":10});
 
@@ -192,15 +208,6 @@ var drawPlayer =(x, y)=> {
     ctx.lineTo(x, y+25);
     ctx.closePath();
     ctx.fill();
-}
-
-var initCanvas =()=> {
-    ctx.restore();
-    ctx.save();
-    ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);
-    let rand = Math.random() * Math.PI * 2;
-    ctx.translate(vibration * Math.sin(rand), vibration * Math.cos(rand));
-    vibration += (0 - vibration) / 10;
 }
 
 var backGround =()=> {
