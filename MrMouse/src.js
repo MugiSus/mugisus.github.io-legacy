@@ -79,10 +79,10 @@ var bullet = class {
                 this.y += this.x1 * Math.cos(this.y1) * -1;
                 let dir = Math.atan2(this.x2 - this.x, (this.y2 - this.y) * -1);
                 if (this.y1 > 0 && dir < Math.PI / -2) dir += Math.PI * 2;
-                else if (this.y1 < 0 && dir > Math.PI / 2) dir -= Math.PI * 2;
-                if (Math.abs(this.y1 - dir) < Math.PI * (2 / 180)) this.y1 = dir;
-                else if (this.y1 - dir < 0) this.y1 += Math.PI * (2 / 180);
-                else if (this.y1 - dir > 0) this.y1 -= Math.PI * (2 / 180);
+                else if (this.y1 < 0 && dir >= Math.PI / 2) dir -= Math.PI * 2;
+                if (Math.abs(this.y1 - dir) <= Math.PI * (2 / 180)) this.y1 = dir;
+                else if (this.y1 < dir) this.y1 += Math.PI * (2 / 180);
+                else if (this.y1 > dir) this.y1 -= Math.PI * (2 / 180);
                 if (this.y1 > Math.PI) this.y1 -= Math.PI * 2;
                 else if (this.y1 < -Math.PI) this.y1 += Math.PI * 2;
                 ctxSetValue({"globalAlpha":1, "strokeStyle":"#dddd00", "lineWidth":30});
@@ -96,7 +96,7 @@ var bullet = class {
             case 1:{
                 if (this.x1 == -1) {
                     this.x2 += 0.04;
-                    ctxSetValue({"globalAlpha":Math.max(0, 1 - this.x2), "strokeStyle":"#dddd00", "fillStyle":"#ffffff", "lineWidth":150 * (1 - this.x2)});
+                    ctxSetValue({"globalAlpha":Math.max(0, 1 - this.x2), "strokeStyle":"#dddd22", "lineWidth":150 * (1 - this.x2)});
                     ctx.beginPath();
                     ctx.arc(this.x, this.y, (1 - (this.x2 - 1) ** 2) * 200, 0, Math.PI*2);
                     ctx.stroke();
