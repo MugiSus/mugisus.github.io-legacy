@@ -14,6 +14,10 @@ canvas.addEventListener("mouseup", (event)=>{mouseState[["left","wheel","right"]
 document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
 document.addEventListener("mousemove", (event)=>{mouseX = (event.clientX - canvas.width / 2) / ratio; mouseY = (event.clientY - canvas.height / 2) / ratio;});
+var updatePos =()=> {mouseX = (event.changedTouches[0].pageX - canvas.width / 2) / ratio; mouseY = (event.changedTouches[0].pageY - canvas.height / 2) / ratio;};
+document.addEventListener("touchstart", ()=>{mouseState["left"] = true; updatePos();});
+document.addEventListener("touchmove", (event)=>{event.preventDefault(); updatePos();}, {passive: false});
+document.addEventListener("touchend", ()=>{mouseState["left"] = false; updatePos();});
 window.addEventListener("resize", ()=>{resize()});
 canvas.oncontextmenu =()=> {return false;};
 resize();
@@ -95,9 +99,5 @@ function game(){
 };
 
 const uAgent = navigator.userAgent;
-if ((uAgent.indexOf('iPhone') > 0 && uAgent.indexOf('iPad') == -1) || uAgent.indexOf('iPod') > 0 || uAgent.indexOf('Android') > 0) {
-    canvas.addEventListener("touchstart", ()=>{waveList.push(new wave(mouseX - scrollX, mouseY - scrollY, `hsl(${hue+=10}, 100%, 75%)`));});  
-} else {
-    canvas.addEventListener("click", ()=>{waveList.push(new wave(mouseX - scrollX, mouseY - scrollY, `hsl(${hue+=10}, 100%, 75%)`));});
-}
+canvas.addEventListener(((uAgent.indexOf('iPhone') > 0 && uAgent.indexOf('iPad') == -1) || uAgent.indexOf('iPod') > 0 || uAgent.indexOf('Android') > 0) ? "touchstart" : "click", ()=>{waveList.push(new wave(mouseX - scrollX, mouseY - scrollY, `hsl(${hue+=10}, 100%, 75%)`));});  
 game();
