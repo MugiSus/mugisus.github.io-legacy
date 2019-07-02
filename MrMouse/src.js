@@ -243,6 +243,7 @@ var drawBullet =()=> {
 
 var sense =()=> {
     if (touchX) {
+        ctx.fillText(`FPS${touchX[0]}${touchX[1]}`, -890, -1520);
         playerX = touchX[0];
         playerY = touchY[0];
         cursorX = touchX[1];
