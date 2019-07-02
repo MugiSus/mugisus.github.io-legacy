@@ -1,5 +1,5 @@
 //canvas starter kit
-var mouseState = {}, keydown = {}, paused = [0, 0], time, started = new Date().getTime(), timeStamp = [], mouseX = 0, mouseY = 0, touchX = [], touchY = [];
+var mouseState = {}, keydown = {}, paused = [0, 0], time, started = new Date().getTime(), timeStamp = []. mouseX = 0, mouseY = 0;
 const canvas = document.getElementById("disp");
 const ctx = canvas.getContext("2d");
 var ctxSetValue =(obj)=> Object.keys(obj).forEach(x=>ctx[x] = obj[x]);
@@ -35,10 +35,10 @@ canvas.addEventListener("mouseup", (event)=>{mouseState[["left","wheel","right"]
 document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
 document.addEventListener("mousemove", (event)=>{mouseX = (event.clientX - canvas.width / 2) / ratio; mouseY = (event.clientY - canvas.height / 2) / ratio;});
-var updatePos =(event)=> {event.touches.forEach((x,y)=>{touchX[y] = (x.pageX - canvas.width / 2) / ratio; touchY[y] = (x.pageY - canvas.height / 2) / ratio;})};
-document.addEventListener("touchstart", ()=>{mouseState["left"] = true; updatePos(event);});
-document.addEventListener("touchmove", (event)=>{event.preventDefault(); updatePos(event);}, {passive: false});
-document.addEventListener("touchend", ()=>{mouseState["left"] = false; updatePos(event);});
+var updatePos =()=> {mouseX = (event.changedTouches[0].pageX - canvas.width / 2) / ratio; mouseY = (event.changedTouches[0].pageY - canvas.height / 2) / ratio;};
+document.addEventListener("touchstart", ()=>{mouseState["left"] = true; updatePos();});
+document.addEventListener("touchmove", (event)=>{event.preventDefault(); updatePos();}, {passive: false});
+document.addEventListener("touchend", ()=>{mouseState["left"] = false; updatePos();});
 window.addEventListener("resize", ()=>{resize()});
 canvas.oncontextmenu =()=> {return false;};
 canvas.addEventListener("mouseover", ()=>{paused[0] = 0});
@@ -242,19 +242,12 @@ var drawBullet =()=> {
 }
 
 var sense =()=> {
-    if (touchX.length) {
-        playerX = touchX[0];
-        playerY = touchY[0];
-        cursorX = touchX[1];
-        cursorY = touchY[1];
-    } else {
-        playerX += (keydown.d - keydown.a) * 20;
-        playerY += (keydown.s - keydown.w) * 20;
-        cursorX += ((playerX + mouseX * 2) - cursorX) / 3;
-        cursorY += ((playerY + mouseY * 2) - cursorY) / 3;
-    }
+    playerX += (keydown.d - keydown.a) * 20;
+    playerY += (keydown.s - keydown.w) * 20;
     playerX = Math.min(Math.max(playerX, -800), 800);
     playerY = Math.min(Math.max(playerY, -1550), 1550);
+    cursorX += ((playerX + mouseX * 2) - cursorX) / 3;
+    cursorY += ((playerY + mouseY * 2) - cursorY) / 3;
     cursorX = Math.min(Math.max(cursorX, -900), 900);
     cursorY = Math.min(Math.max(cursorY, -1600), 1600);
 }
