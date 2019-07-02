@@ -42,7 +42,7 @@ const wave = class {
         this.i = Math.min(Math.max(this.i + 0.0025, 0), 1);
         ctx.strokeStyle = this.color;
         ctx.globalAlpha = 1 - this.i;
-        ctx.circle(this.x + scrollX, this.y + scrollY, (1 - ((1 - this.i) ** 1.5)) * 100);
+        ctx.circle(this.x + scrollX, this.y + scrollY, (1 - ((1 - this.i) ** 2)) * 100);
     }
 };
 
@@ -62,16 +62,7 @@ ctx.__proto__.circle =(x, y, radius, fill = false)=> {
 
 var drawWave =()=> {
     ctx.lineWidth = 0.25;
-    waveList.forEach(x=>{
-        x.draw();
-        /*
-        ctx.strokeStyle = x.color;
-        ctx.globalAlpha = (300 - x.flame) / 300
-        ctx.circle(x.x + scrollX, x.y + scrollY, x.flame / 3);
-        waveList[y].flame++
-        if (x.flame >= 300) deleteList.push(y);
-        */
-    });
+    waveList.forEach(x=>x.draw());
     waveList = waveList.filter(x => x.i < 1)
 };
 
