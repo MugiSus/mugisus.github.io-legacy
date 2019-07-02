@@ -35,7 +35,7 @@ canvas.addEventListener("mouseup", (event)=>{mouseState[["left","wheel","right"]
 document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
 document.addEventListener("mousemove", (event)=>{mouseX = (event.clientX - canvas.width / 2) / ratio; mouseY = (event.clientY - canvas.height / 2) / ratio;});
-var updatePos =(event)=> {event.changedTouches.forEach((x,y)=>{touchX[y] = (x.pageX - canvas.width / 2) / ratio; touchY[y] = (x.pageY - canvas.height / 2) / ratio;})};
+var updatePos =(event)=> {event.touches.forEach((x,y)=>{touchX[y] = (x.pageX - canvas.width / 2) / ratio; touchY[y] = (x.pageY - canvas.height / 2) / ratio;})};
 document.addEventListener("touchstart", ()=>{mouseState["left"] = true; updatePos(event);});
 document.addEventListener("touchmove", (event)=>{event.preventDefault(); updatePos(event);}, {passive: false});
 document.addEventListener("touchend", ()=>{mouseState["left"] = false; updatePos(event);});
