@@ -1,5 +1,5 @@
 //canvas starter kit
-var mouseState = {}, keydown = {}, paused = [0, 0], time, started = new Date().getTime(), timeStamp = []. mouseX = 0, mouseY = 0;
+var mouseState = {}, keydown = {}, paused = [0, 0], time, started = new Date().getTime(), timeStamp = [], mouseX = 0, mouseY = 0;
 const canvas = document.getElementById("disp");
 const ctx = canvas.getContext("2d");
 var ctxSetValue =(obj)=> Object.keys(obj).forEach(x=>ctx[x] = obj[x]);
