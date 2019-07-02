@@ -27,24 +27,22 @@ var scrollX = scrollY = 0;
 var targetX = targetY = 0;
 var time = 0;
 var moveX = moveY = 0;
-var waveList = [], dotList = [];
+var waveList = [];
 var hue = 0;
+var clicked = false;
 
 const wave = class {
     constructor(x, y, color) {
         this.x = x;
         this.y = y;
-        this.flame = 0;
+        this.i = 0;
         this.color = color;
     }
-};
-
-const dot = class {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.flame = 0;
-        this.size = 10 + Math.random() * 30
+    draw() {
+        this.i = Math.min(Math.max(this.i + 0.0025, 0), 1);
+        ctx.strokeStyle = this.color;
+        ctx.globalAlpha = 1 - this.i;
+        ctx.circle(this.x + scrollX, this.y + scrollY, (1 - ((1 - this.i) ** 1.5)) * 100);
     }
 };
 
@@ -64,15 +62,17 @@ ctx.__proto__.circle =(x, y, radius, fill = false)=> {
 
 var drawWave =()=> {
     ctx.lineWidth = 0.25;
-    let deleteList = [];
-    waveList.forEach((x,y)=>{
+    waveList.forEach(x=>{
+        x.draw();
+        /*
         ctx.strokeStyle = x.color;
         ctx.globalAlpha = (300 - x.flame) / 300
         ctx.circle(x.x + scrollX, x.y + scrollY, x.flame / 3);
         waveList[y].flame++
         if (x.flame >= 300) deleteList.push(y);
+        */
     });
-    deleteList.forEach(x=>{waveList.splice(x,1);})
+    waveList = waveList.filter(x => x.i < 1)
 };
 
 var drawBorder =()=> {
@@ -93,11 +93,13 @@ function game(){
     else if (time < -120) {let random = Math.random() * Math.PI * 2; moveX = Math.sin(random) * 0.5; moveY = Math.cos(random) * 0.5; time = 300;}
     time--;
     scrollX += (targetX - scrollX) / 50; scrollY += (targetY - scrollY) / 50;
+    if (mouseState.left && !clicked) {
+        waveList.push(new wave(mouseX - scrollX, mouseY - scrollY, `hsl(${hue+=10}, 100%, 75%)`));
+        clicked = true;
+    } else if (!mouseState.left && clicked) clicked = false;
     drawBorder();
     drawWave();
     requestAnimationFrame(game);
 };
 
-const uAgent = navigator.userAgent;
-canvas.addEventListener(((uAgent.indexOf('iPhone') > 0 && uAgent.indexOf('iPad') == -1) || uAgent.indexOf('iPod') > 0 || uAgent.indexOf('Android') > 0) ? "touchstart" : "click", ()=>{waveList.push(new wave(mouseX - scrollX, mouseY - scrollY, `hsl(${hue+=10}, 100%, 75%)`));});  
 game();
