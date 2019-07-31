@@ -1,5 +1,5 @@
 //canvas starter kit
-var mouseState = {"wheel":0, "x":0, "y":0}, keydown = {}, time, fps, timeStamp = [], started = new Date().getTime();
+var mouseState = {"wheel":3, "x":0, "y":0}, keydown = {}, time, fps, timeStamp = [], started = new Date().getTime();
 const canvas = document.getElementById("disp");
 const ctx = canvas.getContext("2d");
 var ctxSet =(obj)=> Object.keys(obj).forEach(x=>ctx[x] = obj[x]);
@@ -30,7 +30,7 @@ canvas.oncontextmenu =()=> {return false;};
 resize();
 //end kit
 
-var things = {}, clicked = false, offSet = [[0,0],[0,0]], stageMove = false, cameraX = 0, cameraY = 0, cameraZoom = 1, mouseXinStage, mouseYinStage, zindex = 0, thingId = 0, drawList = [], idList = [], lastWheel = 0, cursorAlpha = 0.1;
+var things = {}, clicked = false, offSet = [[0,0],[0,0]], stageMove = false, cameraX = 0, cameraY = 0, cameraZoom = 1.2 ** -3, mouseXinStage, mouseYinStage, zindex = 0, thingId = 0, drawList = [], idList = [], lastWheel = 3, cursorAlpha = 0.1;
 
 //start defining GATEs
 
