@@ -1,5 +1,5 @@
 //canvas starter kit
-var mouseState = {}, keydown = {}, time, fps, timeStamp = [], started = new Date().getTime();
+var mouseState = {"wheel":0, "x":0, "y":0}, keydown = {}, time, fps, timeStamp = [], started = new Date().getTime();
 const canvas = document.getElementById("disp");
 const ctx = canvas.getContext("2d");
 var ctxSet =(obj)=> Object.keys(obj).forEach(x=>ctx[x] = obj[x]);
@@ -17,6 +17,7 @@ var ratio, resize =()=> {
 }
 canvas.addEventListener("mousedown", (event)=>{mouseState[["left","wheel","right"][event.button]] = true;});
 canvas.addEventListener("mouseup", (event)=>{mouseState[["left","wheel","right"][event.button]] = false;});
+canvas.addEventListener("wheel", (event)=>{mouseState["wheel"] += event.deltaY > 0 ? 1 : -1});
 document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
 document.addEventListener("mousemove", (event)=>{mouseState.x = (event.clientX - canvas.width / 2) / ratio; mouseState.y = (event.clientY - canvas.height / 2) / ratio; mouseState.cliX = event.clientX; mouseState.cliY = event.clientY;});
@@ -29,11 +30,11 @@ canvas.oncontextmenu =()=> {return false;};
 resize();
 //end kit
 
-var things = {}, clicked = false, offSet = [[0,0],[0,0]], stageMove = false, cameraX = 0, cameraY = 0, cameraZoom = 0.5, mouseXinStage, mouseYinStage, zindex = 0, thingId = 0, drawList = [], idList = [], mouseVel = [];
+var things = {}, clicked = false, offSet = [[0,0],[0,0]], stageMove = false, cameraX = 0, cameraY = 0, cameraZoom = 1, mouseXinStage, mouseYinStage, zindex = 0, thingId = 0, drawList = [], idList = [], lastWheel = 0, cursorAlpha = 0.1;
 
 //start defining GATEs
 
-var ORGATE = class {
+var OR = class {
     constructor(x, y) {
         this.x = x;
         this.y = y;
@@ -65,7 +66,7 @@ var ORGATE = class {
     }
 };
 
-var ANDGATE = class {
+var AND = class {
     constructor(x, y) {
         this.x = x;
         this.y = y;
@@ -98,7 +99,7 @@ var ANDGATE = class {
     }
 };
 
-var XORGATE = class {
+var XOR = class {
     constructor(x, y) {
         this.x = x;
         this.y = y;
@@ -133,7 +134,7 @@ var XORGATE = class {
     }
 };
 
-var NOTGATE = class {
+var NOT = class {
     constructor(x, y) {
         this.x = x;
         this.y = y;
@@ -198,6 +199,16 @@ var INPUT = class {
         this.lastClicked = 0;
     }
     getPath(id) {
+        let color;
+        if (((mouseXinStage - this.x) ** 2 + (mouseYinStage - this.y) ** 2) ** 0.5 < 75) {
+            if (mouseState.left && !this.lastClicked) this.lastClicked = new Date().getTime();
+            else if (!mouseState.left && this.lastClicked) {
+                if (new Date().getTime() - this.lastClicked < 300) this.out0 = this.out0 ? false : true;
+                this.lastClicked = 0;
+            }
+            color = this.bool ? "#ff8888" : "#aaaaff";
+        } else color = this.bool ? "#ff4444" : "#6666ff";
+
         this.bool = this.out0;
 
         let path = new Path2D();
@@ -206,15 +217,6 @@ var INPUT = class {
         path.arc(this.x, this.y, 75, 0, Math.PI*2);
         path.moveTo(this.x + 75, this.y);
         path.lineTo(this.x + 175, this.y);
-        let color;
-        if (ctx.isPointInPath(path, mouseState.cliX, mouseState.cliY)) {
-            if (mouseState.left && !this.lastClicked) this.lastClicked = new Date().getTime();
-            else if (!mouseState.left && this.lastClicked) {
-                if (new Date().getTime() - this.lastClicked < 300) this.out0 = this.out0 ? false : true;
-                this.lastClicked = 0;
-            }
-            color = this.bool ? "#ff8888" : "#aaaaff";
-        } else color = this.bool ? "#ff4444" : "#6666ff";
         drawList.unshift({"type":"gate", "path":path, "style":color});
         dragger(path, id, this);
     }
@@ -229,7 +231,7 @@ var WIRE = class {
         this.outNum = outNum;
         this.z = 0;
     }
-    getPath() {
+    getPath(id) {
         this.bool = things[this.in0][`out${this.inNum}`];
         things[this.out0][`in${this.outNum}`] = this.bool;
 
@@ -238,7 +240,8 @@ var WIRE = class {
         path.moveTo(p[0], p[1]);
         if (p[0] < p[2]) path.bezierCurveTo(p[0] + (p[2] - p[0]) * 0.5, p[1], p[0] + (p[2] - p[0]) * 0.5, p[3], p[2], p[3]);
         else path.bezierCurveTo(p[0], p[1] + (p[3] - p[1]) * 0.5, p[2], p[1] + (p[3] - p[1]) * 0.5, p[2], p[3]);
-        drawList.unshift({"type":"wire", "path":path, "bool":this.bool});
+
+        drawList.unshift({"type":"wire", "path":path, "style":this.bool?"#cc6666":"#666688"});
     }
 };
 
@@ -262,16 +265,16 @@ var dragger =(path, id, obj)=> {
 
 var sort =()=> idList = Object.keys(things).sort((a,b)=>{return things[a].z < things[b].z ? 1 : (things[a].z > things[b].z ? -1 : 0)});
 
-var make =(thing, id = ++thingId)=> things[id] = thing;
+var make =(thing, id = ++thingId)=> {things[id] = thing; sort();}
 
 make(new INPUT(-1500,-500,true),"input1");
 make(new INPUT(-1500,0),"input2");
 make(new INPUT(-1500,500,true),"input3");
-make(new XORGATE(-500,-500),"xor1");
-make(new ANDGATE(-500,0),"and1");
-make(new XORGATE(500,-500),"xor2");
-make(new ANDGATE(500,-60),"and2");
-make(new ORGATE(500,500),"or1");
+make(new XOR(-500,-500),"xor1");
+make(new AND(-500,0),"and1");
+make(new XOR(500,-500),"xor2");
+make(new AND(500,-60),"and2");
+make(new OR(500,500),"or1");
 make(new OUTPUT(1500,-500),"digit1");
 make(new OUTPUT(1500,500),"digit2");
 make(new WIRE("input1",0,"xor1",0));
@@ -286,38 +289,55 @@ make(new WIRE("and2",0,"or1",0));
 make(new WIRE("and1",0,"or1",1));
 make(new WIRE("xor2",0,"digit1",0));
 make(new WIRE("or1",0,"digit2",0));
-sort();
 
 function main() {
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);
-    mouseVel = [(mouseState.x - cameraX) / cameraZoom - mouseXinStage, (mouseState.y - cameraY) / cameraZoom - mouseYinStage];
-    mouseXinStage = (mouseState.x - cameraX) / cameraZoom;
-    mouseYinStage = (mouseState.y - cameraY) / cameraZoom;
+    ctx.strokeStyle = "#888888"
+    ctx.globalAlpha = (cursorAlpha += (0.25 - cursorAlpha) / 25);
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(-100,0);
+    ctx.lineTo(-40,0);
+    ctx.moveTo(40,0);
+    ctx.lineTo(100,0);
+    ctx.moveTo(0,-100);
+    ctx.lineTo(0,-40);
+    ctx.moveTo(0,40);
+    ctx.lineTo(0,100);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    mouseXinStage = (mouseState.x - (-cameraX * cameraZoom)) / cameraZoom;
+    mouseYinStage = (mouseState.y - (-cameraY * cameraZoom)) / cameraZoom;
+    if (mouseState.wheel != lastWheel) {
+        cursorAlpha = 1
+        cameraZoom = 1.2 ** -mouseState.wheel;
+        lastWheel = mouseState.wheel;
+    }
     if (mouseState.right) {
         if (!stageMove) {
             stageMove = true;
-            offSet[1] = [mouseState.x - -cameraX, mouseState.y - -cameraY];
+            offSet[1] = [mouseState.x - (-cameraX * cameraZoom), mouseState.y - (-cameraY * cameraZoom)];
         }
-        cameraX = (mouseState.x - offSet[1][0]) * -1;
-        cameraY = (mouseState.y - offSet[1][1]) * -1; 
+        cameraX = (mouseState.x - offSet[1][0]) * -1 / cameraZoom;
+        cameraY = (mouseState.y - offSet[1][1]) * -1 / cameraZoom;
     } else if (stageMove && !mouseState.right) stageMove = false;
-    drawList = [];
     ctx.save();
-    ctx.translate(-cameraX, -cameraY);
     ctx.scale(cameraZoom, cameraZoom);
+    ctx.translate(-cameraX, -cameraY);
+    drawList = [];
     idList.forEach(x=>things[x].getPath(x));
     drawList.forEach(x=>{
         switch (x.type) {
             case "gate" : {
+                ctx.fillStyle = x.style;
                 ctx.lineWidth = 10;
                 ctx.strokeStyle = "#202020";
-                ctx.fillStyle = x.style;
                 ctx.fill(x.path);
                 ctx.stroke(x.path);
             } break;
             case "wire" : {
+                ctx.strokeStyle = x.style;
                 ctx.lineWidth = 20;
-                ctx.strokeStyle = x.bool ? "#ee6666" : "#666688";
                 ctx.stroke(x.path);
             } break;
         }
