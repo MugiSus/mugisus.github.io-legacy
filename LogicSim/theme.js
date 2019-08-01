@@ -22,6 +22,6 @@ const theme = {
 }
 
 let themeName = /theme=(.+)/gi.exec(location.search);
-let color = theme[themeName ? themeName[1] : "light"];
+color = themeName ? theme[themeName[1]] || theme["light"] : theme["light"];
 
 document.body.style.backgroundColor = color.bg;
