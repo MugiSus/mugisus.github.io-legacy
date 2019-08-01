@@ -302,6 +302,7 @@ let INPUT = class {
         this.z = ++zindex;
         this.bool = def;
         this.out0 = def;
+        this.def = def;
         this.pinPos = [[[0,0]],[[175,0]]];
         this.lastClicked = 0;
     }
@@ -370,6 +371,27 @@ let dragger =(path, id, obj)=> {
     } else if (!mouseState.left && clicked) clicked = false;
 }
 
+let exportCode =()=> {
+    sort();
+    let code = [];
+    idList.forEach(x=>{
+        if (things[x].constructor.name == "WIRE") code.push([idList.indexOf(things[x].in0.toString())+1, things[x].inNum, idList.indexOf(things[x].out0.toString())+1, things[x].outNum])
+        else code.push([["OR","AND","XOR","NOT","NOR","NAND","XNOR","OUTPUT","INPUT","-"].indexOf(things[x].constructor.name)+(things[x].constructor.name=="INPUT" && things[x].def ? 1 : 0), Math.floor(things[x].x), Math.floor(things[x].y)])
+    });
+    return code.map(x=>x.join(",")).join(";");
+}
+
+let importCode =(code)=> {
+    let importArr = code.split(";").map(x=>x.split(","))
+    zindex = 0;
+    things = {};
+    importArr.forEach((x,y)=>{
+        if (x.length == 4) things[y+1] = new WIRE(...x);
+        else things[y+1] = new [OR,AND,XOR,NOT,NOR,NAND,XNOR,OUTPUT,INPUT,INPUT][x[0]](x[1]*1,x[2]*1,x[0]==9?true:null);
+    });
+    sort();
+}
+
 let sort =()=> idList = Object.keys(things).sort((a,b)=>{return things[a].z < things[b].z ? 1 : (things[a].z > things[b].z ? -1 : 0)});
 
 let make =(thing, id = ++thingId)=> {things[id] = thing; sort();}
@@ -427,72 +449,8 @@ let drawMenu =()=> {
 
 }
 
-
-make(new INPUT(-1500,-500,true),"input1");
-make(new INPUT(-1500,0),"input2");
-make(new INPUT(-1500,500,true),"input3");
-make(new XOR(-500,-500),"xor1");
-make(new AND(-500,0),"and1");
-make(new XOR(500,-500),"xor2");
-make(new AND(500,0),"and2");
-make(new OR(500,500),"or1");
-make(new OUTPUT(1500,-500),"digit1");
-make(new OUTPUT(1500,500),"digit2");
-make(new WIRE("input1",0,"xor1",0));
-make(new WIRE("input2",0,"xor1",1));
-make(new WIRE("input1",0,"and1",0));
-make(new WIRE("input2",0,"and1",1));
-make(new WIRE("xor1",0,"and2",0));
-make(new WIRE("input3",0,"and2",1));
-make(new WIRE("xor1",0,"xor2",0));
-make(new WIRE("input3",0,"xor2",1));
-make(new WIRE("and2",0,"or1",0));
-make(new WIRE("and1",0,"or1",1));
-make(new WIRE("xor2",0,"digit1",0));
-make(new WIRE("or1",0,"digit2",0));
-
-/*
-make(new NOT(-1000,-1000));
-make(new OUTPUT(-1000,-600));
-make(new OUTPUT(-1000,-200));
-make(new OUTPUT(-1000,200));
-make(new OUTPUT(-1000,600));
-make(new OUTPUT(-1000,1000));
-make(new OUTPUT(-600,1000));
-make(new OUTPUT(-200,1000));
-make(new OUTPUT(200,1000));
-make(new OUTPUT(600,1000));
-make(new OUTPUT(1000,1000));
-make(new OUTPUT(1000,600));
-make(new OUTPUT(1000,200));
-make(new OUTPUT(1000,-200));
-make(new OUTPUT(1000,-600));
-make(new OUTPUT(1000,-1000));
-make(new OUTPUT(600,-1000));
-make(new OUTPUT(200,-1000));
-make(new OUTPUT(-200,-1000));
-make(new OUTPUT(-600,-1000));
-make(new WIRE(1,0,2,0));
-make(new WIRE(2,0,3,0));
-make(new WIRE(3,0,4,0));
-make(new WIRE(4,0,5,0));
-make(new WIRE(5,0,6,0));
-make(new WIRE(6,0,7,0));
-make(new WIRE(7,0,8,0));
-make(new WIRE(8,0,9,0));
-make(new WIRE(9,0,10,0));
-make(new WIRE(10,0,11,0));
-make(new WIRE(11,0,12,0));
-make(new WIRE(12,0,13,0));
-make(new WIRE(13,0,14,0));
-make(new WIRE(14,0,15,0));
-make(new WIRE(15,0,16,0));
-make(new WIRE(16,0,17,0));
-make(new WIRE(17,0,18,0));
-make(new WIRE(18,0,19,0));
-make(new WIRE(19,0,20,0));
-make(new WIRE(20,0,1,0));
-*/
+//importCode("7,1500,500;7,1500,-500;0,500,500;1,500,0;2,500,-500;1,-500,0;2,-500,-500;9,-1500,500;8,-1500,0;9,-1500,-500;10,0,7,0;9,0,7,1;10,0,6,0;9,0,6,1;7,0,4,0;8,0,4,1;7,0,5,0;8,0,5,1;4,0,3,0;6,0,3,1;5,0,2,0;3,0,1,0");
+importCode("3,-1000,-1000;7,-1000,-600;7,-1000,-200;7,-1000,200;7,-1000,600;7,-1000,1000;7,-600,1000;7,-200,1000;7,200,1000;7,600,1000;7,1000,1000;7,1000,600;7,1000,200;7,1000,-200;7,1000,-600;7,1000,-1000;7,600,-1000;7,200,-1000;7,-200,-1000;7,-600,-1000;1,0,2,0;2,0,3,0;3,0,4,0;4,0,5,0;5,0,6,0;6,0,7,0;7,0,8,0;8,0,9,0;9,0,10,0;10,0,11,0;11,0,12,0;12,0,13,0;13,0,14,0;14,0,15,0;15,0,16,0;16,0,17,0;17,0,18,0;18,0,19,0;19,0,20,0;20,0,1,0")
 
 function main() {
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);

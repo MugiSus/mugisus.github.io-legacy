@@ -28,6 +28,16 @@ const theme = {
         gFalseFocus:"#888884bb",
         wTrue:"#22bb2288",
         wFalse:"#88888888"
+    },
+    "ice": {
+        bg:"#66bbbb",
+        contour:"#666666",
+        gTrue:"#eeeeeedd",
+        gFalse:"#66bbbb44",
+        gTrueFocus:"#eeeeee",
+        gFalseFocus:"#99ddddbb",
+        wTrue:"#ffffff88",
+        wFalse:"#55888888"
     }
 }
 
