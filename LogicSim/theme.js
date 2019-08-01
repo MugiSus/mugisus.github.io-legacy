@@ -27,7 +27,7 @@ const theme = {
         gTrueFocus:"#88ff88bb",
         gFalseFocus:"#888884bb",
         wTrue:"#22bb2288",
-        wFalse:"#66666688"
+        wFalse:"#88888888"
     }
 }
 
