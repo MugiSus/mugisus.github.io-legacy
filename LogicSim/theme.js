@@ -18,6 +18,16 @@ const theme = {
         gFalseFocus:"#4444ffbb",
         wTrue:"#ff444444",
         wFalse:"#4444ff44"
+    },
+    "cyber": {
+        bg:"#111111",
+        contour:"#dddddd",
+        gTrue:"#00ff00bb",
+        gFalse:"#444444bb",
+        gTrueFocus:"#88ff88bb",
+        gFalseFocus:"#888884bb",
+        wTrue:"#22bb2288",
+        wFalse:"#66666688"
     }
 }
 

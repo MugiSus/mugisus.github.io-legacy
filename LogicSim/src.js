@@ -427,7 +427,7 @@ let drawMenu =()=> {
 
 }
 
-/*
+
 make(new INPUT(-1500,-500,true),"input1");
 make(new INPUT(-1500,0),"input2");
 make(new INPUT(-1500,500,true),"input3");
@@ -450,9 +450,8 @@ make(new WIRE("and2",0,"or1",0));
 make(new WIRE("and1",0,"or1",1));
 make(new WIRE("xor2",0,"digit1",0));
 make(new WIRE("or1",0,"digit2",0));
-*/
 
-
+/*
 make(new NOT(-1000,-1000));
 make(new OUTPUT(-1000,-600));
 make(new OUTPUT(-1000,-200));
@@ -493,6 +492,7 @@ make(new WIRE(17,0,18,0));
 make(new WIRE(18,0,19,0));
 make(new WIRE(19,0,20,0));
 make(new WIRE(20,0,1,0));
+*/
 
 function main() {
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);
