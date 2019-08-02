@@ -464,23 +464,23 @@ let cameraSet =()=> {
 let drawMenu =()=> {
     ctx.fillStyle = color.menu;
     ctx.beginPath()
-    ctx.moveTo(-1600,-900);
-    ctx.lineTo(-1600,menuY-50);
-    ctx.quadraticCurveTo(-1600,menuY,-1550,menuY);
-    ctx.lineTo(1550,menuY);
-    ctx.quadraticCurveTo(1600,menuY,1600,menuY-50);
-    ctx.lineTo(1600,-900);
+    ctx.moveTo(-1600,-canvas.height/2/ratio);
+    ctx.lineTo(-1600,menuY-canvas.height/2/ratio-50);
+    ctx.quadraticCurveTo(-1600,menuY-canvas.height/2/ratio,-1550,menuY-canvas.height/2/ratio);
+    ctx.lineTo(1550,menuY-canvas.height/2/ ratio);
+    ctx.quadraticCurveTo(1600,menuY-canvas.height/2/ratio,1600,menuY-canvas.height/2/ratio-50);
+    ctx.lineTo(1600,-canvas.height/2/ratio);
     ctx.fill();
-    if (mouseState.y < menuY && !clicked) {
-        menuYvel += (-600 - menuY) / 10;
+    if (mouseState.y+canvas.height/2/ratio < menuY && !clicked) {
+        menuYvel += (300 - menuY) / 10;
         menuYvel *= 0.8;
     } else {
-        menuYvel += (-825 - menuY) / 10;
+        menuYvel += (50 - menuY) / 10;
         menuYvel *= 0.6;
     }
     menuY += menuYvel;
     drawList = [];
-    [OR,AND,XOR,NOT,NOR,NAND,XNOR,OUTPUT,INPUT].forEach((x,y,z)=>drawList.unshift([new x((-1400 + (y/(z.length-1)) * 2800) * 2, (menuY - 150) * 2).getPath(), x]));
+    [OR,AND,XOR,NOT,NOR,NAND,XNOR,OUTPUT,INPUT].forEach((x,y,z)=>drawList.unshift([new x((-1400 + (y/(z.length-1)) * 2800) * 2, (menuY - 150 -canvas.height/2/ratio) * 2).getPath(), x]));
     ctx.save();
     ctx.scale(0.5,0.5);
     drawList.forEach(x=>{
