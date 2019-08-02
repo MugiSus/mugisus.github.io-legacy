@@ -310,7 +310,6 @@ let INPUT = class {
         this.z = ++zindex;
         this.bool = def;
         this.out0 = def;
-        this.def = def;
         this.pinPos = [[[0,0]],[[175,0]]];
         this.lastClicked = 0;
     }
@@ -387,14 +386,13 @@ let exportCode =()=> {
     let importArr = [cameraX, cameraY, mouseState.wheel].map(x=>Math.floor(x));
     idList.forEach(x=>{
         if (things[x].constructor.name == "WIRE") importArr.push([idList.indexOf(things[x].in0.toString())+1, things[x].inNum, idList.indexOf(things[x].out0.toString())+1, things[x].outNum])
-        else importArr.push([["OR","AND","XOR","NOT","NOR","NAND","XNOR","OUTPUT","INPUT","-"].indexOf(things[x].constructor.name)+(things[x].constructor.name=="INPUT" && things[x].def ? 1 : 0), Math.floor(things[x].x), Math.floor(things[x].y)]);
+        else importArr.push([["OR","AND","XOR","NOT","NOR","NAND","XNOR","OUTPUT","INPUT","-"].indexOf(things[x].constructor.name)+(things[x].constructor.name=="INPUT" && things[x].bool ? 1 : 0), Math.floor(things[x].x), Math.floor(things[x].y)]);
     });
     return importArr.map(x=>typeof(x)=="number"?x:x.join(",")).join(";");
 }
 
 let importCode =(code)=> {
     let importArr = code.split(";")
-    console.log(importArr);
     cameraX = parseInt(importArr.shift());
     cameraY = parseInt(importArr.shift());
     mouseState.wheel = parseInt(importArr.shift());
