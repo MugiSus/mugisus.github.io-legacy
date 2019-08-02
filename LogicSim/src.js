@@ -473,7 +473,7 @@ let drawMenu =()=> {
     ctx.quadraticCurveTo(1600,menuY,1600,menuY-50);
     ctx.lineTo(1600,-900);
     ctx.fill();
-    if (mouseState.y < menuY) {
+    if (mouseState.y < menuY && !clicked) {
         menuYvel += (-600 - menuY) / 10;
         menuYvel *= 0.8;
     } else {
