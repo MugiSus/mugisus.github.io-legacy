@@ -373,21 +373,21 @@ let dragger =(path, id, obj)=> {
 
 let exportCode =()=> {
     sort();
-    let code = [];
+    let importArr = [];
     idList.forEach(x=>{
-        if (things[x].constructor.name == "WIRE") code.push([idList.indexOf(things[x].in0.toString())+1, things[x].inNum, idList.indexOf(things[x].out0.toString())+1, things[x].outNum])
-        else code.push([["OR","AND","XOR","NOT","NOR","NAND","XNOR","OUTPUT","INPUT","-"].indexOf(things[x].constructor.name)+(things[x].constructor.name=="INPUT" && things[x].def ? 1 : 0), Math.floor(things[x].x), Math.floor(things[x].y)])
+        if (things[x].constructor.name == "WIRE") importArr.push([idList.indexOf(things[x].in0.toString())+1, things[x].inNum, idList.indexOf(things[x].out0.toString())+1, things[x].outNum])
+        else importArr.push([["OR","AND","XOR","NOT","NOR","NAND","XNOR","OUTPUT","INPUT","-"].indexOf(things[x].constructor.name)+(things[x].constructor.name=="INPUT" && things[x].def ? 1 : 0), Math.floor(things[x].x), Math.floor(things[x].y)]);
     });
-    return code.map(x=>x.join(",")).join(";");
+    return importArr.map(x=>x.join(",")).join(";");
 }
 
 let importCode =(code)=> {
-    let importArr = code.split(";").map(x=>x.split(","))
+    let importArr = code.split(";").map(x=>x.split(","));
     zindex = 0;
     things = {};
     importArr.forEach((x,y)=>{
         if (x.length == 4) things[y+1] = new WIRE(...x);
-        else things[y+1] = new [OR,AND,XOR,NOT,NOR,NAND,XNOR,OUTPUT,INPUT,INPUT][x[0]](x[1]*1,x[2]*1,x[0]==9?true:null);
+        else if (x[0] != "") things[y+1] = new [OR,AND,XOR,NOT,NOR,NAND,XNOR,OUTPUT,INPUT,INPUT][x[0]](x[1]*1,x[2]*1,x[0]==9?true:null);
     });
     sort();
 }
@@ -449,9 +449,11 @@ let drawMenu =()=> {
 
 }
 
-//importCode("7,1500,500;7,1500,-500;0,500,500;1,500,0;2,500,-500;1,-500,0;2,-500,-500;9,-1500,500;8,-1500,0;9,-1500,-500;10,0,7,0;9,0,7,1;10,0,6,0;9,0,6,1;7,0,4,0;8,0,4,1;7,0,5,0;8,0,5,1;4,0,3,0;6,0,3,1;5,0,2,0;3,0,1,0");
-importCode("3,-1000,-1000;7,-1000,-600;7,-1000,-200;7,-1000,200;7,-1000,600;7,-1000,1000;7,-600,1000;7,-200,1000;7,200,1000;7,600,1000;7,1000,1000;7,1000,600;7,1000,200;7,1000,-200;7,1000,-600;7,1000,-1000;7,600,-1000;7,200,-1000;7,-200,-1000;7,-600,-1000;1,0,2,0;2,0,3,0;3,0,4,0;4,0,5,0;5,0,6,0;6,0,7,0;7,0,8,0;8,0,9,0;9,0,10,0;10,0,11,0;11,0,12,0;12,0,13,0;13,0,14,0;14,0,15,0;15,0,16,0;16,0,17,0;17,0,18,0;18,0,19,0;19,0,20,0;20,0,1,0")
-
+if (/import=(.*?)(&|$)/i.exec(location.search)) importCode(/import=(.*?)(&|$)/i.exec(location.search)[1]);
+else {
+    //importCode("7,1500,500;7,1500,-500;0,500,500;1,500,0;2,500,-500;1,-500,0;2,-500,-500;9,-1500,500;8,-1500,0;9,-1500,-500;10,0,7,0;9,0,7,1;10,0,6,0;9,0,6,1;7,0,4,0;8,0,4,1;7,0,5,0;8,0,5,1;4,0,3,0;6,0,3,1;5,0,2,0;3,0,1,0");
+    importCode("3,-1000,-1000;7,-1000,-600;7,-1000,-200;7,-1000,200;7,-1000,600;7,-1000,1000;7,-600,1000;7,-200,1000;7,200,1000;7,600,1000;7,1000,1000;7,1000,600;7,1000,200;7,1000,-200;7,1000,-600;7,1000,-1000;7,600,-1000;7,200,-1000;7,-200,-1000;7,-600,-1000;1,0,2,0;2,0,3,0;3,0,4,0;4,0,5,0;5,0,6,0;6,0,7,0;7,0,8,0;8,0,9,0;9,0,10,0;10,0,11,0;11,0,12,0;12,0,13,0;13,0,14,0;14,0,15,0;15,0,16,0;16,0,17,0;17,0,18,0;18,0,19,0;19,0,20,0;20,0,1,0")
+}
 function main() {
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);
     cameraSet();

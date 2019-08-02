@@ -41,7 +41,7 @@ const theme = {
     }
 }
 
-let themeName = /theme=(.+)/gi.exec(location.search);
+let themeName = /theme=(.*?)(&|$)/i.exec(location.search);
 color = themeName ? theme[themeName[1]] || theme["light"] : theme["light"];
 
 document.body.style.backgroundColor = color.bg;
