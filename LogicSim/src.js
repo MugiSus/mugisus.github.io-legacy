@@ -30,7 +30,7 @@ canvas.oncontextmenu =()=> {return false;};
 resize();
 //end kit
 
-let things = {}, clicked = false, offSet = [[0,0],[0,0]], stageMove = false, cameraX = 0, cameraY = 0, zoom = 0.95, cameraZoom = zoom ** mouseState.wheel, mouseXinStage, mouseYinStage, zindex = 0, thingId = 0, drawList = [], idList = [], lastWheel = mouseState.wheel, menuY = -825, menuYvel = 0;
+let things = {}, clicked = false, offSet = [[0,0],[0,0]], stageMove = false, cameraX = 0, cameraY = 0, zoom = 0.95, cameraZoom = zoom ** mouseState.wheel, mouseXinStage, mouseYinStage, zindex = 0, thingId = 0, drawList = [], idList = [], lastWheel = mouseState.wheel, menuY = -100, menuYvel = 0;
 
 //start defining things
 
@@ -471,7 +471,10 @@ let drawMenu =()=> {
     ctx.quadraticCurveTo(1600,menuY-canvas.height/2/ratio,1600,menuY-canvas.height/2/ratio-50);
     ctx.lineTo(1600,-canvas.height/2/ratio);
     ctx.fill();
-    if (mouseState.y+canvas.height/2/ratio < menuY && !clicked) {
+    if (clicked) {
+        menuYvel += (-50 - menuY) / 10;
+        menuYvel *= 0.6;
+    } else if (mouseState.y+canvas.height/2/ratio < menuY) {
         menuYvel += (300 - menuY) / 10;
         menuYvel *= 0.8;
     } else {
