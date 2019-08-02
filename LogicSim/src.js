@@ -30,7 +30,7 @@ canvas.oncontextmenu =()=> {return false;};
 resize();
 //end kit
 
-let things = {}, clicked = false, offSet = [[0,0],[0,0]], stageMove = false, cameraX = 0, cameraY = 0, zoom = 0.95, cameraZoom = zoom ** mouseState.wheel, mouseXinStage, mouseYinStage, zindex = 0, thingId = 0, drawList = [], idList = [], lastWheel = mouseState.wheel, menuY = -700;
+let things = {}, clicked = false, offSet = [[0,0],[0,0]], stageMove = false, cameraX = 0, cameraY = 0, zoom = 0.95, cameraZoom = zoom ** mouseState.wheel, mouseXinStage, mouseYinStage, zindex = 0, thingId = 0, drawList = [], idList = [], lastWheel = mouseState.wheel, menuY = -825, menuYvel = 0;
 
 //start defining things
 
@@ -61,8 +61,9 @@ let OR = class {
         path.quadraticCurveTo(this.x+85, this.y+85, this.x-150, this.y+100);
         path.quadraticCurveTo(this.x-75, this.y, this.x-150, this.y-100);
         path.closePath();
-        drawList.unshift({type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse});
         dragger(path, id, this);
+
+        return {type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse};
     }
 };
 
@@ -94,8 +95,9 @@ let AND = class {
         path.quadraticCurveTo(this.x+150, this.y+100, this.x, this.y+100);
         path.lineTo(this.x-150, this.y+100);
         path.closePath();
-        drawList.unshift({type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse});
         dragger(path, id, this);
+
+        return {type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse};
     }
 };
 
@@ -129,8 +131,9 @@ let XOR = class {
         path.moveTo(this.x-200, this.y+100);
         path.quadraticCurveTo(this.x-100, this.y, this.x-200, this.y-100);
         path.quadraticCurveTo(this.x-100, this.y, this.x-200, this.y+100);
-        drawList.unshift({type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse});
         dragger(path, id, this);
+        
+        return {type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse};
     }
 };
 
@@ -159,8 +162,9 @@ let NOT = class {
         path.closePath();
         path.moveTo(this.x+125, this.y);
         path.arc(this.x+100, this.y, 25, 0, Math.PI*2);
-        drawList.unshift({type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse});
         dragger(path, id, this);
+
+        return {type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse};
     }
 };
 
@@ -193,8 +197,9 @@ let NOR = class {
         path.closePath();
         path.moveTo(this.x+175, this.y);
         path.arc(this.x+150, this.y, 25, 0, Math.PI*2);
-        drawList.unshift({type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse});
         dragger(path, id, this);
+
+        return {type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse};
     }
 };
 
@@ -228,8 +233,9 @@ let NAND = class {
         path.closePath();
         path.moveTo(this.x+175, this.y);
         path.arc(this.x+150, this.y, 25, 0, Math.PI*2);
-        drawList.unshift({type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse});
         dragger(path, id, this);
+        
+        return {type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse};
     }
 };
 
@@ -265,8 +271,9 @@ let XNOR = class {
         path.moveTo(this.x-200, this.y+100);
         path.quadraticCurveTo(this.x-100, this.y, this.x-200, this.y-100);
         path.quadraticCurveTo(this.x-100, this.y, this.x-200, this.y+100);
-        drawList.unshift({type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse});
         dragger(path, id, this);
+
+        return {type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse};
     }
 };
 
@@ -290,8 +297,9 @@ let OUTPUT = class {
         path.lineTo(this.x + 150, this.y);
         path.moveTo(this.x - 75, this.y);
         path.lineTo(this.x - 175, this.y);
-        drawList.unshift({type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse});
         dragger(path, id, this);
+
+        return {type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse};
     }
 };
 
@@ -325,8 +333,9 @@ let INPUT = class {
         path.arc(this.x, this.y, 75, 0, Math.PI*2);
         path.moveTo(this.x + 75, this.y);
         path.lineTo(this.x + 175, this.y);
-        drawList.unshift({type:"gate", path:path, style:gateColor});
         dragger(path, id, this);
+
+        return {type:"gate", path:path, style:gateColor};
     }
 };
 
@@ -349,7 +358,7 @@ let WIRE = class {
         if (p[0] < p[2]) path.bezierCurveTo(p[0] + (p[2] - p[0]) * 0.5, p[1], p[0] + (p[2] - p[0]) * 0.5, p[3], p[2], p[3]);
         else path.bezierCurveTo(p[0], p[1] + (p[3] - p[1]) * 0.5, p[2], p[1] + (p[3] - p[1]) * 0.5, p[2], p[3]);
 
-        drawList.unshift({type:"wire", path:path, style:this.bool?color.wTrue:color.wFalse});
+        return {type:"wire", path:path, style:this.bool?color.wTrue:color.wFalse};
     }
 };
 
@@ -368,21 +377,30 @@ let dragger =(path, id, obj)=> {
             obj.x = mouseXinStage - offSet[0][0];
             obj.y = mouseYinStage - offSet[0][1];
         }
+        return true;
     } else if (!mouseState.left && clicked) clicked = false;
+    return false;
 }
 
 let exportCode =()=> {
     sort();
-    let importArr = [];
+    let importArr = [cameraX, cameraY, mouseState.wheel].map(x=>Math.floor(x));
     idList.forEach(x=>{
         if (things[x].constructor.name == "WIRE") importArr.push([idList.indexOf(things[x].in0.toString())+1, things[x].inNum, idList.indexOf(things[x].out0.toString())+1, things[x].outNum])
         else importArr.push([["OR","AND","XOR","NOT","NOR","NAND","XNOR","OUTPUT","INPUT","-"].indexOf(things[x].constructor.name)+(things[x].constructor.name=="INPUT" && things[x].def ? 1 : 0), Math.floor(things[x].x), Math.floor(things[x].y)]);
     });
-    return importArr.map(x=>x.join(",")).join(";");
+    return importArr.map(x=>typeof(x)=="number"?x:x.join(",")).join(";");
 }
 
 let importCode =(code)=> {
-    let importArr = code.split(";").map(x=>x.split(","));
+    let importArr = code.split(";")
+    console.log(importArr);
+    cameraX = parseInt(importArr.shift());
+    cameraY = parseInt(importArr.shift());
+    mouseState.wheel = parseInt(importArr.shift());
+    importArr = importArr.map(x=>x.split(","));
+    cameraZoom = zoom ** mouseState.wheel;
+    thingId = importArr.length;
     zindex = 0;
     things = {};
     importArr.forEach((x,y)=>{
@@ -401,7 +419,7 @@ let drawStage =()=> {
     ctx.scale(cameraZoom, cameraZoom);
     ctx.translate(-cameraX, -cameraY);
     drawList = [];
-    idList.forEach(x=>things[x].getPath(x));
+    idList.forEach(x=>drawList.unshift(things[x].getPath(x)));
     drawList.forEach(x=>{
         switch (x.type) {
             case "gate" : {
@@ -446,13 +464,42 @@ let cameraSet =()=> {
 }
 
 let drawMenu =()=> {
-
+    ctx.fillStyle = color.menu;
+    ctx.beginPath()
+    ctx.moveTo(-1600,-900);
+    ctx.lineTo(-1600,menuY-50);
+    ctx.quadraticCurveTo(-1600,menuY,-1550,menuY);
+    ctx.lineTo(1550,menuY);
+    ctx.quadraticCurveTo(1600,menuY,1600,menuY-50);
+    ctx.lineTo(1600,-900);
+    ctx.fill();
+    if (mouseState.y < menuY) {
+        menuYvel += (-600 - menuY) / 10;
+        menuYvel *= 0.8;
+    } else {
+        menuYvel += (-825 - menuY) / 10;
+        menuYvel *= 0.6;
+    }
+    menuY += menuYvel;
+    drawList = [];
+    [OR,AND,XOR,NOT,NOR,NAND,XNOR,OUTPUT,INPUT].forEach((x,y,z)=>drawList.unshift([new x((-1400 + (y/(z.length-1)) * 2800) * 2, (menuY - 150) * 2).getPath(), x]));
+    ctx.save();
+    ctx.scale(0.5,0.5);
+    drawList.forEach(x=>{
+        ctx.fillStyle = x[0].style;
+        ctx.lineWidth = 10;
+        ctx.strokeStyle = color.contour;
+        ctx.fill(x[0].path);
+        ctx.stroke(x[0].path);
+        if (ctx.isPointInPath(x[0].path,mouseState.cliX,mouseState.cliY) && mouseState.left && !clicked) make(new x[1](mouseXinStage, mouseYinStage));
+    });
+    ctx.restore();
 }
 
 if (/import=(.*?)(&|$)/i.exec(location.search)) importCode(/import=(.*?)(&|$)/i.exec(location.search)[1]);
 else {
-    //importCode("7,1500,500;7,1500,-500;0,500,500;1,500,0;2,500,-500;1,-500,0;2,-500,-500;9,-1500,500;8,-1500,0;9,-1500,-500;10,0,7,0;9,0,7,1;10,0,6,0;9,0,6,1;7,0,4,0;8,0,4,1;7,0,5,0;8,0,5,1;4,0,3,0;6,0,3,1;5,0,2,0;3,0,1,0");
-    importCode("3,-1000,-1000;7,-1000,-600;7,-1000,-200;7,-1000,200;7,-1000,600;7,-1000,1000;7,-600,1000;7,-200,1000;7,200,1000;7,600,1000;7,1000,1000;7,1000,600;7,1000,200;7,1000,-200;7,1000,-600;7,1000,-1000;7,600,-1000;7,200,-1000;7,-200,-1000;7,-600,-1000;1,0,2,0;2,0,3,0;3,0,4,0;4,0,5,0;5,0,6,0;6,0,7,0;7,0,8,0;8,0,9,0;9,0,10,0;10,0,11,0;11,0,12,0;12,0,13,0;13,0,14,0;14,0,15,0;15,0,16,0;16,0,17,0;17,0,18,0;18,0,19,0;19,0,20,0;20,0,1,0")
+    //importCode("0;0;10;7,1500,500;7,1500,-500;0,500,500;1,500,0;2,500,-500;1,-500,0;2,-500,-500;9,-1500,500;8,-1500,0;9,-1500,-500;10,0,7,0;9,0,7,1;10,0,6,0;9,0,6,1;7,0,4,0;8,0,4,1;7,0,5,0;8,0,5,1;4,0,3,0;6,0,3,1;5,0,2,0;3,0,1,0");
+    importCode("0;0;14;3,-1000,-1000;7,-1000,-600;7,-1000,-200;7,-1000,200;7,-1000,600;7,-1000,1000;7,-600,1000;7,-200,1000;7,200,1000;7,600,1000;7,1000,1000;7,1000,600;7,1000,200;7,1000,-200;7,1000,-600;7,1000,-1000;7,600,-1000;7,200,-1000;7,-200,-1000;7,-600,-1000;1,0,2,0;2,0,3,0;3,0,4,0;4,0,5,0;5,0,6,0;6,0,7,0;7,0,8,0;8,0,9,0;9,0,10,0;10,0,11,0;11,0,12,0;12,0,13,0;13,0,14,0;14,0,15,0;15,0,16,0;16,0,17,0;17,0,18,0;18,0,19,0;19,0,20,0;20,0,1,0")
 }
 function main() {
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);

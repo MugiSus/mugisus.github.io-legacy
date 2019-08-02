@@ -1,6 +1,7 @@
 const theme = {
     "light": {
         bg:"#eeeeee",
+        menu:"#bbbbbb",
         contour:"#202020",
         gTrue:"#ff4444",
         gFalse:"#6666ff",
@@ -11,6 +12,7 @@ const theme = {
     },
     "dark": {
         bg:"#222222",
+        menu:"#88888888",
         contour:"#bbbbbb",
         gTrue:"#aa444488",
         gFalse:"#4444aa88",
@@ -21,6 +23,7 @@ const theme = {
     },
     "cyber": {
         bg:"#111111",
+        menu:"#00ff0066",
         contour:"#dddddd",
         gTrue:"#00ff00bb",
         gFalse:"#444444bb",
@@ -31,6 +34,7 @@ const theme = {
     },
     "ice": {
         bg:"#66bbbb",
+        menu:"#55888888",
         contour:"#666666",
         gTrue:"#eeeeeedd",
         gFalse:"#66bbbb44",
