@@ -356,11 +356,10 @@ let WIRE = class {
 //end defining GATEs
 
 let dragger =(path, id, obj)=> {
-    if ((ctx.isPointInPath(path, mouseState.cliX, mouseState.cliY) && (!clicked || stageMove == 2) || clicked == id) && mouseState.left) {
-        if (!clicked || clicked == "stage") {
+    if ((ctx.isPointInPath(path, mouseState.cliX, mouseState.cliY) && !clicked || clicked == id) && mouseState.left) {
+        if (!clicked) {
             if (obj.z != zindex) obj.z = ++zindex;
             sort();
-            stageMove = 0;
             clicked = id;
             offSet[0] = [mouseXinStage - obj.x, mouseYinStage - obj.y];
         }
@@ -369,7 +368,7 @@ let dragger =(path, id, obj)=> {
             obj.x = mouseXinStage - offSet[0][0];
             obj.y = mouseYinStage - offSet[0][1];
         }
-    } else if (!mouseState.left && clicked == id) clicked = false;
+    } else if (!mouseState.left && clicked) clicked = false;
 }
 
 let exportCode =()=> {
@@ -436,15 +435,14 @@ let cameraSet =()=> {
         }
         lastWheel = mouseState.wheel;
     }
-    if (mouseState.right || (mouseState.left && (!clicked || clicked == "stage"))) {
+    if (mouseState.right) {
         if (!stageMove) {
-            clicked = "stage";
-            stageMove = 2;
+            stageMove = true;
             offSet[1] = [mouseState.x, mouseState.y, cameraX, cameraY];
-        } else stageMove = 1
+        }
         cameraX = offSet[1][2] + -(mouseState.x - offSet[1][0]) / cameraZoom;
         cameraY = offSet[1][3] + -(mouseState.y - offSet[1][1]) / cameraZoom;
-    } else if (stageMove && !mouseState.right && !mouseState.left && clicked == "stage") {stageMove = 0; clicked = false};
+    } else if (stageMove && !mouseState.right) stageMove = false;
 }
 
 let drawMenu =()=> {
