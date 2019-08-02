@@ -1,5 +1,5 @@
 //canvas starter kit
-let mouseState = {wheel:1, x:0, y:0}, keydown = {}, time, fps, timeStamp = [], started = new Date().getTime();
+let mouseState = {wheel:10, x:0, y:0}, keydown = {}, time, fps, timeStamp = [], started = new Date().getTime();
 const canvas = document.getElementById("disp");
 const ctx = canvas.getContext("2d");
 let ctxSet =(obj)=> Object.keys(obj).forEach(x=>ctx[x] = obj[x]);
@@ -30,7 +30,7 @@ canvas.oncontextmenu =()=> {return false;};
 resize();
 //end kit
 
-let things = {}, clicked = false, offSet = [[0,0],[0,0]], stageMove = false, cameraX = 0, cameraY = 0, zoom = 0.75, cameraZoom = zoom ** mouseState.wheel, mouseXinStage, mouseYinStage, zindex = 0, thingId = 0, drawList = [], idList = [], lastWheel = mouseState.wheel, menuY = -700;
+let things = {}, clicked = false, offSet = [[0,0],[0,0]], stageMove = false, cameraX = 0, cameraY = 0, zoom = 0.95, cameraZoom = zoom ** mouseState.wheel, mouseXinStage, mouseYinStage, zindex = 0, thingId = 0, drawList = [], idList = [], lastWheel = mouseState.wheel, menuY = -700;
 
 //start defining things
 
@@ -368,7 +368,7 @@ let dragger =(path, id, obj)=> {
             obj.x = mouseXinStage - offSet[0][0];
             obj.y = mouseYinStage - offSet[0][1];
         }
-    } else if (!mouseState.left && clicked) clicked = false;
+    } else if (!mouseState.left && clicked == id) clicked = false;
 }
 
 let exportCode =()=> {
@@ -435,14 +435,15 @@ let cameraSet =()=> {
         }
         lastWheel = mouseState.wheel;
     }
-    if (mouseState.right) {
+    if (mouseState.right || (mouseState.left && (!clicked || clicked == "stage"))) {
         if (!stageMove) {
+            clicked = "stage";
             stageMove = true;
             offSet[1] = [mouseState.x, mouseState.y, cameraX, cameraY];
         }
         cameraX = offSet[1][2] + -(mouseState.x - offSet[1][0]) / cameraZoom;
         cameraY = offSet[1][3] + -(mouseState.y - offSet[1][1]) / cameraZoom;
-    } else if (stageMove && !mouseState.right) stageMove = false;
+    } else if (stageMove && !mouseState.right && !mouseState.left && clicked == "stage") {stageMove = false; clicked = false};
 }
 
 let drawMenu =()=> {
