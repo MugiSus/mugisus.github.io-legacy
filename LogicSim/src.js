@@ -443,7 +443,7 @@ let makeWire =(id, obj)=> {
             pinFocused = [id, i?"out":"in", y, false];
             if ((mouseState.left || mouseState.middle) && !pinClicked) {
                 pinClicked = [id, `${i?"out":"in"}${y}`, true];
-                if ((obj.wireId[`${i?"out":"in"}${y}`] || []).length && mouseState.middle) obj.wireId[`${i?"out":"in"}${y}`].forEach(x=>{
+                if ((i == 0 && (obj.wireId[`in${y}`] || []).length) || (obj.wireId[`${i?"out":"in"}${y}`] || []).length && mouseState.middle) obj.wireId[`${i?"out":"in"}${y}`].forEach(x=>{
                     if (i == 0) things[things[x].out0][`in${things[x].outNum}`] = false;
                     things[things[x][`${i?"in":"out"}0`]].wireId[`${i?"out":"in"}${things[x].outNum}`] = things[things[x][`${i?"in":"out"}0`]].wireId[`${i?"out":"in"}${things[x][`${i?"in":"out"}Num`]}`].filter(y=>y!=x);
                     things[x][`${i?"in":"out"}0`] = "_";
