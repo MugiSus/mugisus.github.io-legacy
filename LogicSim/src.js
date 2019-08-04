@@ -418,7 +418,7 @@ let WIRE = class {
 //end defining GATEs
 
 let dragger =(path, id, obj)=> {
-    if ((ctx.isPointInPath(path, mouseState.cliX, mouseState.cliY) && !clicked || clicked == id) && mouseState.left) {
+    if ((ctx.isPointInPath(path, mouseState.cliX, mouseState.cliY) && !clicked || clicked == id) && mouseState.left && mouseState.y+canvas.height/2/ratio > menuY) {
         if (!clicked) {
             if (obj.z != zindex) obj.z = ++zindex;
             sort();
@@ -483,7 +483,7 @@ let importCode =(code)=> {
 
 let sort =()=> idList = Object.keys(things).sort((a,b)=>{return things[a].z < things[b].z ? 1 : (things[a].z > things[b].z ? -1 : 0)});
 
-let make =(thing, id = ++thingId)=> {things[id] = thing; sort();}
+let make =(thing, id = ++thingId)=> {things[id] = thing; sort(); return id};
 
 let drawStage =()=> {
     ctx.save();
@@ -567,7 +567,7 @@ let drawMenu =()=> {
         ctx.strokeStyle = color.contour;
         ctx.fill(x[0].path);
         ctx.stroke(x[0].path);
-        if (ctx.isPointInPath(x[0].path,mouseState.cliX,mouseState.cliY) && mouseState.left && !clicked) make(new x[1](mouseXinStage, mouseYinStage));
+        if (ctx.isPointInPath(x[0].path,mouseState.cliX,mouseState.cliY) && mouseState.left && !clicked) clicked = make(new x[1](Infinity, Infinity));
     });
     ctx.restore();
 }
