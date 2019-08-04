@@ -30,7 +30,7 @@ canvas.oncontextmenu =()=> {return false;};
 resize();
 //end kit
 
-let things = {}, clicked = false, offSet = [[0,0],[0,0]], stageMove = false, cameraX = 0, cameraY = 0, zoom = 0.95, cameraZoom = zoom ** mouseState.wheel, mouseXinStage, mouseYinStage, zindex = 0, thingId = 0, drawList = [], idList = [], lastWheel = mouseState.wheel, menuY = -100, menuYvel = 0;
+let things = {}, clicked = false, offSet = [[0,0],[0,0]], stageMove = false, cameraX = 0, cameraY = 0, zoom = 0.95, cameraZoom = zoom ** mouseState.wheel, mouseXinStage, mouseYinStage, zindex = 0, thingId = 0, drawList = [], idList = [], lastWheel = mouseState.wheel, menuY = -100, menuYvel = 0, tcRadius = 0, tcRvel = 0, deleteThing, pinClicked = false;
 
 //start defining things
 
@@ -44,6 +44,7 @@ let OR = class {
         this.in1 = false;
         this.out0 = false;
         this.pinPos = [[[-250,-60],[-250,60]],[[250,0]]];
+        this.wireId = {};
     }
     getPath(id) {
         this.out0 = this.in0 || this.in1;
@@ -62,6 +63,7 @@ let OR = class {
         path.quadraticCurveTo(this.x-75, this.y, this.x-150, this.y-100);
         path.closePath();
         dragger(path, id, this);
+        if (id) makeWire(id, this);
 
         return {type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse};
     }
@@ -77,6 +79,7 @@ let AND = class {
         this.in1 = false;
         this.out0 = false;
         this.pinPos = [[[-250,-60],[-250,60]],[[250,0]]];
+        this.wireId = {};
     }
     getPath(id) {
         this.out0 = this.in0 && this.in1;
@@ -96,6 +99,7 @@ let AND = class {
         path.lineTo(this.x-150, this.y+100);
         path.closePath();
         dragger(path, id, this);
+        if (id) makeWire(id, this);
 
         return {type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse};
     }
@@ -111,6 +115,7 @@ let XOR = class {
         this.in1 = false;
         this.out0 = false;
         this.pinPos = [[[-250,-60],[-250,60]],[[250,0]]];
+        this.wireId = {};
     }
     getPath(id) {
         this.out0 = this.in0 != this.in1;
@@ -132,6 +137,7 @@ let XOR = class {
         path.quadraticCurveTo(this.x-100, this.y, this.x-200, this.y-100);
         path.quadraticCurveTo(this.x-100, this.y, this.x-200, this.y+100);
         dragger(path, id, this);
+        if (id) makeWire(id, this);
         
         return {type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse};
     }
@@ -146,6 +152,7 @@ let NOT = class {
         this.in0 = false;
         this.out0 = true;
         this.pinPos = [[[-225,0]],[[225,0]]];
+        this.wireId = {};
     }
     getPath(id) {
         this.out0 = !this.in0;
@@ -163,6 +170,7 @@ let NOT = class {
         path.moveTo(this.x+125, this.y);
         path.arc(this.x+100, this.y, 25, 0, Math.PI*2);
         dragger(path, id, this);
+        if (id) makeWire(id, this);
 
         return {type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse};
     }
@@ -178,6 +186,7 @@ let NOR = class {
         this.in1 = false;
         this.out0 = true;
         this.pinPos = [[[-250,-60],[-250,60]],[[250,0]]];
+        this.wireId = {};
     }
     getPath(id) {
         this.out0 = !(this.in0 || this.in1);
@@ -198,6 +207,7 @@ let NOR = class {
         path.moveTo(this.x+175, this.y);
         path.arc(this.x+150, this.y, 25, 0, Math.PI*2);
         dragger(path, id, this);
+        if (id) makeWire(id, this);
 
         return {type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse};
     }
@@ -213,6 +223,7 @@ let NAND = class {
         this.in1 = false;
         this.out0 = false;
         this.pinPos = [[[-250,-60],[-250,60]],[[250,0]]];
+        this.wireId = {};
     }
     getPath(id) {
         this.out0 = !(this.in0 && this.in1);
@@ -234,6 +245,7 @@ let NAND = class {
         path.moveTo(this.x+175, this.y);
         path.arc(this.x+150, this.y, 25, 0, Math.PI*2);
         dragger(path, id, this);
+        if (id) makeWire(id, this);
         
         return {type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse};
     }
@@ -249,6 +261,7 @@ let XNOR = class {
         this.in1 = false;
         this.out0 = true;
         this.pinPos = [[[-250,-60],[-250,60]],[[250,0]]];
+        this.wireId = {};
     }
     getPath(id) {
         this.out0 = this.in0 == this.in1;
@@ -272,6 +285,7 @@ let XNOR = class {
         path.quadraticCurveTo(this.x-100, this.y, this.x-200, this.y-100);
         path.quadraticCurveTo(this.x-100, this.y, this.x-200, this.y+100);
         dragger(path, id, this);
+        if (id) makeWire(id, this);
 
         return {type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse};
     }
@@ -286,6 +300,7 @@ let OUTPUT = class {
         this.in0 = false;
         this.out0 = false;
         this.pinPos = [[[-175,0]],[[150,0]]];
+        this.wireId = {};
     }
     getPath(id) {
         this.out0 = this.in0;
@@ -298,6 +313,7 @@ let OUTPUT = class {
         path.moveTo(this.x - 75, this.y);
         path.lineTo(this.x - 175, this.y);
         dragger(path, id, this);
+        if (id) makeWire(id, this);
 
         return {type:"gate", path:path, style:this.bool?color.gTrue:color.gFalse};
     }
@@ -310,8 +326,9 @@ let INPUT = class {
         this.z = ++zindex;
         this.bool = def;
         this.out0 = def;
-        this.pinPos = [[[0,0]],[[175,0]]];
+        this.pinPos = [[],[[175,0]]];
         this.lastClicked = 0;
+        this.wireId = {};
     }
     getPath(id) {
         let gateColor;
@@ -333,6 +350,7 @@ let INPUT = class {
         path.moveTo(this.x + 75, this.y);
         path.lineTo(this.x + 175, this.y);
         dragger(path, id, this);
+        if (id) makeWire(id, this);
 
         return {type:"gate", path:path, style:gateColor};
     }
@@ -347,11 +365,47 @@ let WIRE = class {
         this.outNum = outNum;
         this.z = 0;
     }
-    getPath() {
-        this.bool = things[this.in0][`out${this.inNum}`];
-        things[this.out0][`in${this.outNum}`] = this.bool;
+    getPath(id) {
+        if ((this.in0 == "_" || this.out0 == "_") && !pinFocused && !pinFocused[2] && mouseState.left) {
+            if (this.in0 == "_") things[things[id].out0].wireId[`in${things[id].outNum}`] = (things[things[id].out0].wireId[`in${things[id].outNum}`] || []).filter(y=>y!=id);
+            else things[things[id].in0].wireId[`out${things[id].inNum}`] = (things[things[id].in0].wireId[`out${things[id].inNum}`] || []).filter(y=>y!=id);
+            delete things[id];
+            pinClicked[3] = true;
+            sort();
+            return {type:"wire", path:new Path2D()};
+        }
+        if (this.in0 == "_") {
+            this.bool = false;
+            if (mouseState.left && pinFocused && !pinClicked[2] && pinFocused[1] == "out") {
+                this.in0 = pinFocused[0];
+                this.inNum = pinFocused[2];
+                pinClicked[3] = true;
+            }
+        } else {
+            if ((things[this.in0].wireId[`out${this.inNum}`] || []).indexOf(id) == -1) {
+                if (!things[this.in0].wireId[`out${this.inNum}`]) things[this.in0].wireId[`out${this.inNum}`] = [];
+                things[this.in0].wireId[`out${this.inNum}`].push(id);
+            }
+            this.bool = things[this.in0][`out${this.inNum}`];
+        }
+        if (this.out0 == "_") {
+            if (mouseState.left && pinFocused && !pinClicked[2] && pinFocused[1] == "in" && !(things[pinFocused[0]].wireId[`in${pinFocused[2]}`]||[]).length) {
+                this.out0 = pinFocused[0];
+                this.outNum = pinFocused[2];
+                pinClicked[3] = true;
+            }
+        } else {
+            if ((things[this.out0].wireId[`in${this.outNum}`] || []).indexOf(id) == -1) {
+                if (!things[this.out0].wireId[`in${this.outNum}`]) things[this.out0].wireId[`in${this.outNum}`] = [];
+                things[this.out0].wireId[`in${this.outNum}`].push(id);
+            }
+            things[this.out0][`in${this.outNum}`] = this.bool;
+        }
 
-        let p = [things[this.in0].x + things[this.in0].pinPos[1][this.inNum][0], things[this.in0].y + things[this.in0].pinPos[1][this.inNum][1], things[this.out0].x + things[this.out0].pinPos[0][this.outNum][0], things[this.out0].y + things[this.out0].pinPos[0][this.outNum][1]];
+        let p;
+        if (this.in0 == "_") p = [mouseXinStage, mouseYinStage, things[this.out0].x + things[this.out0].pinPos[0][this.outNum][0], things[this.out0].y + things[this.out0].pinPos[0][this.outNum][1]];
+        else if (this.out0 == "_") p = [things[this.in0].x + things[this.in0].pinPos[1][this.inNum][0], things[this.in0].y + things[this.in0].pinPos[1][this.inNum][1], mouseXinStage, mouseYinStage];
+        else p = [things[this.in0].x + things[this.in0].pinPos[1][this.inNum][0], things[this.in0].y + things[this.in0].pinPos[1][this.inNum][1], things[this.out0].x + things[this.out0].pinPos[0][this.outNum][0], things[this.out0].y + things[this.out0].pinPos[0][this.outNum][1]];
         let path = new Path2D();
         path.moveTo(p[0], p[1]);
         if (p[0] < p[2]) path.bezierCurveTo(p[0] + (p[2] - p[0]) * 0.5, p[1], p[0] + (p[2] - p[0]) * 0.5, p[3], p[2], p[3]);
@@ -381,11 +435,30 @@ let dragger =(path, id, obj)=> {
     return false;
 }
 
+let makeWire =(id, obj)=> {
+    if (pinClicked[3] || clicked) return;
+    if (pinClicked && pinClicked[2] && !mouseState.left) pinClicked[2] = false;
+    obj.pinPos.forEach((x,i)=>x.forEach((x, y)=>{
+        if (((mouseXinStage - (obj.x + x[0])) ** 2 + (mouseYinStage - (obj.y + x[1])) ** 2) ** 0.5 < 30) {
+            pinFocused = [id, i?"out":"in", y, false];
+            if (mouseState.left && !pinClicked) {
+                pinClicked = [id, `${i?"out":"in"}${y}`, true];
+                if (!(obj.wireId[`${i?"out":"in"}${y}`] || []).length || !keydown.Shift) make(new WIRE(i?id:"_",y,i?"_":id,y));
+                else obj.wireId[`${i?"out":"in"}${y}`].forEach(x=>{
+                    if (i == 0) things[things[x].out0][`in${things[x].outNum}`] = false;
+                    things[things[x][`${i?"in":"out"}0`]].wireId[`${i?"out":"in"}${things[x].outNum}`] = things[things[x][`${i?"in":"out"}0`]].wireId[`${i?"out":"in"}${things[x][`${i?"in":"out"}Num`]}`].filter(y=>y!=x);
+                    things[x][`${i?"in":"out"}0`] = "_";
+                });
+            }
+        }
+    }));
+}
+
 let exportCode =()=> {
     sort();
     let importArr = [cameraX, cameraY, mouseState.wheel].map(x=>Math.floor(x));
     idList.forEach(x=>{
-        if (things[x].constructor.name == "WIRE") importArr.push([idList.indexOf(things[x].in0.toString())+1, things[x].inNum, idList.indexOf(things[x].out0.toString())+1, things[x].outNum])
+        if (things[x].constructor.name == "WIRE") importArr.push([idList.indexOf(things[x].in0.toString())+1, things[x].inNum, idList.indexOf(things[x].out0.toString())+1, things[x].outNum]);
         else importArr.push([["OR","AND","XOR","NOT","NOR","NAND","XNOR","OUTPUT","INPUT","-"].indexOf(things[x].constructor.name)+(things[x].constructor.name=="INPUT" && things[x].bool ? 1 : 0), Math.floor(things[x].x), Math.floor(things[x].y)]);
     });
     return importArr.map(x=>typeof(x)=="number"?x:x.join(",")).join(";");
@@ -403,7 +476,7 @@ let importCode =(code)=> {
     things = {};
     importArr.forEach((x,y)=>{
         if (x.length == 4) things[y+1] = new WIRE(...x);
-        else if (x[0] != "") things[y+1] = new [OR,AND,XOR,NOT,NOR,NAND,XNOR,OUTPUT,INPUT,INPUT][x[0]](x[1]*1,x[2]*1,x[0]==9?true:null);
+        else if (x[0] != "") things[y+1] = new [OR,AND,XOR,NOT,NOR,NAND,XNOR,OUTPUT,INPUT,INPUT][x[0]](x[1]*1,x[2]*1,x[0]==9?true:false);
     });
     sort();
 }
@@ -417,17 +490,19 @@ let drawStage =()=> {
     ctx.scale(cameraZoom, cameraZoom);
     ctx.translate(-cameraX, -cameraY);
     drawList = [];
+    pinFocused = false;
     idList.forEach(x=>drawList.unshift(things[x].getPath(x)));
+    if (pinClicked[3] && !mouseState.left) pinClicked = false;
     drawList.forEach(x=>{
         switch (x.type) {
-            case "gate" : {
+            case "gate": {
                 ctx.fillStyle = x.style;
                 ctx.lineWidth = 10;
                 ctx.strokeStyle = color.contour;
                 ctx.fill(x.path);
                 ctx.stroke(x.path);
             } break;
-            case "wire" : {
+            case "wire": {
                 ctx.strokeStyle = x.style;
                 ctx.lineWidth = 20;
                 ctx.stroke(x.path);
@@ -462,6 +537,17 @@ let cameraSet =()=> {
 }
 
 let drawMenu =()=> {
+    if (clicked) {
+        menuYvel += (-50 - menuY) / 5;
+        menuYvel *= 0.6;
+    } else if (mouseState.y+canvas.height/2/ratio < menuY) {
+        menuYvel += (300 - menuY) / 10;
+        menuYvel *= 0.8;
+    } else {
+        menuYvel += (75 - menuY) / 10;
+        menuYvel *= 0.6;
+    }
+    menuY += menuYvel;
     ctx.fillStyle = color.menu;
     ctx.beginPath()
     ctx.moveTo(-1600,-canvas.height/2/ratio);
@@ -471,17 +557,6 @@ let drawMenu =()=> {
     ctx.quadraticCurveTo(1600,menuY-canvas.height/2/ratio,1600,menuY-canvas.height/2/ratio-50);
     ctx.lineTo(1600,-canvas.height/2/ratio);
     ctx.fill();
-    if (clicked) {
-        menuYvel += (-50 - menuY) / 10;
-        menuYvel *= 0.6;
-    } else if (mouseState.y+canvas.height/2/ratio < menuY) {
-        menuYvel += (300 - menuY) / 10;
-        menuYvel *= 0.8;
-    } else {
-        menuYvel += (50 - menuY) / 10;
-        menuYvel *= 0.6;
-    }
-    menuY += menuYvel;
     drawList = [];
     [OR,AND,XOR,NOT,NOR,NAND,XNOR,OUTPUT,INPUT].forEach((x,y,z)=>drawList.unshift([new x((-1400 + (y/(z.length-1)) * 2800) * 2, (menuY - 150 -canvas.height/2/ratio) * 2).getPath(), x]));
     ctx.save();
@@ -497,14 +572,67 @@ let drawMenu =()=> {
     ctx.restore();
 }
 
+let drawTrashcan =()=> {
+    ctx.fillStyle = color.menu;
+    if (!clicked) {
+        if (deleteThing) {
+            Object.values(things[deleteThing].wireId).forEach(x=>x.forEach(x=>{
+                if (things[x]) {
+                    if (things[x].out0 == "_") pinClicked = false;
+                    else {
+                        things[things[x].out0].wireId[`in${things[x].outNum}`] = things[things[x].out0].wireId[`in${things[x].outNum}`].filter(y=>y!=x);
+                        things[things[x].out0][`in${things[x].outNum}`] = false;
+                    }
+                    if (things[x].in0 == "_") pinClicked = false;
+                    else {
+                        things[things[x].in0].wireId[`out${things[x].inNum}`] = things[things[x].in0].wireId[`out${things[x].inNum}`].filter(y=>y!=x);
+                        things[things[x].in0][`out${things[x].inNum}`] = false;
+                    }
+                    delete things[x];
+                }
+            }));
+            delete things[deleteThing];
+            sort();
+            deleteThing = null;
+        }
+        tcRvel += (-50 - tcRadius) / 10;
+        tcRvel *= 0.6;
+    } else if (((-canvas.width/2/ratio - mouseState.x) ** 2 + (-canvas.height/2/ratio - mouseState.y) ** 2) ** 0.5 < tcRadius) {
+        tcRvel += (500 - tcRadius) / 10;
+        tcRvel *= 0.75;
+        deleteThing = clicked;
+    } else {
+        deleteThing = false
+        tcRvel += (200 - tcRadius) / 10;
+        tcRvel *= 0.8;
+    }
+    tcRadius += tcRvel;
+    ctx.fillStyle = color.menu;
+    ctx.strokeStyle = color.menuItem;
+    ctx.lineWidth = 20 * (tcRadius / 500);
+    ctx.beginPath();
+    ctx.moveTo(-canvas.width/2/ratio, -canvas.height/2/ratio);
+    ctx.arc(-canvas.width/2/ratio, -canvas.height/2/ratio, Math.max(tcRadius,0), 0, Math.PI / 2);
+    ctx.fill();
+    let center = [-canvas.width/2/ratio + tcRadius * 0.3, -canvas.height/2/ratio + tcRadius * 0.3, 0.1]
+    ctx.beginPath();
+    ctx.moveTo(center[0]-tcRadius*center[2],center[1]-tcRadius*center[2]);
+    ctx.lineTo(center[0]+tcRadius*center[2],center[1]+tcRadius*center[2]);
+    ctx.moveTo(center[0]+tcRadius*center[2],center[1]-tcRadius*center[2]);
+    ctx.lineTo(center[0]-tcRadius*center[2],center[1]+tcRadius*center[2]);
+    ctx.stroke();
+}
+
 if (/import=(.*?)(&|$)/i.exec(location.search)) importCode(/import=(.*?)(&|$)/i.exec(location.search)[1]);
 else {
     //importCode("0;0;10;7,1500,500;7,1500,-500;0,500,500;1,500,0;2,500,-500;1,-500,0;2,-500,-500;9,-1500,500;8,-1500,0;9,-1500,-500;10,0,7,0;9,0,7,1;10,0,6,0;9,0,6,1;7,0,4,0;8,0,4,1;7,0,5,0;8,0,5,1;4,0,3,0;6,0,3,1;5,0,2,0;3,0,1,0");
     importCode("0;0;14;3,-1000,-1000;7,-1000,-600;7,-1000,-200;7,-1000,200;7,-1000,600;7,-1000,1000;7,-600,1000;7,-200,1000;7,200,1000;7,600,1000;7,1000,1000;7,1000,600;7,1000,200;7,1000,-200;7,1000,-600;7,1000,-1000;7,600,-1000;7,200,-1000;7,-200,-1000;7,-600,-1000;1,0,2,0;2,0,3,0;3,0,4,0;4,0,5,0;5,0,6,0;6,0,7,0;7,0,8,0;8,0,9,0;9,0,10,0;10,0,11,0;11,0,12,0;12,0,13,0;13,0,14,0;14,0,15,0;15,0,16,0;16,0,17,0;17,0,18,0;18,0,19,0;19,0,20,0;20,0,1,0")
 }
+
 function main() {
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);
     cameraSet();
+    drawTrashcan();
     drawStage();
     drawMenu();
     requestAnimationFrame(main);
