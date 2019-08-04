@@ -1,5 +1,5 @@
 //canvas starter kit
-let mouseState = {wheel:10, x:0, y:0}, keydown = {}, time, fps, timeStamp = [], started = new Date().getTime();
+let mouseState = {wheel:10, x:0, y:0, left:false, middle:false, right:false}, keydown = {}, time, fps, timeStamp = [], started = new Date().getTime();
 const canvas = document.getElementById("disp");
 const ctx = canvas.getContext("2d");
 let ctxSet =(obj)=> Object.keys(obj).forEach(x=>ctx[x] = obj[x]);
@@ -15,8 +15,8 @@ let ratio, resize =()=> {
     ctx.translate(canvas.width / 2, canvas.height / 2);
     ctx.scale(ratio, ratio);
 }
-canvas.addEventListener("mousedown", (event)=>{mouseState[["left","wheel","right"][event.button]] = true;});
-canvas.addEventListener("mouseup", (event)=>{mouseState[["left","wheel","right"][event.button]] = false;});
+canvas.addEventListener("mousedown", (event)=>{mouseState[["left","middle","right"][event.button]] = true;});
+canvas.addEventListener("mouseup", (event)=>{mouseState[["left","middle","right"][event.button]] = false;});
 canvas.addEventListener("wheel", (event)=>{mouseState["wheel"] += event.deltaY > 0 ? 1 : -1});
 document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
@@ -366,7 +366,7 @@ let WIRE = class {
         this.z = 0;
     }
     getPath(id) {
-        if ((this.in0 == "_" || this.out0 == "_") && !pinFocused && !pinFocused[2] && mouseState.left) {
+        if ((this.in0 == "_" || this.out0 == "_") && !pinFocused && !pinFocused[2] && (mouseState.left || mouseState.middle)) {
             if (this.in0 == "_") things[things[id].out0].wireId[`in${things[id].outNum}`] = (things[things[id].out0].wireId[`in${things[id].outNum}`] || []).filter(y=>y!=id);
             else things[things[id].in0].wireId[`out${things[id].inNum}`] = (things[things[id].in0].wireId[`out${things[id].inNum}`] || []).filter(y=>y!=id);
             delete things[id];
@@ -441,14 +441,14 @@ let makeWire =(id, obj)=> {
     obj.pinPos.forEach((x,i)=>x.forEach((x, y)=>{
         if (((mouseXinStage - (obj.x + x[0])) ** 2 + (mouseYinStage - (obj.y + x[1])) ** 2) ** 0.5 < 30) {
             pinFocused = [id, i?"out":"in", y, false];
-            if (mouseState.left && !pinClicked) {
+            if ((mouseState.left || mouseState.middle) && !pinClicked) {
                 pinClicked = [id, `${i?"out":"in"}${y}`, true];
-                if (!(obj.wireId[`${i?"out":"in"}${y}`] || []).length || !keydown.Shift) make(new WIRE(i?id:"_",y,i?"_":id,y));
-                else obj.wireId[`${i?"out":"in"}${y}`].forEach(x=>{
+                if ((obj.wireId[`${i?"out":"in"}${y}`] || []).length && mouseState.middle) obj.wireId[`${i?"out":"in"}${y}`].forEach(x=>{
                     if (i == 0) things[things[x].out0][`in${things[x].outNum}`] = false;
                     things[things[x][`${i?"in":"out"}0`]].wireId[`${i?"out":"in"}${things[x].outNum}`] = things[things[x][`${i?"in":"out"}0`]].wireId[`${i?"out":"in"}${things[x][`${i?"in":"out"}Num`]}`].filter(y=>y!=x);
                     things[x][`${i?"in":"out"}0`] = "_";
                 });
+                else make(new WIRE(i?id:"_",y,i?"_":id,y));
             }
         }
     }));
@@ -492,7 +492,7 @@ let drawStage =()=> {
     drawList = [];
     pinFocused = false;
     idList.forEach(x=>drawList.unshift(things[x].getPath(x)));
-    if (pinClicked[3] && !mouseState.left) pinClicked = false;
+    if (pinClicked[3] && !(mouseState.left || mouseState.middle)) pinClicked = false;
     drawList.forEach(x=>{
         switch (x.type) {
             case "gate": {
