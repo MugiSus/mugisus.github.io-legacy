@@ -26,7 +26,7 @@ const theme = {
     "cyber": {
         bg:"#111111",
         menu:"#00ff0066",
-        menuItem:"#dddddd",
+        menuItem:"#ffffffbb",
         contour:"#dddddd",
         gTrue:"#00ff00bb",
         gFalse:"#444444bb",
@@ -48,8 +48,3 @@ const theme = {
         wFalse:"#55888888"
     }
 }
-
-let themeName = /theme=(.*?)(&|$)/i.exec(location.search);
-color = themeName ? theme[themeName[1]] || theme["light"] : theme["light"];
-
-document.body.style.backgroundColor = color.bg;

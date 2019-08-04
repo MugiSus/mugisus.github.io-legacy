@@ -30,7 +30,7 @@ canvas.oncontextmenu =()=> {return false;};
 resize();
 //end kit
 
-let things = {}, clicked = false, offSet = [[0,0],[0,0]], stageMove = false, cameraX = 0, cameraY = 0, zoom = 0.95, cameraZoom = zoom ** mouseState.wheel, mouseXinStage, mouseYinStage, zindex = 0, thingId = 0, drawList = [], idList = [], lastWheel = mouseState.wheel, menuY = -100, menuYvel = 0, tcRadius = 0, tcRvel = 0, deleteThing, pinClicked = false;
+let things = {}, clicked = false, offSet = [[0,0],[0,0]], stageMove = false, cameraX = 0, cameraY = 0, zoom = 0.95, cameraZoom = zoom ** mouseState.wheel, mouseXinStage, mouseYinStage, zindex = 0, thingId = 0, drawList = [], idList = [], lastWheel = mouseState.wheel, menuY = -100, menuYvel = 0, tcRadius = 0, tcRvel = 0, deleteThing, pinClicked = false, exportClicked = false;
 
 //start defining things
 
@@ -558,7 +558,7 @@ let drawMenu =()=> {
     ctx.lineTo(1600,-canvas.height/2/ratio);
     ctx.fill();
     drawList = [];
-    [OR,AND,XOR,NOT,NOR,NAND,XNOR,OUTPUT,INPUT].forEach((x,y,z)=>drawList.unshift([new x((-1400 + (y/(z.length-1)) * 2800) * 2, (menuY - 150 -canvas.height/2/ratio) * 2).getPath(), x]));
+    [OR,AND,XOR,NOT,NOR,NAND,XNOR,OUTPUT,INPUT].forEach((x,y,z)=>drawList.unshift([new x((-1400 + (y/z.length) * 2800) * 2, (menuY - 150 -canvas.height/2/ratio) * 2).getPath(), x]));
     ctx.save();
     ctx.scale(0.5,0.5);
     drawList.forEach(x=>{
@@ -570,6 +570,41 @@ let drawMenu =()=> {
         if (ctx.isPointInPath(x[0].path,mouseState.cliX,mouseState.cliY) && mouseState.left && !clicked) clicked = make(new x[1](Infinity, Infinity));
     });
     ctx.restore();
+    ctx.fillStyle = color.menuItem;
+    let p = [1400,menuY-150-canvas.height/2/ratio];
+    if (((mouseState.x - p[0]) ** 2 + (mouseState.y - p[1]) ** 2) ** 0.5 < 75) {
+        if (mouseState.left) {
+            if (!exportClicked) window.history.pushState(null, null, location.pathname + `?theme=${themeName||"light"}&import=${exportCode()}`);
+            exportClicked = true;
+            p[1] -= 5;
+        } else {
+            if (!mouseState.left) exportClicked = false;
+            p[1] -= 10;
+        }
+    }
+    ctx.beginPath();
+    ctx.moveTo(p[0]-75,p[1]+75);
+    ctx.lineTo(p[0]-75,p[1]-10);
+    ctx.lineTo(p[0]-30,p[1]-10);
+    ctx.lineTo(p[0]-30,p[1]+10);
+    ctx.lineTo(p[0]-55,p[1]+10);
+    ctx.lineTo(p[0]-55,p[1]+55);
+    ctx.lineTo(p[0]+55,p[1]+55);
+    ctx.lineTo(p[0]+55,p[1]+10);
+    ctx.lineTo(p[0]+30,p[1]+10);
+    ctx.lineTo(p[0]+30,p[1]-10);
+    ctx.lineTo(p[0]+75,p[1]-10);
+    ctx.lineTo(p[0]+75,p[1]+75);
+    ctx.closePath();
+    ctx.moveTo(p[0]-15,p[1]+30);
+    ctx.lineTo(p[0]-15,p[1]-25);
+    ctx.lineTo(p[0]-35,p[1]-25);
+    ctx.lineTo(p[0],p[1]-75);
+    ctx.lineTo(p[0]+35,p[1]-25);
+    ctx.lineTo(p[0]+15,p[1]-25);
+    ctx.lineTo(p[0]+15,p[1]+30);
+    ctx.closePath();
+    ctx.fill();
 }
 
 let drawTrashcan =()=> {
@@ -622,6 +657,12 @@ let drawTrashcan =()=> {
     ctx.lineTo(center[0]-tcRadius*center[2],center[1]+tcRadius*center[2]);
     ctx.stroke();
 }
+
+// main
+
+let themeName = (/theme=(.*?)(&|$)/i.exec(location.search) || [])[1];
+color = theme[themeName] || theme["light"];
+document.body.style.backgroundColor = color.bg;
 
 if (/import=(.*?)(&|$)/i.exec(location.search)) importCode(/import=(.*?)(&|$)/i.exec(location.search)[1]);
 else {
