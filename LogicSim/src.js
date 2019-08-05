@@ -594,6 +594,7 @@ let drawMenu =()=> {
     ctx.lineTo(p[0]-60,p[1]-40);
     ctx.lineTo(p[0]-70,p[1]-25);
     ctx.closePath();
+    ctx.stroke();
     ctx.fill();
     ctx.beginPath();
     ctx.moveTo(p[0]-62,p[1]+70);
