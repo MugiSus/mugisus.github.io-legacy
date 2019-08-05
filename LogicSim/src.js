@@ -411,8 +411,11 @@ let WIRE = class {
         else p = [things[this.in0].x + things[this.in0].pinPos[1][this.inNum][0], things[this.in0].y + things[this.in0].pinPos[1][this.inNum][1], things[this.out0].x + things[this.out0].pinPos[0][this.outNum][0], things[this.out0].y + things[this.out0].pinPos[0][this.outNum][1]];
         let path = new Path2D();
         path.moveTo(p[0], p[1]);
-        if (p[0] < p[2]) path.bezierCurveTo(p[0] + (p[2] - p[0]) * 0.5, p[1], p[0] + (p[2] - p[0]) * 0.5, p[3], p[2], p[3]);
-        else path.bezierCurveTo(p[0], p[1] + (p[3] - p[1]) * 0.5, p[2], p[1] + (p[3] - p[1]) * 0.5, p[2], p[3]);
+        if (qual == "low") path.lineTo(p[2],p[3]);
+        else {
+            if (p[0] < p[2]) path.bezierCurveTo(p[0] + (p[2] - p[0]) * 0.5, p[1], p[0] + (p[2] - p[0]) * 0.5, p[3], p[2], p[3]);
+            else path.bezierCurveTo(p[0], p[1] + (p[3] - p[1]) * 0.5, p[2], p[1] + (p[3] - p[1]) * 0.5, p[2], p[3]);
+        }
 
         return {type:"wire", path:path, style:this.bool?color.wTrue:color.wFalse};
     }
@@ -687,6 +690,8 @@ let drawTrashcan =()=> {
 }
 
 // main
+
+let qual = (/qual=(.*?)(&|$)/i.exec(location.search) || [])[1];
 
 let themeName = (/theme=(.*?)(&|$)/i.exec(location.search) || [])[1];
 color = theme[themeName] || theme["light"];
