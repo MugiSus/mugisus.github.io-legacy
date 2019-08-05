@@ -465,6 +465,7 @@ let exportCode =()=> {
         if (things[x].constructor.name == "WIRE") importArr.push([idList.indexOf(things[x].in0.toString())+1, things[x].inNum, idList.indexOf(things[x].out0.toString())+1, things[x].outNum]);
         else importArr.push([["OR","AND","XOR","NOT","NOR","NAND","XNOR","OUTPUT","INPUT","-"].indexOf(things[x].constructor.name)+(things[x].constructor.name=="INPUT" && things[x].bool ? 1 : 0), Math.floor(things[x].x), Math.floor(things[x].y)]);
     });
+    changed = false;
     return importArr.map(x=>typeof(x)=="number"?x:x.join(",")).join(";");
 }
 
@@ -483,6 +484,7 @@ let importCode =(code)=> {
         else if (x[0] != "") things[y+1] = new [OR,AND,XOR,NOT,NOR,NAND,XNOR,OUTPUT,INPUT,INPUT][x[0]](x[1]*1,x[2]*1,x[0]==9?true:false);
     });
     sort();
+    changed = false;
 }
 
 let sort =()=> {
@@ -586,7 +588,6 @@ let drawMenu =()=> {
             if (!exportClicked) {
                 exportClicked = true;
                 window.history.pushState(null, null, location.pathname + `?theme=${themeName||"light"}&import=${exportCode()}`);
-                changed = false;
             }
             p[1] -= 5;
         } else {
