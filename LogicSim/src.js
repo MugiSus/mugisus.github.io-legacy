@@ -570,6 +570,8 @@ let drawMenu =()=> {
         if (ctx.isPointInPath(x[0].path,mouseState.cliX,mouseState.cliY) && mouseState.left && !clicked) clicked = make(new x[1](Infinity, Infinity));
     });
     ctx.restore();
+    ctx.lineWidth = 16;
+    ctx.strokeStyle = color.menu;
     ctx.fillStyle = color.menuItem;
     let p = [1400,menuY-150-canvas.height/2/ratio];
     if (((mouseState.x - p[0]) ** 2 + (mouseState.y - p[1]) ** 2) ** 0.5 < 75) {
@@ -583,28 +585,42 @@ let drawMenu =()=> {
         }
     }
     ctx.beginPath();
-    ctx.moveTo(p[0]-75,p[1]+75);
-    ctx.lineTo(p[0]-75,p[1]-10);
-    ctx.lineTo(p[0]-30,p[1]-10);
-    ctx.lineTo(p[0]-30,p[1]+10);
-    ctx.lineTo(p[0]-55,p[1]+10);
-    ctx.lineTo(p[0]-55,p[1]+55);
-    ctx.lineTo(p[0]+55,p[1]+55);
-    ctx.lineTo(p[0]+55,p[1]+10);
-    ctx.lineTo(p[0]+30,p[1]+10);
-    ctx.lineTo(p[0]+30,p[1]-10);
-    ctx.lineTo(p[0]+75,p[1]-10);
-    ctx.lineTo(p[0]+75,p[1]+75);
-    ctx.closePath();
-    ctx.moveTo(p[0]-15,p[1]+30);
-    ctx.lineTo(p[0]-15,p[1]-25);
-    ctx.lineTo(p[0]-35,p[1]-25);
-    ctx.lineTo(p[0],p[1]-75);
-    ctx.lineTo(p[0]+35,p[1]-25);
-    ctx.lineTo(p[0]+15,p[1]-25);
-    ctx.lineTo(p[0]+15,p[1]+30);
+    ctx.moveTo(p[0]-70,p[1]-25);
+    ctx.lineTo(p[0]-70,p[1]+70);
+    ctx.lineTo(p[0]+70,p[1]+70);
+    ctx.lineTo(p[0]+70,p[1]-25);
+    ctx.lineTo(p[0],p[1]-25);
+    ctx.lineTo(p[0]-10,p[1]-40);
+    ctx.lineTo(p[0]-60,p[1]-40);
+    ctx.lineTo(p[0]-70,p[1]-25);
     ctx.closePath();
     ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(p[0]-62,p[1]+70);
+    ctx.lineTo(p[0]-40,p[1]);
+    ctx.lineTo(p[0]+90,p[1]);
+    ctx.lineTo(p[0]+70,p[1]+70);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(p[0]+10,p[1]-50);
+    ctx.lineTo(p[0]+10,p[1]+15);
+    ctx.lineTo(p[0]-10,p[1]+15);
+    ctx.lineTo(p[0]+25,p[1]+50);
+    ctx.lineTo(p[0]+55,p[1]+15);
+    ctx.lineTo(p[0]+40,p[1]+15);
+    ctx.lineTo(p[0]+40,p[1]-50);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.fill();
+    if (exportClicked) {
+        ctx.textAlign = "center";
+        ctx.lineWidth = 10;
+        ctx.font = "30px sans-serif";
+        ctx.strokeText("< Copy link to save >", p[0], p[1]+20);
+        ctx.fillText("< Copy link to save >", p[0], p[1]+20);
+    }
 }
 
 let drawTrashcan =()=> {
@@ -666,8 +682,8 @@ document.body.style.backgroundColor = color.bg;
 
 if (/import=(.*?)(&|$)/i.exec(location.search)) importCode(/import=(.*?)(&|$)/i.exec(location.search)[1]);
 else {
-    //importCode("0;0;10;7,1500,500;7,1500,-500;0,500,500;1,500,0;2,500,-500;1,-500,0;2,-500,-500;9,-1500,500;8,-1500,0;9,-1500,-500;10,0,7,0;9,0,7,1;10,0,6,0;9,0,6,1;7,0,4,0;8,0,4,1;7,0,5,0;8,0,5,1;4,0,3,0;6,0,3,1;5,0,2,0;3,0,1,0");
-    importCode("0;0;14;3,-1000,-1000;7,-1000,-600;7,-1000,-200;7,-1000,200;7,-1000,600;7,-1000,1000;7,-600,1000;7,-200,1000;7,200,1000;7,600,1000;7,1000,1000;7,1000,600;7,1000,200;7,1000,-200;7,1000,-600;7,1000,-1000;7,600,-1000;7,200,-1000;7,-200,-1000;7,-600,-1000;1,0,2,0;2,0,3,0;3,0,4,0;4,0,5,0;5,0,6,0;6,0,7,0;7,0,8,0;8,0,9,0;9,0,10,0;10,0,11,0;11,0,12,0;12,0,13,0;13,0,14,0;14,0,15,0;15,0,16,0;16,0,17,0;17,0,18,0;18,0,19,0;19,0,20,0;20,0,1,0")
+    importCode("0;0;10;7,1500,500;7,1500,-500;0,500,500;1,500,0;2,500,-500;1,-500,0;2,-500,-500;9,-1500,500;8,-1500,0;9,-1500,-500;10,0,7,0;9,0,7,1;10,0,6,0;9,0,6,1;7,0,4,0;8,0,4,1;7,0,5,0;8,0,5,1;4,0,3,0;6,0,3,1;5,0,2,0;3,0,1,0");
+    //importCode("0;0;14;3,-1000,-1000;7,-1000,-600;7,-1000,-200;7,-1000,200;7,-1000,600;7,-1000,1000;7,-600,1000;7,-200,1000;7,200,1000;7,600,1000;7,1000,1000;7,1000,600;7,1000,200;7,1000,-200;7,1000,-600;7,1000,-1000;7,600,-1000;7,200,-1000;7,-200,-1000;7,-600,-1000;1,0,2,0;2,0,3,0;3,0,4,0;4,0,5,0;5,0,6,0;6,0,7,0;7,0,8,0;8,0,9,0;9,0,10,0;10,0,11,0;11,0,12,0;12,0,13,0;13,0,14,0;14,0,15,0;15,0,16,0;16,0,17,0;17,0,18,0;18,0,19,0;19,0,20,0;20,0,1,0")
 }
 
 function main() {
