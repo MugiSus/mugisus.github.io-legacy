@@ -590,7 +590,7 @@ let drawMenu =()=> {
         if (mouseState.left && changed) {
             if (!exportClicked) {
                 exportClicked = true;
-                window.history.pushState(null, null, location.pathname + `?theme=${themeName||"light"}&import=${exportCode()}`);
+                window.history.pushState(null, null, location.pathname + `?theme=${themeName}&qual=${qual}&import=${exportCode()}`);
             }
             p[1] -= 5;
         } else {
@@ -691,10 +691,10 @@ let drawTrashcan =()=> {
 
 // main
 
-let qual = (/qual=(.*?)(&|$)/i.exec(location.search) || [])[1];
+let qual = (/qual=(.*?)(&|$)/i.exec(location.search) || [])[1] || "high";
 
-let themeName = (/theme=(.*?)(&|$)/i.exec(location.search) || [])[1];
-color = theme[themeName] || theme["light"];
+let themeName = (/theme=(.*?)(&|$)/i.exec(location.search) || [])[1] || "light";
+color = theme[themeName] || theme[themeName = "light"];
 document.body.style.backgroundColor = color.bg;
 
 if (/import=(.*?)(&|$)/i.exec(location.search)) importCode(/import=(.*?)(&|$)/i.exec(location.search)[1]);
