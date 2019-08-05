@@ -26,11 +26,12 @@ document.addEventListener("touchstart", ()=>{mouseState["left"] = true; updatePo
 document.addEventListener("touchmove", (event)=>{event.preventDefault(); updatePos();}, {passive: false});
 document.addEventListener("touchend", ()=>{mouseState["left"] = false; updatePos();});
 window.addEventListener("resize", ()=>{resize()});
-canvas.oncontextmenu =()=> {return false;};
+canvas.oncontextmenu =()=> {return false};
 resize();
 //end kit
 
-let things = {}, clicked = false, offSet = [[0,0],[0,0]], stageMove = false, cameraX = 0, cameraY = 0, zoom = 0.95, cameraZoom = zoom ** mouseState.wheel, mouseXinStage, mouseYinStage, zindex = 0, thingId = 0, drawList = [], idList = [], lastWheel = mouseState.wheel, menuY = -100, menuYvel = 0, tcRadius = 0, tcRvel = 0, deleteThing, pinClicked = false, exportClicked = false;
+let things = {}, clicked = false, offSet = [[0,0],[0,0]], stageMove = false, cameraX = 0, cameraY = 0, zoom = 0.95, cameraZoom = zoom ** mouseState.wheel, mouseXinStage, mouseYinStage, zindex = 0, thingId = 0, drawList = [], idList = [], lastWheel = mouseState.wheel, menuY = -100, menuYvel = 0, tcRadius = 0, tcRvel = 0, deleteThing, pinClicked = false, exportClicked = false, changed = true;
+window.onbeforeunload =()=> {return changed ? true : null};
 
 //start defining things
 
@@ -380,6 +381,7 @@ let WIRE = class {
                 this.in0 = pinFocused[0];
                 this.inNum = pinFocused[2];
                 pinClicked[3] = true;
+                changed = true;
             }
         } else {
             if ((things[this.in0].wireId[`out${this.inNum}`] || []).indexOf(id) == -1) {
@@ -393,6 +395,7 @@ let WIRE = class {
                 this.out0 = pinFocused[0];
                 this.outNum = pinFocused[2];
                 pinClicked[3] = true;
+                changed = true;
             }
         } else {
             if ((things[this.out0].wireId[`in${this.outNum}`] || []).indexOf(id) == -1) {
@@ -424,6 +427,7 @@ let dragger =(path, id, obj)=> {
             sort();
             clicked = id;
             offSet[0] = [mouseXinStage - obj.x, mouseYinStage - obj.y];
+            changed = true;
         }
         if (mouseState.right) offSet[0] = [mouseXinStage - obj.x, mouseYinStage - obj.y];
         else {
@@ -439,7 +443,7 @@ let makeWire =(id, obj)=> {
     if (pinClicked[3] || clicked) return;
     if (pinClicked && pinClicked[2] && !mouseState.left) pinClicked[2] = false;
     obj.pinPos.forEach((x,i)=>x.forEach((x, y)=>{
-        if (((mouseXinStage - (obj.x + x[0])) ** 2 + (mouseYinStage - (obj.y + x[1])) ** 2) ** 0.5 < 30) {
+        if (((mouseXinStage - (obj.x + x[0])) ** 2 + (mouseYinStage - (obj.y + x[1])) ** 2) ** 0.5 < 15 / cameraZoom) {
             pinFocused = [id, i?"out":"in", y, false];
             if ((mouseState.left || mouseState.middle) && !pinClicked) {
                 pinClicked = [id, `${i?"out":"in"}${y}`, true];
@@ -481,7 +485,10 @@ let importCode =(code)=> {
     sort();
 }
 
-let sort =()=> idList = Object.keys(things).sort((a,b)=>{return things[a].z < things[b].z ? 1 : (things[a].z > things[b].z ? -1 : 0)});
+let sort =()=> {
+    idList = Object.keys(things).sort((a,b)=>{return things[a].z < things[b].z ? 1 : (things[a].z > things[b].z ? -1 : 0)});
+    changed = true;
+}
 
 let make =(thing, id = ++thingId)=> {things[id] = thing; sort(); return id};
 
@@ -575,9 +582,12 @@ let drawMenu =()=> {
     ctx.fillStyle = color.menuItem;
     let p = [1400,menuY-150-canvas.height/2/ratio];
     if (((mouseState.x - p[0]) ** 2 + (mouseState.y - p[1]) ** 2) ** 0.5 < 75) {
-        if (mouseState.left) {
-            if (!exportClicked) window.history.pushState(null, null, location.pathname + `?theme=${themeName||"light"}&import=${exportCode()}`);
-            exportClicked = true;
+        if (mouseState.left && changed) {
+            if (!exportClicked) {
+                exportClicked = true;
+                window.history.pushState(null, null, location.pathname + `?theme=${themeName||"light"}&import=${exportCode()}`);
+                changed = false;
+            }
             p[1] -= 5;
         } else {
             if (!mouseState.left) exportClicked = false;
@@ -615,7 +625,7 @@ let drawMenu =()=> {
     ctx.closePath();
     ctx.stroke();
     ctx.fill();
-    if (exportClicked) {
+    if (!changed) {
         ctx.textAlign = "center";
         ctx.lineWidth = 10;
         ctx.font = "30px sans-serif";
