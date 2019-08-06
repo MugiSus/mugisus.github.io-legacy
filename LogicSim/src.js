@@ -519,7 +519,7 @@ let exportCode =()=> {
     idList.forEach(x=>{
         switch (things[x].constructor.name) {
             case "WIRE": importArr.push([idList.indexOf(things[x].in0.toString())+1, things[x].inNum, idList.indexOf(things[x].out0.toString())+1, things[x].outNum]); break;
-            case "DELAYER": importArr.push([10, Math.floor(things[x].x), Math.floor(things[x].y), things[x].time]); break;
+            case "DELAYER": importArr.push([10, `${Math.floor(things[x].x)}-${Math.floor(things[x].y)}`, things[x].time]); break;
             default: importArr.push([["OR","AND","XOR","NOT","NOR","NAND","XNOR","OUTPUT","INPUT","-","(delayer)"].indexOf(things[x].constructor.name)+(things[x].constructor.name=="INPUT" && things[x].bool ? 1 : 0), Math.floor(things[x].x), Math.floor(things[x].y)]);
         }
     });
@@ -538,8 +538,8 @@ let importCode =(code)=> {
     zindex = 0;
     things = {};
     importArr.forEach((x,y)=>{
-        if (x[0] == 10) things[y+1] = new DELAYER(x[1]*1,x[2]*1,x[3]);
-        else if (x.length == 4) things[y+1] = new WIRE(...x);
+        if (x.length == 4) things[y+1] = new WIRE(...x);
+        else if (x[0] == 10) things[y+1] = new DELAYER(/(^-?.+?)-(.+)/.exec(x[1])[1]*1, /(^-?.+?)-(.+)/.exec(x[1])[2]*1, x[2])
         else if (x[0] != "") things[y+1] = new [OR,AND,XOR,NOT,NOR,NAND,XNOR,OUTPUT,INPUT,INPUT,DELAYER][x[0]](x[1]*1,x[2]*1,x[0]==9?true:false);
     });
     sort();
