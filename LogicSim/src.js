@@ -748,8 +748,7 @@ let drawTrashcan =()=> {
 // main
 
 let qual = (/qual=(.*?)(&|$)/i.exec(location.search) || [])[1] || "high";
-if (qual == "low") ctx.lineCap = "butt";
-else ctx.lineCap = "round";
+ctx.lineCap = "round";
 
 let themeName = (/theme=(.*?)(&|$)/i.exec(location.search) || [])[1] || "light";
 color = theme[themeName] || theme[themeName = "light"];
