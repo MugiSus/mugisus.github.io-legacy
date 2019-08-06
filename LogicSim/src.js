@@ -30,7 +30,7 @@ canvas.oncontextmenu =()=> {return false};
 resize();
 //end kit
 
-let things = {}, clicked = false, offSet = [[0,0],[0,0]], stageMove = false, cameraX = 0, cameraY = 0, zoom = 0.95, cameraZoom = zoom ** mouseState.wheel, mouseXinStage, mouseYinStage, zindex = 0, thingId = 0, drawList = [], idList = [], lastWheel = mouseState.wheel, menuY = -100, menuYvel = 0, tcRadius = 0, tcRvel = 0, deleteThing, pinClicked = false, exportClicked = false, changed = true;
+let things = {}, clicked = false, offSet = [[0,0],[0,0]], stageMove = false, cameraX = 0, cameraY = 0, zoom = 0.95, cameraZoom = zoom ** mouseState.wheel, mouseXinStage, mouseYinStage, zindex = 0, thingId = 0, drawList = [], idList = [], lastWheel = mouseState.wheel, menuY = -100, menuYvel = 0, tcRadius = 0, tcRvel = 0, deleteThing, pinClicked = false, exportClicked = false, changed = true, timeUnits = [5,10,30,60,300];
 window.onbeforeunload =()=> {return changed ? true : null};
 
 //start defining things
@@ -292,6 +292,58 @@ let XNOR = class {
     }
 };
 
+let DELAYER = class {
+    constructor(x, y, time = 0) {
+        this.x = x;
+        this.y = y;
+        this.z = ++zindex;
+        this.bool = false;
+        this.in0 = false;
+        this.out0 = false;
+        this.history = [];
+        this.time = time;
+        this.lastClicked = 0;
+        this.pinPos = [[[-200,0]],[[175,0]]];
+        this.wireId = {};
+    }
+    getPath(id) {
+        let gateColor;
+        if (((mouseXinStage - this.x) ** 2 + (mouseYinStage - this.y) ** 2) ** 0.5 < 85) {
+            if (mouseState.left && !this.lastClicked) this.lastClicked = new Date().getTime();
+            else if (!mouseState.left && this.lastClicked) {
+                if (new Date().getTime() - this.lastClicked < 300) this.time = (this.time + 1) % timeUnits.length;
+                this.lastClicked = 0;
+            }
+            gateColor = this.bool ? color.gTrueFocus : color.gFalseFocus;
+        } else gateColor = this.bool ? color.gTrue : color.gFalse;
+
+        if (this.history.length != timeUnits[this.time]) this.history = new Array(timeUnits[this.time]).map(()=>false);
+        this.history.unshift(this.in0);
+        this.out0 = this.history.pop();
+        this.bool = this.out0;
+
+        let path = new Path2D();
+        path.arc(this.x, this.y, 85, 0, Math.PI*2);
+        path.moveTo(this.x+60, this.y)
+        path.arc(this.x, this.y, 60, 0, Math.PI*2);
+        path.moveTo(this.x, this.y-45);
+        path.lineTo(this.x, this.y);
+        path.lineTo(this.x+35, this.y);
+        path.moveTo(this.x + 85, this.y);
+        path.lineTo(this.x + 175, this.y);
+        path.moveTo(this.x - 85, this.y);
+        path.lineTo(this.x - 200, this.y);
+        for (let i = 0; i <= this.time; i++) {
+            path.moveTo(this.x+15*(this.time/-2+i), this.y+30);
+            path.lineTo(this.x+15*(this.time/-2+i), this.y+30);
+        }
+        dragger(path, id, this);
+        if (id) makeWire(id, this);
+
+        return {type:"gate", path:path, style:gateColor};
+    }
+};
+
 let OUTPUT = class {
     constructor(x, y) {
         this.x = x;
@@ -465,8 +517,11 @@ let exportCode =()=> {
     sort();
     let importArr = [cameraX, cameraY, mouseState.wheel].map(x=>Math.floor(x));
     idList.forEach(x=>{
-        if (things[x].constructor.name == "WIRE") importArr.push([idList.indexOf(things[x].in0.toString())+1, things[x].inNum, idList.indexOf(things[x].out0.toString())+1, things[x].outNum]);
-        else importArr.push([["OR","AND","XOR","NOT","NOR","NAND","XNOR","OUTPUT","INPUT","-"].indexOf(things[x].constructor.name)+(things[x].constructor.name=="INPUT" && things[x].bool ? 1 : 0), Math.floor(things[x].x), Math.floor(things[x].y)]);
+        switch (things[x].constructor.name) {
+            case "WIRE": importArr.push([idList.indexOf(things[x].in0.toString())+1, things[x].inNum, idList.indexOf(things[x].out0.toString())+1, things[x].outNum]); break;
+            case "DELAYER": importArr.push([10, Math.floor(things[x].x), Math.floor(things[x].y), things[x].time]); break;
+            default: importArr.push([["OR","AND","XOR","NOT","NOR","NAND","XNOR","OUTPUT","INPUT","-","(delayer)"].indexOf(things[x].constructor.name)+(things[x].constructor.name=="INPUT" && things[x].bool ? 1 : 0), Math.floor(things[x].x), Math.floor(things[x].y)]);
+        }
     });
     changed = false;
     return importArr.map(x=>typeof(x)=="number"?x:x.join(",")).join(";");
@@ -483,8 +538,9 @@ let importCode =(code)=> {
     zindex = 0;
     things = {};
     importArr.forEach((x,y)=>{
-        if (x.length == 4) things[y+1] = new WIRE(...x);
-        else if (x[0] != "") things[y+1] = new [OR,AND,XOR,NOT,NOR,NAND,XNOR,OUTPUT,INPUT,INPUT][x[0]](x[1]*1,x[2]*1,x[0]==9?true:false);
+        if (x[0] == 10) things[y+1] = new DELAYER(x[1]*1,x[2]*1,x[3]);
+        else if (x.length == 4) things[y+1] = new WIRE(...x);
+        else if (x[0] != "") things[y+1] = new [OR,AND,XOR,NOT,NOR,NAND,XNOR,OUTPUT,INPUT,INPUT,DELAYER][x[0]](x[1]*1,x[2]*1,x[0]==9?true:false);
     });
     sort();
     changed = false;
@@ -570,7 +626,7 @@ let drawMenu =()=> {
     ctx.lineTo(1600,-canvas.height/2/ratio);
     ctx.fill();
     drawList = [];
-    [OR,AND,XOR,NOT,NOR,NAND,XNOR,OUTPUT,INPUT].forEach((x,y,z)=>drawList.unshift([new x((-1400 + (y/z.length) * 2800) * 2, (menuY - 150 -canvas.height/2/ratio) * 2).getPath(), x]));
+    [OR,AND,XOR,NOT,NOR,NAND,XNOR,OUTPUT,INPUT,DELAYER].forEach((x,y,z)=>drawList.unshift([new x((-1400 + (y/z.length) * 2800) * 2, (menuY - 150 -canvas.height/2/ratio) * 2).getPath(), x]));
     ctx.save();
     ctx.scale(0.5,0.5);
     drawList.forEach(x=>{
@@ -692,6 +748,8 @@ let drawTrashcan =()=> {
 // main
 
 let qual = (/qual=(.*?)(&|$)/i.exec(location.search) || [])[1] || "high";
+if (qual == "low") ctx.lineCap = "butt";
+else ctx.lineCap = "round";
 
 let themeName = (/theme=(.*?)(&|$)/i.exec(location.search) || [])[1] || "light";
 color = theme[themeName] || theme[themeName = "light"];
