@@ -30,7 +30,7 @@ canvas.oncontextmenu =()=> {return false};
 resize();
 //end kit
 
-let things = {}, clicked = false, offSet = [[0,0],[0,0]], stageMove = false, cameraX = 0, cameraY = 0, zoom = 0.95, cameraZoom = zoom ** mouseState.wheel, mouseXinStage, mouseYinStage, zindex = 0, thingId = 0, drawList = [], idList = [], lastWheel = mouseState.wheel, menuY = -100, menuYvel = 0, tcRadius = 0, tcRvel = 0, deleteThing, pinClicked = false, exportClicked = false, changed = true, timeUnits = [5,10,30,60,300];
+let things = {}, clicked = false, offSet = [[0,0],[0,0]], stageMove = false, cameraX = 0, cameraY = 0, zoom = 0.95, cameraZoom = zoom ** mouseState.wheel, mouseXinStage, mouseYinStage, zindex = 0, thingId = 0, drawList = [], idList = [], lastWheel = mouseState.wheel, menuY = -100, menuYvel = 0, tcRadius = 0, tcRvel = 0, deleteThing, pinClicked = false, exportClicked = false, changed = true, timeUnits = [6,15,30,60,300];
 window.onbeforeunload =()=> {return changed ? true : null};
 
 //start defining things
@@ -317,7 +317,7 @@ let DELAYER = class {
             gateColor = this.bool ? color.gTrueFocus : color.gFalseFocus;
         } else gateColor = this.bool ? color.gTrue : color.gFalse;
 
-        if (this.history.length != timeUnits[this.time]) this.history = new Array(timeUnits[this.time]).map(()=>false);
+        if (this.history.length != timeUnits[this.time]-1) this.history = new Array(timeUnits[this.time]-1).map(()=>false);
         this.history.unshift(this.in0);
         this.out0 = this.history.pop();
         this.bool = this.out0;
@@ -333,10 +333,12 @@ let DELAYER = class {
         path.lineTo(this.x + 175, this.y);
         path.moveTo(this.x - 85, this.y);
         path.lineTo(this.x - 200, this.y);
+        ctx.lineCap = "round";
         for (let i = 0; i <= this.time; i++) {
             path.moveTo(this.x+15*(this.time/-2+i), this.y+30);
             path.lineTo(this.x+15*(this.time/-2+i), this.y+30);
         }
+        ctx.lineCap = qual == "low" ? "butt" : "round";
         dragger(path, id, this);
         if (id) makeWire(id, this);
 
@@ -539,7 +541,7 @@ let importCode =(code)=> {
     things = {};
     importArr.forEach((x,y)=>{
         if (x.length == 4) things[y+1] = new WIRE(...x);
-        else if (x[0] == 10) things[y+1] = new DELAYER(/(^-?.+?)-(.+)/.exec(x[1])[1]*1, /(^-?.+?)-(.+)/.exec(x[1])[2]*1, x[2])
+        else if (x[0] == 10) things[y+1] = new DELAYER(/(^-?.+?)-(.+)/.exec(x[1])[1]*1, /(^-?.+?)-(.+)/.exec(x[1])[2]*1, x[2]*1)
         else if (x[0] != "") things[y+1] = new [OR,AND,XOR,NOT,NOR,NAND,XNOR,OUTPUT,INPUT,INPUT,DELAYER][x[0]](x[1]*1,x[2]*1,x[0]==9?true:false);
     });
     sort();
@@ -748,7 +750,7 @@ let drawTrashcan =()=> {
 // main
 
 let qual = (/qual=(.*?)(&|$)/i.exec(location.search) || [])[1] || "high";
-ctx.lineCap = "round";
+ctx.lineCap = qual == "low" ? "butt" : "round";
 
 let themeName = (/theme=(.*?)(&|$)/i.exec(location.search) || [])[1] || "light";
 color = theme[themeName] || theme[themeName = "light"];
