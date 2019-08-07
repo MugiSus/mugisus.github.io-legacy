@@ -2,3 +2,4 @@ beta
 
 v0.1 https://mmgiss.github.io/LogicSim にて公開
 v0.1.1 delayer(遅延装置)を実装
+v0.1.2 delayerの様々な不具合を修正
