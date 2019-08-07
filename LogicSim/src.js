@@ -333,16 +333,15 @@ let DELAYER = class {
         path.lineTo(this.x + 175, this.y);
         path.moveTo(this.x - 85, this.y);
         path.lineTo(this.x - 200, this.y);
-        ctx.lineCap = "round";
+        let dots = new Path2D();
         for (let i = 0; i <= this.time; i++) {
-            path.moveTo(this.x+15*(this.time/-2+i), this.y+30);
-            path.lineTo(this.x+15*(this.time/-2+i), this.y+30);
+            dots.moveTo(this.x+15*(this.time/-2+i), this.y+30);
+            dots.lineTo(this.x+15*(this.time/-2+i), this.y+30);
         }
-        ctx.lineCap = qual == "low" ? "butt" : "round";
         dragger(path, id, this);
         if (id) makeWire(id, this);
 
-        return {type:"gate", path:path, style:gateColor};
+        return {type:"gate_delayer", path:path, dots:dots, style:gateColor};
     }
 };
 
@@ -565,6 +564,16 @@ let drawStage =()=> {
     if (pinClicked[3] && !(mouseState.left || mouseState.middle)) pinClicked = false;
     drawList.forEach(x=>{
         switch (x.type) {
+            case "gate_delayer":{
+                ctx.fillStyle = x.style;
+                ctx.lineWidth = 10;
+                ctx.strokeStyle = color.contour;
+                ctx.fill(x.path);
+                ctx.stroke(x.path);
+                ctx.lineCap = "round";
+                ctx.stroke(x.dots);
+                ctx.lineCap = qual == "low" ? "butt" : "round";
+            } break;
             case "gate": {
                 ctx.fillStyle = x.style;
                 ctx.lineWidth = 10;
