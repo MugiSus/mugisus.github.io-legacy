@@ -35,7 +35,7 @@ function loading() {
     ctx.strokeStyle = "#f0f0f0";
     ctx.lineWidth = 30;
     ctx.stroke();
-    if (imgs._loaded < imgs._sum) requestAnimationFrame(loading);
+    if (imgs._loaded < imgs._sum || clock < 30) requestAnimationFrame(loading);
     else requestAnimationFrame(main);
 }
 
