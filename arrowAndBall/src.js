@@ -24,19 +24,33 @@ let drawImg =(src, x, y, rotate = 0, size = 1)=> {
 let drawBoard =(xpos = 0, ypos = 0)=> board.forEach((i,y)=>i.forEach((j,x)=>{
     ctx.save()
     ctx.translate((x - board[0].length / 2 + 0.5) * 525 * panelSize + xpos, (y - board.length / 2 + 0.5) * 525 * panelSize + ypos);
-    switch (j) {
+    switch (j.replace(/[1234567890NESWROYGCB]$/, "")) {
+        case "glass": {
+            drawPanel(j,0,0);
+            if ((clock - (x + y) * 3) % 200 < 20) {
+                ctx.globalAlpha = (20 - (clock - (x + y) * 3) % 200) / 20 * 0.9;
+                ctx.fillStyle = "#f0f0f0";
+                ctx.fillRect(-245*panelSize,-245*panelSize,490*panelSize,490*panelSize);
+                ctx.globalAlpha = 1;
+            }
+        } break;
+        case "jump": {
+            drawPanel("plain",0,0);
+            drawPanel(j,0,-20+20*Math.cos(clock/60*Math.PI));
+        } break;
         case "checkPoint": {
             drawPanel("plain",0,0);
-            drawPanel("checkPoint",0,-50+35*Math.sin(clock/70*Math.PI));
-            if ((clock - (x + y) * 3) % 500 < 30) {
-                ctx.globalAlpha = (30 - (clock - (x + y) * 3) % 500) / 30 * 0.8;
+            drawPanel("checkPoint",0,-50+35*Math.sin(clock/60*Math.PI));
+            if ((clock - (x + y) * 3) % 600 < 20) {
+                ctx.globalAlpha = (20 - (clock - (x + y) * 3) % 600) / 20 * 0.9;
                 ctx.fillStyle = "#ffffff";
                 ctx.beginPath();
-                ctx.arc(0,(-50+35*Math.sin(clock/70*Math.PI))*panelSize*0.4,panelSize*100,0,Math.PI*2);
+                ctx.arc(0,(-50+35*Math.sin(clock/60*Math.PI))*panelSize**2,panelSize*100,0,Math.PI*2);
                 ctx.fill();
                 ctx.globalAlpha = 1;
             }
         } break;
+        case "none": break;
         default: {
             drawPanel(j, 0, 0);
         }
@@ -44,12 +58,18 @@ let drawBoard =(xpos = 0, ypos = 0)=> board.forEach((i,y)=>i.forEach((j,x)=>{
     ctx.restore();
 }));
 
+let drawBG =()=> {
+
+}
+
 let board = [
-    ["startE", "checkPoint", "checkPoint", "checkPoint", "blackS"],
-    ["whiteS", "checkPoint", "checkPoint", "checkPoint", "whiteW"],
-    ["whiteE", "checkPoint", "checkPoint", "checkPoint", "whiteS"],
-    ["whiteS", "checkPoint", "checkPoint", "checkPoint", "whiteW"],
-    ["blackE", "checkPoint", "checkPoint", "checkPoint", "goalE"]
+    ["startE", "checkPoint", "checkPoint", "checkPoint", "checkPoint", "checkPoint", "blackS"],
+    ["whiteS", "jump3", "none", "jump2", "glass1", "checkPoint", "whiteW"],
+    ["whiteR", "glass2", "jump1", "jump1", "checkPoint", "checkPoint", "whiteW"],
+    ["whiteE", "checkPoint", "checkPoint", "checkPoint", "checkPoint", "checkPoint", "whiteS"],
+    ["whiteE", "checkPoint", "checkPoint", "jump1", "jump1", "glass2", "whiteL"],
+    ["whiteS", "checkPoint", "glass1", "jump2", "none", "jump3", "whiteW"],
+    ["blackE", "checkPoint", "checkPoint", "checkPoint", "checkPoint", "checkPoint", "goalE"]
 ];
 
 let clock = 0;
@@ -76,20 +96,11 @@ function loading() {
 function main() {
     clock++;
     clearAll();
+    drawBG();
     drawBoard();
-    /*
-    drawPanel("plain",0,0);
-    drawPanel("checkPoint",0,-50+35*Math.sin(clock/60*Math.PI));
-    if (clock % 300 < 30) {
-        ctx.globalAlpha = (30 - clock % 300) / 30 * 0.8;
-        ctx.fillStyle = "#ffffff";
-        ctx.beginPath();
-        ctx.arc(0,(-50+35*Math.sin(clock/60*Math.PI))*panelSize*0.4,panelSize*100,0,Math.PI*2);
-        ctx.fill();
-        ctx.globalAlpha = 1;
-    }
-    ctx.globalAlpha = 1;
-    */
+    ctx.font = `${20/ratio}px sans-serif`;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText(`FPS:${getFPS()}`, mouseState.x, mouseState.y)
     requestAnimationFrame(main);
 }
 

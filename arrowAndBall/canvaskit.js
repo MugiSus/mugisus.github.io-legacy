@@ -8,7 +8,7 @@ let getFPS =(sec = 1)=> {
     time = (new Date().getTime() - started) / 1000;
     timeStamp.push(time);
     timeStamp = timeStamp.filter(x => time - x <= sec);
-    fps = Math.floor((timeStamp.length / sec) * 10) / 10;
+    return fps = Math.floor((timeStamp.length / sec) * 10) / 10;
 }
 let ratio, resize =()=> {
     canvas.height = document.body.clientHeight; canvas.width = document.body.clientWidth;
@@ -30,3 +30,5 @@ window.addEventListener("resize", ()=>{resize()});
 canvas.oncontextmenu =()=> {return false};
 resize();
 //end kit
+
+document.title = "Saie-Say-Suck-Chew"
