@@ -1,15 +1,15 @@
 //load images
 let imgs = {_loaded:0, _sum:0};
-["onO", "onR", "onY", "plain", "reverser", "startE", "startN", "startS", "startW", "switchB", "switchC", "switchG", "switchO", "switchR", "switchY", "warpB", "warpC", "warpG", "warpO", "warpR", "warpY", "whiteE", "whiteL", "whiteN", "whiteR", "whiteS", "whiteW", "blackE", "blackL", "blackN", "blackR", "blackS", "blackW", "checkPoint", "glass0", "glass1", "glass2", "glass3", "goalE", "goalN", "goalS", "goalW", "jump1", "jump2", "jump3", "offB", "offC", "offG", "offO", "offR", "offY", "onB", "onC", "onG"].forEach(x=>{
+["blackL", "blackN", "checkPoint", "glass0", "glass1", "glass2", "glass3", "goalN", "jump1", "jump2", "jump3", "offB", "offC", "offG", "offO", "offR", "offY", "onB", "onC", "onG", "onO", "onR", "onY", "plain", "reverser", "startN", "switchB", "switchC", "switchG", "switchO", "switchR", "switchY", "warpB", "warpC", "warpG", "warpO", "warpR", "warpY", "whiteL", "whiteN"].forEach(x=>{
     imgs[x] = new Image();
     imgs[x].src = `pngs/${x}.png`;
     imgs[x].onload =()=> imgs._loaded++;
     imgs._sum++;
 });
 
-let panelSize = 200 / 500;
+let panelSize = 150 / 500;
 
-let drawPanel =(name, x, y, rotate = 0, size = 1)=> drawImg(name, panelSize * x, panelSize * y, rotate, panelSize * size);
+let drawPanel =(name, x, y, rotate = 0, size = 1)=> drawImg(name, panelSize * x, panelSize * y, rotate, size.length ? size.map(x=>x*panelSize) : panelSize * size);
 
 let drawImg =(src, x, y, rotate = 0, size = 1)=> {
     ctx.save();
@@ -23,12 +23,12 @@ let drawImg =(src, x, y, rotate = 0, size = 1)=> {
 
 let drawBoard =(xpos = 0, ypos = 0)=> board.forEach((i,y)=>i.forEach((j,x)=>{
     ctx.save()
-    ctx.translate((x - board[0].length / 2 + 0.5) * 525 * panelSize + xpos, (y - board.length / 2 + 0.5) * 525 * panelSize + ypos);
-    switch (j.replace(/[1234567890NESWROYGCB]$/, "")) {
+    ctx.translate((x - board[0].length / 2 + 0.5) * 520 * panelSize + xpos, (y - board.length / 2 + 0.5) * 520 * panelSize + ypos);
+    switch (j.replace(/[1234567890NESWLROYGCB]$/, "")) {
         case "glass": {
             drawPanel(j,0,0);
-            if ((clock - (x + y) * 3) % 200 < 20) {
-                ctx.globalAlpha = (20 - (clock - (x + y) * 3) % 200) / 20 * 0.9;
+            if ((clock - (x + y) * 3) % 300 < 60) {
+                ctx.globalAlpha = (60 - (clock - (x + y) * 3) % 300) / 60 * 0.75;
                 ctx.fillStyle = "#f0f0f0";
                 ctx.fillRect(-245*panelSize,-245*panelSize,490*panelSize,490*panelSize);
                 ctx.globalAlpha = 1;
@@ -40,7 +40,7 @@ let drawBoard =(xpos = 0, ypos = 0)=> board.forEach((i,y)=>i.forEach((j,x)=>{
         } break;
         case "checkPoint": {
             drawPanel("plain",0,0);
-            drawPanel("checkPoint",0,-50+35*Math.sin(clock/60*Math.PI));
+            drawPanel(j,0,-50+35*Math.sin(clock/60*Math.PI));
             if ((clock - (x + y) * 3) % 600 < 20) {
                 ctx.globalAlpha = (20 - (clock - (x + y) * 3) % 600) / 20 * 0.9;
                 ctx.fillStyle = "#ffffff";
@@ -50,10 +50,44 @@ let drawBoard =(xpos = 0, ypos = 0)=> board.forEach((i,y)=>i.forEach((j,x)=>{
                 ctx.globalAlpha = 1;
             }
         } break;
+        case "white": {
+            switch (j.charAt(5)) {
+                case "N" : drawPanel("whiteN", 0, 0, 0); break;
+                case "E" : drawPanel("whiteN", 0, 0, 0.5); break;
+                case "S" : drawPanel("whiteN", 0, 0, 1); break;
+                case "W" : drawPanel("whiteN", 0, 0, 1.5); break;
+                case "L" : drawPanel("whiteL", 0, 0, 0); break;
+                case "R" : drawPanel("whiteL", 0, 0, 0, [-1, 1]); break;
+            }
+        } break;
+        case "black": {
+            switch (j.charAt(5)) {
+                case "N" : drawPanel("blackN", 0, 0, 0); break;
+                case "E" : drawPanel("blackN", 0, 0, 0.5); break;
+                case "S" : drawPanel("blackN", 0, 0, 1); break;
+                case "W" : drawPanel("blackN", 0, 0, 1.5); break;
+                case "L" : drawPanel("blackL", 0, 0, 0); break;
+                case "R" : drawPanel("blackL", 0, 0, 0, [-1, 1]); break;
+            }
+        } break;
+        case "start": {
+            switch (j.charAt(5)) {
+                case "N" : drawPanel("startN", 0, 0, 0); break;
+                case "E" : drawPanel("startN", 0, 0, 0.5); break;
+                case "S" : drawPanel("startN", 0, 0, 1); break;
+                case "W" : drawPanel("startN", 0, 0, 1.5); break;
+            }
+        } break;
+        case "goal": {
+            switch (j.charAt(4)) {
+                case "N" : drawPanel("goalN", 0, 0, 0); break;
+                case "E" : drawPanel("goalN", 0, 0, 0.5); break;
+                case "S" : drawPanel("goalN", 0, 0, 1); break;
+                case "W" : drawPanel("goalN", 0, 0, 1.5); break;
+            }
+        } break;
         case "none": break;
-        default: {
-            drawPanel(j, 0, 0);
-        }
+        default: drawPanel(j, 0, 0);
     }
     ctx.restore();
 }));
@@ -65,9 +99,9 @@ let drawBG =()=> {
 let board = [
     ["startE", "checkPoint", "checkPoint", "checkPoint", "checkPoint", "checkPoint", "blackS"],
     ["whiteS", "jump3", "none", "jump2", "glass1", "checkPoint", "whiteW"],
-    ["whiteR", "glass2", "jump1", "jump1", "checkPoint", "checkPoint", "whiteW"],
-    ["whiteE", "checkPoint", "checkPoint", "checkPoint", "checkPoint", "checkPoint", "whiteS"],
-    ["whiteE", "checkPoint", "checkPoint", "jump1", "jump1", "glass2", "whiteL"],
+    ["blackR", "glass2", "jump1", "jump1", "checkPoint", "glass2", "whiteW"],
+    ["whiteE", "glass2", "glass3", "checkPoint", "glass3", "glass2", "whiteS"],
+    ["whiteE", "glass2", "checkPoint", "jump1", "jump1", "glass2", "blackL"],
     ["whiteS", "checkPoint", "glass1", "jump2", "none", "jump3", "whiteW"],
     ["blackE", "checkPoint", "checkPoint", "checkPoint", "checkPoint", "checkPoint", "goalE"]
 ];
