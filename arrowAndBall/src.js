@@ -21,6 +21,37 @@ let drawImg =(src, x, y, rotate = 0, size = 1)=> {
     ctx.restore();
 }
 
+let drawBoard =(xpos = 0, ypos = 0)=> board.forEach((i,y)=>i.forEach((j,x)=>{
+    ctx.save()
+    ctx.translate((x - board[0].length / 2 + 0.5) * 525 * panelSize + xpos, (y - board.length / 2 + 0.5) * 525 * panelSize + ypos);
+    switch (j) {
+        case "checkPoint": {
+            drawPanel("plain",0,0);
+            drawPanel("checkPoint",0,-50+35*Math.sin(clock/70*Math.PI));
+            if ((clock - (x + y) * 3) % 500 < 30) {
+                ctx.globalAlpha = (30 - (clock - (x + y) * 3) % 500) / 30 * 0.8;
+                ctx.fillStyle = "#ffffff";
+                ctx.beginPath();
+                ctx.arc(0,(-50+35*Math.sin(clock/70*Math.PI))*panelSize*0.4,panelSize*100,0,Math.PI*2);
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+        } break;
+        default: {
+            drawPanel(j, 0, 0);
+        }
+    }
+    ctx.restore();
+}));
+
+let board = [
+    ["startE", "checkPoint", "checkPoint", "checkPoint", "blackS"],
+    ["whiteS", "checkPoint", "checkPoint", "checkPoint", "whiteW"],
+    ["whiteE", "checkPoint", "checkPoint", "checkPoint", "whiteS"],
+    ["whiteS", "checkPoint", "checkPoint", "checkPoint", "whiteW"],
+    ["blackE", "checkPoint", "checkPoint", "checkPoint", "goalE"]
+];
+
 let clock = 0;
 
 function loading() {
@@ -36,12 +67,17 @@ function loading() {
     ctx.lineWidth = 30;
     ctx.stroke();
     if (imgs._loaded < imgs._sum || clock < 30) requestAnimationFrame(loading);
-    else requestAnimationFrame(main);
+    else {
+        clock = 0;
+        requestAnimationFrame(main);
+    }
 }
 
 function main() {
     clock++;
     clearAll();
+    drawBoard();
+    /*
     drawPanel("plain",0,0);
     drawPanel("checkPoint",0,-50+35*Math.sin(clock/60*Math.PI));
     if (clock % 300 < 30) {
@@ -53,6 +89,7 @@ function main() {
         ctx.globalAlpha = 1;
     }
     ctx.globalAlpha = 1;
+    */
     requestAnimationFrame(main);
 }
 
