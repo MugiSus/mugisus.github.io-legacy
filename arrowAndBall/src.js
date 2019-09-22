@@ -36,16 +36,16 @@ let drawBoard =(xpos = 0, ypos = 0)=> board.forEach((i,y)=>i.forEach((j,x)=>{
         } break;
         case "jump": {
             drawPanel("plain",0,0);
-            drawPanel(j,0,-20+20*Math.cos(clock/60*Math.PI));
+            drawPanel(j,0,-30+30*Math.cos(clock/60*Math.PI));
         } break;
         case "checkPoint": {
             drawPanel("plain",0,0);
-            drawPanel(j,0,-50+35*Math.sin(clock/60*Math.PI));
+            drawPanel(j,0,-75+50*Math.sin(clock/60*Math.PI));
             if ((clock - (x + y) * 3) % 600 < 20) {
                 ctx.globalAlpha = (20 - (clock - (x + y) * 3) % 600) / 20 * 0.9;
                 ctx.fillStyle = "#ffffff";
                 ctx.beginPath();
-                ctx.arc(0,(-50+35*Math.sin(clock/60*Math.PI))*panelSize**2,panelSize*100,0,Math.PI*2);
+                ctx.arc(0,(-75+50*Math.sin(clock/60*Math.PI))*panelSize**2,panelSize*100,0,Math.PI*2);
                 ctx.fill();
                 ctx.globalAlpha = 1;
             }
@@ -92,8 +92,15 @@ let drawBoard =(xpos = 0, ypos = 0)=> board.forEach((i,y)=>i.forEach((j,x)=>{
     ctx.restore();
 }));
 
-let drawBG =()=> {
-
+let drawBG =(xpos = 0, ypos = 0, width, height, radius)=> {
+    ctx.fillStyle = "#666666";
+    ctx.beginPath();
+    ctx.arc(xpos + width * -525 * panelSize, ypos + height * -525 * panelSize, radius * panelSize, Math.PI, Math.PI*1.5);
+    ctx.arc(xpos + width * 525 * panelSize, ypos + height * -525 * panelSize, radius * panelSize, Math.PI*1.5, 0);
+    ctx.arc(xpos + width * 525 * panelSize, ypos + height * 525 * panelSize, radius * panelSize, 0, Math.PI * 0.5);
+    ctx.arc(xpos + width * -525 * panelSize, ypos + height * 525 * panelSize, radius * panelSize, Math.PI * 0.5, Math.PI);
+    ctx.closePath();
+    ctx.fill();
 }
 
 let board = [
@@ -130,8 +137,8 @@ function loading() {
 function main() {
     clock++;
     clearAll();
-    drawBG();
-    drawBoard();
+    drawBG(0,0,board[0].length/2,board.length/2,350);
+    drawBoard(0,0);
     ctx.font = `${20/ratio}px sans-serif`;
     ctx.fillStyle = "#ffffff";
     ctx.fillText(`FPS:${getFPS()}`, mouseState.x, mouseState.y)

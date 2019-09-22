@@ -12,7 +12,7 @@ let getFPS =(sec = 1)=> {
 }
 let ratio, resize =()=> {
     canvas.height = document.body.clientHeight; canvas.width = document.body.clientWidth;
-    ratio = Math.min(canvas.width / 3200, canvas.height / 1800);
+    ratio = Math.min(canvas.width / 2000, canvas.height / 2000);
     ctx.translate(canvas.width / 2, canvas.height / 2);
     ctx.scale(ratio, ratio);
 }
