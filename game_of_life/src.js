@@ -35,7 +35,6 @@ let edit =(x,y,i)=> {
 }
 
 let draw =()=> {
-    //ctx.fillStyle = "#ffffff"
     for (let i = 0; i < h; i++) {
         for (let j = 0; j < w; j++) {
             ctx.fillStyle = `hsl(${(i+j)/(w+h)*360}, 100%, 80%)`
@@ -47,7 +46,10 @@ let draw =()=> {
                 if (mouseState.left && all[i][j] != mouseMode) edit(j, i, mouseMode);
             }
             ctx.fillRect(((-w + 1) / 2 + j) * size - size * 0.4, ((-h + 1) / 2 + i) * size - size * 0.4, size * 0.8, size * 0.8);
-            if (all[i][j]) ctx.fillRect(((-w + 1) / 2 + j) * size - size * 0.25, ((-h + 1) / 2 + i) * size - size * 0.25, size * 0.3, size * 0.3);
+            if (all[i][j]) {
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(((-w + 1) / 2 + j) * size - size * 0.25, ((-h + 1) / 2 + i) * size - size * 0.25, size * 0.3, size * 0.3);
+            }
         }
     }
 }
@@ -72,6 +74,15 @@ function main(){
 }
 
 `
+
+
+
+
+
+
+
+
+
 G G G   A A   M   M  E E E
 
 G      A   A  MM MM  E
@@ -84,10 +95,9 @@ G G G  A   A  M   M  E E E
 
        
                 ff
-
               f
 
-        oo o  f ff 
+        oo o  f ff
 
         o  o  f
 
@@ -103,6 +113,17 @@ L        I    F FF   E EE
 L        I    F      E
 
 L L L  I I I  F      E E E
-`.split("\n").slice(1).forEach((x,i)=>x.split("").forEach((x,j)=>{if(x!=" ")edit(j,i+8,1)}));
+
+
+
+
+
+
+
+
+
+`.split("\n").slice(1).forEach((x,i)=>x.split("").forEach((x,j)=>{if(x!=" ")edit(j,i,1)}));
 
 main();
+
+setTimeout(()=>paused = false, 1000)
