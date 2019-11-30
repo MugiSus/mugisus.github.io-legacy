@@ -1,4 +1,4 @@
-let w = 9 * 3, h = 16 * 3, sum, checkPos = [], _checkPos = [], readed = [], all = [], _all = [], bright = [], pressed = {}, mouseMode = 0, choosen = 0, time = 0, paused = true;
+let w = 9 * 3, h = 16 * 3, sum, checkPos = [], _checkPos = [], added = [], all = [], _all = [], bright = [], pressed = {}, mouseMode = 0, choosen = 0, time = 0, paused = true;
 
 all = new Array(h).fill(0).map(()=>new Array(w).fill(0));
 bright = new Array(h).fill(0).map(()=>new Array(w).fill(0.1));
@@ -6,14 +6,12 @@ bright = new Array(h).fill(0).map(()=>new Array(w).fill(0.1));
 size = Math.min(pixelw / w, pixelh / h);
 
 let process =()=> {
+    added = [];
     _checkPos = checkPos.slice(0,checkPos.length);
     _all = new Array(h).fill(0).map((x,y)=>all[y].slice(0,w));
     all = new Array(h).fill(0).map(()=>new Array(w).fill(0));
     checkPos = [];
-    read = [];
     _checkPos.forEach((x)=>{
-        if (read.indexOf(`${x[0]}, ${x[1]}`) > -1) return;
-        read.push(`${x[0]}, ${x[1]}`);
         let p = [[x[0]-1, x[1]-1], [x[0], x[1]-1], [x[0]+1, x[1]-1], [x[0]-1, x[1]], [x[0], x[1]], [x[0]+1, x[1]], [x[0]-1, x[1]+1], [x[0], x[1]+1], [x[0]+1, x[1]+1]].map(x=>[x[0] < 0 ? x[0] + w : x[0] >= w ? x[0] - w : x[0], x[1] < 0 ? x[1] + h : x[1] >= h ? x[1] - h : x[1]]);
         sum = _all[p[0][1]][p[0][0]] + _all[p[1][1]][p[1][0]] + _all[p[2][1]][p[2][0]] + _all[p[3][1]][p[3][0]] + _all[p[5][1]][p[5][0]]+ _all[p[6][1]][p[6][0]] + _all[p[7][1]][p[7][0]] + _all[p[8][1]][p[8][0]];
         if (_all[p[4][1]][p[4][0]]) edit(p[4][0], p[4][1], (sum == 2 || sum == 3) * 1);
@@ -24,15 +22,16 @@ let process =()=> {
 
 let edit =(x,y,i)=> {
     all[y][x] = i;
-    checkPos.push([x-1,y-1]);
-    checkPos.push([x,y-1]);
-    checkPos.push([x+1,y-1]);
-    checkPos.push([x-1,y]);
-    checkPos.push([x,y]);
-    checkPos.push([x+1,y]);
-    checkPos.push([x-1,y+1]);
-    checkPos.push([x,y+1]);
-    checkPos.push([x+1,y+1]);
+    if (added.indexOf(`${x-1},${y-1}`) < 0) checkPos.push([x-1,y-1]);
+    if (added.indexOf(`${x},${y-1}`) < 0) checkPos.push([x,y-1]);
+    if (added.indexOf(`${x+1},${y-1}`) < 0) checkPos.push([x+1,y-1]);
+    if (added.indexOf(`${x-1},${y}`) < 0) checkPos.push([x-1,y]);
+    if (added.indexOf(`${x},${y}`) < 0) checkPos.push([x,y]);
+    if (added.indexOf(`${x+1},${y}`) < 0) checkPos.push([x+1,y]);
+    if (added.indexOf(`${x-1},${y+1}`) < 0) checkPos.push([x-1,y+1]);
+    if (added.indexOf(`${x},${y+1}`) < 0) checkPos.push([x,y+1]);
+    if (added.indexOf(`${x+1},${y+1}`) < 0) checkPos.push([x+1,y+1]);
+    added.push(`${x-1},${y-1}`, `${x},${y-1}`, `${x+1},${y-1}`, `${x-1},${y}`, `${x},${y}`, `${x+1},${y}`, `${x-1},${y+1}`, `${x},${y+1}`, `${x+1},${y+1}`);
 }
 
 let draw =()=> {
@@ -45,7 +44,7 @@ let draw =()=> {
             if (Math.abs(((-w + 1) / 2 + j) * size - mouseState.x) < size / 2 && Math.abs(((-h + 1) / 2 + i) * size - mouseState.y) < size / 2) {
                 ctx.globalAlpha += 0.1;
                 choosen = all[i][j];
-                if (mouseState.left) edit(j, i, mouseMode);
+                if (mouseState.left && all[i][j] != mouseMode) edit(j, i, mouseMode);
             }
             ctx.fillRect(((-w + 1) / 2 + j) * size - size * 0.4, ((-h + 1) / 2 + i) * size - size * 0.4, size * 0.8, size * 0.8);
             if (all[i][j]) ctx.fillRect(((-w + 1) / 2 + j) * size - size * 0.25, ((-h + 1) / 2 + i) * size - size * 0.25, size * 0.3, size * 0.3);
@@ -104,6 +103,6 @@ L        I    F FF   E EE
 L        I    F      E
 
 L L L  I I I  F      E E E
-`.split("\n").slice(1).map((x,i)=>x.split("").forEach((x,j)=>{if(x!=" ")edit(j,i+8,1)}));
+`.split("\n").slice(1).forEach((x,i)=>x.split("").forEach((x,j)=>{if(x!=" ")edit(j,i+8,1)}));
 
 main();
