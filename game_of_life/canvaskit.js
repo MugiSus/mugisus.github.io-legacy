@@ -32,5 +32,6 @@ canvas.oncontextmenu =()=> {return false};
 resize();
 
 ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);
-
 //end kit
+
+document.title = "Conway's Game of Life"

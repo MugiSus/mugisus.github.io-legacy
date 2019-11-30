@@ -1,4 +1,4 @@
-let w = 9 * 3, h = 16 * 3, sum, checkPos = [], _checkPos = [], readed = [], all = [], _all = [], bright = [], mouseDown = false, mouseMode = 0, choosen = 0, time = 0;
+let w = 9 * 3, h = 16 * 3, sum, checkPos = [], _checkPos = [], readed = [], all = [], _all = [], bright = [], pressed = {}, mouseMode = 0, choosen = 0, time = 0, paused = true;
 
 all = new Array(h).fill(0).map(()=>new Array(w).fill(0));
 bright = new Array(h).fill(0).map(()=>new Array(w).fill(0.1));
@@ -53,22 +53,57 @@ let draw =()=> {
     }
 }
 
-edit(10,2,1);
-edit(11,3,1);
-edit(11,4,1);
-edit(10,4,1);
-edit(9,4,1);
-
 function main(){
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);
     draw();
-    if (!mouseDown && mouseState.left) {
+    if (!pressed.left && mouseState.left) {
         mouseMode = 1 - choosen;
-        mouseDown = true;
-    } else if (mouseDown && !mouseState.left) mouseDown = false;
-    if (!keydown.p) time++
-    if (time == 6) {process(); time = 0}
+        pressed.left = true;
+    } else if (pressed.left && !mouseState.left) pressed.left = false;
+    if (!pressed.p && keydown.p) {
+        paused = !paused;
+        pressed.p = true;
+    } if (pressed.p && !keydown.p) pressed.p = false;
+    if (paused && keydown.n) {
+        process();
+        keydown.n = false;
+    }
+    if (!paused && time++ == 6) {process(); time = 0}
     requestAnimationFrame(main);
 }
+
+`
+G G G   A A   M   M  E E E
+
+G      A   A  MM MM  E
+
+G   G  AA AA  M M M  E EE
+
+G   G  A   A  M   M  E
+
+G G G  A   A  M   M  E E E
+
+       
+                ff
+
+              f
+
+        oo o  f ff 
+
+        o  o  f
+
+        oo o  f
+
+
+L      I I I  F F F  E E E
+
+L        I    F      E
+
+L        I    F FF   E EE
+
+L        I    F      E
+
+L L L  I I I  F      E E E
+`.split("\n").slice(1).map((x,i)=>x.split("").forEach((x,j)=>{if(x!=" ")edit(j,i+8,1)}));
 
 main();
