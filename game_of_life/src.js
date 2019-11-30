@@ -66,10 +66,9 @@ function main(){
         mouseMode = 1 - choosen;
         mouseDown = true;
     } else if (mouseDown && !mouseState.left) mouseDown = false;
-    if (time++ == 10) process();
+    if (!keydown.p) time++
+    if (time == 6) {process(); time = 0}
     requestAnimationFrame(main);
 }
 
 main();
-
-setInterval(process, 100);
