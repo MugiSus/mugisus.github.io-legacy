@@ -37,7 +37,6 @@ let edit =(x,y,i)=> {
 let draw =()=> {
     for (let i = 0; i < h; i++) {
         for (let j = 0; j < w; j++) {
-            ctx.fillStyle = `hsl(${(i+j)/(w+h)*360}, 100%, 80%)`
             bright[i][j] += ((all[i][j] ? 0.9 : 0.1) - bright[i][j]) / 5;
             ctx.globalAlpha = bright[i][j];
             if (Math.abs(((-w + 1) / 2 + j) * size - mouseState.x) < size / 2 && Math.abs(((-h + 1) / 2 + i) * size - mouseState.y) < size / 2) {
@@ -45,10 +44,24 @@ let draw =()=> {
                 choosen = all[i][j];
                 if (mouseState.left && all[i][j] != mouseMode) edit(j, i, mouseMode);
             }
-            ctx.fillRect(((-w + 1) / 2 + j) * size - size * 0.4, ((-h + 1) / 2 + i) * size - size * 0.4, size * 0.8, size * 0.8);
-            if (all[i][j]) {
+            let pos = {x:((-w + 1) / 2 + j) * size, y:((-h + 1) / 2 + i) * size};
+            if (all[i][j]) {/*
                 ctx.fillStyle = "#ffffff";
-                ctx.fillRect(((-w + 1) / 2 + j) * size - size * 0.25, ((-h + 1) / 2 + i) * size - size * 0.25, size * 0.3, size * 0.3);
+                ctx.fillRect(pos.x - size * 0.35, pos.y - size * 0.35, size * 0.7, size * 0.7);
+                ctx.fillStyle = `hsl(${(i+j)/(w+h)*360}, 100%, 50%)`;
+                ctx.beginPath();
+                ctx.moveTo(pos.x + size * 0.35, pos.y - size * 0.35);
+                ctx.lineTo(pos.x - size * 0.35, pos.y + size * 0.35);
+                ctx.lineTo(pos.x + size * 0.35, pos.y + size * 0.35);
+                ctx.closePath();
+                ctx.fill();*/
+                ctx.fillStyle = `hsl(${(i+j)/(w+h)*360}, 100%, 80%)`;
+                ctx.fillRect(pos.x - size * 0.325, pos.y - size * 0.325, size * 0.65, size * 0.65);
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(pos.x - size * 0.225, pos.y - size * 0.225, size * 0.225, size * 0.225);
+            } else {
+                ctx.fillStyle = `hsl(${(i+j)/(w+h)*360}, 100%, 80%)`;
+                ctx.fillRect(pos.x - size * 0.45, pos.y - size * 0.45, size * 0.9, size * 0.9);
             }
         }
     }
@@ -126,4 +139,4 @@ L L L  I I I  F      E E E
 
 main();
 
-setTimeout(()=>paused = false, 1000)
+setTimeout(()=>paused=false, 1000);
