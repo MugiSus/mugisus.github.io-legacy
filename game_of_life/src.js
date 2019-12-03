@@ -1,4 +1,4 @@
-let w = 9 * 3, h = 16 * 3, sum, checkPos = [], _checkPos = [], added = [], all = [], _all = [], bright = [], pressed = {}, mouseMode = 0, choosen = 0, time = 0, paused = true;
+let w = 9 * 3, h = 16 * 3, sum, checkPos = [], _checkPos = [], added = [], all = [], _all = [], bright = [], pressed = {n:-1}, mouseMode = 0, choosen = 0, time = 0, paused = true, chars = {}, light = [];
 
 all = new Array(h).fill(0).map(()=>new Array(w).fill(0));
 bright = new Array(h).fill(0).map(()=>new Array(w).fill(0.1));
@@ -18,7 +18,6 @@ let process =()=> {
         else if (!_all[p[4][1]][p[4][0]] && sum == 3) edit(p[4][0], p[4][1], 1);
     });
 }
-
 
 let edit =(x,y,i)=> {
     all[y][x] = i;
@@ -44,17 +43,9 @@ let draw =()=> {
                 choosen = all[i][j];
                 if (mouseState.left && all[i][j] != mouseMode) edit(j, i, mouseMode);
             }
+            if (light.indexOf(`${j},${i}`) > -1) ctx.globalAlpha += 0.05;
             let pos = {x:((-w + 1) / 2 + j) * size, y:((-h + 1) / 2 + i) * size};
-            if (all[i][j]) {/*
-                ctx.fillStyle = "#ffffff";
-                ctx.fillRect(pos.x - size * 0.35, pos.y - size * 0.35, size * 0.7, size * 0.7);
-                ctx.fillStyle = `hsl(${(i+j)/(w+h)*360}, 100%, 50%)`;
-                ctx.beginPath();
-                ctx.moveTo(pos.x + size * 0.35, pos.y - size * 0.35);
-                ctx.lineTo(pos.x - size * 0.35, pos.y + size * 0.35);
-                ctx.lineTo(pos.x + size * 0.35, pos.y + size * 0.35);
-                ctx.closePath();
-                ctx.fill();*/
+            if (all[i][j]) {
                 ctx.fillStyle = `hsl(${(i+j)/(w+h)*360}, 100%, 80%)`;
                 ctx.fillRect(pos.x - size * 0.325, pos.y - size * 0.325, size * 0.65, size * 0.65);
                 ctx.fillStyle = "#ffffff";
@@ -65,11 +56,11 @@ let draw =()=> {
             }
         }
     }
+    light = [];
 }
 
 function main(){
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);
-    draw();
     if (!pressed.left && mouseState.left) {
         mouseMode = 1 - choosen;
         pressed.left = true;
@@ -78,14 +69,50 @@ function main(){
         paused = !paused;
         pressed.p = true;
     } if (pressed.p && !keydown.p) pressed.p = false;
-    if (paused && keydown.n) {
-        process();
-        keydown.n = false;
-    }
+    if (paused) {
+        if (keydown.n) {
+            if (pressed.n == -1) {pressed.n = 30; process();}
+            if (pressed.n-- == 0) {pressed.n = 1; process();}
+            charLightUp(w - 6, 1, "frame");
+        } else {
+            pressed.n = -1;
+            charLightUp(w - 6, 1, "pause");
+        }
+    } else charLightUp(w - 6, 1, "play");
     if (!paused && time++ == 6) {process(); time = 0}
+    getFPS();
+    //console.log(fps_fps)
+    charLightUp(1, 1, Math.floor(fps_fps/10));
+    charLightUp(5, 1, fps_fps%10);
+    draw();
     requestAnimationFrame(main);
 }
 
+chars = {
+    0: "111/101/101/101/111",
+    1: "010/010/010/010/010",
+    2: "111/001/111/100/111",
+    3: "111/001/111/001/111",
+    4: "101/101/111/001/001",
+    5: "111/100/111/001/111",
+    6: "111/100/111/101/111",
+    7: "111/001/001/001/001",
+    8: "111/101/111/101/111",
+    9: "111/101/111/001/111",
+    play: "01000/01100/01110/01100/01000/",
+    pause: "11011/11011/11011/11011/11011/",
+    frame: "10100/10110/10111/10110/10100/"
+};
+
+Object.keys(chars).forEach(y=>{
+    let n = [];
+    chars[y] = chars[y].split("/").map((x,i)=>x.split("").forEach((x,j)=>{if(x==1)n.push([j,i]);}))
+    chars[y] = n;
+});
+
+let charLightUp =(x, y, name)=> chars[name].forEach(z=>light.push(`${z[0]+x},${z[1]+y}`));
+
+//=========================
 `
 
 

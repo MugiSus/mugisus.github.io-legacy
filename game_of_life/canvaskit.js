@@ -9,7 +9,7 @@ let getFPS =(sec = 1)=> {
     fps_time = (new Date().getTime() - fps_started) / 1000;
     fps_timeStamp.push(fps_time);
     fps_timeStamp = fps_timeStamp.filter(x => fps_time - x <= sec);
-    return fps = Math.floor((fps_timeStamp.length / sec) * 10) / 10;
+    return fps_fps = Math.floor((fps_timeStamp.length / sec) * 10) / 10;
 }
 let ratio, resize =()=> {
     canvas.height = document.body.clientHeight; canvas.width = document.body.clientWidth;
