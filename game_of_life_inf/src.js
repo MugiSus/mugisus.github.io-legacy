@@ -88,8 +88,8 @@ function main(){
         size = defaultSize * zoom;
         console.log(lastWheel, mouseState.wheel);
         if (lastWheel < mouseState.wheel) {
-            scrollX += (canvas.width / ratio / 2) / zoomRatio;
-            scrollY += (canvas.height / ratio / 2) / zoomRatio;
+            scrollX += (canvas.width / ratio / 2) / zoom;
+            scrollY += (canvas.height / ratio / 2) / zoom;
         } else {
             //scrollX += (mouseState.x - scrollX) * zoomRatio;
             //scrollY += (mouseState.y - scrollY) * zoomRatio;
@@ -98,18 +98,17 @@ function main(){
     }
     */
     if (mouseState.right) {
-        if (!pressed.m_right) {
-            pressed.m_right = true;
-            mouseOffSet = [-mouseState.x - scrollX, -mouseState.y - scrollY];
-        }
+        if (!pressed.m_right) mouseOffSet = [-mouseState.x - scrollX, -mouseState.y - scrollY];
+        pressed.m_right++;
         scrollX = -mouseState.x - mouseOffSet[0];
         scrollY = -mouseState.y - mouseOffSet[1];
         latestMouse = [mouseState.x, mouseState.y];
     } else {
+        if (paused && pressed.m_right && pressed.m_right < 10 && (((-mouseState.x - scrollX) - mouseOffSet[0]) ** 2 + ((-mouseState.y - scrollY) - mouseOffSet[1]) ** 2) ** 0.5 < 1) process();
         if (pressed.m_right) scrollVel = [mouseState.x - latestMouse[0], mouseState.y - latestMouse[1]];
         scrollX -= scrollVel[0] *= 0.9;
         scrollY -= scrollVel[1] *= 0.9;
-        pressed.m_right = false;
+        pressed.m_right = 0;
     }
 
     if (mouseState.left) {
@@ -119,12 +118,16 @@ function main(){
         }
     } else pressed.m_left = false;
 
-    if (keydown[" "]) {
-        if (!pressed.space) {
+    if (keydown[" "] || mouseState.middle) {
+        if (!pressed.space && !pressed.m_middle) {
             pressed.space = true;
+            pressed.m_middle = true;
             paused ^= 1;
         }
-    } else pressed.space = false;
+    } else {
+        pressed.space = false;
+        pressed.m_middle = false;
+    }
 
     if (paused) {
         if (keydown.n) {
