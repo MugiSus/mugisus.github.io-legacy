@@ -1,9 +1,9 @@
-let dots = {}, checkPos = [], changes = [], time = 0, scrollX = 0, scrollY = 0, size = Math.max(canvas.width, canvas.height) / 50, mouseOffSet = [], latestMouse = [], scrollVel = [0,0], pressed = {}, choosen = 0, mouseMode = -1, paused = false;
+let dots = {}, checkPos = [], time = 0, scrollX = 0, scrollY = 0, size = Math.max(canvas.width, canvas.height) / 50, mouseOffSet = [], latestMouse = [], scrollVel = [0,0], pressed = {}, choosen = 0, mouseMode = -1, paused = false;
 
 // processer
 
 let edit =(posX, posY, state)=> {
-    changes.push([posX,posY,state]);
+    dots[`${posX},${posY}`] = state;
     
     [[-1,-1],[0,-1],[1,-1],[-1,0],[0,0],[1,0],[-1,1],[0,1],[1,1]].forEach(x=>{
         if (checkPos.indexOf(`${posX + x[0]},${posY + x[1]}`) == -1) checkPos.push(`${posX + x[0]},${posY + x[1]}`);
@@ -13,65 +13,63 @@ let edit =(posX, posY, state)=> {
 
 let process =()=> {
 
+    let _dots = {}
+    Object.assign(_dots, dots);
     let _checkPos = checkPos.slice(0, checkPos.length);
     checkPos = [];
-    changes = [];
 
-    Object.keys(dots).forEach(x => {
+    _checkPos.forEach(x => {
 
         let posX = x.split(",")[0] * 1;
         let posY = x.split(",")[1] * 1;
+        
+        if (_dots[x] == undefined) _dots[x] = 0;
 
-        if (_checkPos.indexOf(x) > -1) {
-            
-            if (dots[x] == undefined) dots[x] = 0;
-
-            let sum = (dots[`${posX - 1},${posY - 1}`] || 0) + (dots[`${posX},${posY - 1}`] || 0) + (dots[`${posX + 1},${posY - 1}`] || 0) + (dots[`${posX - 1},${posY}`] || 0) + (dots[`${posX + 1},${posY}`] || 0) + (dots[`${posX - 1},${posY + 1}`] || 0) + (dots[`${posX},${posY + 1}`] || 0) + (dots[`${posX + 1},${posY + 1}`] || 0);
-            
-            if (dots[x]) edit(posX, posY, (sum == 2 || sum == 3) * 1);
-            else if (!dots[x] && sum == 3) edit(posX, posY, 1);
-
-        } else if (checkPos.indexOf(x) == -1) delete dots[x];
+        let sum = (_dots[`${posX - 1},${posY - 1}`] || 0) + (_dots[`${posX},${posY - 1}`] || 0) + (_dots[`${posX + 1},${posY - 1}`] || 0) + (_dots[`${posX - 1},${posY}`] || 0) + (_dots[`${posX + 1},${posY}`] || 0) + (_dots[`${posX - 1},${posY + 1}`] || 0) + (_dots[`${posX},${posY + 1}`] || 0) + (_dots[`${posX + 1},${posY + 1}`] || 0);
+        
+        if (_dots[x]) edit(posX, posY, (sum == 2 || sum == 3) * 1);
+        else if (!_dots[x] && sum == 3) edit(posX, posY, 1);
 
     });
-
-    applyEdits();
 
     return Object.keys(dots).length;
 }
 
-let applyEdits =()=> changes.forEach(x =>{
-    if (x[2] == 2) delete dots[`${x[0]},${x[1]}`]
-    else dots[`${x[0]},${x[1]}`] = x[2]
-});
-
 // graphics
 
 let draw =()=> {
+    
     let h = Math.ceil(canvas.height / ratio / size);
     let w = Math.ceil(canvas.width / ratio / size);
-    
+
     ctx.fillStyle = "#ffffff";
 
     for (let i = -1; i < h + 2; i++) {
         for (let j = -1; j < w + 2; j++) {
+
+            ctx.globalAlpha = 0;
+
             let posX = (j - w / 2) * size - scrollX % size;
             let posY = (i - h / 2) * size - scrollY % size;
             let state = dots[`${j + ~~(scrollX/size)},${i + ~~(scrollY/size)}`] || 0;
-
-            ctx.globalAlpha = state ? 0.75 : 0.1;
 
             if (Math.abs(posX - mouseState.x) < size / 2 && Math.abs(posY - mouseState.y) < size / 2) {
                 choosen = state;
                 ctx.globalAlpha += 0.1
                 if (mouseState.left && state != mouseMode) {
                     edit(j + ~~(scrollX/size), i + ~~(scrollY/size), mouseMode);
-                    applyEdits();
                 }
             }
 
-            ctx.fillRect(posX - size * 0.45, posY - size * 0.45, size * 0.9, size * 0.9);
-        }   
+            if (state) {
+                ctx.globalAlpha += 0.8;
+                ctx.fillRect(posX - size * 0.45, posY - size * 0.45, size * 0.9, size * 0.9);
+            } else {
+                ctx.globalAlpha += Math.max((1 - ((posX - mouseState.x) ** 2 + (posY - mouseState.y) ** 2) ** 0.5 / (size * 10)) * 0.1, 0);
+                if (ctx.globalAlpha != 0) ctx.fillRect(posX - size * 0.45, posY - size * 0.45, size * 0.9, size * 0.9);
+            }
+            
+        }
     }
 }
 
@@ -82,8 +80,6 @@ edit(1,1,1);
 edit(1,2,1);
 edit(0,2,1);
 edit(-1,2,1);
-
-applyEdits();
 
 function main(){
     if (mouseState.right) {
@@ -96,8 +92,8 @@ function main(){
         latestMouse = [mouseState.x, mouseState.y];
     } else {
         if (pressed.m_right) scrollVel = [mouseState.x - latestMouse[0], mouseState.y - latestMouse[1]];
-        scrollX -= scrollVel[0] *= 0.95;
-        scrollY -= scrollVel[1] *= 0.95;
+        scrollX -= scrollVel[0] *= 0.9;
+        scrollY -= scrollVel[1] *= 0.9;
         pressed.m_right = false;
     }
 
@@ -115,7 +111,17 @@ function main(){
         }
     } else pressed.space = false;
 
-    if (!paused && time++ == 6) {
+    if (paused) {
+        if (keydown.n) {
+            if (pressed.n == -1) {
+                pressed.n = 20;
+                process();
+            } else if (pressed.n-- == 0) {
+                process();
+                pressed.n = 1;
+            }
+        } else pressed.n = -1;
+    } else if (time++ == 6) {
         process();
         time = 0;
     }
