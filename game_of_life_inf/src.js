@@ -1,4 +1,4 @@
-let dots = {}, checkPos = [], time = 0, scrollX = 0, scrollY = 0, defaultSize = Math.max(canvas.width, canvas.height) / 50, size = defaultSize, mouseOffSet = [], latestMouse = [], scrollVel = [0,0], pressed = {}, choosen = 0, mouseMode = -1, paused = false, zoomRatio = 2, zoom = 1, lastWheel = mouseState.wheel;;
+let dots = {}, checkPos = [], time = 0, scrollX = 0, scrollY = 0, defaultSize = Math.max(canvas.width, canvas.height) / 50, size = defaultSize, mouseOffSet = [], latestMouse = [], scrollVel = [0,0], pressed = {}, choosen = 0, mouseMode = -1, paused = false, zoomRatio = 1.05, zoom = 1, lastWheel = mouseState.wheel;
 
 // processer
 
@@ -38,7 +38,7 @@ let process =()=> {
 // graphics
 
 let draw =()=> {
-    
+
     let h = Math.ceil(canvas.height / ratio / size);
     let w = Math.ceil(canvas.width / ratio / size);
 
@@ -66,7 +66,7 @@ let draw =()=> {
                 ctx.fillRect(posX - size * 0.45, posY - size * 0.45, size * 0.9, size * 0.9);
             } else {
                 ctx.globalAlpha += Math.max((1 - ((posX - mouseState.x) ** 2 + (posY - mouseState.y) ** 2) ** 0.5 / (size * 10)) * 0.1, 0);
-                if (ctx.globalAlpha != 0) ctx.fillRect(posX - size * 0.45, posY - size * 0.45, size * 0.9, size * 0.9);
+                if (ctx.globalAlpha != 0) ctx.fillRect(posX - size * 0.45 , posY - size * 0.45, size * 0.9, size * 0.9);
             }
             
         }
@@ -86,13 +86,11 @@ function main(){
     if (lastWheel != mouseState.wheel) {
         zoom = zoomRatio ** mouseState.wheel;
         size = defaultSize * zoom;
-        console.log(lastWheel, mouseState.wheel);
+
         if (lastWheel < mouseState.wheel) {
-            scrollX += (canvas.width / ratio / 2) / zoom;
-            scrollY += (canvas.height / ratio / 2) / zoom;
+
         } else {
-            //scrollX += (mouseState.x - scrollX) * zoomRatio;
-            //scrollY += (mouseState.y - scrollY) * zoomRatio;
+            
         }
         lastWheel = mouseState.wheel;
     }
@@ -123,6 +121,7 @@ function main(){
             pressed.space = true;
             pressed.m_middle = true;
             paused ^= 1;
+            document.getElementById("mouse").src = `imgs/mouse_${paused? "pause":"play"}.png`;
         }
     } else {
         pressed.space = false;
