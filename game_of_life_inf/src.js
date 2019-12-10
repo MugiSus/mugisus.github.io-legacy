@@ -82,19 +82,19 @@ edit(0,2,1);
 edit(-1,2,1);
 
 function main(){
-    /*
+    
     if (lastWheel != mouseState.wheel) {
-        zoom = zoomRatio ** mouseState.wheel;
-        size = defaultSize * zoom;
-
         if (lastWheel < mouseState.wheel) {
-
+            zoom = zoomRatio ** mouseState.wheel;
+            size = defaultSize * zoom;
+            scrollX += (mouseState.x + canvas.height / ratio / 2) / zoom;
+            scrollY += (mouseState.y + canvas.height / ratio / 2) / zoom;
         } else {
             
         }
         lastWheel = mouseState.wheel;
     }
-    */
+    
     if (mouseState.right) {
         if (!pressed.m_right) mouseOffSet = [-mouseState.x - scrollX, -mouseState.y - scrollY];
         pressed.m_right++;
