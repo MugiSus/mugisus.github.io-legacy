@@ -1,5 +1,6 @@
 //canvas starter kit
-let pixelw = 1800, pixelh = 3200;
+let pixelw = 3200, pixelh = 1800;
+
 let mouseState = {wheel:0, x:0, y:0, left:false, middle:false, right:false}, keydown = {}, fps_time, fps_fps, fps_timeStamp = [], fps_started = new Date().getTime();
 const canvas = document.getElementById("disp");
 const ctx = canvas.getContext("2d");
@@ -36,18 +37,21 @@ ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.widt
 //end kit
 //loading images
 
-let img = {}, imgLoaded = 0;
+let img = {}, loadedImgs = 0, eve = new Event("imageLoaded");
 `
-# trafficGirl_001 ohyagi
+# empty.png
 
 tg001ohyagi/tg001arrow.png
 tg001ohyagi/tg001green.png
 tg001ohyagi/tg001red.png
 tg001ohyagi/tg001yellow.png
 
-`.split("\n").filter(x=>x!=""&&x.charAt(0)!="#").forEach(x=>{
+`.split("\n").filter(x=>x!=""&&x.charAt(0)!="#").forEach((x,y,z)=>{
     let i = new Image();
-    i.src = x;
+    i.src = `imgs/${x}`;
     img[/\/(.*?)\..*?/.exec(x)[1]] = i;
-    i.onload
+    i.onload =()=> {
+        loadedImgs++;
+        if (loadedImgs == z.length) canvas.dispatchEvent(eve);
+    }
 });
