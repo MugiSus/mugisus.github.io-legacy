@@ -11,12 +11,12 @@ let drawBoard =(data, x, y, w, h)=> {
     for (let i = 0; i < data.length; i++) {
         for (let j = 0; j < data[0].length; j++) {
             if (data[i][j] == "empty") ctx.fillRect(x + (j + 0.025) * chipw, y + (i + 0.025) * chiph, chipw * 0.95, chiph * 0.95);
-            else ctx.drawImage(img[data[i][j]], x + (j + 0.025) * chipw, y + (i + 0.025) * chiph, chipw * 0.95, chiph * 0.95);
+            else ctx.image(img[data[i][j]], x + (j + 0.025) * chipw, y + (i + 0.025) * chiph, chipw * 0.95, chiph * 0.95, 0.5, 0.5, Math.PI * 0.5);
         }
     }
 }
 
-canvas.addEventListener("imageLoaded", ()=>{main();});
+canvas.addEventListener("imageLoaded", ()=>main());
 
 board[1][1] = "tg001green";
 board[1][2] = "tg001yellow";

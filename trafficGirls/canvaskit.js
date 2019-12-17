@@ -55,3 +55,11 @@ tg001ohyagi/tg001yellow.png
         if (loadedImgs == z.length) canvas.dispatchEvent(eve);
     }
 });
+
+ctx.__proto__.image =(name, x, y, h, w, ox, oy, r)=> {
+    ctx.save();
+    ctx.translate(x + ox * w, x + oy * h);
+    ctx.rotate(r);
+    ctx.drawImage(img[name], x, y, h, w);
+    ctx.restore();
+}
