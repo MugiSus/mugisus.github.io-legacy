@@ -1,0 +1,13 @@
+body{
+  margin: 0;
+  background-color: #202020;
+  overflow: hidden;
+}
+
+#mouse{
+  width: 10vw;
+  position: fixed;
+  right: 10px;
+  bottom: -6vw;
+  opacity: 0.2;
+}
