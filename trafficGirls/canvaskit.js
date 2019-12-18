@@ -44,7 +44,7 @@ let img = {}, loadedImgs = 0, eve = new Event("imageLoaded");
 tg001ohyagi/tg001arrow.png
 tg001ohyagi/tg001green.png
 tg001ohyagi/tg001red.png
-tg001ohyagi/tg001yellow.png
+tg001ohyagi/tg001yellow.svg
 
 `.split("\n").filter(x=>x!=""&&x.charAt(0)!="#").forEach((x,y,z)=>{
     let i = new Image();
@@ -56,10 +56,10 @@ tg001ohyagi/tg001yellow.png
     }
 });
 
-ctx.__proto__.image =(name, x, y, h, w, ox, oy, r)=> {
+ctx.__proto__.image =(name, x, y, h, w, ox = 0, oy = 0, r = 0)=> {
     ctx.save();
-    ctx.translate(x + ox * w, x + oy * h);
+    ctx.translate(x + ox * w, y + oy * h);
     ctx.rotate(r);
-    ctx.drawImage(img[name], x, y, h, w);
+    ctx.drawImage(img[name], -w * ox, -h * ox, h, w);
     ctx.restore();
 }
