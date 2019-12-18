@@ -39,12 +39,11 @@ ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.widt
 
 let img = {}, loadedImgs = 0, eve = new Event("imageLoaded");
 `
-# empty.png
 
 tg001ohyagi/tg001arrow.png
 tg001ohyagi/tg001green.png
 tg001ohyagi/tg001red.png
-tg001ohyagi/tg001yellow.svg
+tg001ohyagi/tg001yellow.png
 
 `.split("\n").filter(x=>x!=""&&x.charAt(0)!="#").forEach((x,y,z)=>{
     let i = new Image();
@@ -57,6 +56,7 @@ tg001ohyagi/tg001yellow.svg
 });
 
 ctx.__proto__.image =(name, x, y, h, w, ox = 0, oy = 0, r = 0)=> {
+    if (Object.keys(img).indexOf(name) == -1) return 0;
     ctx.save();
     ctx.translate(x + ox * w, y + oy * h);
     ctx.rotate(r);
