@@ -35,6 +35,9 @@ resize();
 ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);
 
 //end kit
+
+document.title = "Traffic Girls";
+
 //loading images
 
 let img = {}, loadedImgs = 0, eve = new Event("imageLoaded");
