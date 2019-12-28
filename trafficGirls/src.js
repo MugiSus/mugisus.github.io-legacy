@@ -11,15 +11,24 @@ let pathData = {
 }
 
 let width = 10; height = 18;
-let erasables = [[1,1],[2,1],[3,1],[1,2]];
 let panels = [];
+let erasables = [];
 
 let panel = class {
-    constructor (name, xpos, ypos){
-        this.x = xpos;
-        this.y = ypos;
+    constructor (name, x, y){
         this.name = name;
+        this.x = x;
+        this.y = y;
         this.vel = 0;
+    }
+}
+
+let table = class {
+    constructor(name, x, y, required){
+        this.name = name;
+        this.x = x;
+        this.y = y;
+        this.required = required;
     }
 }
 
@@ -41,34 +50,34 @@ let drawBoard =(x, y, w, h)=> {
     }
 
     panels.forEach(i => {
+        let erasable = erasables.some(x=>x[0] == i.x && x[1] == i.y);
         ctx.save();
         ctx.translate(x + (i.x + 0.5) * chipSize, y + (i.y + 0.5) * chipSize);
+        ctx.globalAlpha = erasable ? 1 : 0.6;
         ctx.image(i.name, -0.475 * chipSize, -0.475 * chipSize, chipSize * 0.95, chipSize * 0.95);
         ctx.restore();
+        if (erasable) {
+            ctx.save();
+            ctx.translate(x + (i.x + 0.5) * chipSize, y + (i.y + 0.5) * chipSize);
+            ctx.scale(chipSize / 200 * 0.85, chipSize / 200 * 0.85);
+            ctx.strokeStyle = "#ffff44";
+            ctx.globalAlpha = Math.sin(new Date().getTime() % 1000 / 1000 * Math.PI * 2) * 0.3 + 0.7
+            ctx.stroke(pathData.roundSquere);
+            ctx.strokeStyle = "#343434";
+            ctx.restore();
+        }
     });
 }
 
-/*
-let erasable = erasables.some(x => x[0] == j && x[1] == i);
-ctx.globalAlpha = erasable ? 1 : 0.4;
-ctx.image(data[i][j], -0.475 * chipSize, -0.475 * chipSize, chipSize * 0.95, chipSize * 0.95);
-if (erasable) {
-    ctx.strokeStyle = "#ffff44";
-    ctx.globalAlpha = Math.sin(new Date().getTime() % 1000 / 1000 * Math.PI * 2) * 0.4 + 0.4
-    ctx.scale(chipSize / 200 * 0.85, chipSize / 200 * 0.85);
-    ctx.stroke(pathData.roundSquere);
-    ctx.strokeStyle = "#343434";
-}*/
+panels.push(new panel("tg001arrow", 3, 3));
+panels.push(new panel("tg001yellow", 4, 5));
+panels.push(new panel("tg001red", 5, 8));
+panels.push(new panel("tg001green", 3, 4));
 
-panels.push(new panel("tg001green", 3, 3));
-panels.push(new panel("tg001yellow", 4, 3));
-panels.push(new panel("tg001red", 5, 3));
-panels.push(new panel("tg001arrow", 3, 4));
-
-panels.push(new panel("tg001green", 2, 0));
-panels.push(new panel("tg001yellow", 3, 0));
-panels.push(new panel("tg001red", 4, 0));
-panels.push(new panel("tg001arrow", 2, 1));
+panels.push(new panel("tg001green", 1, 0));
+panels.push(new panel("tg001yellow", 2, 0));
+panels.push(new panel("tg001red", 3, 0));
+panels.push(new panel("tg001arrow", 1, 1));
 
 panels.push(new panel("tg001green", 0, 6));
 panels.push(new panel("tg001yellow", 1, 6));
@@ -83,28 +92,45 @@ panels.push(new panel("tg001arrow", 7, 3));
 panels.push(new panel("tg001red", 8, 6));
 panels.push(new panel("tg001yellow", 9, 8));
 
-panels.push(new panel("tg001green", 4, 10));
+panels.push(new panel("tg001green", 7, 0));
+
+panels.push(new panel("tg001yellow", 2, 10));
 
 let checkTable = [
-    ["tg001green", 0, 0],
-    ["tg001yellow", 1, 0],
-    ["tg001red", 2, 0],
-    ["tg001arrow", 0, 1],
+    new table("tg001green", 0, 0, true),
+    new table("tg001yellow", 1, 0, true),
+    new table("tg001red", 2, 0, true),
+    new table("tg001arrow", 0, 1, false)
 ]
 
 let process =(w, h)=>{
     let allMap = new Array(h).fill(0).map(()=>new Array(10).fill("empty"));
+    let moving = false;
     allMap.push(new Array(w).fill("floor"));
     panels.forEach(i => allMap[Math.ceil(i.y)][i.x] = i.name);
     panels.forEach(i => {
-        let j = i.y + 1;
+        let j = i.y;
         while (allMap[Math.ceil(j)][i.x] != "floor") {
             if (allMap[Math.ceil(j)][i.x] == "empty") break;
             j++;
         }
-        if (allMap[Math.ceil(j)][i.x] == "empty") i.y += i.vel += 0.03;
-        else i.y = Math.ceil(i.y);
+        if (allMap[Math.ceil(j)][i.x] == "empty") {
+            moving = true;
+            i.y += i.vel += 0.02;
+        } else i.y = Math.ceil(i.y);
     });
+    if (!moving) {
+        erasables = [];
+        panels.forEach((i, index) => {
+            if (checkTable[0].name == i.name) {
+                let check = [[i.x, i.y]];
+                checkTable.slice(1).forEach(j => {
+                    if (!j.required || allMap[i.y + j.y][i.x + j.x] == j.name) check.push([i.x + j.x, i.y + j.y]);
+                });
+                if (check.length == checkTable.length) erasables.push(...check);
+            }
+        })
+    }
 }
 
 function main(){
