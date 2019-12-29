@@ -1,3 +1,6 @@
+let width = 10; height = 18;
+let panels = [];
+let erasables = [];
 let pathData = {
     roundSquere : (()=>{
         let path = new Path2D();
@@ -9,11 +12,6 @@ let pathData = {
         return path;
     })()
 }
-
-let width = 10; height = 18;
-let panels = [];
-let erasables = [];
-
 let panel = class {
     constructor (name, x, y){
         this.name = name;
@@ -22,13 +20,44 @@ let panel = class {
         this.vel = 0;
     }
 }
-
 let table = class {
     constructor(name, x, y, required){
         this.name = name;
         this.x = x;
         this.y = y;
         this.required = required;
+    }
+}
+
+let process =(w, h)=>{
+    let allMap = new Array(h).fill(0).map(()=>new Array(10).fill("empty"));
+    let moving = false;
+    allMap.push(new Array(w).fill("floor"));
+    panels.forEach(i => allMap[Math.ceil(i.y)][i.x] = i.name);
+    panels.forEach(i => {
+        let j = i.y;
+        while (allMap[Math.ceil(j)][i.x] != "floor" && allMap[Math.ceil(j)][i.x] != "empty") j++;
+        if (allMap[Math.ceil(j)][i.x] == "empty" || i.y + i.vel + 0.02 < Math.ceil(i.y)) {
+            moving = true;
+            i.y += i.vel += 0.02;
+        } else {
+            i.vel = 0;
+            i.y = Math.ceil(i.y);
+        }
+    });
+    if (!moving) {
+        erasables = [];
+        panels.forEach(i => {
+            if (checkTable[0].name == i.name) {
+                let check = [[i.x, i.y]];
+                let isEstablished = true;
+                checkTable.slice(1).forEach(j => {
+                    if (allMap[i.y + j.y][i.x + j.x] == j.name) check.push([i.x + j.x, i.y + j.y]);
+                    else if (j.required) isEstablished = false;
+                });
+                if (isEstablished) erasables.push(...check);
+            }
+        })
     }
 }
 
@@ -69,42 +98,10 @@ let drawBoard =(x, y, w, h)=> {
     });
 }
 
-let process =(w, h)=>{
-    let allMap = new Array(h).fill(0).map(()=>new Array(10).fill("empty"));
-    let moving = false;
-    allMap.push(new Array(w).fill("floor"));
-    panels.forEach(i => allMap[Math.ceil(i.y)][i.x] = i.name);
-    panels.forEach(i => {
-        let j = i.y;
-        while (allMap[Math.ceil(j)][i.x] != "floor" && allMap[Math.ceil(j)][i.x] != "empty") j++;
-        if (allMap[Math.ceil(j)][i.x] == "empty" /*|| i.y + i.vel < Math.ceil(i.y)*/) {
-            moving = true;
-            i.y += i.vel += 0.02;
-        } else {
-            i.vel = 0;
-            i.y = Math.ceil(i.y);
-        }
-    });
-    if (!moving) {
-        erasables = [];
-        panels.forEach(i => {
-            if (checkTable[0].name == i.name) {
-                let check = [[i.x, i.y]];
-                let isEstablished = true;
-                checkTable.slice(1).forEach(j => {
-                    if (allMap[i.y + j.y][i.x + j.x] == j.name) check.push([i.x + j.x, i.y + j.y]);
-                    else if (j.required) isEstablished = false;
-                });
-                if (isEstablished) erasables.push(...check);
-            }
-        })
-    }
-}
-
 let erase =()=> {
     panels.forEach((i,j) => {
         if (erasables.some(x=>x[0] == i.x && x[1] == i.y)) {
-            delete panels[j]
+            delete panels[j];
         }
     });
     erasables = [];
@@ -116,7 +113,7 @@ let checkTable = [
     new table("tg001red", 2, 0, true),
     new table("tg001arrow", 0, 1, false)
 ];
-/*
+
 panels.push(new panel("tg001arrow", 3, 3));
 panels.push(new panel("tg001yellow", 4, 5));
 panels.push(new panel("tg001red", 5, 8));
@@ -133,22 +130,24 @@ panels.push(new panel("tg001red", 2, 6));
 panels.push(new panel("tg001arrow", 0, 7));
 
 panels.push(new panel("tg001green", 7, 2));
-panels.push(new panel("tg001yellow", 8, 2));
-panels.push(new panel("tg001red", 9, 2));
-panels.push(new panel("tg001arrow", 7, 3));
+panels.push(new panel("tg001yellow", 8, 4));
+panels.push(new panel("tg001red", 9, 6));
+panels.push(new panel("tg001arrow", 7, 7));
 
 panels.push(new panel("tg001yellow", 8, 11));
-panels.push(new panel("tg001red", 9, 6));
+panels.push(new panel("tg001red", 9, 8));
 
 panels.push(new panel("tg001green", 7, 0));
 
 panels.push(new panel("tg001yellow", 2, 13));
-*/
+
+/*
 for (let i = 0; i < height; i++) {
     for (let j = 0; j < width; j++) {
         if (Math.random()*5 < 4) panels.push(new panel(checkTable[Math.floor(Math.random()*4)].name, j, i));
     }
 }
+*/
 
 function main(){
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);
