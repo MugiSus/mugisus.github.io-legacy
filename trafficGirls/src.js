@@ -50,12 +50,10 @@ let process =(w, h)=>{
         panels.forEach(i => {
             if (checkTable[0].name == i.name) {
                 let check = [[i.x, i.y]];
-                let isEstablished = true;
-                checkTable.slice(1).forEach(j => {
-                    if (allMap[i.y + j.y][i.x + j.x] == j.name) check.push([i.x + j.x, i.y + j.y]);
-                    else if (j.required) isEstablished = false;
-                });
-                if (isEstablished) erasables.push(...check);
+                if (!checkTable.slice(1).some((j, k) => {
+                    if ((allMap[i.y + j.y] || [])[i.x + j.x] == j.name && (j.required == -1 || check[j.required])) check[k + 1] = [i.x + j.x, i.y + j.y];
+                    else return j.required == -1;
+                })) erasables.push(...check);
             }
         })
     }
@@ -108,10 +106,10 @@ let erase =()=> {
 }
 
 let checkTable = [
-    new table("tg001green", 0, 0, true),
-    new table("tg001yellow", 1, 0, true),
-    new table("tg001red", 2, 0, true),
-    new table("tg001arrow", 0, 1, false)
+    new table("tg001green", 0, 0, -1),
+    new table("tg001yellow", 1, 0, -1),
+    new table("tg001red", 2, 0, -1),
+    new table("tg001arrow", 0, 1, 0),
 ];
 
 panels.push(new panel("tg001arrow", 3, 3));
@@ -119,10 +117,10 @@ panels.push(new panel("tg001yellow", 4, 5));
 panels.push(new panel("tg001red", 5, 8));
 panels.push(new panel("tg001green", 3, 4));
 
-panels.push(new panel("tg001green", 1, 0));
+panels.push(new panel("tg001green", 1, 3));
 panels.push(new panel("tg001yellow", 2, 0));
 panels.push(new panel("tg001red", 3, 0));
-panels.push(new panel("tg001arrow", 1, 1));
+panels.push(new panel("tg001arrow", 1, 4));
 
 panels.push(new panel("tg001green", 0, 6));
 panels.push(new panel("tg001yellow", 1, 6));
@@ -139,7 +137,9 @@ panels.push(new panel("tg001red", 9, 8));
 
 panels.push(new panel("tg001green", 7, 0));
 
-panels.push(new panel("tg001yellow", 2, 13));
+panels.push(new panel("tg001red", 2, 13));
+panels.push(new panel("tg001yellow", 1, 1));
+panels.push(new panel("tg001green", 0, 2));
 
 /*
 for (let i = 0; i < height; i++) {
