@@ -48,6 +48,13 @@ tg001ohyagi/tg001green.png
 tg001ohyagi/tg001red.png
 tg001ohyagi/tg001yellow.png
 
+tg009chuobashi/tg009red.png
+tg009chuobashi/tg009yellow.png
+tg009chuobashi/tg009yl-arrow.png
+tg009chuobashi/tg009yu-arrow.png
+tg009chuobashi/tg009gl-arrow.png
+tg009chuobashi/tg009gr-arrow.png
+
 `.split("\n").filter(x=>x!=""&&x.charAt(0)!="#").forEach((x,y,z)=>{
     let i = new Image();
     i.src = `imgs/${x}`;

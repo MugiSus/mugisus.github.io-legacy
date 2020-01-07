@@ -105,11 +105,22 @@ let erase =()=> {
     erasables = [];
 }
 
+/*
 let checkTable = [
     new table("tg001green", 0, 0, -1),
     new table("tg001yellow", 1, 0, -1),
     new table("tg001red", 2, 0, -1),
     new table("tg001arrow", 0, 1, 0),
+];
+*/
+
+let checkTable = [
+    new table("tg009yu-arrow", 0, 0, -1),
+    new table("tg009yellow", 1, 0, -1),
+    new table("tg009red", 2, 0, -1),
+    new table("tg009yl-arrow", 0, 1, 0),
+    new table("tg009gl-arrow", 0, 1, 1),
+    new table("tg009gr-arrow", 0, 1, 2),
 ];
 
 /*
