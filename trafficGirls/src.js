@@ -12,20 +12,12 @@ let pathData = {
         return path;
     })()
 }
-let panel = class {
+const panel = class {
     constructor (name, x, y){
         this.name = name;
         this.x = x;
         this.y = y;
         this.vel = 0;
-    }
-}
-let table = class {
-    constructor(name, x, y, required){
-        this.name = name;
-        this.x = x;
-        this.y = y;
-        this.required = required;
     }
 }
 
@@ -157,7 +149,7 @@ panels.push(new panel("tg001green", 0, 2));
 
 for (let i = 0; i < height; i++) {
     for (let j = 0; j < width; j++) {
-        if (Math.random() * checkTable.length > 0) panels.push(new panel(checkTable[Math.floor(Math.random()*checkTable.length)].name, j, i));
+        if (Math.random() * checkTable.length > 1) panels.push(new panel(checkTable[Math.floor(Math.random()*checkTable.length)].name, j, i));
     }
 }
 
