@@ -41,8 +41,8 @@ document.title = "Traffic Girls";
 //loading images
 
 let img = {}, loadedImgs = 0, eve = new Event("imageLoaded");
-`
 
+`
 tg001ohyagi/tg001arrow.png
 tg001ohyagi/tg001green.png
 tg001ohyagi/tg001red.png

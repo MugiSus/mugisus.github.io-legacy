@@ -51,9 +51,9 @@ let process =(w, h)=>{
             if (checkTable[0].name == i.name) {
                 let check = [[i.x, i.y]];
                 if (!checkTable.slice(1).some((j, k) => {
-                    if ((allMap[i.y + j.y] || [])[i.x + j.x] == j.name && (j.required == -1 || check[j.required])) check[k + 1] = [i.x + j.x, i.y + j.y];
+                    if ((allMap[i.y + j.y] || []) [i.x + j.x] == j.name && (j.required == -1 || check[j.required])) check[k + 1] = [i.x + j.x, i.y + j.y];
                     else return j.required == -1;
-                })) erasables.push(...check);
+                })) erasables.push(...(check.filter(x=>x)));
             }
         })
     }
@@ -119,8 +119,8 @@ let checkTable = [
     new table("tg009yellow", 1, 0, -1),
     new table("tg009red", 2, 0, -1),
     new table("tg009yl-arrow", 0, 1, 0),
-    new table("tg009gl-arrow", 0, 1, 1),
-    new table("tg009gr-arrow", 0, 1, 2),
+    new table("tg009gl-arrow", 1, 1, 1),
+    new table("tg009gr-arrow", 2, 1, 2),
 ];
 
 /*
@@ -157,7 +157,7 @@ panels.push(new panel("tg001green", 0, 2));
 
 for (let i = 0; i < height; i++) {
     for (let j = 0; j < width; j++) {
-        if (Math.random() * checkTable.length > 1) panels.push(new panel(checkTable[Math.floor(Math.random()*4)].name, j, i));
+        if (Math.random() * checkTable.length > 0) panels.push(new panel(checkTable[Math.floor(Math.random()*checkTable.length)].name, j, i));
     }
 }
 
