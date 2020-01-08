@@ -8,7 +8,7 @@ let pathData = {
         path.lineTo(-100, 100);
         path.lineTo(100, 100);
         path.lineTo(100, -100);
-        path.lineTo(-100, -100);
+        path.closePath();
         return path;
     })()
 }
