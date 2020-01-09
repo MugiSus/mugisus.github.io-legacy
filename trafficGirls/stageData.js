@@ -9,6 +9,6 @@ const table = class {
 
 const stageData = {
     "tg001ohyagi" : {
-        checkTable : [table("")]
+        checkTable : [new table("")]
     }
 }
