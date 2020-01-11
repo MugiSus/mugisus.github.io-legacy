@@ -23,6 +23,7 @@ const panel = class {
 
 let process =(w, h)=>{
     let allMap = new Array(h).fill(0).map(()=>new Array(10).fill("empty"));
+    let checkMap = new Array(h).fill(0).map(()=>new Array(10).fill("empty"));
     let moving = false;
     allMap.push(new Array(w).fill("floor"));
     panels.forEach(i => allMap[Math.ceil(i.y)][i.x] = i.name);
@@ -33,22 +34,24 @@ let process =(w, h)=>{
             moving = true;
             i.y += i.vel += 0.02;
         } else {
+            checkMap[Math.ceil(i.y)][i.x] = i.name
             i.vel = 0;
             i.y = Math.ceil(i.y);
         }
     });
-    if (!moving) {
-        erasables = [];
-        panels.forEach(i => {
-            if (checkTable[0].name == i.name) {
-                let check = [[i.x, i.y]];
-                if (!checkTable.slice(1).some((j, k) => {
-                    if ((allMap[i.y + j.y] || []) [i.x + j.x] == j.name && (j.required == -1 || check[j.required])) check[k + 1] = [i.x + j.x, i.y + j.y];
-                    else return j.required == -1;
-                })) erasables.push(...(check.filter(x=>x)));
-            }
-        })
-    }
+    
+    erasables = [];
+    panels.forEach(i => {
+        if (checkTable[0].name == i.name) {
+            let check = [[i.x, i.y]];
+            if (!checkTable.slice(1).some((j, k) => {
+                if ((checkMap[i.y + j.y] || [])[i.x + j.x] == j.name && (j.required == -1 || check[j.required])) check[k + 1] = [i.x + j.x, i.y + j.y];
+                else return j.required == -1;
+            })) erasables.push(...(check.filter(x=>x)));
+        }
+    })
+
+    return moving;
 }
 
 let drawBoard =(x, y, w, h)=> {
@@ -89,11 +92,7 @@ let drawBoard =(x, y, w, h)=> {
 }
 
 let erase =()=> {
-    panels.forEach((i,j) => {
-        if (erasables.some(x=>x[0] == i.x && x[1] == i.y)) {
-            delete panels[j];
-        }
-    });
+    panels = panels.filter(i => !erasables.some(x=>x[0] == i.x && x[1] == i.y));
     erasables = [];
 }
 
