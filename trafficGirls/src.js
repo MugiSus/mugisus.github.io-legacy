@@ -131,7 +131,7 @@ let erase =()=> {
     markers = [];
 }
 
-/*
+
 let checkTable = [
     new table("tg009yu-arrow", 0, 0, -1),
     new table("tg009yellow", 1, 0, -1),
@@ -140,8 +140,8 @@ let checkTable = [
     new table("tg009gl-arrow", 1, 1, 1),
     new table("tg009gr-arrow", 2, 1, 2),
 ];
-*/
 
+/*
 let checkTable = [
     new table("tg001green", 0, 0, -1),
     new table("tg001yellow", 1, 0, -1),
@@ -177,14 +177,14 @@ panels.push(new panel("tg001green", 7, 0));
 panels.push(new panel("tg001red", 2, 13));
 panels.push(new panel("tg001yellow", 1, 1));
 panels.push(new panel("tg001green", 0, 2));
-/*
+*/
 
 for (let i = 0; i < height; i++) {
     for (let j = 0; j < width; j++) {
         if (Math.random() * checkTable.length > 1) panels.push(new panel(checkTable[Math.floor(Math.random()*checkTable.length)].name, j, i));
     }
 }
-*/
+
 
 function main(){
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);
