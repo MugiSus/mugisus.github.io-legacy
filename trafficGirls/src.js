@@ -1,6 +1,7 @@
 let width = 10; height = 18;
 let moving = false;
-let length = [0, 0];
+let comboLength = [0, 0];
+let comboAlpha = 0;
 let panels = [];
 let erasables = [];
 let erased = [];
@@ -63,11 +64,11 @@ let processer =(w, h)=>{
 let markup =()=> {
     if (erased.length) comboes++;
     erased.push(...erasables);
-    comboLev = markerPos.findIndex(x => x[0] > erased.length + (comboes + 1) * comboes / 2) - 1;
-    if (comboLev < 0) comboLev = markerPos.length - 1
+    comboLev = Object.keys(markerPos)[Object.keys(markerPos).findIndex(x => x * 1 > erased.length + (comboes + 1) * comboes / 2) - 1];
+    if (!comboLev) comboLev = Object.keys(markerPos).slice(-1)[0];
     markers = [];
     erased.forEach(i => {
-        markerPos[comboLev].slice(1).forEach(j => {
+        markerPos[comboLev].forEach(j => {
             if (!markers.some(x => x[0] == i[0] + j[0] && x[1] == i[1] + j[1]) && i[0] + j[0] < width && i[0] + j[0] >= 0 && i[1] + j[1] < height && i[1] + j[1] >= 0) markers.push([i[0] + j[0], i[1] + j[1], 1]);
         })
     })
@@ -137,8 +138,8 @@ let drawBoard =(x, y, w, h)=> {
 }
 
 let drawComboLev =(xpos)=> {
-    targetLength = [(comboes + 1) * comboes / 2, (comboes + 1) * comboes / 2 + erased.length].map(x => Math.min(1, x / (markerPos[markerPos.length - 1][0] + 3)) * -1600);
-    length = length.map((x,y) => x + (targetLength[y] - x) / 10);
+    targetLength = [(comboes + 1) * comboes / 2, (comboes + 1) * comboes / 2 + erased.length].map(x => Math.min(1, x / (Object.keys(markerPos).slice(-1)[0] * 1 + 3)) * -1600);
+    comboLength = comboLength.map((x,y) => x + (targetLength[y] - x) / 10);
     ctx.globalAlpha = 1;
     ctx.lineCap = "round";
 
@@ -149,33 +150,58 @@ let drawComboLev =(xpos)=> {
     ctx.lineWidth = 50;
     ctx.stroke();
     
+    ctx.lineCap = "butt";
+    ctx.globalAlpha = (comboAlpha += ((erased.length > 0) - comboAlpha) / 10) * (Math.sin(new Date().getTime() / 1000 * Math.PI * 2) * 0.25 + 0.75);
     ctx.strokeStyle = "#ffaa44";
+    ctx.fillStyle = "#ffaa44";
     ctx.lineWidth = 30;
     ctx.beginPath();
-    ctx.moveTo(xpos, length[0] + 800);
+    ctx.moveTo(xpos, comboLength[0] + 800);
     ctx.lineTo(xpos, 800);
     ctx.stroke();
-    ctx.lineCap = "butt";
 
     ctx.strokeStyle = "#ffff44";
     ctx.lineWidth = 30;
     ctx.beginPath();
-    ctx.moveTo(xpos, length[0] + 800);
-    ctx.lineTo(xpos, length[1] + 800);
-    ctx.stroke();
-    ctx.lineCap = "round";
-    ctx.beginPath();
-    ctx.moveTo(xpos, length[1] + 800);
-    ctx.lineTo(xpos, length[1] + 800);
+    ctx.moveTo(xpos, comboLength[0] + 800);
+    ctx.lineTo(xpos, comboLength[1] + 800);
     ctx.stroke();
 
-    markerPos.forEach((x, y, z) => {
-        if (x[0] <= (comboes + 1) * comboes / 2 + erased.length) ctx.fillStyle = "#ffffdd"
-        else ctx.fillStyle = "#666666"
-        ctx.fillRect(xpos - 25, (x[0] / (z[z.length - 1][0] + 3)) * -1600 + 795, 50, 10)
-    })
+    ctx.fillStyle = comboes ? "#ffaa44" : "#ffff44";
+    ctx.beginPath();
+    ctx.arc(xpos, 800, 15, 0, Math.PI);
+    ctx.fill();
+
+    ctx.fillStyle = "#ffff44";
+    ctx.beginPath();
+    ctx.arc(xpos, comboLength[1] + 800, 15, 0, Math.PI, true);
+    ctx.fill();
+
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 7.5
+    ctx.beginPath();
+    ctx.moveTo(xpos - 5, 802.5);
+    ctx.lineTo(xpos - 5, comboLength[1] + 797.5);
+    ctx.stroke();
+
+    ctx.globalAlpha = 1;
+    Object.keys(markerPos).forEach((x, y, z) => {
+        if (x * 1 <= (comboes + 1) * comboes / 2 + erased.length) ctx.fillStyle = "#ffffdd";
+        else ctx.fillStyle = "#666666";
+        ctx.fillRect(xpos - 25, (x * 1 / (z[z.length - 1] * 1 + 3)) * -1600 + 797.5, 50, 5);
+    });
+
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "#ffffff33";
+    ctx.lineWidth = 10;
+    ctx.beginPath();
+    ctx.moveTo(xpos - 12.5, 805);
+    ctx.lineTo(xpos - 12.5, -805);
+    ctx.stroke();
 }
 
+/*
 let checkTable = [
     new table("tg009yu-arrow", 0, 0, -1),
     new table("tg009yellow", 1, 0, -1),
@@ -184,8 +210,8 @@ let checkTable = [
     new table("tg009gl-arrow", 1, 1, 1),
     new table("tg009gr-arrow", 2, 1, 2),
 ];
+*/
 
-/*
 let checkTable = [
     new table("tg001green", 0, 0, -1),
     new table("tg001yellow", 1, 0, -1),
@@ -221,14 +247,6 @@ panels.push(new panel("tg001green", 7, 0));
 panels.push(new panel("tg001red", 2, 13));
 panels.push(new panel("tg001yellow", 1, 1));
 panels.push(new panel("tg001green", 0, 2));
-*/
-
-for (let i = 0; i < height; i++) {
-    for (let j = 0; j < width; j++) {
-        if (Math.random() * checkTable.length > 1) panels.push(new panel(checkTable[Math.floor(Math.random()*checkTable.length)].name, j, i));
-    }
-}
-
 
 // main
 
@@ -240,8 +258,14 @@ function main(){
     requestAnimationFrame(main);
 }
 
-canvas.addEventListener("click", ()=>{
-    if (erasables.length && !moving) markup();
+canvas.addEventListener("mousedown", (event)=>{
+    if (event.button == 2) {
+        for (let i = 0; i < height; i++) {
+            for (let j = 0; j < width; j++) {
+                if (Math.random() * checkTable.length > 1 && !panels.some(x=> x.x == j && x.y == i)) panels.push(new panel(checkTable[Math.floor(Math.random()*checkTable.length)].name, j, i));
+            }
+        }
+    } else if (erasables.length && !moving) markup();
     else if (!moving) erase();
 })
 
