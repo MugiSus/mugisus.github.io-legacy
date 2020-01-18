@@ -1,4 +1,5 @@
 let width = 10; height = 18;
+const chipSize = pixelh / height;
 let moving = false;
 let comboLength = [0, 0];
 let comboAlpha = 0;
@@ -7,7 +8,11 @@ let erasables = [];
 let erased = [];
 let markers = [];
 let comboes = 0;
-let comboLev = 5;
+let suggests = [];
+let drugging = -1;
+let drugOffset = [0, 0];
+let erasing = false;
+let clock = 0;
 let pathData = {
     roundSquere : (()=>{
         let path = new Path2D();
@@ -25,6 +30,13 @@ const panel = class {
         this.x = x;
         this.y = y;
         this.vel = 0;
+    }
+}
+const suggest = class {
+    constructor (){
+        this.name = [...arguments];
+        this.ypos = -750;
+        this.xpos = -750 + width * chipSize;
     }
 }
 
@@ -64,7 +76,7 @@ let processer =(w, h)=>{
 let markup =()=> {
     if (erased.length) comboes++;
     erased.push(...erasables);
-    comboLev = Object.keys(markerPos)[Object.keys(markerPos).findIndex(x => x * 1 > erased.length + (comboes + 1) * comboes / 2) - 1];
+    let comboLev = Object.keys(markerPos)[Object.keys(markerPos).findIndex(x => x * 1 > erased.length + (comboes + 1) * comboes / 2) - 1];
     if (!comboLev) comboLev = Object.keys(markerPos).slice(-1)[0];
     markers = [];
     erased.forEach(i => {
@@ -83,18 +95,17 @@ let erase =()=> {
     markers = [];
 }
 
-let drawBoard =(x, y, w, h)=> {
-    let chipSize = Math.min(w / 10, h / 18);
+let drawBoard =(x, y, chipS)=> {
     ctx.globalAlpha = 1;
-    ctx.lineWidth = chipSize * 0.25;
+    ctx.lineWidth = chipS * 0.25;
     ctx.lineJoin = "round";
     ctx.strokeStyle = "#343434";
     for (let i = 0; i < 18; i++) {
         for (let j = 0; j < 10; j++) {
             ctx.save();
-            ctx.translate(x + (j + 0.5) * chipSize, y + (i + 0.5) * chipSize);
+            ctx.translate(x + (j + 0.5) * chipS, y + (i + 0.5) * chipS);
             
-            ctx.scale(chipSize / 200 * 0.85, chipSize / 200 * 0.85);
+            ctx.scale(chipS / 200 * 0.85, chipS / 200 * 0.85);
             ctx.stroke(pathData.roundSquere);
 
             ctx.restore();
@@ -104,17 +115,17 @@ let drawBoard =(x, y, w, h)=> {
     panels.forEach(i => {
         let erasable = erasables.some(x=>x[0] == i.x && x[1] == i.y);
         ctx.save();
-        ctx.translate(x + (i.x + 0.5) * chipSize, y + (i.y + 0.5) * chipSize);
+        ctx.translate(x + (i.x + 0.5) * chipS, y + (i.y + 0.5) * chipS);
         ctx.globalAlpha = erasable ? 1 : 0.6;
-        ctx.image(i.name, -0.475 * chipSize, -0.475 * chipSize, chipSize * 0.95, chipSize * 0.95);
+        ctx.image(i.name, -0.475 * chipS, -0.475 * chipS, chipS * 0.95, chipS * 0.95);
         ctx.restore();
     });
 
     ctx.strokeStyle = "#ffff44";
     erasables.forEach(i => {
         ctx.save();
-        ctx.translate(x + (i[0] + 0.5) * chipSize, y + (i[1] + 0.5) * chipSize);
-        ctx.scale(chipSize / 200 * 0.85, chipSize / 200 * 0.85);
+        ctx.translate(x + (i[0] + 0.5) * chipS, y + (i[1] + 0.5) * chipS);
+        ctx.scale(chipS / 200 * 0.85, chipS / 200 * 0.85);
         ctx.globalAlpha = Math.sin(new Date().getTime() / 1000 * Math.PI * 2) * 0.3 + 0.7;
         ctx.stroke(pathData.roundSquere);
         ctx.restore();
@@ -130,8 +141,8 @@ let drawBoard =(x, y, w, h)=> {
             ctx.fillStyle = "#ffaa44";
         }
         ctx.save();
-        ctx.translate(x + (i[0] + 0.5) * chipSize, y + (i[1] + 0.5) * chipSize);
-        ctx.scale(chipSize / 200 * 0.85, chipSize / 200 * 0.85);
+        ctx.translate(x + (i[0] + 0.5) * chipS, y + (i[1] + 0.5) * chipS);
+        ctx.scale(chipS / 200 * 0.85, chipS / 200 * 0.85);
         ctx.fillRect(-112.5, -112.5, 225, 225);
         ctx.restore();
     });
@@ -189,7 +200,7 @@ let drawComboLev =(xpos)=> {
     Object.keys(markerPos).forEach((x, y, z) => {
         if (x * 1 <= (comboes + 1) * comboes / 2 + erased.length) ctx.fillStyle = "#ffffdd";
         else ctx.fillStyle = "#666666";
-        ctx.fillRect(xpos - 25, (x * 1 / (z[z.length - 1] * 1 + 3)) * -1600 + 797.5, 50, 5);
+        ctx.fillRect(xpos - 25, (x * 1 / (z[z.length - 1] * 1 + 1)) * -1600 + 797.5, 50, 5);
     });
 
     ctx.lineCap = "round";
@@ -199,7 +210,43 @@ let drawComboLev =(xpos)=> {
     ctx.moveTo(xpos - 12.5, 805);
     ctx.lineTo(xpos - 12.5, -805);
     ctx.stroke();
-}
+};
+
+let drawsuggests =(suggestsX, chipS)=> {
+    suggests.forEach((x,y)=>{
+        let focused = x.name.some((w,z) => Math.abs(x.xpos - mouseState.x) < chipS / 2 && Math.abs(x.ypos - z * chipS - mouseState.y) < chipS / 2);
+
+        if (!erasing && focused && mouseState.left && drugging == -1 || drugging == y) {
+            if (!mouseState.left) {
+                let pos = {x: Math.floor((x.xpos + 900) / chipS), y: Math.floor((x.ypos + 900) / chipS)};
+                drugging = -1;
+                if (!x.name.some((u, v) => panels.some(w => w.x == pos.x && w.y == pos.y - v) || !(pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y - v < height))) {
+                    x.name.forEach((w,z)=>panels.push(new panel(w, pos.x, pos.y - z)));
+                    suggests = suggests.filter((x,i)=>i!=y);
+                }
+            } else {
+                if (drugging != y) {
+                    drugging = y;
+                    drugOffSet = [x.xpos - mouseState.x, x.ypos - mouseState.y];
+                }
+                x.xpos = mouseState.x + drugOffSet[0];
+                x.ypos = mouseState.y + drugOffSet[1];
+            }
+        } else {
+            x.xpos += (suggestsX - x.xpos) / 10;
+            x.ypos += (800 - chipS * y * 2.5 - x.ypos) / 10;
+        }
+
+        ctx.globalAlpha = drugging == y || (drugging == -1 && focused) ? 1 : 0.5;
+
+        x.name.forEach((w,z)=>{
+            ctx.save();
+            ctx.translate(x.xpos, x.ypos - z * chipS);
+            ctx.image(w, -0.475 * chipS, -0.475 * chipS, chipS * 0.95, chipS * 0.95);
+            ctx.restore();
+        });
+    });
+};
 
 /*
 let checkTable = [
@@ -211,7 +258,6 @@ let checkTable = [
     new table("tg009gr-arrow", 2, 1, 2),
 ];
 */
-
 let checkTable = [
     new table("tg001green", 0, 0, -1),
     new table("tg001yellow", 1, 0, -1),
@@ -248,25 +294,41 @@ panels.push(new panel("tg001red", 2, 13));
 panels.push(new panel("tg001yellow", 1, 1));
 panels.push(new panel("tg001green", 0, 2));
 
+for (let i = 0; i < 30; i++) suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name));
+
 // main
 
 function main(){
+    if (erasing) {
+        if (clock % 60 == 0) {
+            if (erasables.length) markup();
+            else {
+                erase();
+                erasing = false;
+            }
+        }
+        clock++;
+    } else clock = 0;
+
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);
     drawComboLev(-1000);
     processer(width, height);
-    drawBoard(-900, -900, 1800 * width / height, 1800);
+    drawBoard(-900, -900, chipSize);
+    drawsuggests(-750 + width * chipSize, chipSize);
     requestAnimationFrame(main);
 }
-
+/*
 canvas.addEventListener("mousedown", (event)=>{
-    if (event.button == 2) {
-        for (let i = 0; i < height; i++) {
-            for (let j = 0; j < width; j++) {
-                if (Math.random() * checkTable.length > 1 && !panels.some(x=> x.x == j && x.y == i)) panels.push(new panel(checkTable[Math.floor(Math.random()*checkTable.length)].name, j, i));
+    if (!moving) {
+        if (event.button == 2) {
+            for (let i = 0; i < height; i++) {
+                for (let j = 0; j < width; j++) {
+                    if (Math.random() * checkTable.length > 1 && !panels.some(x=> x.x == j && x.y == i)) panels.push(new panel(checkTable[Math.floor(Math.random()*checkTable.length)].name, j, i));
+                }
             }
-        }
-    } else if (erasables.length && !moving) markup();
-    else if (!moving) erase();
+        } else if (erasables.length) markup();
+        else erase();
+    }
 })
-
+*/
 canvas.addEventListener("imageLoaded", ()=>main());
