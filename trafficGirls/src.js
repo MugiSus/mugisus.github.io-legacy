@@ -100,11 +100,14 @@ let drawBoard =(x, y, chipS)=> {
     ctx.lineWidth = chipS * 0.25;
     ctx.lineJoin = "round";
     ctx.strokeStyle = "#343434";
+    ctx.fillStyle = "#343434";
     for (let i = 0; i < 18; i++) {
         for (let j = 0; j < 10; j++) {
             ctx.save();
             ctx.translate(x + (j + 0.5) * chipS, y + (i + 0.5) * chipS);
             
+            if (drugging != -1 && (j == Math.floor((mouseState.x + drugOffset[0] + 900) / chipS) || i == Math.floor((mouseState.y + drugOffset[1] + 900) / chipS))) ctx.fillRect(-42.5, -42.5, 85, 85);
+
             ctx.scale(chipS / 200 * 0.85, chipS / 200 * 0.85);
             ctx.stroke(pathData.roundSquere);
 
@@ -218,19 +221,19 @@ let drawsuggests =(suggestsX, chipS)=> {
 
         if (!erasing && focused && mouseState.left && drugging == -1 || drugging == y) {
             if (!mouseState.left) {
-                let pos = {x: Math.floor((x.xpos + 900) / chipS), y: Math.floor((x.ypos + 900) / chipS)};
                 drugging = -1;
-                if (!x.name.some((u, v) => panels.some(w => w.x == pos.x && w.y == pos.y - v) || !(pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y - v < height))) {
-                    x.name.forEach((w,z)=>panels.push(new panel(w, pos.x, pos.y - z)));
+                let pos = {x: Math.floor((x.xpos + 900) / chipS), y: Math.floor((x.ypos + 900) / chipS)};
+                if (!x.name.some((u, v) => panels.some(w => w.x == pos.x && w.y == pos.y - v) || !(pos.x >= 0 && pos.x < width && pos.y - v >= 0 && pos.y - v < height))) {
+                    x.name.forEach((w, z)=>panels.push(new panel(w, pos.x, pos.y - z)));
                     suggests = suggests.filter((x,i)=>i!=y);
                 }
             } else {
                 if (drugging != y) {
                     drugging = y;
-                    drugOffSet = [x.xpos - mouseState.x, x.ypos - mouseState.y];
+                    drugOffset = [x.xpos - mouseState.x, x.ypos - mouseState.y];
                 }
-                x.xpos = mouseState.x + drugOffSet[0];
-                x.ypos = mouseState.y + drugOffSet[1];
+                x.xpos = mouseState.x + drugOffset[0];
+                x.ypos = mouseState.y + drugOffset[1];
             }
         } else {
             x.xpos += (suggestsX - x.xpos) / 10;
@@ -248,7 +251,7 @@ let drawsuggests =(suggestsX, chipS)=> {
     });
 };
 
-/*
+
 let checkTable = [
     new table("tg009yu-arrow", 0, 0, -1),
     new table("tg009yellow", 1, 0, -1),
@@ -257,14 +260,14 @@ let checkTable = [
     new table("tg009gl-arrow", 1, 1, 1),
     new table("tg009gr-arrow", 2, 1, 2),
 ];
-*/
+/*
 let checkTable = [
     new table("tg001green", 0, 0, -1),
     new table("tg001yellow", 1, 0, -1),
     new table("tg001red", 2, 0, -1),
     new table("tg001arrow", 0, 1, 0),
 ];
-
+/*
 panels.push(new panel("tg001arrow", 3, 3));
 panels.push(new panel("tg001yellow", 4, 5));
 panels.push(new panel("tg001red", 5, 8));
@@ -293,22 +296,19 @@ panels.push(new panel("tg001green", 7, 0));
 panels.push(new panel("tg001red", 2, 13));
 panels.push(new panel("tg001yellow", 1, 1));
 panels.push(new panel("tg001green", 0, 2));
-
+*/
 for (let i = 0; i < 30; i++) suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name));
 
 // main
 
 function main(){
-    if (erasing) {
-        if (clock % 60 == 0) {
-            if (erasables.length) markup();
-            else {
-                erase();
-                erasing = false;
-            }
+    if (erasing && clock++ % 60 == 0) {
+        if (erasables.length) markup();
+        else {
+            erase();
+            erasing = false;
         }
-        clock++;
-    } else clock = 0;
+    } else if (!erasing) clock = 0;
 
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);
     drawComboLev(-1000);
