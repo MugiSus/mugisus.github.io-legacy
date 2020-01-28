@@ -34,9 +34,13 @@ const panel = class {
 }
 const suggest = class {
     constructor (){
-        this.name = [...arguments];
-        this.ypos = -750;
-        this.xpos = -750 + width * chipSize;
+        this.name = [...arguments].slice(0,-1);
+        this.positions = [...arguments].slice(-1)[0];
+        this.ypos = -1000;
+        let xmax = 0;
+        this.positions.forEach(x=>xmax = Math.max(Math.abs(x[0]), xmax))
+        console.log(xmax);
+        this.xpos = -750 + width * chipSize + (xmax / 2) * chipSize;
     }
 }
 
@@ -203,7 +207,7 @@ let drawComboLev =(xpos)=> {
     Object.keys(markerPos).forEach((x, y, z) => {
         if (x * 1 <= (comboes + 1) * comboes / 2 + erased.length) ctx.fillStyle = "#ffffdd";
         else ctx.fillStyle = "#666666";
-        ctx.fillRect(xpos - 25, (x * 1 / (z[z.length - 1] * 1 + 1)) * -1600 + 797.5, 50, 5);
+        ctx.fillRect(xpos - 25, x * 1 / (z.slice(-1)[0] * 1 + 1) * -1600 + 797.5, 50, 5);
     });
 
     ctx.lineCap = "round";
@@ -216,16 +220,26 @@ let drawComboLev =(xpos)=> {
 };
 
 let drawsuggests =(suggestsX, chipS)=> {
+    let stack = 0;
+
     suggests.forEach((x,y)=>{
-        let focused = x.name.some((w,z) => Math.abs(x.xpos - mouseState.x) < chipS / 2 && Math.abs(x.ypos - z * chipS - mouseState.y) < chipS / 2);
+        let xmax = 0, ymax = 0;
+        x.positions.forEach(x=>{
+            xmax = Math.max(Math.abs(x[0]), xmax);
+            ymax = Math.max(Math.abs(x[1]), ymax);
+        });
+
+        let focused = x.name.some((w,z) => Math.abs(x.xpos + x.positions[z][0] * chipS - mouseState.x) < chipS / 2 && Math.abs(x.ypos + x.positions[z][1] * chipS - mouseState.y) < chipS / 2);
 
         if (!erasing && focused && mouseState.left && drugging == -1 || drugging == y) {
             if (!mouseState.left) {
                 drugging = -1;
                 let pos = {x: Math.floor((x.xpos + 900) / chipS), y: Math.floor((x.ypos + 900) / chipS)};
-                if (!x.name.some((u, v) => panels.some(w => w.x == pos.x && w.y == pos.y - v) || !(pos.x >= 0 && pos.x < width && pos.y - v >= 0 && pos.y - v < height))) {
-                    x.name.forEach((w, z)=>panels.push(new panel(w, pos.x, pos.y - z)));
+                if (!x.name.some((u, v) => panels.some(w => w.x == pos.x + x.positions[v][0] && w.y == pos.y + x.positions[v][1]) || !(pos.x + x.positions[v][0] >= 0 && pos.x + x.positions[v][0] < width && pos.y + x.positions[v][1] >= 0 && pos.y + x.positions[v][1] < height))) {
+                    x.name.forEach((w, z)=>panels.push(new panel(w, pos.x + x.positions[z][0], pos.y + x.positions[z][1])));
                     suggests = suggests.filter((x,i)=>i!=y);
+                    if (Math.random() > 0.66) suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, [[0,0],[0,1],[-1,0]]));
+                    else suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, [[0,0],[0,1]]));
                 }
             } else {
                 if (drugging != y) {
@@ -236,18 +250,20 @@ let drawsuggests =(suggestsX, chipS)=> {
                 x.ypos = mouseState.y + drugOffset[1];
             }
         } else {
-            x.xpos += (suggestsX - x.xpos) / 10;
-            x.ypos += (800 - chipS * y * 2.5 - x.ypos) / 10;
+            x.xpos += (suggestsX + chipS * (xmax / 2) - x.xpos) / 10;
+            x.ypos += (800 + chipS * (-stack - ymax) - x.ypos) / 10;
         }
 
         ctx.globalAlpha = drugging == y || (drugging == -1 && focused) ? 1 : 0.5;
 
         x.name.forEach((w,z)=>{
             ctx.save();
-            ctx.translate(x.xpos, x.ypos - z * chipS);
+            ctx.translate(x.xpos + x.positions[z][0] * chipS, x.ypos + x.positions[z][1] * chipS);
             ctx.image(w, -0.475 * chipS, -0.475 * chipS, chipS * 0.95, chipS * 0.95);
             ctx.restore();
         });
+
+        stack += ymax + 1.5;
     });
 };
 
@@ -297,7 +313,7 @@ panels.push(new panel("tg001red", 2, 13));
 panels.push(new panel("tg001yellow", 1, 1));
 panels.push(new panel("tg001green", 0, 2));
 */
-for (let i = 0; i < 30; i++) suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name));
+for (let i = 0; i < 7; i++) suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, [[0,0],[0,1],[-1,0]]));
 
 // main
 
