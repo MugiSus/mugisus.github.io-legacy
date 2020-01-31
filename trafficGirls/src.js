@@ -10,7 +10,9 @@ let markers = [];
 let comboes = 0;
 let suggests = [];
 let drugging = -1;
+let druggingAt = 0;
 let drugOffset = [0, 0];
+let pressed = {m_right: false};
 let erasing = false;
 let clock = 0;
 let pathData = {
@@ -37,10 +39,14 @@ const suggest = class {
         this.name = [...arguments].slice(0,-1);
         this.positions = [...arguments].slice(-1)[0];
         this.ypos = -1000;
-        let xmax = 0;
-        this.positions.forEach(x=>xmax = Math.max(Math.abs(x[0]), xmax))
-        console.log(xmax);
-        this.xpos = -750 + width * chipSize + (xmax / 2) * chipSize;
+        let wMaxMin = [0, 0], hMaxMin = [0, 0];
+        this.positions.forEach(x=>{
+            wMaxMin = [Math.min(x[0], wMaxMin[0]), Math.max(x[0], wMaxMin[1])];
+            hMaxMin = [Math.min(x[1], hMaxMin[0]), Math.max(x[1], hMaxMin[1])];
+        });
+        this.wid = Math.abs(wMaxMin[0] - wMaxMin[1]);
+        this.hei = Math.abs(hMaxMin[0] - hMaxMin[1]);
+        this.xpos = -750 + width * chipSize - (this.wid / 2) * chipSize;
     }
 }
 
@@ -110,7 +116,7 @@ let drawBoard =(x, y, chipS)=> {
             ctx.save();
             ctx.translate(x + (j + 0.5) * chipS, y + (i + 0.5) * chipS);
             
-            if (drugging != -1 && (j == Math.floor((mouseState.x + drugOffset[0] + 900) / chipS) || i == Math.floor((mouseState.y + drugOffset[1] + 900) / chipS))) ctx.fillRect(-42.5, -42.5, 85, 85);
+            if (drugging != -1 && (j - suggests[drugging].positions[druggingAt][0] == Math.floor((mouseState.x + drugOffset[0] + 900) / chipS) || i - suggests[drugging].positions[druggingAt][1] == Math.floor((mouseState.y + drugOffset[1] + 900) / chipS))) ctx.fillRect(-42.5, -42.5, 85, 85);
 
             ctx.scale(chipS / 200 * 0.85, chipS / 200 * 0.85);
             ctx.stroke(pathData.roundSquere);
@@ -223,13 +229,8 @@ let drawsuggests =(suggestsX, chipS)=> {
     let stack = 0;
 
     suggests.forEach((x,y)=>{
-        let xmax = 0, ymax = 0;
-        x.positions.forEach(x=>{
-            xmax = Math.max(Math.abs(x[0]), xmax);
-            ymax = Math.max(Math.abs(x[1]), ymax);
-        });
-
-        let focused = x.name.some((w,z) => Math.abs(x.xpos + x.positions[z][0] * chipS - mouseState.x) < chipS / 2 && Math.abs(x.ypos + x.positions[z][1] * chipS - mouseState.y) < chipS / 2);
+        let focused = 0;
+        x.name.some((w,z) => focused = (Math.abs(x.xpos + x.positions[z][0] * chipS - mouseState.x) < chipS / 2 && Math.abs(x.ypos + x.positions[z][1] * chipS - mouseState.y) < chipS / 2) * (z + 1));
 
         if (!erasing && focused && mouseState.left && drugging == -1 || drugging == y) {
             if (!mouseState.left) {
@@ -238,20 +239,25 @@ let drawsuggests =(suggestsX, chipS)=> {
                 if (!x.name.some((u, v) => panels.some(w => w.x == pos.x + x.positions[v][0] && w.y == pos.y + x.positions[v][1]) || !(pos.x + x.positions[v][0] >= 0 && pos.x + x.positions[v][0] < width && pos.y + x.positions[v][1] >= 0 && pos.y + x.positions[v][1] < height))) {
                     x.name.forEach((w, z)=>panels.push(new panel(w, pos.x + x.positions[z][0], pos.y + x.positions[z][1])));
                     suggests = suggests.filter((x,i)=>i!=y);
-                    if (Math.random() > 0.66) suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, [[0,0],[0,1],[-1,0]]));
+                    if (Math.random() > 0.66) suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, [[0,0],[0,1],[1,0]]));
                     else suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, [[0,0],[0,1]]));
                 }
             } else {
                 if (drugging != y) {
                     drugging = y;
+                    druggingAt = focused - 1;
                     drugOffset = [x.xpos - mouseState.x, x.ypos - mouseState.y];
                 }
+                if (mouseState.right && !pressed.m_right) {
+                    suggests[y].positions = x.positions.map(w => {return [w[1] - x.positions[druggingAt][1] + x.positions[druggingAt][0], -(w[0] - x.positions[druggingAt][0]) + x.positions[druggingAt][1]]});
+                    pressed.m_right = true;
+                } else if (!mouseState.right) pressed.m_right = false;
                 x.xpos = mouseState.x + drugOffset[0];
                 x.ypos = mouseState.y + drugOffset[1];
             }
         } else {
-            x.xpos += (suggestsX + chipS * (xmax / 2) - x.xpos) / 10;
-            x.ypos += (800 + chipS * (-stack - ymax) - x.ypos) / 10;
+            x.xpos += (suggestsX - chipS * (x.wid / 2) - x.xpos) / 10;
+            x.ypos += (800 + chipS * (-stack - x.hei) - x.ypos) / 10;
         }
 
         ctx.globalAlpha = drugging == y || (drugging == -1 && focused) ? 1 : 0.5;
@@ -263,11 +269,11 @@ let drawsuggests =(suggestsX, chipS)=> {
             ctx.restore();
         });
 
-        stack += ymax + 1.5;
+        stack += x.hei + 1.5;
     });
 };
 
-
+/*
 let checkTable = [
     new table("tg009yu-arrow", 0, 0, -1),
     new table("tg009yellow", 1, 0, -1),
@@ -276,14 +282,14 @@ let checkTable = [
     new table("tg009gl-arrow", 1, 1, 1),
     new table("tg009gr-arrow", 2, 1, 2),
 ];
-/*
+*/
 let checkTable = [
     new table("tg001green", 0, 0, -1),
     new table("tg001yellow", 1, 0, -1),
     new table("tg001red", 2, 0, -1),
     new table("tg001arrow", 0, 1, 0),
 ];
-/*
+
 panels.push(new panel("tg001arrow", 3, 3));
 panels.push(new panel("tg001yellow", 4, 5));
 panels.push(new panel("tg001red", 5, 8));
@@ -312,8 +318,8 @@ panels.push(new panel("tg001green", 7, 0));
 panels.push(new panel("tg001red", 2, 13));
 panels.push(new panel("tg001yellow", 1, 1));
 panels.push(new panel("tg001green", 0, 2));
-*/
-for (let i = 0; i < 7; i++) suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, [[0,0],[0,1],[-1,0]]));
+
+for (let i = 0; i < 7; i++) suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, [[0,0],[0,1],[1,0]]));
 
 // main
 
