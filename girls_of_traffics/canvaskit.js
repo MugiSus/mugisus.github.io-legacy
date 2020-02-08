@@ -36,7 +36,7 @@ ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.widt
 
 //end kit
 
-document.title = "Traffic Girls";
+document.title = "Girls of Traffics";
 
 //loading images
 
@@ -47,6 +47,7 @@ tg001ohyagi/tg001arrow.png
 tg001ohyagi/tg001green.png
 tg001ohyagi/tg001red.png
 tg001ohyagi/tg001yellow.png
+tg001ohyagi/tg001ohyagi.png
 
 tg009chuobashi/tg009red.png
 tg009chuobashi/tg009yellow.png
