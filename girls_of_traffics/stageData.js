@@ -9,9 +9,9 @@ const table = class {
 
 const stageList = {
     "tg001ohyagi" : {
-        girl: "tg001ohyagi.png",
-        girlx: 0,
-        girly: 0,
+        real: "tg001real",
+        girl: "tg001ohyagi",
+        girlx: 400,
         checkTable: [
             new table("tg001green", 0, 0, -1),
             new table("tg001yellow", 1, 0, -1),
@@ -20,9 +20,8 @@ const stageList = {
         ]
     },
     "tg009chuobashi" : {
-        girl: "tg009chuobashi.png",
-        girlx: 0,
-        girly: 0,
+        real: "tg009chuobashi", realy: 700,
+        girl: "tg009chuobashi", girlx: 0, girly: 0,
         checkTable: [
             new table("tg009yu-arrow", 0, 0, -1),
             new table("tg009yellow", 1, 0, -1),

@@ -1,4 +1,19 @@
 //canvas starter kit
+const imagePath = `
+tg001ohyagi/tg001arrow.png
+tg001ohyagi/tg001green.png
+tg001ohyagi/tg001red.png
+tg001ohyagi/tg001yellow.png
+tg001ohyagi/tg001ohyagi.png
+tg001ohyagi/tg001real.png
+
+tg009chuobashi/tg009red.png
+tg009chuobashi/tg009yellow.png
+tg009chuobashi/tg009yl-arrow.png
+tg009chuobashi/tg009yu-arrow.png
+tg009chuobashi/tg009gl-arrow.png
+tg009chuobashi/tg009gr-arrow.png
+`;
 let pixelw = 3200, pixelh = 1800;
 
 let mouseState = {wheel:0, x:0, y:0, left:false, middle:false, right:false}, keydown = {}, fps_time, fps_fps, fps_timeStamp = [], fps_started = new Date().getTime();
@@ -42,21 +57,7 @@ document.title = "Girls of Traffics";
 
 let img = {}, loadedImgs = 0, eve = new Event("imageLoaded");
 
-`
-tg001ohyagi/tg001arrow.png
-tg001ohyagi/tg001green.png
-tg001ohyagi/tg001red.png
-tg001ohyagi/tg001yellow.png
-tg001ohyagi/tg001ohyagi.png
-
-tg009chuobashi/tg009red.png
-tg009chuobashi/tg009yellow.png
-tg009chuobashi/tg009yl-arrow.png
-tg009chuobashi/tg009yu-arrow.png
-tg009chuobashi/tg009gl-arrow.png
-tg009chuobashi/tg009gr-arrow.png
-
-`.split("\n").filter(x=>x!=""&&x.charAt(0)!="#").forEach((x,y,z)=>{
+imagePath.split("\n").filter(x=>x!=""&&x.charAt(0)!="#").forEach((x,y,z)=>{
     let i = new Image();
     i.src = `imgs/${x}`;
     img[/\/(.*?)\..*?/.exec(x)[1]] = i;
@@ -67,7 +68,7 @@ tg009chuobashi/tg009gr-arrow.png
 });
 
 ctx.__proto__.image =(name, x, y, h, w, ox = 0, oy = 0, r = 0)=> {
-    if (Object.keys(img).indexOf(name) == -1) return 0;
+    if (Object.keys(img).indexOf(name) == -1) return 1;
     ctx.save();
     ctx.translate(x + ox * w, y + oy * h);
     ctx.rotate(r);

@@ -264,7 +264,7 @@ let drawsuggests =(suggestsX, chipS)=> {
 
         x.name.forEach((w,z)=>{
             ctx.save();
-            ctx.translate(x.xpos + x.positions[z][0] * chipS, x.ypos + x.positions[z][1] * chipS);
+            ctx.translate(x.xpos + x.positions[z][0] * chipS, x.ypos + x.positions[z][1] * chipS + Math.sin(new Date().getTime() / 500 + y * 50) * chipS / 10);
             ctx.image(w, -0.475 * chipS, -0.475 * chipS, chipS * 0.95, chipS * 0.95);
             ctx.restore();
         });
@@ -283,6 +283,17 @@ let manageEraser =()=> {
     } else if (!erasing) clock = 0;
 }
 
+let drawGirl =(girlName, realName)=> {
+    ctx.globalAlpha = 1;
+    ctx.image(girlName, 500, -750 + Math.cos(new Date().getTime() / 500) * -15, img[girlName].width * (1600 / img[girlName].height), 1600);
+    ctx.globalAlpha = 0.8 + Math.sin(new Date().getTime() / 500) * 0.2;
+    ctx.image(realName, 500, 350 + Math.sin(new Date().getTime() / 500) * -25, img[girlName].width * (1600 / img[girlName].height), img[realName].height * (img[girlName].width * (1600 / img[girlName].height) / img[realName].width));
+    ctx.globalAlpha = 1;
+    ctx.lineWidth = 10;
+    ctx.strokeStyle = "#dddddd";
+    ctx.strokeRect(500, 350 + Math.sin(new Date().getTime() / 500) * -25, img[girlName].width * (1600 / img[girlName].height), img[realName].height * (img[girlName].width * (1600 / img[girlName].height) / img[realName].width))
+}
+
 for (let i = 0; i < 7; i++) suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, [[0,0],[0,1],[1,0]]));
 
 // main
@@ -293,8 +304,8 @@ function main(){
     drawComboLev(-1000);
     processer(width, height);
     drawBoard(-900, -900, chipSize);
-    //drawGirl();
     drawsuggests(-750 + width * chipSize, chipSize);
+    drawGirl(stageData.girl, stageData.real);
     requestAnimationFrame(main);
 }
 /*
