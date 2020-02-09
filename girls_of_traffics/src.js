@@ -14,7 +14,9 @@ let druggingAt = 0;
 let drugOffset = [0, 0];
 let pressed = {m_right: false};
 let erasing = false;
-let clock = 0;
+let initClock = 90;
+let eraseClock = 0;
+let suggestTimer = 0;
 let pathData = {
     roundSquere : (()=>{
         let path = new Path2D();
@@ -239,8 +241,6 @@ let drawsuggests =(suggestsX, chipS)=> {
                 if (!x.name.some((u, v) => panels.some(w => w.x == pos.x + x.positions[v][0] && w.y == pos.y + x.positions[v][1]) || !(pos.x + x.positions[v][0] >= 0 && pos.x + x.positions[v][0] < width && pos.y + x.positions[v][1] >= 0 && pos.y + x.positions[v][1] < height))) {
                     x.name.forEach((w, z)=>panels.push(new panel(w, pos.x + x.positions[z][0], pos.y + x.positions[z][1])));
                     suggests = suggests.filter((x,i)=>i!=y);
-                    if (Math.random() > 0.66) suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, [[0,0],[0,1],[1,0]]));
-                    else suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, [[0,0],[0,1]]));
                 }
             } else {
                 if (drugging != y) {
@@ -274,33 +274,59 @@ let drawsuggests =(suggestsX, chipS)=> {
 };
 
 let manageEraser =()=> {
-    if (erasing && clock++ % 60 == 0) {
+    if (erasing && eraseClock++ % 60 == 0) {
         if (erasables.length) markup();
         else {
             erase();
             erasing = false;
         }
-    } else if (!erasing) clock = 0;
+    } else if (!erasing) eraseClock = 0;
+}
+
+let manageSuggest =()=> {
+    if (initClock) {
+        initClock--;
+        if (initClock % 3 == 0) panels.push(new panel(checkTable[Math.floor(Math.random()*checkTable.length)].name, width - 1 - (initClock / 3) % width, 0));
+    } else {
+        if (incleaseSec[suggests.length]) suggestTimer += (1 / 60) / incleaseSec[suggests.length];
+        if (suggestTimer > 1) {
+            if (Math.random() > 0.66) suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, [[0,0],[0,1],[1,0]]));
+            else suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, [[0,0],[0,1]]));
+            suggestTimer -= 1;
+        }
+    }
 }
 
 let drawGirl =(girlName, realName)=> {
+    let sizes = [
+        1600,
+        img[girlName].width * (1600 / img[girlName].height),
+        img[realName].height * (img[girlName].width * (1600 / img[girlName].height) / img[realName].width)
+    ]
     ctx.globalAlpha = 1;
-    ctx.image(girlName, 500, -750 + Math.cos(new Date().getTime() / 500) * -15, img[girlName].width * (1600 / img[girlName].height), 1600);
+    ctx.image(girlName, 500, -750 + Math.cos(new Date().getTime() / 500) * -15, sizes[1], sizes[0]);
     ctx.globalAlpha = 0.8 + Math.sin(new Date().getTime() / 500) * 0.2;
-    ctx.image(realName, 500, 350 + Math.sin(new Date().getTime() / 500) * -25, img[girlName].width * (1600 / img[girlName].height), img[realName].height * (img[girlName].width * (1600 / img[girlName].height) / img[realName].width));
+    ctx.image(realName, 500, 350 + Math.sin(new Date().getTime() / 500) * -25, sizes[1], sizes[2]);
     ctx.globalAlpha = 1;
     ctx.lineWidth = 10;
     ctx.strokeStyle = "#dddddd";
-    ctx.strokeRect(500, 350 + Math.sin(new Date().getTime() / 500) * -25, img[girlName].width * (1600 / img[girlName].height), img[realName].height * (img[girlName].width * (1600 / img[girlName].height) / img[realName].width))
+    ctx.strokeRect(500, 350 + Math.sin(new Date().getTime() / 500) * -25, sizes[1], sizes[2])
+    ctx.moveTo(500 + sizes[1] / 2, 350 + sizes[2] / 2 + Math.sin(new Date().getTime() / 500) * -25, Math.min(sizes[1], sizes[2]) / 2);
+    ctx.fillStyle = "#ffffff";
+    ctx.globalAlpha = 0.15;
+    ctx.arc(500 + sizes[1] / 2, 350 + sizes[2] / 2 + Math.sin(new Date().getTime() / 500) * -25, Math.min(sizes[1], sizes[2]) / 2, Math.PI / -2, Math.PI * (2 * suggestTimer - 0.5));
+    ctx.closePath();
+    ctx.fill();
 }
 
-for (let i = 0; i < 7; i++) suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, [[0,0],[0,1],[1,0]]));
+//for (let i = 0; i < 7; i++) suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, [[0,0],[0,1],[1,0]]));
 
 // main
 
 function main(){
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio , canvas.height / ratio);
     manageEraser();
+    manageSuggest();
     drawComboLev(-1000);
     processer(width, height);
     drawBoard(-900, -900, chipSize);

@@ -37,6 +37,8 @@ let stageName = "tg001ohyagi";
 let stageData = stageList[stageName];
 let checkTable = stageData.checkTable;
 
+let incleaseSec = [0.125, 0.25, 0.5, 1, 2, 4, 8, 16, 0];
+
 let markerPos = {
     1 : `
     1
