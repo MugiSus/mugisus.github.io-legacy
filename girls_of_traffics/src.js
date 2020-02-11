@@ -14,9 +14,11 @@ let druggingAt = 0;
 let drugOffset = [0, 0];
 let pressed = {m_right: false};
 let erasing = false;
-let initClock = 90;
+let initClock = 150;
 let eraseClock = 0;
 let suggestTimer = 0;
+let clickLeng = 0;
+let boardAlpha = new Array(height).fill(1);
 let pathData = {
     roundSquere : (()=>{
         let path = new Path2D();
@@ -108,13 +110,26 @@ let erase =()=> {
 }
 
 let drawBoard =(x, y, chipS)=> {
-    ctx.globalAlpha = 1;
     ctx.lineWidth = chipS * 0.25;
     ctx.lineJoin = "round";
-    ctx.strokeStyle = "#343434";
-    ctx.fillStyle = "#343434";
-    for (let i = 0; i < 18; i++) {
-        for (let j = 0; j < 10; j++) {
+    ctx.strokeStyle = "#ffffff";
+    ctx.fillStyle = "#ffffff";
+    if (erasables.length && drugging == -1 && !erasing && mouseState.x > x && mouseState.y > y && mouseState.x < x + width * chipS && mouseState.x < y + height * chipS) {
+        if (mouseState.left) {
+            clickLeng += 1 / 3;
+            if (clickLeng >= height) erasing = true;
+            else boardAlpha[height - Math.floor(clickLeng)] = 0.3;
+        } else {
+            boardAlpha = boardAlpha.map(x=>x + (0.2 - x) / 5);
+            clickLeng = 0;
+        }
+    } else {
+        clickLeng = 0;
+        boardAlpha = boardAlpha.map(x=>x + (0.05 - x) / 10);
+    }
+    for (let i = 0; i < height; i++) {
+        ctx.globalAlpha = boardAlpha[i];
+        for (let j = 0; j < width; j++) {
             ctx.save();
             ctx.translate(x + (j + 0.5) * chipS, y + (i + 0.5) * chipS);
             
@@ -131,7 +146,7 @@ let drawBoard =(x, y, chipS)=> {
         let erasable = erasables.some(x=>x[0] == i.x && x[1] == i.y);
         ctx.save();
         ctx.translate(x + (i.x + 0.5) * chipS, y + (i.y + 0.5) * chipS);
-        ctx.globalAlpha = erasable ? 1 : 0.6;
+        ctx.globalAlpha = erasable ? 1 : 0.4;
         ctx.image(i.name, -0.475 * chipS, -0.475 * chipS, chipS * 0.95, chipS * 0.95);
         ctx.restore();
     });
@@ -229,20 +244,15 @@ let drawComboLev =(xpos)=> {
 
 let drawsuggests =(suggestsX, chipS)=> {
     let stack = 0;
+    let grab = false;
 
     suggests.forEach((x,y)=>{
         let focused = 0;
         x.name.some((w,z) => focused = (Math.abs(x.xpos + x.positions[z][0] * chipS - mouseState.x) < chipS / 2 && Math.abs(x.ypos + x.positions[z][1] * chipS - mouseState.y) < chipS / 2) * (z + 1));
+        if (focused) grab = true;
 
         if (!erasing && focused && mouseState.left && drugging == -1 || drugging == y) {
-            if (!mouseState.left) {
-                drugging = -1;
-                let pos = {x: Math.floor((x.xpos + 900) / chipS), y: Math.floor((x.ypos + 900) / chipS)};
-                if (!x.name.some((u, v) => panels.some(w => w.x == pos.x + x.positions[v][0] && w.y == pos.y + x.positions[v][1]) || !(pos.x + x.positions[v][0] >= 0 && pos.x + x.positions[v][0] < width && pos.y + x.positions[v][1] >= 0 && pos.y + x.positions[v][1] < height))) {
-                    x.name.forEach((w, z)=>panels.push(new panel(w, pos.x + x.positions[z][0], pos.y + x.positions[z][1])));
-                    suggests = suggests.filter((x,i)=>i!=y);
-                }
-            } else {
+            if (mouseState.left) {
                 if (drugging != y) {
                     drugging = y;
                     druggingAt = focused - 1;
@@ -254,6 +264,13 @@ let drawsuggests =(suggestsX, chipS)=> {
                 } else if (!mouseState.right) pressed.m_right = false;
                 x.xpos = mouseState.x + drugOffset[0];
                 x.ypos = mouseState.y + drugOffset[1];
+            } else {
+                drugging = -1;
+                let pos = {x: Math.floor((x.xpos + 900) / chipS), y: Math.floor((x.ypos + 900) / chipS)};
+                if (!x.name.some((u, v) => panels.some(w => w.x == pos.x + x.positions[v][0] && w.y == pos.y + x.positions[v][1]) || !(pos.x + x.positions[v][0] >= 0 && pos.x + x.positions[v][0] < width && pos.y + x.positions[v][1] >= 0 && pos.y + x.positions[v][1] < height))) {
+                    x.name.forEach((w, z)=>panels.push(new panel(w, pos.x + x.positions[z][0], pos.y + x.positions[z][1])));
+                    suggests = suggests.filter((x,i)=>i!=y);
+                }
             }
         } else {
             x.xpos += (suggestsX - chipS * (x.wid / 2) - x.xpos) / 10;
@@ -271,22 +288,32 @@ let drawsuggests =(suggestsX, chipS)=> {
 
         stack += x.hei + 1.5;
     });
+
+    if (drugging != -1) canvas.style.cursor = "grabbing";
+    else if (grab) canvas.style.cursor = "grab";
+    else canvas.style.cursor = "default";
 };
 
 let manageEraser =()=> {
-    if (erasing && eraseClock++ % 60 == 0) {
-        if (erasables.length) markup();
-        else {
-            erase();
-            erasing = false;
+    if (erasing) {
+        eraseClock++;
+        if (eraseClock <= 0) boardAlpha[eraseClock + height - 1] = 1;
+        if (eraseClock % 60 == 0) {
+            if (erasables.length) markup();
+            else {
+                erase();
+                erasing = false;
+            }
         }
-    } else if (!erasing) eraseClock = 0;
+    } else eraseClock = -height;
 }
 
 let manageSuggest =()=> {
     if (initClock) {
         initClock--;
-        if (initClock % 3 == 0) panels.push(new panel(checkTable[Math.floor(Math.random()*checkTable.length)].name, width - 1 - (initClock / 3) % width, 0));
+        if (initClock % 3 == 0) {
+            panels.push(new panel(checkTable[Math.floor(Math.random()*checkTable.length)].name, (width - 1) - ((initClock / 3) % width), 0));
+        }
     } else {
         if (incleaseSec[suggests.length]) suggestTimer += (1 / 60) / incleaseSec[suggests.length];
         if (suggestTimer > 1) {
