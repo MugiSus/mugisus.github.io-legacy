@@ -120,7 +120,7 @@ let drawBoard =(x, y, chipS)=> {
             if (clickLeng >= height) erasing = true;
             else boardAlpha[height - Math.floor(clickLeng)] = 0.3;
         } else {
-            boardAlpha = boardAlpha.map(x=>x + (0.2 - x) / 5);
+            boardAlpha = boardAlpha.map(x=>x + (0.1 - x) / 5);
             clickLeng = 0;
         }
     } else {
@@ -248,7 +248,7 @@ let drawsuggests =(suggestsX, chipS)=> {
 
     suggests.forEach((x,y)=>{
         let focused = 0;
-        x.name.some((w,z) => focused = (Math.abs(x.xpos + x.positions[z][0] * chipS - mouseState.x) < chipS / 2 && Math.abs(x.ypos + x.positions[z][1] * chipS - mouseState.y) < chipS / 2) * (z + 1));
+        if (!erasing) x.name.some((w,z) => focused = (Math.abs(x.xpos + x.positions[z][0] * chipS - mouseState.x) < chipS / 2 && Math.abs(x.ypos + x.positions[z][1] * chipS - mouseState.y) < chipS / 2) * (z + 1));
         if (focused) grab = true;
 
         if (!erasing && focused && mouseState.left && drugging == -1 || drugging == y) {
@@ -315,7 +315,7 @@ let manageSuggest =()=> {
             panels.push(new panel(checkTable[Math.floor(Math.random()*checkTable.length)].name, (width - 1) - ((initClock / 3) % width), 0));
         }
     } else {
-        if (incleaseSec[suggests.length]) suggestTimer += (1 / 60) / incleaseSec[suggests.length];
+        if (!erasing && incleaseSec[suggests.length]) suggestTimer += (1 / 60) / incleaseSec[suggests.length];
         if (suggestTimer > 1) {
             if (Math.random() > 0.66) suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, [[0,0],[0,1],[1,0]]));
             else suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, [[0,0],[0,1]]));
