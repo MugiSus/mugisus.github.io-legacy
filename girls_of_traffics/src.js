@@ -1,4 +1,5 @@
-let width = 10; height = 18;
+let width = 10;
+let height = 18;
 const chipSize = pixelh / height;
 let moving = false;
 let comboLength = [0, 0];
@@ -19,6 +20,10 @@ let eraseClock = 0;
 let suggestTimer = 0;
 let clickLeng = 0;
 let boardAlpha = new Array(height).fill(1);
+let erasedEffects = [];
+let targetScore = 0;
+let showScore = 0;
+let scoreAlpha = 0.5;
 let pathData = {
     roundSquere : (()=>{
         let path = new Path2D();
@@ -98,12 +103,12 @@ let markup =()=> {
             if (!markers.some(x => x[0] == i[0] + j[0] && x[1] == i[1] + j[1]) && i[0] + j[0] < width && i[0] + j[0] >= 0 && i[1] + j[1] < height && i[1] + j[1] >= 0) markers.push([i[0] + j[0], i[1] + j[1], 1]);
         })
     })
-    panels = panels.filter(i => !erasables.some(x=>x[0] == i.x && x[1] == i.y));
+    makeErasedEffect(erasables);
     erasables = [];
 }
 
 let erase =()=> {
-    panels = panels.filter(i => !markers.some(x=>x[0] == i.x && x[1] == i.y));
+    makeErasedEffect(markers);
     comboes = 0;
     erased = [];
     markers = [];
@@ -281,7 +286,7 @@ let drawsuggests =(suggestsX, chipS)=> {
 
         x.name.forEach((w,z)=>{
             ctx.save();
-            ctx.translate(x.xpos + x.positions[z][0] * chipS, x.ypos + x.positions[z][1] * chipS + Math.sin(new Date().getTime() / 500 + y * 50) * chipS / 10);
+            ctx.translate(x.xpos + x.positions[z][0] * chipS, x.ypos + x.positions[z][1] * chipS + Math.sin((new Date().getTime() / 3000 + y * 0.1) * Math.PI * 2) * chipS / 10);
             ctx.image(w, -0.475 * chipS, -0.475 * chipS, chipS * 0.95, chipS * 0.95);
             ctx.restore();
         });
@@ -326,24 +331,63 @@ let manageSuggest =()=> {
 
 let drawGirl =(girlName, realName)=> {
     let sizes = [
-        1600,
-        img[girlName].width * (1600 / img[girlName].height),
-        img[realName].height * (img[girlName].width * (1600 / img[girlName].height) / img[realName].width)
+        1450,
+        img[girlName].width * (1450 / img[girlName].height),
+        img[realName].height * (img[girlName].width * (1450 / img[girlName].height) / img[realName].width)
     ]
     ctx.globalAlpha = 1;
-    ctx.image(girlName, 500, -750 + Math.cos(new Date().getTime() / 500) * -15, sizes[1], sizes[0]);
-    ctx.globalAlpha = 0.8 + Math.sin(new Date().getTime() / 500) * 0.2;
-    ctx.image(realName, 500, 350 + Math.sin(new Date().getTime() / 500) * -25, sizes[1], sizes[2]);
+    ctx.image(girlName, stageData.girlx, 850 - sizes[0] + Math.cos(new Date().getTime() / 3000 * Math.PI * 2) * -15, sizes[1], sizes[0]);
+    ctx.globalAlpha = 0.8 + Math.sin(new Date().getTime() / 3000 * Math.PI * 2) * 0.2;
+    ctx.image(realName, stageData.girlx, 350 + Math.sin(new Date().getTime() / 3000 * Math.PI * 2) * -25, sizes[1], sizes[2]);
     ctx.globalAlpha = 1;
     ctx.lineWidth = 10;
     ctx.strokeStyle = "#dddddd";
-    ctx.strokeRect(500, 350 + Math.sin(new Date().getTime() / 500) * -25, sizes[1], sizes[2])
-    ctx.moveTo(500 + sizes[1] / 2, 350 + sizes[2] / 2 + Math.sin(new Date().getTime() / 500) * -25, Math.min(sizes[1], sizes[2]) / 2);
+    ctx.strokeRect(stageData.girlx, 350 + Math.sin(new Date().getTime() / 3000 * Math.PI * 2) * -25, sizes[1], sizes[2]);
+    ctx.moveTo(stageData.girlx + sizes[1] / 2, 350 + sizes[2] / 2 + Math.sin(new Date().getTime() / 3000 * Math.PI * 2) * -25, Math.min(sizes[1], sizes[2]) / 2);
     ctx.fillStyle = "#ffffff";
     ctx.globalAlpha = 0.15;
-    ctx.arc(500 + sizes[1] / 2, 350 + sizes[2] / 2 + Math.sin(new Date().getTime() / 500) * -25, Math.min(sizes[1], sizes[2]) / 2, Math.PI / -2, Math.PI * (2 * suggestTimer - 0.5));
+    ctx.arc(stageData.girlx + sizes[1] / 2, 350 + sizes[2] / 2 + Math.sin(new Date().getTime() / 3000 * Math.PI * 2) * -25, Math.min(sizes[1], sizes[2]) / 2, Math.PI / -2, Math.PI * (2 * suggestTimer - 0.5));
     ctx.closePath();
     ctx.fill();
+}
+
+let makeErasedEffect =(array)=> {
+    panels = panels.filter(i =>{
+        if (array.some(x=>x[0] == i.x && x[1] == i.y)) {
+            erasedEffects.push({name: i.name, x: -900 + (i.x + 0.5) * chipSize, y: -900 + (i.y + 0.5) * chipSize});
+            return false;
+        } else return true;
+    });
+}
+
+let drawErasedEffect =()=> {
+    erasedEffects.forEach((i, h) => {
+        erasedEffects[h].x += (400 - erasedEffects[h].x) / 10;
+        erasedEffects[h].y += (-650 - erasedEffects[h].y) / 10;
+        ctx.globalAlpha = Math.min(1, ((400 - i.x) ** 2 + (-650 - i.y) ** 2) ** 0.5 / 300) * 0.5;
+        ctx.save();
+        ctx.translate(i.x, i.y);
+        ctx.image(i.name, -0.475 * chipSize, -0.475 * chipSize, chipSize * 0.95, chipSize * 0.95);
+        ctx.restore();
+    });
+    erasedEffects = erasedEffects.filter(i => {
+        if (((400 - i.x) ** 2 + (-650 - i.y) ** 2) ** 0.5 < 10) {
+            targetScore += 100;
+            return false;
+        } else return true;
+    });
+}
+
+let drawScore =()=> {
+    if (Math.ceil(showScore) != targetScore) scoreAlpha += (1 - scoreAlpha) / 5;
+    else scoreAlpha += (0.5 - scoreAlpha) / 50;
+    ctx.globalAlpha = scoreAlpha;
+    showScore += (targetScore - showScore) / 10;
+    ctx.fillStyle = "#ffffff"
+    ctx.font = "75px serif";
+    ctx.fillText("SCORE:", 400, -900 + 150 + Math.sin(new Date().getTime() / 3000 * Math.PI * 2) * -15);
+    ctx.font = "150px serif";
+    ctx.fillText("000000".slice(0, 6 - Math.floor(Math.log10(Math.ceil(showScore)))) + Math.ceil(showScore), 400, -900 + 300 + Math.sin((new Date().getTime() / 3000 + 0.1) * Math.PI * 2) * -15);
 }
 
 //for (let i = 0; i < 7; i++) suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, [[0,0],[0,1],[1,0]]));
@@ -358,6 +402,8 @@ function main(){
     processer(width, height);
     drawBoard(-900, -900, chipSize);
     drawsuggests(-750 + width * chipSize, chipSize);
+    drawErasedEffect();
+    drawScore();
     drawGirl(stageData.girl, stageData.real);
     requestAnimationFrame(main);
 }
