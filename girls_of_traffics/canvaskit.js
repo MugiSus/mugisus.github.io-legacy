@@ -13,6 +13,8 @@ tg009chuobashi/tg009yl-arrow.png
 tg009chuobashi/tg009yu-arrow.png
 tg009chuobashi/tg009gl-arrow.png
 tg009chuobashi/tg009gr-arrow.png
+tg009chuobashi/tg009chuobashi.png
+tg009chuobashi/tg009real.png
 `;
 let pixelw = 3200, pixelh = 1800;
 

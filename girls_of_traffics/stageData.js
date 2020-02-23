@@ -20,8 +20,9 @@ const stageList = {
         ]
     },
     "tg009chuobashi" : {
-        real: "tg009chuobashi", realy: 700,
-        girl: "tg009chuobashi", girlx: 0, girly: 0,
+        real: "tg009real",
+        girl: "tg009chuobashi",
+        girlx: 400,
         checkTable: [
             new table("tg009yu-arrow", 0, 0, -1),
             new table("tg009yellow", 1, 0, -1),
@@ -34,6 +35,7 @@ const stageList = {
 }
 
 let stageName = "tg001ohyagi";
+if (Object.keys(stageList).indexOf((/name=(.*?)(&|$)/i.exec(location.search)||[])[1]) != -1) stageName = /name=(.*?)(&|$)/i.exec(location.search)[1];
 let stageData = stageList[stageName];
 let checkTable = stageData.checkTable;
 

@@ -125,7 +125,7 @@ let drawBoard =(x, y, chipS)=> {
             if (clickLeng >= height) erasing = true;
             else boardAlpha[height - Math.floor(clickLeng)] = 0.3;
         } else {
-            boardAlpha = boardAlpha.map(x=>x + (0.1 - x) / 5);
+            boardAlpha = boardAlpha.map(x=>x + (0.15 - x) / 5);
             clickLeng = 0;
         }
     } else {
@@ -137,12 +137,9 @@ let drawBoard =(x, y, chipS)=> {
         for (let j = 0; j < width; j++) {
             ctx.save();
             ctx.translate(x + (j + 0.5) * chipS, y + (i + 0.5) * chipS);
-            
             if (drugging != -1 && (j - suggests[drugging].positions[druggingAt][0] == Math.floor((mouseState.x + drugOffset[0] + 900) / chipS) || i - suggests[drugging].positions[druggingAt][1] == Math.floor((mouseState.y + drugOffset[1] + 900) / chipS))) ctx.fillRect(-42.5, -42.5, 85, 85);
-
             ctx.scale(chipS / 200 * 0.85, chipS / 200 * 0.85);
             ctx.stroke(pathData.roundSquere);
-
             ctx.restore();
         }
     }
@@ -390,8 +387,6 @@ let drawScore =()=> {
     ctx.fillText("000000".slice(0, 6 - Math.floor(Math.log10(Math.ceil(showScore)))) + Math.ceil(showScore), 400, -900 + 300 + Math.sin((new Date().getTime() / 3000 + 0.1) * Math.PI * 2) * -15);
 }
 
-//for (let i = 0; i < 7; i++) suggests.push(new suggest(checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, checkTable[Math.floor(Math.random()*checkTable.length)].name, [[0,0],[0,1],[1,0]]));
-
 // main
 
 function main(){
@@ -407,18 +402,5 @@ function main(){
     drawGirl(stageData.girl, stageData.real);
     requestAnimationFrame(main);
 }
-/*
-canvas.addEventListener("mousedown", (event)=>{
-    if (!moving) {
-        if (event.button == 2) {
-            for (let i = 0; i < height; i++) {
-                for (let j = 0; j < width; j++) {
-                    if (Math.random() * checkTable.length > 1 && !panels.some(x=> x.x == j && x.y == i)) panels.push(new panel(checkTable[Math.floor(Math.random()*checkTable.length)].name, j, i));
-                }
-            }
-        } else if (erasables.length) markup();
-        else erase();
-    }
-})
-*/
+
 canvas.addEventListener("imageLoaded", ()=>main());
