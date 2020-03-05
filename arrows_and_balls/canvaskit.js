@@ -1,6 +1,6 @@
 //canvas starter kit
 const sndPath = `
-tick.mp3
+
 `.split("\n").filter(x=>x!=""&&x.charAt(0)!="#");
 const imgPath = `
 arrow.svg
