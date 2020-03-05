@@ -1,23 +1,16 @@
 //canvas starter kit
 const sndPath = `
-/tick.mp3
+tick.mp3
 `.split("\n").filter(x=>x!=""&&x.charAt(0)!="#");
 const imgPath = `
-tg001ohyagi/tg001arrow.png
-tg001ohyagi/tg001green.png
-tg001ohyagi/tg001red.png
-tg001ohyagi/tg001yellow.png
-tg001ohyagi/tg001ohyagi.png
-tg001ohyagi/tg001real.png
-
-tg009chuobashi/tg009red.png
-tg009chuobashi/tg009yellow.png
-tg009chuobashi/tg009yl-arrow.png
-tg009chuobashi/tg009yu-arrow.png
-tg009chuobashi/tg009gl-arrow.png
-tg009chuobashi/tg009gr-arrow.png
-tg009chuobashi/tg009chuobashi.png
-tg009chuobashi/tg009real.png
+arrow.svg
+checkPoint.svg
+locked.svg
+plain.svg
+plain_start.svg
+plain_goal.svg
+highlight.svg
+light.svg
 `.split("\n").filter(x=>x!=""&&x.charAt(0)!="#");
 let pixelw = 3200, pixelh = 1800;
 
@@ -56,7 +49,7 @@ ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.widt
 
 //end kit
 
-document.title = "Girls of Traffics";
+document.title = "Arrows and Balls";
 
 //loading images
 
@@ -64,7 +57,7 @@ let img = {}, loadedImgs = 0;
 imgPath.forEach(x=>{
     let i = new Image();
     i.src = `img/${x}`;
-    img[/\/(.*?)\..*?/.exec(x)[1]] = i;
+    img[x] = i;
     i.onload =()=> {
         loadedImgs++;
         if (loadedImgs == imgPath.length) {
@@ -78,7 +71,7 @@ let snd = {}, loadedSnds = 0;
 sndPath.forEach(x=>{
     let i = new Audio();
     i.src = `snd/${x}`;
-    snd[/\/(.*?)\..*?/.exec(x)[1]] = i;
+    snd[x] = i;
     i.oncanplaythrough =()=> {
         loadedSnds++;
         if (loadedSnds == sndPath.length) {

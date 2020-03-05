@@ -72,6 +72,10 @@ let processer =(w, h)=>{
             moving = true;
             i.y += i.vel += 0.02;
         } else {
+            // if (i.vel != 0) {
+            //    snd["tick"].currentTime = 0;
+            //    snd["tick"].play();
+            // }
             checkMap[Math.ceil(i.y)][i.x] = i.name
             i.vel = 0;
             i.y = Math.ceil(i.y);
@@ -403,4 +407,4 @@ function main(){
     requestAnimationFrame(main);
 }
 
-canvas.addEventListener("imageLoaded", ()=>main());
+canvas.addEventListener("allLoaded", ()=>main());
