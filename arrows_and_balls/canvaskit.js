@@ -58,13 +58,13 @@ imgPath.forEach(x=>{
     let i = new Image();
     i.src = `img/${x}`;
     img[x] = i;
-    i.onload =()=> {
+    i.addEventListener("load", ()=> {
         loadedImgs++;
         if (loadedImgs == imgPath.length) {
             canvas.dispatchEvent(new Event("imgLoaded"));
             if (loadedSnds == sndPath.length) canvas.dispatchEvent(new Event("allLoaded"));
         }
-    }
+    });
 });
 
 let snd = {}, loadedSnds = 0;
@@ -72,13 +72,13 @@ sndPath.forEach(x=>{
     let i = new Audio();
     i.src = `snd/${x}`;
     snd[x] = i;
-    i.oncanplaythrough =()=> {
+    i.addEventListener("canplaythrough", ()=> {
         loadedSnds++;
         if (loadedSnds == sndPath.length) {
             canvas.dispatchEvent(new Event("sndLoaded"));
             if (loadedImgs == imgPath.length) canvas.dispatchEvent(new Event("allLoaded"));
         }
-    }
+    });
 });
 
 ctx.__proto__.image =(name, x, y, w, h, ox = 0, oy = 0, r = 0)=> {
