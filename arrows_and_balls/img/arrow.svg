@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.2413443"
-     inkscape:cx="256.16529"
-     inkscape:cy="303.13685"
+     inkscape:zoom="2.025843"
+     inkscape:cx="275.81961"
+     inkscape:cy="265.46838"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -54,7 +54,9 @@
      fit-margin-bottom="0"
      inkscape:snap-object-midpoints="true"
      inkscape:snap-center="true"
-     inkscape:snap-text-baseline="true" />
+     inkscape:snap-text-baseline="true"
+     inkscape:snap-others="true"
+     inkscape:snap-page="true" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -78,9 +80,9 @@
        id="rect817"
        inkscape:connector-curvature="0" />
     <path
-       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:15.875;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
-       d="m 96.797688,230.85415 -47.18835,-27.24422 c -1.90943,-1.10242 -3.97608,0.73933 -3.09997,2.76262 l 10.60084,24.4816 -10.60085,24.4816 c 0,0 1.19054,3.86504 3.09998,2.76262 z"
-       id="rect896"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2.64583325;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
+       d="m 96.797688,230.78772 -48.840966,28.19836 c -1.90978,1.10261 -4.02196,-0.75843 -3.16826,-2.79157 l 10.66808,-25.40678 -10.66808,-25.40678 c -0.8537,-2.03314 1.25848,-3.89418 3.16826,-2.79157 z"
+       id="rect858"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccccc" />
   </g>

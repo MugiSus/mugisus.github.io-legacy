@@ -1,9 +1,10 @@
-let dots = {}, checkPos = [], time = 0, scrollX = 0, scrollY = 0, defaultSize = Math.max(canvas.width, canvas.height) / 50, size = defaultSize, mouseOffSet = [], latestMouse = [], scrollVel = [0,0], pressed = {}, choosen = 0, mouseMode = -1, paused = false, zoomRatio = 1.05, zoom = 1, lastWheel = mouseState.wheel;
+let dots = {}, checkPos = [], drawPos = [], time = 0, scrollX = 0, scrollY = 0, defaultSize = Math.max(canvas.width, canvas.height) / 50, mouseOffSet = [], latestMouse = [], scrollVel = [0,0], pressed = {}, dragged = [], mouseMode = -1, paused = false, zoomRatio = 1.05, zoom = 1, lastWheel = mouseState.wheel;
 
 // processer
 
 let edit =(posX, posY, state)=> {
     dots[`${posX},${posY}`] = state;
+    drawPos.push([posX, posY, state]);
     
     [[-1,-1],[0,-1],[1,-1],[-1,0],[0,0],[1,0],[-1,1],[0,1],[1,1]].forEach(x=>{
         if (checkPos.indexOf(`${posX + x[0]},${posY + x[1]}`) == -1) checkPos.push(`${posX + x[0]},${posY + x[1]}`);
@@ -17,6 +18,7 @@ let process =()=> {
     Object.assign(_dots, dots);
     let _checkPos = checkPos.slice(0, checkPos.length);
     checkPos = [];
+    drawPos = [];
 
     _checkPos.forEach(x => {
 
@@ -31,46 +33,24 @@ let process =()=> {
         else if (!_dots[x] && sum == 3) edit(posX, posY, 1);
 
     });
-
+    
     return Object.keys(dots).length;
 }
 
 // graphics
 
 let draw =()=> {
-
-    let h = Math.ceil(canvas.height / ratio / size);
-    let w = Math.ceil(canvas.width / ratio / size);
+    ctx.save();
+    ctx.scale(zoom, zoom);
+    ctx.translate(-scrollX, -scrollY);
 
     ctx.fillStyle = "#ffffff";
+    drawPos.forEach(x => {
+        if (x[2]) ctx.fillRect(x[0] * defaultSize - defaultSize * 0.45, x[1] * defaultSize - defaultSize * 0.45, defaultSize * 0.9, defaultSize * 0.9);
+        else ctx.clearRect(x[0] * defaultSize - defaultSize * 0.5, x[1] * defaultSize - defaultSize * 0.5, defaultSize, defaultSize);
+    });
 
-    for (let i = -1; i < h + 2; i++) {
-        for (let j = -1; j < w + 2; j++) {
-
-            ctx.globalAlpha = 0;
-
-            let posX = (j - w / 2) * size - scrollX % size;
-            let posY = (i - h / 2) * size - scrollY % size;
-            let state = dots[`${j + ~~(scrollX/size)},${i + ~~(scrollY/size)}`] || 0;
-
-            if (Math.abs(posX - mouseState.x) < size / 2 && Math.abs(posY - mouseState.y) < size / 2) {
-                choosen = state;
-                ctx.globalAlpha += 0.1
-                if (mouseState.left && state != mouseMode) {
-                    edit(j + ~~(scrollX/size), i + ~~(scrollY/size), mouseMode);
-                }
-            }
-
-            if (state) {
-                ctx.globalAlpha += 0.8;
-                ctx.fillRect(posX - size * 0.45, posY - size * 0.45, size * 0.9, size * 0.9);
-            } else {
-                ctx.globalAlpha += Math.max((1 - ((posX - mouseState.x) ** 2 + (posY - mouseState.y) ** 2) ** 0.5 / (size * 10)) * 0.1, 0);
-                if (ctx.globalAlpha != 0) ctx.fillRect(posX - size * 0.45 , posY - size * 0.45, size * 0.9, size * 0.9);
-            }
-            
-        }
-    }
+    ctx.restore();
 }
 
 // main
@@ -83,26 +63,29 @@ edit(-1,2,1);
 
 function main(){
     
-    if (lastWheel != mouseState.wheel) {
+    let mouseXinStage = mouseState.x / zoom + scrollX;
+    let mouseYinStage = mouseState.y / zoom + scrollY;
+    
+    if (mouseState.wheel != lastWheel) {
+        zoom = zoomRatio ** mouseState.wheel;
         if (lastWheel < mouseState.wheel) {
-            zoom = zoomRatio ** mouseState.wheel;
-            size = defaultSize * zoom;
-            scrollX += (mouseState.x + canvas.height / ratio / 2) / zoom;
-            scrollY += (mouseState.y + canvas.height / ratio / 2) / zoom;
+            scrollX += (mouseXinStage - scrollX) * (zoomRatio - 1);
+            scrollY += (mouseYinStage - scrollY) * (zoomRatio - 1);
         } else {
-            
+            scrollX += (mouseXinStage - scrollX) * -(1 - 1 / zoomRatio);
+            scrollY += (mouseYinStage - scrollY) * -(1 - 1 / zoomRatio);
         }
         lastWheel = mouseState.wheel;
     }
     
     if (mouseState.right) {
-        if (!pressed.m_right) mouseOffSet = [-mouseState.x - scrollX, -mouseState.y - scrollY];
+        if (!pressed.m_right) offset = {mouseX: mouseState.x, scrollX: scrollX, mouseY: mouseState.y, scrollY: scrollY};
         pressed.m_right++;
-        scrollX = -mouseState.x - mouseOffSet[0];
-        scrollY = -mouseState.y - mouseOffSet[1];
+        scrollX = offset.scrollX + -(mouseState.x - offset.mouseX) / zoom;
+        scrollY = offset.scrollY + -(mouseState.y - offset.mouseY) / zoom;
         latestMouse = [mouseState.x, mouseState.y];
     } else {
-        if (paused && pressed.m_right && pressed.m_right < 10 && (((-mouseState.x - scrollX) - mouseOffSet[0]) ** 2 + ((-mouseState.y - scrollY) - mouseOffSet[1]) ** 2) ** 0.5 < 1) process();
+        if (paused && pressed.m_right && pressed.m_right < 10 && ((mouseState.x - offset.mouseX) ** 2 + (mouseState.y - offset.mouseY) ** 2) ** 0.5 < 1) process();
         if (pressed.m_right) scrollVel = [mouseState.x - latestMouse[0], mouseState.y - latestMouse[1]];
         scrollX -= scrollVel[0] *= 0.9;
         scrollY -= scrollVel[1] *= 0.9;
@@ -111,8 +94,13 @@ function main(){
 
     if (mouseState.left) {
         if (!pressed.m_left) {
+            if ((dots[`${Math.round(mouseXinStage / defaultSize)},${Math.round(mouseYinStage / defaultSize)}`] || 0) == mouseMode) dragged = [];
             pressed.m_left = true;
-            mouseMode = 1 - choosen;
+            mouseMode = 1 - (dots[`${Math.round(mouseXinStage / defaultSize)},${Math.round(mouseYinStage / defaultSize)}`] || 0);
+        }
+        if (!dragged.some(x => x[0] == Math.round(mouseXinStage / defaultSize) && x[1] == Math.round(mouseYinStage / defaultSize))) {
+            dragged.push([Math.round(mouseXinStage / defaultSize), Math.round(mouseYinStage / defaultSize)])
+            edit(Math.round(mouseXinStage / defaultSize), Math.round(mouseYinStage / defaultSize), mouseMode);
         }
     } else pressed.m_left = false;
 
