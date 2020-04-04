@@ -4,7 +4,7 @@ let dots = {}, checkPos = [], drawPos = [], time = 0, scrollX = 0, scrollY = 0, 
 
 let edit =(posX, posY, state)=> {
     dots[`${posX},${posY}`] = state;
-    drawPos.push([posX, posY, state]);
+    if (Math.abs(posX * defaultSize - scrollX) * zoom < canvas.width / ratio / 2 && Math.abs(posY * defaultSize - scrollY) * zoom < canvas.height / ratio / 2) drawPos.push([posX, posY, state]);
     
     [[-1,-1],[0,-1],[1,-1],[-1,0],[0,0],[1,0],[-1,1],[0,1],[1,1]].forEach(x=>{
         if (checkPos.indexOf(`${posX + x[0]},${posY + x[1]}`) == -1) checkPos.push(`${posX + x[0]},${posY + x[1]}`);

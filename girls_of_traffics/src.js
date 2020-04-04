@@ -23,6 +23,7 @@ let boardAlpha = new Array(height).fill(1);
 let erasedEffects = [];
 let targetScore = 0;
 let showScore = 0;
+let lastScore = 0;
 let scoreAlpha = 0.5;
 let pathData = {
     roundSquere : (()=>{
@@ -383,7 +384,13 @@ let drawScore =()=> {
     if (Math.ceil(showScore) != targetScore) scoreAlpha += (1 - scoreAlpha) / 5;
     else scoreAlpha += (0.5 - scoreAlpha) / 50;
     ctx.globalAlpha = scoreAlpha;
-    showScore += (targetScore - showScore) / 10;
+    showScore += (targetScore - showScore) / 30;
+    if (Math.ceil(showScore) != Math.ceil(lastScore)) {
+        snd["tick"].volume = 0.15;
+        snd["tick"].currentTime = 0;
+        snd["tick"].play();
+        lastScore = Math.ceil(showScore)
+    }
     ctx.fillStyle = "#ffffff"
     ctx.font = "75px serif";
     ctx.fillText("SCORE:", 400, -900 + 150 + Math.sin(new Date().getTime() / 3000 * Math.PI * 2) * -15);
