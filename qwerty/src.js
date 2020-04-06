@@ -131,7 +131,7 @@ let pathPreset = {
         return p;
     })(),
 };
-let author, bpm, offset, pathes = {}, notes = [], drewIdYpos = {}, startedTime, nowTime;
+let author, bpm, offset, pathes = {}, notes = [], drewId = {}, startedTime, nowTime;
 
 let note = class {
     constructor(type, lane, path, endTime, speed, id){
@@ -265,26 +265,11 @@ let drawNotes =()=> {
                     ctx.stroke(pathPreset.dragNote);
                 } break;
             }
-            if (x.id && x.type <= 2) drewIdYpos[x.id] = time > 0 ? ypos : 700;
-            else if (x.id && x.type >= 3 && time > 0) {
-                ctx.beginPath();
-                if (drewIdYpos[x.id] > ypos) {
-                    ctx.moveTo(-75, 25);
-                    ctx.lineTo(0, 100);
-                    ctx.lineTo(75, 25);
-                    ctx.lineTo(75, drewIdYpos[x.id] - ypos - 25);
-                    ctx.lineTo(0, drewIdYpos[x.id] - ypos - 100);
-                    ctx.lineTo(-75, drewIdYpos[x.id] - ypos - 25);
-                } else {
-                    ctx.moveTo(-75, -25);
-                    ctx.lineTo(0, -100);
-                    ctx.lineTo(75, -25);
-                    ctx.lineTo(75, drewIdYpos[x.id] - ypos + 25);
-                    ctx.lineTo(0, drewIdYpos[x.id] - ypos + 100);
-                    ctx.lineTo(-75, drewIdYpos[x.id] - ypos + 25);
-                }
-                ctx.closePath();
-                ctx.fill();
+            if (x.id && !drewId[x.id]) drewId[x.id] = {start:-900, end:-900, lane:x.lane, color:ctx.fillStyle}
+            if (x.id && x.type <= 2) drewId[x.id].start = time > 0 ? ypos : 700;
+            else if (x.type >= 3) {
+                drewId[x.id].end = ypos;
+                if (time < 0) delete drewId[x.id];
             }
             if (time < 1 && time > 0) {
                 let size = (1 - time) ** 3;
@@ -295,6 +280,33 @@ let drawNotes =()=> {
             ctx.restore();
         }
         return false;
+    });
+    Object.keys(drewId).forEach(x=>{
+        ctx.save();
+        ctx.translate((drewId[x].lane - 4.5) * 250, 0);
+        ctx.beginPath();
+        if (drewId[x].start < drewId[x].end) {
+            ctx.moveTo(-75, drewId[x].start + 25);
+            ctx.lineTo(0, drewId[x].start + 100);
+            ctx.lineTo(75, drewId[x].start + 25);
+            ctx.lineTo(75, drewId[x].end - 25);
+            ctx.lineTo(0, drewId[x].end - 100);
+            ctx.lineTo(-75, drewId[x].end - 25);
+        } else {
+            ctx.moveTo(-75, drewId[x].start - 25);
+            ctx.lineTo(0, drewId[x].start - 100);
+            ctx.lineTo(75, drewId[x].start - 25);
+            ctx.lineTo(75, drewId[x].end + 25);
+            ctx.lineTo(0, drewId[x].end + 100);
+            ctx.lineTo(-75, drewId[x].end + 25);
+        }
+        ctx.closePath();
+        let gradient = ctx.createLinearGradient(0, -900, 0, 900);
+        gradient.addColorStop(100 / 1800, "#20202000");
+        gradient.addColorStop(150 / 1800, drewId[x].color);
+        ctx.fillStyle = gradient;
+        ctx.fill("evenodd");
+        ctx.restore();
     });
     notes = notes.filter(x => (x.endTime - nowTime) > -1000);
     ctx.globalAlpha = 1;
