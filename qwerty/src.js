@@ -330,7 +330,7 @@ function main(){
 canvas.addEventListener("click", () => {
     generateScore("dead soul");
 
-    let startTime = (60 / bpm * 1000) * 24;
+    let startTime = (60 / bpm * 1000) * -4;
     snd["snd/dead_soul_by_sound_souler.ogg"].currentTime = Math.max(startTime + offset, 0) / 1000;
     setTimeout(()=>snd["snd/dead_soul_by_sound_souler.ogg"].play(), (startTime + offset) * -1);
 
