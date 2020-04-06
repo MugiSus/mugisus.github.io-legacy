@@ -303,7 +303,6 @@ let drawNotes =()=> {
 let generateScore =(scoreName)=> {
     author = scoreData[scoreName].match(/author:(.*?)\n/)[1];
     bpm = scoreData[scoreName].match(/bpm:(.*?)\n/)[1] * 1;
-    let spb = 60 / bpm * 1000;
     offset = scoreData[scoreName].match(/offset:(.*?)\n/)[1] * 1;
     pathes = {};
     scoreData[scoreName].match(/path:((.|\n)*)score:/)[1].split("\n").filter(x=>x).forEach(x=>pathes[x.substr(0, x.indexOf(" "))] = getPosByPath(x.substr(x.indexOf(" ") + 1)));
@@ -311,8 +310,8 @@ let generateScore =(scoreName)=> {
     scoreData[scoreName].match(/score:((.|\n)*)/)[1].split("\n").filter(x=>x).forEach(x=>{
         let arr = x.split(/, */).map(x => x*1 == x ? x*1 : x);
         arr[2] = pathes[arr[2]];
-        arr[3] *= spb;
-        arr[4] *= spb;
+        arr[3] *= 60 / bpm * 1000;
+        arr[4] *= 60 / bpm * 1000;
         notes.push(new note(...arr))
     });
     notes.sort((a, b) => (a.endTime - a.speed) - (b.endTime - b.speed));
@@ -321,6 +320,7 @@ let generateScore =(scoreName)=> {
 function main(){
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio, canvas.height / ratio);
     nowTime = new Date().getTime() - startedTime;
+    //if (nowTime / (60 / bpm * 1000)) 
     drawEdge();
     drawqwerty();
     drawNotes();
