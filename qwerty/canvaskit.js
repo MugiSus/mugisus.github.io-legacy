@@ -1,6 +1,6 @@
 //canvas starter kit
 const sndPath = `
-dead_soul_by_sound_souler.ogg
+snd/dead_soul_by_sound_souler.ogg
 `.split("\n").filter(x=>x!=""&&x.charAt(0)!="#");
 const imgPath = `
 
@@ -26,7 +26,7 @@ let ratio, resize =()=> {
 }
 canvas.addEventListener("mousedown", (event)=>{mouseState[["left","middle","right"][event.button]] = true;});
 canvas.addEventListener("mouseup", (event)=>{mouseState[["left","middle","right"][event.button]] = false;});
-canvas.addEventListener("wheel", (event)=>{mouseState["wheel"] += event.deltaY > 0 ? -1 : 1});
+canvas.addEventListener("wheel", (event)=>{mouseState["wheel"] += event.deltaY > 0 ? -1 : 1}, {passive: false});
 document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
 document.addEventListener("mousemove", (event)=>{mouseState.x = (event.clientX - canvas.width / 2) / ratio; mouseState.y = (event.clientY - canvas.height / 2) / ratio; mouseState.cliX = event.clientX; mouseState.cliY = event.clientY;});
@@ -49,7 +49,7 @@ document.title = "QWERTY";
 let img = {}, loadedImgs = 0;
 imgPath.forEach(x=>{
     let i = new Image();
-    i.src = `img/${x}`;
+    i.src = x;
     i.addEventListener("load", ()=> {
         loadedImgs++;
         if (loadedImgs == imgPath.length) {
@@ -63,7 +63,7 @@ imgPath.forEach(x=>{
 let snd = {}, loadedSnds = 0;
 sndPath.forEach(x=>{
     let i = new Audio();
-    i.src = `snd/${x}`;
+    i.src = x;
     i.addEventListener("canplaythrough", ()=> {
         loadedSnds++;
         if (loadedSnds == sndPath.length) {
