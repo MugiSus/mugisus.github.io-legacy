@@ -332,7 +332,7 @@ let generateScore =(scoreName)=> {
 function main(){
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio, canvas.height / ratio);
     nowTime = new Date().getTime() - startedTime;
-    //if (nowTime / (60 / bpm * 1000)) 
+    
     drawEdge();
     drawqwerty();
     drawNotes();
