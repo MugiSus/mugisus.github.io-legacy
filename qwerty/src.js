@@ -131,7 +131,7 @@ let pathPreset = {
         return p;
     })(),
 };
-let author, bpm, offset, pathes = {}, notes = [], drewId = {}, startedTime, nowTime;
+let author, bgm, bgmvol, bpm, offset, pathes = {}, notes = [], drewId = {}, startedTime, nowTime;
 
 let note = class {
     constructor(type, lane, path, endTime, speed, id){
@@ -312,13 +312,15 @@ let drawNotes =()=> {
 let generateScore =(scoreName)=> {
     drewId = {};
     author = scoreData[scoreName].match(/author:(.*?)\n/)[1];
+    bgm = "snd/" + scoreData[scoreName].match(/bgm:(.*?)\n/)[1];
+    bgmvol = scoreData[scoreName].match(/bgmvol:(.*?)\n/)[1] * 1 || 1;
     bpm = scoreData[scoreName].match(/bpm:(.*?)\n/)[1] * 1;
     offset = scoreData[scoreName].match(/offset:(.*?)\n/)[1] * 1;
     pathes = {};
     scoreData[scoreName].match(/path:((.|\n)*)score:/)[1].split("\n").filter(x=>x).forEach(x=>pathes[x.substr(0, x.indexOf(" "))] = getPosByPath(x.substr(x.indexOf(" ") + 1)));
     notes = [];
     scoreData[scoreName].match(/score:((.|\n)*)/)[1].split("\n").filter(x=>x).forEach(x=>{
-        let arr = x.split(/, */).map(x => x*1 == x ? x*1 : x);
+        let arr = x.split(/ +/).map(x => x*1 == x ? x*1 : x);
         arr[2] = pathes[arr[2]];
         arr[3] *= 60 / bpm * 1000;
         arr[4] *= 60 / bpm * 1000;
@@ -340,9 +342,10 @@ function main(){
 canvas.addEventListener("click", () => {
     generateScore("dead soul");
 
-    let startTime = (60 / bpm * 1000) * -4;
-    snd["snd/dead_soul_by_sound_souler.ogg"].currentTime = Math.max(startTime + offset, 0) / 1000;
-    setTimeout(()=>snd["snd/dead_soul_by_sound_souler.ogg"].play(), (startTime + offset) * -1);
+    let startTime = (60 / bpm * 1000) * (/time=(.*?)(&|$)/i.exec(location.search)[1] * 1 - 4);
+    snd[bgm].volume = bgmvol;
+    snd[bgm].currentTime = Math.max(startTime + offset, 0) / 1000;
+    setTimeout(()=>snd[bgm].play(), (startTime + offset) * -1);
 
     startedTime = new Date().getTime() - startTime;
 });
