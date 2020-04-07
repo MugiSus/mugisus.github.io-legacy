@@ -237,7 +237,7 @@ let drawNotes =()=> {
         else {
             let ypos = time > 0 ? getPathFromX(x.path, (1 - time) * 100) * 16 + -900 : 700 + (nowTime - x.endTime) / 1000 * 200;
             ctx.save();
-            ctx.globalAlpha = Math.max((900 - Math.abs(ypos)) / 100, 0);
+            ctx.globalAlpha = x.type >= 3 ? 1 : Math.max((900 - Math.abs(ypos)) / 100, 0);
             ctx.translate((x.lane - 4.5) * 250, ypos);
             switch (x.type) {
                 case 1: {
@@ -255,21 +255,21 @@ let drawNotes =()=> {
                 case 3: {
                     ctx.strokeStyle = "#88ffff";
                     ctx.fillStyle = "#88ffff44";
-                    ctx.fill(pathPreset.diamond);
-                    ctx.stroke(pathPreset.tapNote);
                 } break;
                 case 4: {
                     ctx.strokeStyle = "#ffff88";
                     ctx.fillStyle = "#ffff8844";
-                    ctx.fill(pathPreset.diamond);
-                    ctx.stroke(pathPreset.dragNote);
                 } break;
             }
-            if (x.id && !drewId[x.id]) drewId[x.id] = {start:-900, end:-900, lane:x.lane, color:ctx.fillStyle}
-            if (x.id && x.type <= 2) drewId[x.id].start = time > 0 ? ypos : 700;
-            else if (x.type >= 3) {
+            if (x.id && !drewId[x.id]) drewId[x.id] = {start:-1000, end:-1000, lane:x.lane, color:ctx.fillStyle}
+            if (x.id && x.type <= 2) {
+                drewId[x.id].endTime = x.endTime;
+                drewId[x.id].start = time > 0 ? ypos : 700;
+            } else if (x.type >= 3) {
                 drewId[x.id].end = ypos;
                 if (time < 0) delete drewId[x.id];
+                else time = (x.endTime - nowTime) / (x.endTime - drewId[x.id].endTime);
+                ctx.translate(0, -ypos + 700);
             }
             if (time < 1 && time > 0) {
                 let size = (1 - time) ** 3;
@@ -283,29 +283,26 @@ let drawNotes =()=> {
     });
     Object.keys(drewId).forEach(x=>{
         ctx.save();
+        ctx.fillStyle = drewId[x].color;
         ctx.translate((drewId[x].lane - 4.5) * 250, 0);
         ctx.beginPath();
         if (drewId[x].start < drewId[x].end) {
             ctx.moveTo(-75, drewId[x].start + 25);
             ctx.lineTo(0, drewId[x].start + 100);
             ctx.lineTo(75, drewId[x].start + 25);
-            ctx.lineTo(75, drewId[x].end - 25);
-            ctx.lineTo(0, drewId[x].end - 100);
-            ctx.lineTo(-75, drewId[x].end - 25);
+            ctx.lineTo(75, drewId[x].end + 25);
+            ctx.lineTo(0, drewId[x].end + 100);
+            ctx.lineTo(-75, drewId[x].end + 25);
         } else {
             ctx.moveTo(-75, drewId[x].start - 25);
             ctx.lineTo(0, drewId[x].start - 100);
             ctx.lineTo(75, drewId[x].start - 25);
-            ctx.lineTo(75, drewId[x].end + 25);
-            ctx.lineTo(0, drewId[x].end + 100);
-            ctx.lineTo(-75, drewId[x].end + 25);
+            ctx.lineTo(75, drewId[x].end - 25);
+            ctx.lineTo(0, drewId[x].end - 100);
+            ctx.lineTo(-75, drewId[x].end - 25);
         }
         ctx.closePath();
-        let gradient = ctx.createLinearGradient(0, -900, 0, 900);
-        gradient.addColorStop(100 / 1800, "#20202000");
-        gradient.addColorStop(150 / 1800, drewId[x].color);
-        ctx.fillStyle = gradient;
-        ctx.fill("evenodd");
+        ctx.fill();
         ctx.restore();
     });
     notes = notes.filter(x => (x.endTime - nowTime) > -1000);
@@ -313,6 +310,7 @@ let drawNotes =()=> {
 }
 
 let generateScore =(scoreName)=> {
+    drewId = {};
     author = scoreData[scoreName].match(/author:(.*?)\n/)[1];
     bpm = scoreData[scoreName].match(/bpm:(.*?)\n/)[1] * 1;
     offset = scoreData[scoreName].match(/offset:(.*?)\n/)[1] * 1;
