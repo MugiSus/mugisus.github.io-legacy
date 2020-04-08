@@ -313,6 +313,7 @@ let generateScore =(scoreName)=> {
     drewId = {};
     author = scoreData[scoreName].match(/author:(.*?)\n/)[1];
     bgm = "snd/" + scoreData[scoreName].match(/bgm:(.*?)\n/)[1];
+    snd[bgm].load();
     bgmvol = scoreData[scoreName].match(/bgmvol:(.*?)\n/)[1] * 1 || 1;
     bpm = scoreData[scoreName].match(/bpm:(.*?)\n/)[1] * 1;
     offset = scoreData[scoreName].match(/offset:(.*?)\n/)[1] * 1;
@@ -332,7 +333,7 @@ let generateScore =(scoreName)=> {
 function main(){
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio, canvas.height / ratio);
     nowTime = new Date().getTime() - startedTime;
-    
+
     drawEdge();
     drawqwerty();
     drawNotes();
