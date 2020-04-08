@@ -313,7 +313,6 @@ let generateScore =(scoreName)=> {
     drewId = {};
     author = scoreData[scoreName].match(/author:(.*?)\n/)[1];
     bgm = "snd/" + scoreData[scoreName].match(/bgm:(.*?)\n/)[1];
-    snd[bgm].load();
     bgmvol = scoreData[scoreName].match(/bgmvol:(.*?)\n/)[1] * 1 || 1;
     bpm = scoreData[scoreName].match(/bpm:(.*?)\n/)[1] * 1;
     offset = scoreData[scoreName].match(/offset:(.*?)\n/)[1] * 1;
@@ -344,6 +343,10 @@ canvas.addEventListener("click", () => {
     generateScore("dead soul");
 
     let startTime = (60 / bpm * 1000) * ((/time=(.*?)(&|$)/i.exec(location.search) || [0,0])[1] * 1 - 4);
+    snd[bgm].load();
+    snd[bgm].volume = 0;
+    snd[bgm].play();
+    //snd[bgm].pause();
     snd[bgm].volume = bgmvol;
     snd[bgm].currentTime = Math.max(startTime + offset, 0) / 1000;
     setTimeout(()=>snd[bgm].play(), (startTime + offset) * -1);
