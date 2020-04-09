@@ -63,7 +63,6 @@ imgPath.forEach(x=>{
 let snd = {}, loadedSnds = 0;
 sndPath.forEach(x=>{
     let i = new Audio();
-    i.preload = "none";
     i.src = x;
     i.addEventListener("loadeddata", ()=> {
         loadedSnds++;
