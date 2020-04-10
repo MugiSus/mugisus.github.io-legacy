@@ -136,7 +136,7 @@ let author, bgm, bgmvol, bpm, offset, pathes = {}, judgePos = [], notes = [], dr
 let note = class {
     constructor(type, lane, path, endTime, speed, id){
         this.type = type;
-        this.lane = type == 0 ? lane.split("").map(x=>x*1) : lane * 1;
+        this.lane = lane;
         this.path = path.charAt(0) == "-" ? pathes[path.substr(1)].map(x=>x.map(x => x.map((x, y) => y ? x * -1 + 200 : x))) : pathes[path];
         this.reversed = 1 - (path.charAt(0) == "-") * 2;
         this.endTime = endTime;
@@ -236,8 +236,8 @@ let drawNotes =()=> {
         let time = (x.endTime - nowTime) / x.speed;
         if (time > 1) return true;
         else {
-            if (x.type == 0 && time > 0) {
-                x.lane.forEach(i => judgePos[i] = getPathFromX(x.path, (1 - time) * 100) * 14 + -700);
+            if (x.type == 8) {
+                if (time > 0) judgePos[x.lane] = getPathFromX(x.path, (1 - time) * 100) * 14 + -700
             } else {
                 let ypos = judgePos[x.lane] + (time > 0 ? -1600 + getPathFromX(x.path, (1 - time) * 100) * 16 : (nowTime - x.endTime) / 1000 * 200 * x.reversed);
                 ctx.save();
@@ -248,13 +248,15 @@ let drawNotes =()=> {
                         ctx.strokeStyle = "#88ffff";
                         ctx.fillStyle = "#88ffff44";
                         ctx.fill(pathPreset.diamond);
-                        ctx.stroke(pathPreset.tapNote);
+                        ctx.stroke(pathPreset.diamond);
+                        ctx.stroke(pathPreset["qwertyuiop".charAt(x.lane)]);
                     } break;
                     case 2: {
                         ctx.strokeStyle = "#ffff88";
                         ctx.fillStyle = "#ffff8844";
                         ctx.fill(pathPreset.diamond);
-                        ctx.stroke(pathPreset.dragNote);
+                        ctx.stroke(pathPreset.diamond);
+                        ctx.stroke(pathPreset["qwertyuiop".charAt(x.lane)]);
                     } break;
                     case 3: {
                         ctx.strokeStyle = "#88ffff";
@@ -330,7 +332,7 @@ let generateScore =(scoreName)=> {
         arr[0] *= 1;
         arr[3] *= 60 / bpm * 1000;
         arr[4] *= 60 / bpm * 1000;
-        notes.push(new note(...arr))
+        arr[1].split("").forEach(x => notes.push(new note(arr[0], x * 1, arr[2], arr[3], arr[4], arr[5])))
     });
     notes.sort((a, b) => (a.endTime - a.speed) - (b.endTime - b.speed));
 }
@@ -342,6 +344,7 @@ function main(){
     drawEdge();
     drawqwerty();
     drawNotes();
+    
     requestAnimationFrame(main);
 }
 
