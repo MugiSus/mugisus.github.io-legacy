@@ -131,13 +131,14 @@ let pathPreset = {
         return p;
     })(),
 };
-let author, bgm, bgmvol, bpm, offset, pathes = {}, notes = [], drewId = {}, startedTime, nowTime;
+let author, bgm, bgmvol, bpm, offset, pathes = {}, judgePos = [], notes = [], drewId = {}, startedTime, nowTime;
 
 let note = class {
     constructor(type, lane, path, endTime, speed, id){
         this.type = type;
-        this.lane = lane;
-        this.path = path;
+        this.lane = type == 0 ? lane.split("").map(x=>x*1) : lane * 1;
+        this.path = path.charAt(0) == "-" ? pathes[path.substr(1)].map(x=>x.map(x => x.map((x, y) => y ? x * -1 + 200 : x))) : pathes[path];
+        this.reversed = 1 - (path.charAt(0) == "-") * 2;
         this.endTime = endTime;
         this.speed = speed;
         this.id = id || 0;
@@ -206,7 +207,7 @@ let drawqwerty =()=> {
     ctx.lineWidth = 3;
     "qwertyuiop".split("").forEach((x, y) => {
         ctx.save();
-        ctx.translate((y - 4.5) * 250, 700);
+        ctx.translate((y - 4.5) * 250, judgePos[y]);
         ctx.stroke(pathPreset.diamond);
         ctx.stroke(pathPreset[x]);
         ctx.restore();
@@ -235,49 +236,53 @@ let drawNotes =()=> {
         let time = (x.endTime - nowTime) / x.speed;
         if (time > 1) return true;
         else {
-            let ypos = time > 0 ? getPathFromX(x.path, (1 - time) * 100) * 16 + -900 : 700 + (nowTime - x.endTime) / 1000 * 200;
-            ctx.save();
-            ctx.globalAlpha = x.type >= 3 ? 1 : Math.max((900 - Math.abs(ypos)) / 100, 0);
-            ctx.translate((x.lane - 4.5) * 250, ypos);
-            switch (x.type) {
-                case 1: {
-                    ctx.strokeStyle = "#88ffff";
-                    ctx.fillStyle = "#88ffff44";
-                    ctx.fill(pathPreset.diamond);
-                    ctx.stroke(pathPreset.tapNote);
-                } break;
-                case 2: {
-                    ctx.strokeStyle = "#ffff88";
-                    ctx.fillStyle = "#ffff8844";
-                    ctx.fill(pathPreset.diamond);
-                    ctx.stroke(pathPreset.dragNote);
-                } break;
-                case 3: {
-                    ctx.strokeStyle = "#88ffff";
-                    ctx.fillStyle = "#88ffff44";
-                } break;
-                case 4: {
-                    ctx.strokeStyle = "#ffff88";
-                    ctx.fillStyle = "#ffff8844";
-                } break;
+            if (x.type == 0 && time > 0) {
+                x.lane.forEach(i => judgePos[i] = getPathFromX(x.path, (1 - time) * 100) * 14 + -700);
+            } else {
+                let ypos = judgePos[x.lane] + (time > 0 ? -1600 + getPathFromX(x.path, (1 - time) * 100) * 16 : (nowTime - x.endTime) / 1000 * 200 * x.reversed);
+                ctx.save();
+                ctx.globalAlpha = x.type >= 3 ? 1 : (time > 0 ? Math.max((900 - Math.abs(ypos)) / 100, 0) : 1 - Math.min((nowTime - x.endTime) / 1000, 1));
+                ctx.translate((x.lane - 4.5) * 250, ypos);
+                switch (x.type) {
+                    case 1: {
+                        ctx.strokeStyle = "#88ffff";
+                        ctx.fillStyle = "#88ffff44";
+                        ctx.fill(pathPreset.diamond);
+                        ctx.stroke(pathPreset.tapNote);
+                    } break;
+                    case 2: {
+                        ctx.strokeStyle = "#ffff88";
+                        ctx.fillStyle = "#ffff8844";
+                        ctx.fill(pathPreset.diamond);
+                        ctx.stroke(pathPreset.dragNote);
+                    } break;
+                    case 3: {
+                        ctx.strokeStyle = "#88ffff";
+                        ctx.fillStyle = "#88ffff44";
+                    } break;
+                    case 4: {
+                        ctx.strokeStyle = "#ffff88";
+                        ctx.fillStyle = "#ffff8844";
+                    } break;
+                }
+                if (x.id && !drewId[x.id]) drewId[x.id] = {start:-1000 * x.reversed, end:-1000 * x.reversed, lane:x.lane, color:ctx.fillStyle}
+                if (x.id && x.type <= 2) {
+                    drewId[x.id].endTime = x.endTime;
+                    drewId[x.id].start = time > 0 ? ypos : judgePos[x.lane];
+                } else if (x.type >= 3) {
+                    drewId[x.id].end = ypos;
+                    if (time < 0) delete drewId[x.id];
+                    else time = (x.endTime - nowTime) / (x.endTime - drewId[x.id].endTime);
+                    ctx.translate(0, -ypos + judgePos[x.lane]);
+                }
+                if (time < 1 && time > 0) {
+                    let size = (1 - time) ** 3;
+                    ctx.globalAlpha *= size;
+                    ctx.scale(-size + 2, -size + 2);
+                    ctx.stroke(pathPreset.diamond);
+                }
+                ctx.restore();
             }
-            if (x.id && !drewId[x.id]) drewId[x.id] = {start:-1000, end:-1000, lane:x.lane, color:ctx.fillStyle}
-            if (x.id && x.type <= 2) {
-                drewId[x.id].endTime = x.endTime;
-                drewId[x.id].start = time > 0 ? ypos : 700;
-            } else if (x.type >= 3) {
-                drewId[x.id].end = ypos;
-                if (time < 0) delete drewId[x.id];
-                else time = (x.endTime - nowTime) / (x.endTime - drewId[x.id].endTime);
-                ctx.translate(0, -ypos + 700);
-            }
-            if (time < 1 && time > 0) {
-                let size = (1 - time) ** 3;
-                ctx.globalAlpha *= size;
-                ctx.scale(-size + 2, -size + 2);
-                ctx.stroke(pathPreset.diamond);
-            }
-            ctx.restore();
         }
         return false;
     });
@@ -305,12 +310,13 @@ let drawNotes =()=> {
         ctx.fill();
         ctx.restore();
     });
-    notes = notes.filter(x => (x.endTime - nowTime) > -1000);
+    notes = notes.filter(x => (x.endTime - nowTime) > -1000 || drewId[x.id]);
     ctx.globalAlpha = 1;
 }
 
 let generateScore =(scoreName)=> {
     drewId = {};
+    judgePos = new Array(10).fill(700);
     author = scoreData[scoreName].match(/author:(.*?)\n/)[1];
     bgm = "snd/" + scoreData[scoreName].match(/bgm:(.*?)\n/)[1];
     bgmvol = scoreData[scoreName].match(/bgmvol:(.*?)\n/)[1] * 1 || 1;
@@ -320,8 +326,8 @@ let generateScore =(scoreName)=> {
     scoreData[scoreName].match(/path:((.|\n)*)score:/)[1].split("\n").filter(x=>x).forEach(x=>pathes[x.substr(0, x.indexOf(" "))] = getPosByPath(x.substr(x.indexOf(" ") + 1)));
     notes = [];
     scoreData[scoreName].match(/score:((.|\n)*)/)[1].split("\n").filter(x=>x).forEach(x=>{
-        let arr = x.split(/ +/).map(x => x*1 == x ? x*1 : x);
-        arr[2] = pathes[arr[2]];
+        let arr = x.split(/ +/);
+        arr[0] *= 1;
         arr[3] *= 60 / bpm * 1000;
         arr[4] *= 60 / bpm * 1000;
         notes.push(new note(...arr))
@@ -348,6 +354,6 @@ canvas.addEventListener("click", () => {
     setTimeout(()=>snd[bgm].play(), (startTime + offset) * -1);
 
     startedTime = new Date().getTime() - startTime;
-});
 
-main();
+    main();
+});
