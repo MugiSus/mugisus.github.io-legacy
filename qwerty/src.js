@@ -204,6 +204,7 @@ let getPathFromX =(pos, px)=> {
 
 let drawqwerty =()=> {
     ctx.strokeStyle = "#ffffff";
+    ctx.fillStyle = "#ffffff10";
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.lineWidth = 3;
@@ -221,6 +222,7 @@ let drawqwerty =()=> {
         ctx.moveTo(120, 200);
         ctx.lineTo(120, -1600);
         ctx.stroke();
+        ctx.fillRect(-120, -1600, 240, 1800);
         ctx.restore();
     });
 }
