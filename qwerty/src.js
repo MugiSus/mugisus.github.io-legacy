@@ -131,7 +131,7 @@ let pathPreset = {
         return p;
     })(),
 };
-let author, bgm, bgmvol, bpm, offset, pathes = {}, judgePos = [], notes = [], drewId = {}, startedTime, nowTime;
+let author, bgm, bgmvol, bpm, offset, pathes = {}, judgeYPos = [], judgeXPos = [], notes = [], drewId = {}, startedTime, nowTime;
 
 let note = class {
     constructor(type, lane, path, endTime, speed, id){
@@ -194,6 +194,8 @@ let getPosByPath =(pathStr)=> {
 }
 
 let getPathFromX =(pos, px)=> {
+    if (px <= 0) return pos[0][0][1];
+    if (px >= 100) return pos[pos.length - 1][pos[pos.length - 1].length - 1][1];
     let i = 0;
     for (i = 0; i < pos.length - 1; i++) if (pos[i + 1][0][0] > px) break;
     if (pos[i].length == 4) return getBezierYfromX(pos[i][0][0], pos[i][0][1], pos[i][1][0], pos[i][1][1], pos[i][2][0], pos[i][2][1], pos[i][3][0], pos[i][3][1], px);
@@ -207,19 +209,12 @@ let drawqwerty =()=> {
     ctx.lineWidth = 3;
     "qwertyuiop".split("").forEach((x, y) => {
         ctx.save();
-        ctx.translate((y - 4.5) * 250, judgePos[y]);
+        ctx.translate(judgeXPos[y], judgeYPos[y]);
         ctx.stroke(pathPreset.diamond);
         ctx.stroke(pathPreset[x]);
         ctx.restore();
-    });
-}
-
-let drawEdge =()=> {
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 3;
-    "qwertyuiop".split("").forEach((x, y) => {
         ctx.save();
-        ctx.translate((y - 4.5) * 250, 700);
+        ctx.translate(judgeXPos[y], 700);
         ctx.beginPath();
         ctx.moveTo(-120, 200);
         ctx.lineTo(-120, -1600);
@@ -227,7 +222,11 @@ let drawEdge =()=> {
         ctx.lineTo(120, -1600);
         ctx.stroke();
         ctx.restore();
-    })
+    });
+}
+
+let drawEdge =()=> {
+    
 }
 
 let drawNotes =()=> {
@@ -236,13 +235,16 @@ let drawNotes =()=> {
         let time = (x.endTime - nowTime) / x.speed;
         if (time > 1) return true;
         else {
-            if (x.type == 8) {
-                if (time > 0) judgePos[x.lane] = getPathFromX(x.path, (1 - time) * 100) * 14 + -700
+            if (x.type >= 5) {
+                switch (x.type) {
+                    case 8: judgeYPos[x.lane] = getPathFromX(x.path, (1 - time) * 100) * 14 + -700; break;
+                    case 9: judgeXPos[x.lane] = getPathFromX(x.path, (1 - time) * 100) / 0.9 * 22.5 - 1125; break;
+                }
             } else {
-                let ypos = judgePos[x.lane] + (time > 0 ? -1600 + getPathFromX(x.path, (1 - time) * 100) * 16 : (nowTime - x.endTime) / 1000 * 200 * x.reversed);
+                let ypos = judgeYPos[x.lane] + (time > 0 ? -1600 + getPathFromX(x.path, (1 - time) * 100) * 16 : (nowTime - x.endTime) / 1000 * 200 * x.reversed);
                 ctx.save();
                 ctx.globalAlpha = x.type >= 3 ? 1 : (time > 0 ? Math.max((900 - Math.abs(ypos)) / 100, 0) : 1 - Math.min((nowTime - x.endTime) / 1000, 1));
-                ctx.translate((x.lane - 4.5) * 250, ypos);
+                ctx.translate(judgeXPos[x.lane], ypos);
                 switch (x.type) {
                     case 1: {
                         ctx.strokeStyle = "#88ffff";
@@ -270,12 +272,12 @@ let drawNotes =()=> {
                 if (x.id && !drewId[x.id]) drewId[x.id] = {start:-1000 * x.reversed, end:-1000 * x.reversed, lane:x.lane, color:ctx.fillStyle}
                 if (x.id && x.type <= 2) {
                     drewId[x.id].endTime = x.endTime;
-                    drewId[x.id].start = time > 0 ? ypos : judgePos[x.lane];
+                    drewId[x.id].start = time > 0 ? ypos : judgeYPos[x.lane];
                 } else if (x.type >= 3) {
                     drewId[x.id].end = ypos;
                     if (time < 0) delete drewId[x.id];
                     else time = (x.endTime - nowTime) / (x.endTime - drewId[x.id].endTime);
-                    ctx.translate(0, -ypos + judgePos[x.lane]);
+                    ctx.translate(0, -ypos + judgeYPos[x.lane]);
                 }
                 if (time < 1 && time > 0) {
                     let size = (1 - time) ** 3;
@@ -291,7 +293,7 @@ let drawNotes =()=> {
     Object.keys(drewId).forEach(x=>{
         ctx.save();
         ctx.fillStyle = drewId[x].color;
-        ctx.translate((drewId[x].lane - 4.5) * 250, 0);
+        ctx.translate(judgeXPos[drewId[x].lane], 0);
         ctx.beginPath();
         if (drewId[x].start < drewId[x].end) {
             ctx.moveTo(-75, drewId[x].start + 25);
@@ -312,18 +314,19 @@ let drawNotes =()=> {
         ctx.fill();
         ctx.restore();
     });
-    notes = notes.filter(x => (x.endTime - nowTime) > -1000 || drewId[x.id]);
+    notes = notes.filter(x => (x.endTime - nowTime) > (x.type >= 8 ? 0 : -1000) || drewId[x.id]);
     ctx.globalAlpha = 1;
 }
 
 let generateScore =(scoreName)=> {
     drewId = {};
-    judgePos = new Array(10).fill(700);
+    judgeYPos = new Array(10).fill(700);
+    judgeXPos = new Array(10).fill(0).map((x,y) => (y - 4.5) * 250);
     author = scoreData[scoreName].match(/author:(.*?)\n/)[1];
     bgm = "snd/" + scoreData[scoreName].match(/bgm:(.*?)\n/)[1];
-    bgmvol = scoreData[scoreName].match(/bgmvol:(.*?)\n/)[1] * 1 || 1;
+    bgmvol = (scoreData[scoreName].match(/bgmvol:(.*?)\n/) || [0,1])[1] * 1;
     bpm = scoreData[scoreName].match(/bpm:(.*?)\n/)[1] * 1;
-    offset = scoreData[scoreName].match(/offset:(.*?)\n/)[1] * 1;
+    offset = (scoreData[scoreName].match(/offset:(.*?)\n/) || [0,0])[1] * 1;
     pathes = {};
     scoreData[scoreName].match(/path:((.|\n)*)score:/)[1].split("\n").filter(x=>x).forEach(x=>pathes[x.substr(0, x.indexOf(" "))] = getPosByPath(x.substr(x.indexOf(" ") + 1)));
     notes = [];
@@ -332,7 +335,7 @@ let generateScore =(scoreName)=> {
         arr[0] *= 1;
         arr[3] *= 60 / bpm * 1000;
         arr[4] *= 60 / bpm * 1000;
-        arr[1].split("").forEach(x => notes.push(new note(arr[0], x * 1, arr[2], arr[3], arr[4], arr[5])))
+        arr[1].split("").forEach(x => notes.push(new note(arr[0], x * 1, arr[2], arr[3], arr[4], arr[5] ? arr[5] + x : 0)))
     });
     notes.sort((a, b) => (a.endTime - a.speed) - (b.endTime - b.speed));
 }
@@ -357,6 +360,9 @@ canvas.addEventListener("click", () => {
     setTimeout(()=>snd[bgm].play(), (startTime + offset) * -1);
 
     startedTime = new Date().getTime() - startTime;
-
-    main();
 });
+
+judgeYPos = new Array(10).fill(700);
+judgeXPos = new Array(10).fill(0).map((x,y) => (y - 4.5) * 250);
+
+main();
