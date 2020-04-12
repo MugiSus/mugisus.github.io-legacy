@@ -1,6 +1,7 @@
 //canvas starter kit
 const sndPath = `
 snd/dead_soul_by_sound_souler.ogg
+se/note.ogg
 `.split("\n").filter(x=>x!=""&&x.charAt(0)!="#");
 const imgPath = `
 
