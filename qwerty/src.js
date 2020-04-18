@@ -131,9 +131,9 @@ let pathPreset = {
         return p;
     })(),
 };
-let author, bgm, bgmvol, bpm, offset, pathes = {}, judgeYPos = [], judgeXPos = [], notes = [], effects = [], drewId = {}, startedTime, nowTime, pressedTime = new Array(10).fill(-Infinity), pressed = [];
-let judgeRate = {fail:250, good:100, perfect:50};
-let judgeOffset = 0;
+let author, bgm, bgmvol, bpm, offset, pathes = {}, judgeYPos = [], judgeXPos = [], notes = [], effects = [], drewId = {}, startedTime, nowTime, pressedTime = new Array(10).fill(-Infinity), pressed = [], newPressed = new Array(10).fill(false);
+let judgeRate = {far:150, good:100, perfect:50};
+let judgeOffset = -20;
 
 let note = class {
     constructor(type, lane, path, endTime, speed, id){
@@ -154,9 +154,10 @@ let effect = class {
         this.state = state;
         this.time = new Date().getTime();
         this.particle = new Array(5).fill(0).map(() => {return {rad: Math.random() * Math.PI * 2, size: 0.1 + Math.random() * 0.3}});
+        this.sound = state == "good" || state == "perfect";
     }
 }
-1
+
 let getBezier =(x1, y1, x2, y2, x3, y3, x4, y4, t)=> [
     (1 - t) ** 3 * x1 + 3 * (1 - t) ** 2 * t * x2 + 3 * (1 - t) * t ** 2 * x3 + t ** 3 * x4,
     (1 - t) ** 3 * y1 + 3 * (1 - t) ** 2 * t * y2 + 3 * (1 - t) * t ** 2 * y3 + t ** 3 * y4
@@ -244,101 +245,69 @@ let drawqwerty =()=> {
 let drawNotes =()=> {
     ctx.lineWidth = 3;
     notes.some(x => {
+
+        if (x.endTime - x.speed > nowTime) return true;
+
         let time = (x.endTime - nowTime) / x.speed;
-        if (time > 1) return true;
-        else {
-            if (x.type >= 5) {
-                switch (x.type) {
-                    case 8: judgeYPos[x.lane] = getPathFromX(x.path, (1 - time) * 100) * 14 + -700; break;
-                    case 9: judgeXPos[x.lane] = getPathFromX(x.path, (1 - time) * 100) / 0.9 * 22.5 - 1125; break;
-                }
-            } else {
-                let ypos = judgeYPos[x.lane] + (time > 0 ? -1600 + getPathFromX(x.path, (1 - time) * 100) * 16 : (nowTime - x.endTime) / 1000 * 200 * x.reversed);
-
-                ctx.save();
-                ctx.globalAlpha = x.type >= 3 ? 1 : (time > 0 ? Math.max((900 - Math.abs(ypos)) / 100, 0) : 1 - Math.min((nowTime - x.endTime) / 1000, 1));
-                ctx.translate(judgeXPos[x.lane], ypos);
-
-                switch (x.type) {
-                    case 1: {
-                        ctx.strokeStyle = "#88ffff";
-                        ctx.fillStyle = "#88ffff44";
-                        if (x.judge != "effected") {
-                            ctx.fill(pathPreset.diamond);
-                            ctx.stroke(pathPreset.diamond);
-                            ctx.stroke(pathPreset["qwertyuiop".charAt(x.lane)]);
-                        }
-                    } break;
-                    case 2: {
-                        ctx.strokeStyle = "#ffff88";
-                        ctx.fillStyle = "#ffff8844";
-                        if (x.judge != "effected") {
-                            ctx.fill(pathPreset.diamond);
-                            ctx.stroke(pathPreset.diamond);
-                            ctx.stroke(pathPreset["qwertyuiop".charAt(x.lane)]);
-                        }
-                    } break;
-                    case 3: {
-                        ctx.strokeStyle = "#88ffff";
-                        ctx.fillStyle = "#88ffff44";
-                    } break;
-                    case 4: {
-                        ctx.strokeStyle = "#ffff88";
-                        ctx.fillStyle = "#ffff8844";
-                    } break;
-                }
-
-                if (x.id && !drewId[x.id]) drewId[x.id] = {start:-1000 * x.reversed, end:-1000 * x.reversed, lane:x.lane, color:ctx.fillStyle}
-                if (x.id && x.type <= 2) {
-                    drewId[x.id].endTime = x.endTime;
-                    drewId[x.id].start = time > 0 ? ypos : judgeYPos[x.lane];
-                } else if (x.type >= 3) {
-                    drewId[x.id].end = ypos;
-                    if (time < 0) delete drewId[x.id];
-                    else time = (x.endTime - nowTime) / (x.endTime - drewId[x.id].endTime);
-                    ctx.translate(0, -ypos + judgeYPos[x.lane]);
-                }
-                if (time < 1 && time > 0 && !x.judge) {
-                    let size = (1 - time) ** 3;
-                    ctx.globalAlpha *= size;
-                    ctx.scale(-size + 2, -size + 2);
-                    ctx.stroke(pathPreset.diamond);
-                }
-                ctx.restore();
-
-                if (Math.abs(x.endTime - nowTime) < judgeRate.fail && x.judge != "effected") {
-                    switch (x.type) {
-                        case 1: {
-                            if (Math.abs(pressedTime[x.lane] - x.endTime) < judgeRate.fail) {
-                                x.judge = "far";
-                                if (Math.abs(pressedTime[x.lane] - x.endTime) < judgeRate.good) x.judge = "good";
-                                if (Math.abs(pressedTime[x.lane] - x.endTime) < judgeRate.perfect) x.judge = "perfect";
-                                console.log(pressedTime[x.lane] - x.endTime, x.judge);
-                                effects.push(new effect(x.lane, x.judge));
-                                x.judge = "effected";
-                                snd["se/note.ogg"].currentTime = 0.025;
-                                snd["se/note.ogg"].play();
-                            }
-                        } break;
-                        case 2: {
-                            if (pressed[x.lane]) {
-                                if (Math.abs(x.endTime - nowTime) < judgeRate.fail) x.judge = "far";
-                                if (Math.abs(x.endTime - nowTime) < judgeRate.good) x.judge = "good";
-                                if (Math.abs(x.endTime - nowTime) < judgeRate.perfect) x.judge = "perfect";
-                            }
-                        } break;
-                    }
-                }
-
-                if (x.type == 2 && x.judge && x.judge != "effected" && x.endTime - nowTime <= 0) {
-                    effects.push(new effect(x.lane, x.judge));
-                    x.judge = "effected";
-                    snd["se/note.ogg"].currentTime = 0.025;
-                    snd["se/note.ogg"].play();
-                }
+        
+        if (x.type >= 5) {
+            switch (x.type) {
+                case 8: judgeYPos[x.lane] = getPathFromX(x.path, (1 - time) * 100) * 14 + -700; break;
+                case 9: judgeXPos[x.lane] = getPathFromX(x.path, (1 - time) * 100) / 0.9 * 22.5 - 1125; break;
             }
+        } else {
+            let ypos = judgeYPos[x.lane] + (time > 0 ? -1600 + getPathFromX(x.path, (1 - time) * 100) * 16 : (nowTime - x.endTime) / 1000 * 200 * x.reversed);
+
+            ctx.save();
+            ctx.globalAlpha = x.type >= 3 ? 1 : (time > 0 ? Math.max((900 - Math.abs(ypos)) / 100, 0) : 1 - Math.min((nowTime - x.endTime) / 1000, 1));
+            ctx.translate(judgeXPos[x.lane], ypos);
+
+            switch (x.type) {
+                case 1: {
+                    ctx.strokeStyle = "#88ffff";
+                    ctx.fillStyle = "#88ffff44";
+                    ctx.fill(pathPreset.diamond);
+                    ctx.stroke(pathPreset.diamond);
+                    ctx.stroke(pathPreset["qwertyuiop".charAt(x.lane)]);
+                } break;
+                case 2: {
+                    ctx.strokeStyle = "#ffff88";
+                    ctx.fillStyle = "#ffff8844";
+                    ctx.fill(pathPreset.diamond);
+                    ctx.stroke(pathPreset.diamond);
+                    ctx.stroke(pathPreset["qwertyuiop".charAt(x.lane)]);
+                } break;
+                case 3: {
+                    ctx.strokeStyle = "#88ffff";
+                    ctx.fillStyle = "#88ffff44";
+                } break;
+                case 4: {
+                    ctx.strokeStyle = "#ffff88";
+                    ctx.fillStyle = "#ffff8844";
+                } break;
+            }
+
+            if (x.id && !drewId[x.id]) drewId[x.id] = {start:-1000 * x.reversed, end:-1000 * x.reversed, lane:x.lane, color:ctx.fillStyle}
+            if (x.id && x.type <= 2) {
+                drewId[x.id].endTime = x.endTime;
+                drewId[x.id].start = time > 0 ? ypos : judgeYPos[x.lane];
+            } else if (x.type >= 3) {
+                drewId[x.id].end = ypos;
+                if (time < 0) delete drewId[x.id];
+                else time = (x.endTime - nowTime) / (x.endTime - drewId[x.id].endTime);
+                ctx.translate(0, -ypos + judgeYPos[x.lane]);
+            }
+            if (time < 1 && time > 0 && x.judge != "effected") {
+                let size = (1 - time) ** 3;
+                ctx.globalAlpha *= size;
+                ctx.scale(-size + 2, -size + 2);
+                ctx.stroke(pathPreset.diamond);
+            }
+            ctx.restore();
         }
+        
         return false;
+
     });
     Object.keys(drewId).forEach(x=>{
         ctx.save();
@@ -364,7 +333,6 @@ let drawNotes =()=> {
         ctx.fill();
         ctx.restore();
     });
-    notes = notes.filter(x => (x.endTime - nowTime) > (x.type >= 8 ? 0 : -1000) || drewId[x.id]);
     ctx.globalAlpha = 1;
 }
 
@@ -373,8 +341,55 @@ let getKeyInput =()=> {
         if (keydown[x] && !pressed[y]) {
             pressed[y] = true;
             pressedTime[y] = nowTime;
+            newPressed[y] = true;
         } else if (!keydown[x]) pressed[y] = false;
     })
+}
+
+let judgeNotes =()=> {
+    let nearestTapnote = new Array(10).fill({endTime: Infinity});
+
+    notes.some(x => {
+
+        if (x.endTime - x.speed > nowTime) return true;
+
+        switch (x.type) {
+            case 1: case 1.5: {
+                x.type = 1;
+                if (Math.abs(nearestTapnote[x.lane].endTime - nowTime) > Math.abs(x.endTime - nowTime)) {
+                    nearestTapnote[x.lane] = x;
+                }
+            } break;
+            case 2: {
+                if (x.judge != "effected" && pressed[x.lane] && Math.abs(x.endTime - nowTime) < judgeRate.far) {
+                    if (Math.abs(x.endTime - nowTime) < judgeRate.far) x.judge = "far";
+                    if (Math.abs(x.endTime - nowTime) < judgeRate.good) x.judge = "good";
+                    if (Math.abs(x.endTime - nowTime) < judgeRate.perfect) x.judge = "perfect";
+                }
+            } break;
+        }
+
+        if (x.type == 2 && x.judge && x.judge != "effected" && x.endTime - nowTime <= 0) {
+            effects.push(new effect(x.lane, x.judge));
+            x.judge = "effected";
+        }
+        
+        return false;
+    });
+
+    //if (nearestTapnote.some(x=>x)) console.log(nearestTapnote);
+
+    nearestTapnote.forEach(x => {
+        if (newPressed[x.lane] && Math.abs(pressedTime[x.lane] - x.endTime) < judgeRate.far) {
+            let judge = "far"
+            if (Math.abs(pressedTime[x.lane] - x.endTime) < judgeRate.good) judge = "good";
+            if (Math.abs(pressedTime[x.lane] - x.endTime) < judgeRate.perfect) judge = "perfect";
+            effects.push(new effect(x.lane, judge));
+            x.judge = "effected";
+        }
+    });
+
+    newPressed = new Array(10).fill(false);
 }
 
 let drawEffects =()=> {
@@ -428,9 +443,16 @@ let drawEffects =()=> {
                 ctx.restore();
             })
         }
+        if (x.sound) {
+            snd["se/note.ogg"].currentTime = 0.025;
+            snd["se/note.ogg"].play();
+            x.sound = false;
+        }
     });
     effects = effects.filter(x => new Date().getTime() - x.time < 1000);
 }
+
+let deleteNotes =()=> notes = notes.filter(x => x.judge != "effected" && (x.endTime - nowTime) > (x.type >= 8 ? 0 : -1000) || drewId[x.id]);
 
 let generateScore =(scoreName)=> {
     drewId = {};
@@ -463,6 +485,8 @@ function main(){
 
     drawqwerty();
     drawNotes();
+    judgeNotes();
+    deleteNotes();
     drawEffects();
     
     requestAnimationFrame(main);
