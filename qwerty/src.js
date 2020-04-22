@@ -481,8 +481,6 @@ function main(){
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio, canvas.height / ratio);
     nowTime = new Date().getTime() - startedTime;
 
-    getKeyInput();
-
     drawqwerty();
     drawNotes();
     judgeNotes();
@@ -507,5 +505,9 @@ document.addEventListener("keydown", (event) => {
 
 judgeYPos = new Array(10).fill(700);
 judgeXPos = new Array(10).fill(0).map((x,y) => (y - 4.5) * 250);
+
+setInterval(()=>{
+    getKeyInput()
+});
 
 main();
