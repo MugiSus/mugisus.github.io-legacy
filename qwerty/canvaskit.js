@@ -8,16 +8,16 @@ const imgPath = `
 `.split("\n").filter(x=>x!=""&&x.charAt(0)!="#");
 let pixelw = 3200, pixelh = 1800;
 
-let mouseState = {wheel:0, x:0, y:0, left:false, middle:false, right:false}, keydown = {}, fps_time, fps_fps, fps_timeStamp = [], fps_started = new Date().getTime();
+let mouseState = {wheel:0, x:0, y:0, left:false, middle:false, right:false}, keydown = {}, fps_time, fps_fps, fps_timeStamp = [];
 const canvas = document.getElementById("disp");
 const ctx = canvas.getContext("2d");
 let ctxSet =(obj)=> Object.keys(obj).forEach(x=>ctx[x] = obj[x]);
 let clearAll =()=> ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio, canvas.height / ratio);
-let getFPS =(sec = 1)=> {
-    fps_time = (new Date().getTime() - fps_started) / 1000;
+let getFPS =(sec = 1000)=> {
+    fps_time = new Date().getTime();
     fps_timeStamp.push(fps_time);
     fps_timeStamp = fps_timeStamp.filter(x => fps_time - x <= sec);
-    return fps_fps = Math.floor((fps_timeStamp.length / sec) * 10) / 10;
+    return fps_fps = fps_timeStamp.length / sec * 1000;
 }
 let ratio, resize =()=> {
     canvas.height = document.body.clientHeight; canvas.width = document.body.clientWidth;
