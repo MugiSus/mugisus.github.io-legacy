@@ -133,7 +133,6 @@ let pathPreset = {
 };
 let author, bgm, bgmvol, bpm, offset, pathes = {}, judgeYPos = [], judgeXPos = [], notes = [], effects = [], drewId = {}, startedTime, nowTime, pressedTime = new Array(10).fill(-Infinity), pressed = [], newPressed = new Array(10).fill(false);
 let judgeRate = {far:150, good:100, perfect:50};
-let judgeOffset = -20;
 
 let note = class {
     constructor(type, lane, path, endTime, speed, id){
@@ -496,6 +495,8 @@ document.addEventListener("keydown", (event) => {
     generateScore("dead soul");
 
     let startTime = (60 / bpm * 1000) * ((/time=(.*?)(&|$)/i.exec(location.search) || [0,0])[1] * 1 - 4);
+    let judgeOffset = (/offset=(.*?)(&|$)/i.exec(location.search) || [0,0])[1] * 1;
+
     snd[bgm].volume = bgmvol;
     snd[bgm].currentTime = (startTime + offset + judgeOffset) / 1000;
     setTimeout(()=>snd[bgm].play(), (startTime + offset + judgeOffset) * -1);
@@ -506,8 +507,12 @@ document.addEventListener("keydown", (event) => {
 judgeYPos = new Array(10).fill(700);
 judgeXPos = new Array(10).fill(0).map((x,y) => (y - 4.5) * 250);
 
-setInterval(()=>{
-    getKeyInput()
-});
+let keyInterval =()=> setInterval(()=>{getKeyInput(); console.log(getFPS())}, 10);
+
+setTimeout(keyInterval, 100);
+setTimeout(keyInterval, 103.33);
+setTimeout(keyInterval, 106.66);
+
+getKeyInput();
 
 main();
