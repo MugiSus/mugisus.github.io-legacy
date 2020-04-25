@@ -131,8 +131,43 @@ let pathPreset = {
         return p;
     })(),
 };
-let author, bgm, bgmvol, bpm, offset, pathes = {}, judgeYPos = [], judgeXPos = [], judgeDir = [], notes = [], laneMoves = [], effects = [], drewId = {}, startedTime, nowTime, pressedTime = new Array(10).fill(-Infinity), pressed = [], newPressed = new Array(10).fill(false);
-const judgeRate = {far:250, good:150, perfect:50};
+
+let score = {},
+    author,
+    bgm, 
+    bgmvol, 
+    bpm, 
+    offset, 
+    pathes = {}, 
+    judgeYPos = [], 
+    judgeXPos = [], 
+    judgeDir = [], 
+    notes = [], 
+    laneMoves = [], 
+    effects = [], 
+    drewId = {}, 
+    longlotesEffect = 0, 
+    startedTime, 
+    nowTime, 
+    pressedTime = new Array(10).fill(-Infinity), 
+    pressed = [], 
+    newPressed = new Array(10).fill(false),
+    comboShowingYPos = 0,
+    judgeCount = {
+        combo: 0,
+        perfect: 0,
+        good: 0,
+        far: 0,
+        lost: 0
+    };
+
+const judgeRate = {
+    far:250, 
+    good:150, 
+    perfect:50, 
+    longNoteTerm:500
+};
+
 const diagLeng = (3200 ** 2 + 1800 ** 2) ** 0.5;
 
 let note = class {
@@ -145,6 +180,7 @@ let note = class {
         this.id = id || 0;
         this.reversed = reversed ? -1 : 1;
         this.judge = false;
+        this.effected = false;
     }
 }
 
@@ -161,12 +197,12 @@ let laneMove = class {
 }
 
 let effect = class {
-    constructor(lane, state){
-        this.lane = lane
+    constructor(lane, state, sound){
+        this.lane = lane;
         this.state = state;
+        this.sound = sound;
         this.time = new Date().getTime();
-        this.particle = new Array(5).fill(0).map(() => {return {rad: Math.random() * Math.PI * 2, size: 0.1 + Math.random() * 0.3}});
-        this.sound = state == "good" || state == "perfect";
+        this.particle = new Array(state == "perfect" ? 8 : state == "good" ? 5 : 0).fill(0).map(() => {return {rad: Math.random() * Math.PI * 2, size: 0.1 + Math.random() * 0.3}});
     }
 }
 
@@ -218,6 +254,12 @@ let getPosByPath =(pathStr)=> {
     return pos;
 }
 
+let countJudge =(judge)=> {
+    judgeCount[judge]++;
+    if (judge == "good" || judge == "perfect") judgeCount.combo++;
+    else judgeCount.combo = 0;
+}
+
 let getPathFromX =(pos, px)=> {
     if (px <= 0) return pos[0][0][1];
     if (px >= 100) return pos[pos.length - 1][pos[pos.length - 1].length - 1][1];
@@ -237,7 +279,7 @@ let drawqwerty =()=> {
     "qwertyuiop".split("").forEach((x, y) => {
         ctx.save();
         ctx.translate(judgeXPos[y], judgeYPos[y]);
-        ctx.rotate(judgeDir[y] * Math.PI * 2);
+        ctx.rotate(judgeDir[y]);
         ctx.stroke(pathPreset.diamond);
         ctx.stroke(pathPreset[x]);
         ctx.beginPath();
@@ -254,6 +296,7 @@ let drawqwerty =()=> {
 
 let drawNotes =()=> {
     ctx.lineWidth = 3;
+    ctx.globalAlpha = 1;
 
     laneMoves.some(x => {
         if (x.endTime - x.speed > nowTime) return true;
@@ -261,11 +304,13 @@ let drawNotes =()=> {
         let time = (x.endTime - nowTime) / x.speed;
 
         switch (x.type) {
-            case 7: judgeDir[x.lane] = getPathFromX(x.path, (1 - time) * 100) / 100 * (x.max - x.min) + x.min; break;
+            case 7: judgeDir[x.lane] = (getPathFromX(x.path, (1 - time) * 100) / 100 * (x.max - x.min) + x.min) * Math.PI * 2; break;
             case 8: judgeXPos[x.lane] = getPathFromX(x.path, (1 - time) * 100) / 100 * (x.max - x.min) + x.min; break;
             case 9: judgeYPos[x.lane] = getPathFromX(x.path, (1 - time) * 100) / 100 * (x.max - x.min) + x.min; break;
         }
     });
+
+    longlotesEffect = ++longlotesEffect % 20;
 
     notes.some(x => {
 
@@ -276,9 +321,11 @@ let drawNotes =()=> {
         let ypos = time > 0 ? -1600 + getPathFromX(x.path, (1 - time) * 100) * 16 : (x.id ? 0 : (nowTime - x.endTime) / 1000 * 200 * x.reversed);
 
         ctx.save();
-        //ctx.globalAlpha = x.type >= 3 ? 1 : (x.id ? 1 : (time > 0 ? Math.max((900 - Math.abs(ypos)) / 100, 0) : 1 - Math.min((nowTime - x.endTime) / 1000, 1)));
+        ctx.globalAlpha = x.type >= 3 ? 1 : x.id || time > 0 ? Math.max((1600 - Math.abs(Math.sin(judgeDir[x.lane]) * ypos + judgeXPos[x.lane])) / 100 * (900 - Math.abs(Math.cos(judgeDir[x.lane]) * ypos + judgeYPos[x.lane])) / 100, 0) : 1 - Math.min((nowTime - x.endTime) / 1000, 1);
+        ctx.globalAlpha *= x.judge == "lost" ? 0.5 : 1;
+
         ctx.translate(judgeXPos[x.lane], judgeYPos[x.lane]);
-        ctx.rotate(judgeDir[x.lane] * Math.PI * 2);
+        ctx.rotate(judgeDir[x.lane]);
         ctx.translate(0, ypos);
 
         switch (x.type) {
@@ -306,19 +353,27 @@ let drawNotes =()=> {
             } break;
         }
 
-        if (x.id && !drewId[x.id]) drewId[x.id] = {start: -diagLeng * x.reversed, end: -diagLeng * x.reversed, lane: x.lane, color: ctx.fillStyle}
+        if (x.id && !drewId[x.id]) drewId[x.id] = {
+            start: -diagLeng * x.reversed,
+            end: -diagLeng * x.reversed,
+            lane: x.lane,
+            color: ctx.fillStyle,
+        }
 
         if (x.id && x.type <= 2) {
             drewId[x.id].endTime = x.endTime;
             drewId[x.id].start = time > 0 ? ypos : 0;
+            if (x.effected) drewId[x.id].judge = x.judge;
+            if (longlotesEffect == 0 && (x.judge == "good" || x.judge == "perfect") && x.effected) effects.push(new effect(x.lane, x.judge, false));
         } else if (x.type >= 3) {
             drewId[x.id].end = ypos;
+            drewId[x.id].endTime = x.endTime;
             if (time < 0) delete drewId[x.id];
             else time = (x.endTime - nowTime) / (x.endTime - drewId[x.id].endTime);
-            ctx.translate(0, -ypos + judgeYPos[x.lane]);
+            ctx.translate(0, -ypos);
         }
 
-        if (time < 1 && time > 0 && x.judge != "effected") {
+        if (time < 1 && time > 0 && !x.effected) {
             let size = (1 - time) ** 3;
             ctx.globalAlpha *= size;
             ctx.scale(-size + 2, -size + 2);
@@ -334,7 +389,9 @@ let drawNotes =()=> {
     Object.keys(drewId).forEach(x=>{
         ctx.save();
         ctx.fillStyle = drewId[x].color;
+        ctx.globalAlpha = (drewId[x].judge == "lost" || drewId[x].judge == "far") ? 0.5 : 1;
         ctx.translate(judgeXPos[drewId[x].lane], judgeYPos[drewId[x].lane]);
+        ctx.rotate(judgeDir[drewId[x].lane])
         ctx.beginPath();
         if (drewId[x].start < drewId[x].end) {
             ctx.moveTo(-75, drewId[x].start + 25);
@@ -365,24 +422,34 @@ let judgeNotes =()=> {
 
         if (x.endTime - x.speed > nowTime) return true;
 
+        if (x.type <= 2 && !x.judge && x.endTime - nowTime < -judgeRate.far) {
+            x.judge = "lost";
+            countJudge(x.judge);
+            return false;
+        }
+
         switch (x.type) {
             case 1: {
-                if (Math.abs(nearestTapnote[x.lane].endTime - nowTime) > Math.abs(x.endTime - nowTime)) {
-                    nearestTapnote[x.lane] = x;
-                }
+                if (Math.abs(nearestTapnote[x.lane].endTime - nowTime) > Math.abs(x.endTime - nowTime)) nearestTapnote[x.lane] = x;
             } break;
             case 2: {
-                if (x.judge != "effected" && pressed[x.lane] && Math.abs(x.endTime - nowTime) < judgeRate.far) {
-                    if (Math.abs(x.endTime - nowTime) < judgeRate.far) x.judge = "far";
-                    if (Math.abs(x.endTime - nowTime) < judgeRate.good) x.judge = "good";
+                if (!x.effected && pressed[x.lane]) {
                     if (Math.abs(x.endTime - nowTime) < judgeRate.perfect) x.judge = "perfect";
+                    else if (Math.abs(x.endTime - nowTime) < judgeRate.good) x.judge = "good";
+                    else if (Math.abs(x.endTime - nowTime) < judgeRate.far) x.judge = "far";
                 }
             } break;
         }
 
-        if (x.type == 2 && x.judge && x.judge != "effected" && x.endTime - nowTime <= 0) {
-            effects.push(new effect(x.lane, x.judge));
-            x.judge = "effected";
+        if (x.type == 2 && (x.judge == "good" || x.judge == "perfect") && !x.effected && x.endTime - nowTime <= 0) {
+            effects.push(new effect(x.lane, x.judge, x.judge == "good" || x.judge == "perfect"));
+            countJudge(x.judge);
+            x.effected = true;
+        }
+
+        if (x.type <= 2 && x.id && x.judge && x.effected && !pressed[x.lane] && drewId[x.id].endTime - nowTime > judgeRate.longNoteTerm) {
+            x.judge = "lost";
+            countJudge(x.judge);
         }
         
         return false;
@@ -390,11 +457,13 @@ let judgeNotes =()=> {
 
     nearestTapnote.forEach(x => {
         if (newPressed[x.lane] && Math.abs(pressedTime[x.lane] - x.endTime) < judgeRate.far) {
-            let judge = "far"
-            if (Math.abs(pressedTime[x.lane] - x.endTime) < judgeRate.good) judge = "good";
-            if (Math.abs(pressedTime[x.lane] - x.endTime) < judgeRate.perfect) judge = "perfect";
-            effects.push(new effect(x.lane, judge));
-            x.judge = "effected";
+            if (Math.abs(pressedTime[x.lane] - x.endTime) < judgeRate.perfect) x.judge = "perfect";
+            else if (Math.abs(pressedTime[x.lane] - x.endTime) < judgeRate.good) x.judge = "good";
+            else if (Math.abs(pressedTime[x.lane] - x.endTime) < judgeRate.far) x.judge = "far";
+            
+            countJudge(x.judge);
+            effects.push(new effect(x.lane, x.judge, x.judge == "good" || x.judge == "perfect"));
+            x.effected = true;
         }
     });
 
@@ -404,6 +473,7 @@ let judgeNotes =()=> {
 let drawEffects =()=> {
     effects.forEach(x=>{
         let size = ((new Date().getTime() - x.time) / 1000 - 1) ** 3 + 1;
+
         switch (x.state) {
             case "far": {
                 ctx.strokeStyle = "#ff8888";
@@ -418,10 +488,12 @@ let drawEffects =()=> {
                 ctx.fillStyle = "#ffff88";
             } break;
         }
+
         ctx.save();
         ctx.globalAlpha = Math.max(1 - ((new Date().getTime() - x.time) / 1000), 0);
         ctx.translate(judgeXPos[x.lane], judgeYPos[x.lane]);
-        ctx.rotate(judgeDir[x.lane] * Math.PI * 2);
+        ctx.rotate(judgeDir[x.lane]);
+
         switch (x.state) {
             case "far": {
                 ctx.scale(size * 0.5 + 1, size * 0.5 + 1);
@@ -441,30 +513,45 @@ let drawEffects =()=> {
                 ctx.stroke(pathPreset.diamond);
             } break;
         }
+
         ctx.restore();
-        if (x.state != "far") {
-            x.particle.forEach(i=>{
-                ctx.save();
-                ctx.translate(judgeXPos[x.lane] + Math.sin(i.rad) * 100, judgeYPos[x.lane] + Math.cos(i.rad) * 100);
-                ctx.scale(i.size, i.size);
-                ctx.translate(Math.sin(i.rad) * size * 1000, Math.cos(i.rad) * size * 1000);
-                ctx.globalAlpha = Math.max(1 - size, 0);
-                ctx.fill(pathPreset.diamond);
-                ctx.restore();
-            })
-        }
+
+        x.particle.forEach(i=>{
+            ctx.save();
+            ctx.translate(judgeXPos[x.lane] + Math.sin(i.rad) * 100, judgeYPos[x.lane] + Math.cos(i.rad) * 100);
+            ctx.scale(i.size, i.size);
+            ctx.translate(Math.sin(i.rad) * size * 1000, Math.cos(i.rad) * size * 1000);
+            ctx.globalAlpha = Math.max(1 - size, 0);
+            ctx.fill(pathPreset.diamond);
+            ctx.restore();
+        })
+
         if (x.sound) {
             snd["se/note.ogg"].currentTime = 0.025;
             snd["se/note.ogg"].play();
             x.sound = false;
+            comboShowingYPos = -100;
         }
     });
     effects = effects.filter(x => new Date().getTime() - x.time < 1000);
 }
 
+let drawInfos =()=> {
+    comboShowingYPos += -comboShowingYPos / 20;
+    ctx.fillStyle = "#ffffff";
+    ctx.textAlign = "center"
+    ctx.globalAlpha = 0.1;
+    if (judgeCount.combo > 2) {
+        ctx.font = "200px Oswald";
+        ctx.fillText("COMBO", 0, -400 + comboShowingYPos);
+        ctx.font = "900px Oswald";
+        ctx.fillText(judgeCount.combo, 0, 400 + comboShowingYPos);
+    }
+}
+
 let deleteNotes =()=> {
     laneMoves = laneMoves.filter(x => x.endTime - nowTime > 0);
-    notes = notes.filter(x => x.judge != "effected" && x.endTime - nowTime > (x.type >= 8 ? 0 : -1000) || drewId[x.id]);
+    notes = notes.filter(x => !x.effected && x.endTime - nowTime > (x.type >= 8 ? 0 : -1000) || drewId[x.id]);
 }
 
 let getKeyInput =()=> {
@@ -479,20 +566,21 @@ let getKeyInput =()=> {
 
 let generateScore =(scoreName)=> {
     drewId = {};
-    pressedTime = new Array(10).fill(-Infinity)
+    pressedTime = new Array(10).fill(-Infinity);
     judgeDir = new Array(10).fill(0);
     judgeXPos = new Array(10).fill(0).map((x,y) => (y - 4.5) * 250);
     judgeYPos = new Array(10).fill(700);
-    author = scoreData[scoreName].match(/author:(.*?)\n/)[1];
-    bgm = "snd/" + scoreData[scoreName].match(/bgm:(.*?)\n/)[1];
-    bgmvol = (scoreData[scoreName].match(/bgmvol:(.*?)\n/) || [0,1])[1] * 1;
-    bpm = scoreData[scoreName].match(/bpm:(.*?)\n/)[1] * 1;
-    offset = (scoreData[scoreName].match(/offset:(.*?)\n/) || [0,0])[1] * 1;
+    author = score[scoreName].match(/author:(.*?)\n/)[1];
+    bgm = "snd/" + score[scoreName].match(/bgm:(.*?)\n/)[1];
+    bgmvol = (score[scoreName].match(/bgmvol:(.*?)\n/) || [0,1])[1] * 1;
+    bpm = score[scoreName].match(/bpm:(.*?)\n/)[1] * 1;
+    offset = (score[scoreName].match(/offset:(.*?)\n/) || [0,0])[1] * 1;
     pathes = {};
-    scoreData[scoreName].match(/path:((.|\n)*)score:/)[1].split("\n").filter(x=>x).forEach(x=>pathes[x.substr(0, x.indexOf(" "))] = getPosByPath(x.substr(x.indexOf(" ") + 1)));
+    score[scoreName].match(/path:((.|\n)*)score:/)[1].split("\n").filter(x=>x).forEach(x=>pathes[x.substr(0, x.indexOf(" "))] = getPosByPath(x.substr(x.indexOf(" ") + 1)));
     notes = [];
     laneMoves = [];
-    scoreData[scoreName].match(/score:((.|\n)*)/)[1].split("\n").filter(x=>x).forEach(x=>{
+
+    score[scoreName].match(/score:((.|\n)*)/)[1].split("\n").filter(x=>x).forEach(x=>{
         let arr = x.split(/ +/);
         let reversed = arr[2].charAt(0) == "-";
         arr[0] *= 1;
@@ -504,15 +592,25 @@ let generateScore =(scoreName)=> {
     });
     notes.sort((a, b) => (a.endTime - a.speed) - (b.endTime - b.speed));
     laneMoves.sort((a, b) => (a.endTime - a.speed) - (b.endTime - b.speed));
+
+    longlotesEffect = 0;
+    judgeCount = {
+        combo: 0,
+        perfect: 0,
+        good: 0,
+        far: 0,
+        lost: 0
+    };
 }
 
 function main(){
     ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio, canvas.height / ratio);
     nowTime = new Date().getTime() - startedTime;
-
-    drawqwerty();
-    drawNotes();
+    
     judgeNotes();
+    drawInfos();
+    drawNotes();
+    drawqwerty();
     deleteNotes();
     drawEffects();
     
@@ -522,7 +620,7 @@ function main(){
 document.addEventListener("keydown", (event) => {
     if (event.key != " ") return;
 
-    generateScore("dead soul");
+    generateScore("dead_soul");
 
     let startTime = (60 / bpm * 1000) * ((/time=(.*?)(&|$)/i.exec(location.search) || [0,0])[1] * 1 - 4);
     let judgeOffset = (/offset=(.*?)(&|$)/i.exec(location.search) || [0,0])[1] * 1;
