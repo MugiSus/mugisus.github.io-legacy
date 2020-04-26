@@ -1,6 +1,7 @@
 //canvas starter kit
 const sndPath = `
-snd/dead_soul_by_sound_souler.ogg
+bgm/dead_soul_by_sound_souler.ogg
+bgm/Destr0yer-feat-Nikki-Simmons.ogg
 se/note.ogg
 `.split("\n").filter(x=>x!=""&&x.charAt(0)!="#");
 const imgPath = `

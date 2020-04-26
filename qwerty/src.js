@@ -142,6 +142,7 @@ let score = {},
     judgeYPos = [], 
     judgeXPos = [], 
     judgeDir = [], 
+    judgeAlpha = [],
     notes = [], 
     laneMoves = [], 
     effects = [], 
@@ -152,7 +153,7 @@ let score = {},
     pressedTime = new Array(10).fill(-Infinity), 
     pressed = [], 
     newPressed = new Array(10).fill(false),
-    comboShowingYPos = 0,
+    comboShowStyle = {ypos: 0, alpha: 0},
     judgeCount = {
         combo: 0,
         perfect: 0,
@@ -165,7 +166,7 @@ const judgeRate = {
     far:250, 
     good:150, 
     perfect:50, 
-    longNoteTerm:500
+    longNoteTerm:300
 };
 
 const diagLeng = (3200 ** 2 + 1800 ** 2) ** 0.5;
@@ -261,8 +262,7 @@ let countJudge =(judge)=> {
 }
 
 let getPathFromX =(pos, px)=> {
-    if (px <= 0) return pos[0][0][1];
-    if (px >= 100) return pos[pos.length - 1][pos[pos.length - 1].length - 1][1];
+    px = Math.max(0, Math.min(px, 100));
     let i = 0;
     for (i = 0; i < pos.length - 1; i++) if (pos[i + 1][0][0] > px) break;
     if (pos[i].length == 4) return getBezierYfromX(pos[i][0][0], pos[i][0][1], pos[i][1][0], pos[i][1][1], pos[i][2][0], pos[i][2][1], pos[i][3][0], pos[i][3][1], px);
@@ -278,6 +278,7 @@ let drawqwerty =()=> {
     ctx.globalAlpha = 1;
     "qwertyuiop".split("").forEach((x, y) => {
         ctx.save();
+        ctx.globalAlpha = judgeAlpha[y];
         ctx.translate(judgeXPos[y], judgeYPos[y]);
         ctx.rotate(judgeDir[y]);
         ctx.stroke(pathPreset.diamond);
@@ -288,7 +289,7 @@ let drawqwerty =()=> {
         ctx.moveTo(120, diagLeng);
         ctx.lineTo(120, -diagLeng);
         ctx.stroke();
-        ctx.globalAlpha = 0.05 + pressed[y] * 0.05 + Math.max(1 - (nowTime - pressedTime[y]) / 200 || 0, 0) * 0.2;
+        ctx.globalAlpha = (0.05 + pressed[y] * 0.05 + Math.max(1 - (nowTime - pressedTime[y]) / 200 || 0, 0) * 0.2) * judgeAlpha[y];
         ctx.fillRect(-120, -diagLeng, 240, diagLeng * 2);
         ctx.restore();
     });
@@ -304,6 +305,7 @@ let drawNotes =()=> {
         let time = (x.endTime - nowTime) / x.speed;
 
         switch (x.type) {
+            case 6: judgeAlpha[x.lane] = getPathFromX(x.path, (1 - time) * 100) / 100 * (x.max - x.min) + x.min; break;
             case 7: judgeDir[x.lane] = (getPathFromX(x.path, (1 - time) * 100) / 100 * (x.max - x.min) + x.min) * Math.PI * 2; break;
             case 8: judgeXPos[x.lane] = getPathFromX(x.path, (1 - time) * 100) / 100 * (x.max - x.min) + x.min; break;
             case 9: judgeYPos[x.lane] = getPathFromX(x.path, (1 - time) * 100) / 100 * (x.max - x.min) + x.min; break;
@@ -323,6 +325,7 @@ let drawNotes =()=> {
         ctx.save();
         ctx.globalAlpha = x.type >= 3 ? 1 : x.id || time > 0 ? Math.max((1600 - Math.abs(Math.sin(judgeDir[x.lane]) * ypos + judgeXPos[x.lane])) / 100 * (900 - Math.abs(Math.cos(judgeDir[x.lane]) * ypos + judgeYPos[x.lane])) / 100, 0) : 1 - Math.min((nowTime - x.endTime) / 1000, 1);
         ctx.globalAlpha *= x.judge == "lost" ? 0.5 : 1;
+        ctx.globalAlpha *= judgeAlpha[x.lane];
 
         ctx.translate(judgeXPos[x.lane], judgeYPos[x.lane]);
         ctx.rotate(judgeDir[x.lane]);
@@ -363,7 +366,7 @@ let drawNotes =()=> {
         if (x.id && x.type <= 2) {
             drewId[x.id].endTime = x.endTime;
             drewId[x.id].start = time > 0 ? ypos : 0;
-            if (x.effected) drewId[x.id].judge = x.judge;
+            if (x.effected || x.judge == "lost") drewId[x.id].judge = x.judge;
             if (longlotesEffect == 0 && (x.judge == "good" || x.judge == "perfect") && x.effected) effects.push(new effect(x.lane, x.judge, false));
         } else if (x.type >= 3) {
             drewId[x.id].end = ypos;
@@ -389,9 +392,9 @@ let drawNotes =()=> {
     Object.keys(drewId).forEach(x=>{
         ctx.save();
         ctx.fillStyle = drewId[x].color;
-        ctx.globalAlpha = (drewId[x].judge == "lost" || drewId[x].judge == "far") ? 0.5 : 1;
+        ctx.globalAlpha = ((drewId[x].judge == "lost" || drewId[x].judge == "far") ? 0.5 : 1) * judgeAlpha[drewId[x].lane];
         ctx.translate(judgeXPos[drewId[x].lane], judgeYPos[drewId[x].lane]);
-        ctx.rotate(judgeDir[drewId[x].lane])
+        ctx.rotate(judgeDir[drewId[x].lane]);
         ctx.beginPath();
         if (drewId[x].start < drewId[x].end) {
             ctx.moveTo(-75, drewId[x].start + 25);
@@ -530,22 +533,27 @@ let drawEffects =()=> {
             snd["se/note.ogg"].currentTime = 0.025;
             snd["se/note.ogg"].play();
             x.sound = false;
-            comboShowingYPos = -100;
+            comboShowStyle.ypos = -100;
+            comboShowStyle.alpha = 0.25;
         }
     });
     effects = effects.filter(x => new Date().getTime() - x.time < 1000);
 }
 
 let drawInfos =()=> {
-    comboShowingYPos += -comboShowingYPos / 20;
-    ctx.fillStyle = "#ffffff";
-    ctx.textAlign = "center"
-    ctx.globalAlpha = 0.1;
     if (judgeCount.combo > 2) {
+        ctx.save();
+        comboShowStyle.ypos += -comboShowStyle.ypos / 10;
+        comboShowStyle.alpha += (0.1 - comboShowStyle.alpha) / 30;
+        ctx.fillStyle = "#ffffff";
+        ctx.textAlign = "center";
+        ctx.translate(0, comboShowStyle.ypos + Math.sin(new Date().getTime() / 5000 * Math.PI * 2) * 30)
+        ctx.globalAlpha = comboShowStyle.alpha;
         ctx.font = "200px Oswald";
-        ctx.fillText("COMBO", 0, -400 + comboShowingYPos);
+        ctx.fillText("COMBO", 0, -400);
         ctx.font = "900px Oswald";
-        ctx.fillText(judgeCount.combo, 0, 400 + comboShowingYPos);
+        ctx.fillText(judgeCount.combo, 0, 400);
+        ctx.restore();
     }
 }
 
@@ -570,8 +578,10 @@ let generateScore =(scoreName)=> {
     judgeDir = new Array(10).fill(0);
     judgeXPos = new Array(10).fill(0).map((x,y) => (y - 4.5) * 250);
     judgeYPos = new Array(10).fill(700);
+    judgeAlpha = new Array(10).fill(1);
+    title = score[scoreName].match(/title:(.*?)\n/)[1];
     author = score[scoreName].match(/author:(.*?)\n/)[1];
-    bgm = "snd/" + score[scoreName].match(/bgm:(.*?)\n/)[1];
+    bgm = "bgm/" + score[scoreName].match(/bgm:(.*?)\n/)[1];
     bgmvol = (score[scoreName].match(/bgmvol:(.*?)\n/) || [0,1])[1] * 1;
     bpm = score[scoreName].match(/bpm:(.*?)\n/)[1] * 1;
     offset = (score[scoreName].match(/offset:(.*?)\n/) || [0,0])[1] * 1;
@@ -593,6 +603,8 @@ let generateScore =(scoreName)=> {
     notes.sort((a, b) => (a.endTime - a.speed) - (b.endTime - b.speed));
     laneMoves.sort((a, b) => (a.endTime - a.speed) - (b.endTime - b.speed));
 
+    effects = [];
+    comboShowStyle = {ypos: 0, alpha: 0};
     longlotesEffect = 0;
     judgeCount = {
         combo: 0,
@@ -620,11 +632,14 @@ function main(){
 document.addEventListener("keydown", (event) => {
     if (event.key != " ") return;
 
-    generateScore("dead_soul");
+    let trackName = (/title=(.*?)(&|$)/i.exec(location.search) || [0,"dead_soul"])[1];
+
+    generateScore(trackName);
 
     let startTime = (60 / bpm * 1000) * ((/time=(.*?)(&|$)/i.exec(location.search) || [0,0])[1] * 1 - 4);
     let judgeOffset = (/offset=(.*?)(&|$)/i.exec(location.search) || [0,0])[1] * 1;
 
+    snd[bgm].pause();
     snd[bgm].volume = bgmvol;
     snd[bgm].currentTime = (startTime + offset + judgeOffset) / 1000;
     setTimeout(()=>snd[bgm].play(), (startTime + offset + judgeOffset) * -1);
@@ -632,8 +647,10 @@ document.addEventListener("keydown", (event) => {
     startedTime = new Date().getTime() - startTime;
 });
 
-judgeYPos = new Array(10).fill(700);
+judgeDir = new Array(10).fill(0);
 judgeXPos = new Array(10).fill(0).map((x,y) => (y - 4.5) * 250);
+judgeYPos = new Array(10).fill(700);
+judgeAlpha = new Array(10).fill(1);
 
 let keyInterval =()=> setInterval(()=>{getKeyInput()}, 10);
 

@@ -1,5 +1,6 @@
 score.dead_soul = `
 
+title:Dead Soul
 author:sound souler
 bgm:dead_soul_by_sound_souler.ogg
 bgmvol:0.5
