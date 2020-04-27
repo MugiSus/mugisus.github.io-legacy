@@ -259,6 +259,7 @@ let countJudge =(judge)=> {
     judgeCount[judge]++;
     if (judge == "good" || judge == "perfect") judgeCount.combo++;
     else judgeCount.combo = 0;
+    console.log(judgeCount)
 }
 
 let getPathFromX =(pos, px)=> {
@@ -295,10 +296,7 @@ let drawqwerty =()=> {
     });
 }
 
-let drawNotes =()=> {
-    ctx.lineWidth = 3;
-    ctx.globalAlpha = 1;
-
+let moveLanes =()=> {
     laneMoves.some(x => {
         if (x.endTime - x.speed > nowTime) return true;
 
@@ -311,7 +309,11 @@ let drawNotes =()=> {
             case 9: judgeYPos[x.lane] = getPathFromX(x.path, (1 - time) * 100) / 100 * (x.max - x.min) + x.min; break;
         }
     });
+}
 
+let drawNotes =()=> {
+    ctx.lineWidth = 3;
+    ctx.globalAlpha = 1;
     longlotesEffect = ++longlotesEffect % 20;
 
     notes.some(x => {
@@ -324,8 +326,8 @@ let drawNotes =()=> {
 
         ctx.save();
         ctx.globalAlpha = x.type >= 3 ? 1 : x.id || time > 0 ? Math.max((1600 - Math.abs(Math.sin(judgeDir[x.lane]) * ypos + judgeXPos[x.lane])) / 100 * (900 - Math.abs(Math.cos(judgeDir[x.lane]) * ypos + judgeYPos[x.lane])) / 100, 0) : 1 - Math.min((nowTime - x.endTime) / 1000, 1);
-        ctx.globalAlpha *= x.judge == "lost" ? 0.5 : 1;
         ctx.globalAlpha *= judgeAlpha[x.lane];
+        if (x.effected) ctx.globalAlpha *= (x.judge == "lost" || x.judge == "far") ? 0.5 : 1;
 
         ctx.translate(judgeXPos[x.lane], judgeYPos[x.lane]);
         ctx.rotate(judgeDir[x.lane]);
@@ -364,9 +366,8 @@ let drawNotes =()=> {
         }
 
         if (x.id && x.type <= 2) {
-            drewId[x.id].endTime = x.endTime;
             drewId[x.id].start = time > 0 ? ypos : 0;
-            if (x.effected || x.judge == "lost") drewId[x.id].judge = x.judge;
+            if (x.effected) drewId[x.id].judge = x.judge;
             if (longlotesEffect == 0 && (x.judge == "good" || x.judge == "perfect") && x.effected) effects.push(new effect(x.lane, x.judge, false));
         } else if (x.type >= 3) {
             drewId[x.id].end = ypos;
@@ -415,7 +416,6 @@ let drawNotes =()=> {
         ctx.fill();
         ctx.restore();
     });
-    ctx.globalAlpha = 1;
 }
 
 let judgeNotes =()=> {
@@ -428,6 +428,7 @@ let judgeNotes =()=> {
         if (x.type <= 2 && !x.judge && x.endTime - nowTime < -judgeRate.far) {
             x.judge = "lost";
             countJudge(x.judge);
+            x.effected = true;
             return false;
         }
 
@@ -444,15 +445,16 @@ let judgeNotes =()=> {
             } break;
         }
 
-        if (x.type == 2 && (x.judge == "good" || x.judge == "perfect") && !x.effected && x.endTime - nowTime <= 0) {
+        if (x.type == 2 && !x.effected && x.judge && x.endTime - nowTime <= 0) {
             effects.push(new effect(x.lane, x.judge, x.judge == "good" || x.judge == "perfect"));
             countJudge(x.judge);
             x.effected = true;
         }
 
-        if (x.type <= 2 && x.id && x.judge && x.effected && !pressed[x.lane] && drewId[x.id].endTime - nowTime > judgeRate.longNoteTerm) {
+        if (x.type <= 2 && x.id && x.judge != "lost" && x.effected && !pressed[x.lane] && drewId[x.id].endTime - nowTime > judgeRate.longNoteTerm) {
             x.judge = "lost";
             countJudge(x.judge);
+            x.effected = true;
         }
         
         return false;
@@ -462,7 +464,7 @@ let judgeNotes =()=> {
         if (newPressed[x.lane] && Math.abs(pressedTime[x.lane] - x.endTime) < judgeRate.far) {
             if (Math.abs(pressedTime[x.lane] - x.endTime) < judgeRate.perfect) x.judge = "perfect";
             else if (Math.abs(pressedTime[x.lane] - x.endTime) < judgeRate.good) x.judge = "good";
-            else if (Math.abs(pressedTime[x.lane] - x.endTime) < judgeRate.far) x.judge = "far";
+            else x.judge = "far";
             
             countJudge(x.judge);
             effects.push(new effect(x.lane, x.judge, x.judge == "good" || x.judge == "perfect"));
@@ -534,7 +536,7 @@ let drawEffects =()=> {
             snd["se/note.ogg"].play();
             x.sound = false;
             comboShowStyle.ypos = -100;
-            comboShowStyle.alpha = 0.25;
+            comboShowStyle.alpha = 0.15;
         }
     });
     effects = effects.filter(x => new Date().getTime() - x.time < 1000);
@@ -544,7 +546,7 @@ let drawInfos =()=> {
     if (judgeCount.combo > 2) {
         ctx.save();
         comboShowStyle.ypos += -comboShowStyle.ypos / 10;
-        comboShowStyle.alpha += (0.1 - comboShowStyle.alpha) / 30;
+        comboShowStyle.alpha += (0.05 - comboShowStyle.alpha) / 30;
         ctx.fillStyle = "#ffffff";
         ctx.textAlign = "center";
         ctx.translate(0, comboShowStyle.ypos + Math.sin(new Date().getTime() / 5000 * Math.PI * 2) * 30)
@@ -621,8 +623,9 @@ function main(){
     
     judgeNotes();
     drawInfos();
-    drawNotes();
+    moveLanes();
     drawqwerty();
+    drawNotes();
     deleteNotes();
     drawEffects();
     
