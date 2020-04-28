@@ -259,7 +259,6 @@ let countJudge =(judge)=> {
     judgeCount[judge]++;
     if (judge == "good" || judge == "perfect") judgeCount.combo++;
     else judgeCount.combo = 0;
-    console.log(judgeCount)
 }
 
 let getPathFromX =(pos, px)=> {
@@ -300,7 +299,9 @@ let moveLanes =()=> {
     laneMoves.some(x => {
         if (x.endTime - x.speed > nowTime) return true;
 
-        let time = (x.endTime - nowTime) / x.speed;
+        let time;
+        if (x.speed == 0) time = 0;
+        else time = (x.endTime - nowTime) / x.speed;
 
         switch (x.type) {
             case 6: judgeAlpha[x.lane] = getPathFromX(x.path, (1 - time) * 100) / 100 * (x.max - x.min) + x.min; break;
@@ -445,7 +446,7 @@ let judgeNotes =()=> {
             } break;
         }
 
-        if (x.type == 2 && !x.effected && x.judge && x.endTime - nowTime <= 0) {
+        if (x.type == 2 && !x.effected && x.judge && x.judge != "lost" && x.endTime - nowTime <= 0) {
             effects.push(new effect(x.lane, x.judge, x.judge == "good" || x.judge == "perfect"));
             countJudge(x.judge);
             x.effected = true;
@@ -539,6 +540,7 @@ let drawEffects =()=> {
             comboShowStyle.alpha = 0.15;
         }
     });
+
     effects = effects.filter(x => new Date().getTime() - x.time < 1000);
 }
 
@@ -546,7 +548,7 @@ let drawInfos =()=> {
     if (judgeCount.combo > 2) {
         ctx.save();
         comboShowStyle.ypos += -comboShowStyle.ypos / 10;
-        comboShowStyle.alpha += (0.05 - comboShowStyle.alpha) / 30;
+        comboShowStyle.alpha += (0.1 - comboShowStyle.alpha) / 30;
         ctx.fillStyle = "#ffffff";
         ctx.textAlign = "center";
         ctx.translate(0, comboShowStyle.ypos + Math.sin(new Date().getTime() / 5000 * Math.PI * 2) * 30)
@@ -561,7 +563,7 @@ let drawInfos =()=> {
 
 let deleteNotes =()=> {
     laneMoves = laneMoves.filter(x => x.endTime - nowTime > 0);
-    notes = notes.filter(x => !x.effected && x.endTime - nowTime > (x.type >= 8 ? 0 : -1000) || drewId[x.id]);
+    notes = notes.filter(x => !(x.effected && (x.judge == "good" || x.judge == "perfect")) && x.endTime - nowTime > (x.type >= 8 ? 0 : -1000) || drewId[x.id]);
 }
 
 let getKeyInput =()=> {
