@@ -563,7 +563,7 @@ let drawInfos =()=> {
 
 let deleteNotes =()=> {
     laneMoves = laneMoves.filter(x => x.endTime - nowTime > 0);
-    notes = notes.filter(x => !(x.effected && (x.judge == "good" || x.judge == "perfect")) && x.endTime - nowTime > (x.type >= 8 ? 0 : -1000) || drewId[x.id]);
+    notes = notes.filter(x => !(x.effected && x.judge != "lost") && x.endTime - nowTime > (x.type >= 8 ? 0 : -1000) || drewId[x.id]);
 }
 
 let getKeyInput =()=> {
