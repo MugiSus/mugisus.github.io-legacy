@@ -579,7 +579,7 @@ let deleteNotes =()=> {
 
 let getKeyInput =()=> {
     "asdfghjkl;".split("").forEach((x, y)=>{
-        if (keydown[x] && !pressed[y]) {
+        if ((keydown[x] || mouseState.touchx.some(x => judgeXPos[y] - 125 < x && judgeXPos[y] + 125 > x )) && !pressed[y]) {
             pressed[y] = true;
             pressedTime[y] = nowTime;
             newPressed[y] = true;
@@ -649,9 +649,17 @@ function main(){
     requestAnimationFrame(main);
 }
 
+document.addEventListener("touchstart", () => {
+    startGame();
+});
+
 document.addEventListener("keydown", (event) => {
     if (event.key != " ") return;
 
+    startGame();
+});
+
+function startGame() {
     let params = new URLSearchParams(location.search);
 
     generateScore(params.get("title") || "dead_soul");
@@ -665,7 +673,7 @@ document.addEventListener("keydown", (event) => {
     setTimeout(()=>snd[bgm].play(), (startTime + offset + judgeOffset) * -1);
 
     startedTime = new Date().getTime() - startTime;
-});
+}
 
 judgeDir = new Array(10).fill(0);
 judgeXPos = new Array(10).fill(0).map((x,y) => (y - 4.5) * 250);

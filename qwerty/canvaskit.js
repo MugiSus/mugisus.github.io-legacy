@@ -1,46 +1,86 @@
 //canvas starter kit
+
+//user settings
+
 const sndPath = `
 bgm/dead_soul_by_sound_souler.ogg
 bgm/Destr0yer-feat-Nikki-Simmons.ogg
 se/note.ogg
 `.split("\n").filter(x=>x!=""&&x.charAt(0)!="#");
+
 const imgPath = `
 
 `.split("\n").filter(x=>x!=""&&x.charAt(0)!="#");
+
 let pixelw = 3200, pixelh = 1800;
 
-let mouseState = {wheel:0, x:0, y:0, left:false, middle:false, right:false}, keydown = {}, fps_time, fps_fps, fps_timeStamp = [];
+//end user setting
+
+let getFPS_time, getFPS_fps, getFPS_timeStamp = [], getFPS =(sec = 1000)=> {
+    getFPS_time = new Date().getTime();
+    getFPS_timeStamp.push(getFPS_time);
+    getFPS_timeStamp = getFPS_timeStamp.filter(x => getFPS_time - x <= sec);
+    return getFPS_fps = getFPS_timeStamp.length / sec * 1000;
+}
+
+let mouseState = {
+    wheel:0,
+    x:0,
+    y:0,
+    left:false,
+    middle:false,
+    right:false,
+    touchx:[],
+    touchy:[]
+}, keydown = {};
+
 const canvas = document.getElementById("disp");
 const ctx = canvas.getContext("2d");
-let ctxSet =(obj)=> Object.keys(obj).forEach(x=>ctx[x] = obj[x]);
-let clearAll =()=> ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio, canvas.height / ratio);
-let getFPS =(sec = 1000)=> {
-    fps_time = new Date().getTime();
-    fps_timeStamp.push(fps_time);
-    fps_timeStamp = fps_timeStamp.filter(x => fps_time - x <= sec);
-    return fps_fps = fps_timeStamp.length / sec * 1000;
-}
+
 let ratio, resize =()=> {
     canvas.height = document.body.clientHeight; canvas.width = document.body.clientWidth;
     ratio = Math.min(canvas.width / pixelw, canvas.height / pixelh);
     ctx.translate(canvas.width / 2, canvas.height / 2);
     ctx.scale(ratio, ratio);
 }
+
 canvas.addEventListener("mousedown", (event)=>{mouseState[["left","middle","right"][event.button]] = true;});
 canvas.addEventListener("mouseup", (event)=>{mouseState[["left","middle","right"][event.button]] = false;});
+document.addEventListener("mousemove", (event)=>{
+    mouseState.x = (event.clientX - canvas.width / 2) / ratio;
+    mouseState.y = (event.clientY - canvas.height / 2) / ratio;
+});
+
 canvas.addEventListener("wheel", (event)=>{mouseState["wheel"] += event.deltaY > 0 ? -1 : 1}, {passive: false});
+
 document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
-document.addEventListener("mousemove", (event)=>{mouseState.x = (event.clientX - canvas.width / 2) / ratio; mouseState.y = (event.clientY - canvas.height / 2) / ratio; mouseState.cliX = event.clientX; mouseState.cliY = event.clientY;});
-let updatePos =()=> {mouseState.x = (event.changedTouches[0].pageX - canvas.width / 2) / ratio; mouseState.y = (event.changedTouches[0].pageY - canvas.height / 2) / ratio; mouseState.cliX = event.changedTouches[0].pageX; mouseState.cliY = event.changedTouches[0].pageY};
-document.addEventListener("touchstart", ()=>{mouseState["left"] = true; updatePos();});
-document.addEventListener("touchmove", (event)=>{event.preventDefault(); updatePos();}, {passive: false});
-document.addEventListener("touchend", ()=>{mouseState["left"] = false; updatePos();});
-window.addEventListener("resize", ()=>{resize()});
-canvas.oncontextmenu =()=> {return false};
-resize();
 
-ctx.clearRect(canvas.width / -2 / ratio, canvas.height / -2 / ratio, canvas.width / ratio, canvas.height / ratio);
+let updatePositions =(event)=> {
+    event.changedTouches.forEach((x)=>{
+        mouseState.touchx[x.identifier] = (event.x.pageX - canvas.width / 2) / ratio;
+        mouseState.touchy[x.identifier] = (event.x.pageY - canvas.height / 2) / ratio;
+    });
+}
+document.addEventListener("touchstart", (event)=>{
+    event.preventDefault();
+    updatePosition(event); 
+    mouseState.left = true;
+});
+document.addEventListener("touchend", (event)=>{
+    event.preventDefault(); 
+    updatePosition(event);
+    mouseState.left = false;
+});
+document.addEventListener("touchmove", (event)=>{
+    event.preventDefault();
+}, {passive: false});
+
+window.addEventListener("resize", ()=>{resize()});
+
+canvas.oncontextmenu =()=> {return false};
+
+resize();
 
 //end kit
 
