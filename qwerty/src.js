@@ -649,7 +649,8 @@ function main(){
     requestAnimationFrame(main);
 }
 
-document.addEventListener("touchstart", () => {
+document.addEventListener("touchstart", (event) => {
+    judgeCount.combo = event.changedTouches[0].identifier;
     if (mouseState.touchy[0] > 900) startGame();
 });
 
