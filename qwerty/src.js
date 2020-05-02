@@ -650,13 +650,11 @@ function main(){
 }
 
 document.addEventListener("touchstart", () => {
-    startGame();
+    if (mouseState.touchy[0] > 900) startGame();
 });
 
 document.addEventListener("keydown", (event) => {
-    if (event.key != " ") return;
-
-    startGame();
+    if (event.key == " ") startGame();
 });
 
 function startGame() {
