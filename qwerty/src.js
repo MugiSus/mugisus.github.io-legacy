@@ -651,7 +651,7 @@ function main(){
 
 document.addEventListener("touchstart", (event) => {
     judgeCount.combo = event.changedTouches[0].identifier;
-    if (mouseState.touchy[0] > 900) startGame();
+    if (mouseState.touchy[event.changedTouches[0].identifier] > 900) startGame();
 });
 
 document.addEventListener("keydown", (event) => {
