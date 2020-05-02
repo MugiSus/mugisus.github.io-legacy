@@ -56,26 +56,6 @@ canvas.addEventListener("wheel", (event)=>{mouseState["wheel"] += event.deltaY >
 document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
 
-let updatePositions =(event)=> {
-    event.changedTouches.forEach((x)=>{
-        mouseState.touchx[x.identifier] = (event.x.pageX - canvas.width / 2) / ratio;
-        mouseState.touchy[x.identifier] = (event.x.pageY - canvas.height / 2) / ratio;
-    });
-}
-document.addEventListener("touchstart", (event)=>{
-    event.preventDefault();
-    updatePosition(event); 
-    mouseState.left = true;
-});
-document.addEventListener("touchend", (event)=>{
-    event.preventDefault(); 
-    updatePosition(event);
-    mouseState.left = false;
-});
-document.addEventListener("touchmove", (event)=>{
-    event.preventDefault();
-}, {passive: false});
-
 window.addEventListener("resize", ()=>{resize()});
 
 canvas.oncontextmenu =()=> {return false};
