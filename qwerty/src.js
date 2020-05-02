@@ -158,6 +158,7 @@ let score = {},
         alpha: 0
     },
     judgeCount = {
+        maxCombo: 0,
         combo: 0,
         perfect: 0,
         good: 0,
@@ -261,8 +262,10 @@ let getPosByPath =(pathStr)=> {
 
 let countJudge =(judge, time)=> {
     judgeCount[judge]++;
-    if (judge == "good" || judge == "perfect") judgeCount.combo++;
-    else judgeCount.combo = 0;
+    if (judge == "good" || judge == "perfect") {
+        judgeCount.combo++;
+        if (judgeCount.maxCombo < judgeCount.combo) judgeCount.maxCombo = judgeCount.combo;
+    } else judgeCount.combo = 0;
 
 }
 
@@ -331,7 +334,7 @@ let drawNotes =()=> {
         let ypos = time > 0 ? -1600 + getPathFromX(x.path, (1 - time) * 100) * 16 : (x.id ? 0 : (nowTime - x.endTime) / 1000 * 200 * x.reversed);
 
         ctx.save();
-        ctx.globalAlpha = x.type >= 3 ? 1 : x.id || time > 0 ? Math.max((1600 - Math.abs(Math.sin(judgeDir[x.lane]) * ypos + judgeXPos[x.lane])) / 100 * (900 - Math.abs(Math.cos(judgeDir[x.lane]) * ypos + judgeYPos[x.lane])) / 100, 0) : 1 - Math.min((nowTime - x.endTime) / 1000, 1);
+        ctx.globalAlpha = x.type >= 3 ? 1 : x.id || time > 0 ? Math.max(Math.min((1600 - Math.abs(Math.sin(judgeDir[x.lane]) * ypos + judgeXPos[x.lane])) / 100, 1) * Math.min((900 - Math.abs(Math.cos(judgeDir[x.lane]) * ypos + judgeYPos[x.lane])) / 100, 1), 0) : 1 - Math.min((nowTime - x.endTime) / 1000, 1);
         ctx.globalAlpha *= judgeAlpha[x.lane];
         if (x.effected) ctx.globalAlpha *= (x.judge == "lost" || x.judge == "far") ? 0.5 : 1;
 
@@ -369,6 +372,7 @@ let drawNotes =()=> {
             end: -diagLeng * x.reversed,
             lane: x.lane,
             color: ctx.fillStyle,
+            endTime: Infinity
         }
 
         if (x.id && x.type <= 2) {
@@ -621,6 +625,7 @@ let generateScore =(scoreName)=> {
     };
     longlotesEffect = 0;
     judgeCount = {
+        maxCombo: 0,
         combo: 0,
         perfect: 0,
         good: 0,
@@ -647,12 +652,12 @@ function main(){
 document.addEventListener("keydown", (event) => {
     if (event.key != " ") return;
 
-    let trackName = (/title=(.*?)(&|$)/i.exec(location.search) || [0,"dead_soul"])[1];
+    let params = new URLSearchParams(location.search);
 
-    generateScore(trackName);
+    generateScore(params.get("title") || "dead_soul");
 
-    let startTime = (60 / bpm * 1000) * ((/time=(.*?)(&|$)/i.exec(location.search) || [0,0])[1] * 1 - 4);
-    let judgeOffset = (/offset=(.*?)(&|$)/i.exec(location.search) || [0,0])[1] * 1;
+    let startTime = (60 / bpm * 1000) * ((params.get("time") * 1 || 0) - 4);
+    let judgeOffset = params.get("offset") * 1 || 0;
 
     snd[bgm].pause();
     snd[bgm].volume = bgmvol;

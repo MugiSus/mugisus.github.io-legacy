@@ -5,7 +5,7 @@ author:sound souler
 bgm:dead_soul_by_sound_souler.ogg
 bgmvol:0.5
 bpm:132
-offset:1818
+offset:1835
 
 path:
 
