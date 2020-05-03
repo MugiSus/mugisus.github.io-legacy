@@ -8,126 +8,116 @@ let pathPreset = {
         p.closePath();
         return p;
     })(),
-    q: (()=>{
-        let p = new Path2D();
-        p.moveTo(-50, -50);
-        p.lineTo(50, -50)
-        p.lineTo(50, 50);
-        p.lineTo(-50, 50)
-        p.closePath();
-        p.moveTo(10, 40);
-        p.lineTo(40, 10);
-        return p;
-    })(),
-    w: (()=>{
-        let p = new Path2D();
-        p.moveTo(-50, -50);
-        p.lineTo(-50, 50)
-        p.lineTo(50, 50);
-        p.lineTo(50, -50)
-        p.moveTo(0, 20);
-        p.lineTo(0, -50);
-        return p;
-    })(),
-    e: (()=>{
-        let p = new Path2D();
-        p.moveTo(50, -50);
-        p.lineTo(-50, -50)
-        p.lineTo(-50, 50);
-        p.lineTo(50, 50)
-        p.moveTo(-20, 0);
-        p.lineTo(50, 0);
-        return p;
-    })(),
-    r: (()=>{
+    a: (()=>{
         let p = new Path2D();
         p.moveTo(-50, 50);
-        p.lineTo(-50, -50);
+        p.lineTo(-30, -50);
+        p.moveTo(-50, -50);
         p.lineTo(50, -50);
-        p.lineTo(50, 0);
+        p.lineTo(30, 50);
+        p.lineTo(50, 50);
+        p.moveTo(-40, 0);
+        p.lineTo(40, 0);
+        return p;
+    })(),
+    s: (()=>{
+        let p = new Path2D();
+        p.moveTo(-50, 50);
+        p.lineTo(50, 50);
+        p.moveTo(30, 50);
+        p.lineTo(40, 0);
+        p.lineTo(-40, 0);
+        p.lineTo(-30, -50);
+        p.moveTo(-50, -50);
+        p.lineTo(50, -50);
+        return p;
+    })(),
+    d: (()=>{
+        let p = new Path2D();
+        p.moveTo(-50, -50);
+        p.lineTo(30, -50);
+        p.lineTo(42, -10);
+        p.lineTo(30, 50);
+        p.moveTo(50, 50);
+        p.lineTo(-50, 50);
+        p.lineTo(-30, -50);
+        return p;
+    })(),
+    f: (()=>{
+        let p = new Path2D();
+        p.moveTo(-50, 50);
+        p.lineTo(-30, -50);
+        p.moveTo(-50, -50);
+        p.lineTo(50, -50);
+        p.moveTo(-40, 0);
+        p.lineTo(40, 0);
+        return p;
+    })(),
+    g: (()=>{
+        let p = new Path2D();
+        p.moveTo(50, -50);
+        p.lineTo(-50, -50);
+        p.moveTo(-30, -50);
+        p.lineTo(-50, 50);
+        p.lineTo(50, 50);
+        p.moveTo(30, 50);
+        p.lineTo(40, 0);
         p.lineTo(0, 0);
-        p.lineTo(50, 50);
         return p;
     })(),
-    t: (()=>{
+    h: (()=>{
         let p = new Path2D();
         p.moveTo(-50, -50);
-        p.lineTo(-50, 50); 
-        p.lineTo(50, 50);
-        p.moveTo(-20, -15);
-        p.lineTo(50, -15);
+        p.lineTo(-30, -50); 
+        p.lineTo(-50, 50);
+        p.moveTo(-40, 0);
+        p.lineTo(40, 0);
+        p.moveTo(50, 50);
+        p.lineTo(30, 50);
+        p.lineTo(50, -50);
         return p;
     })(),
-    y: (()=>{
+    j: (()=>{
         let p = new Path2D();
+        p.moveTo(10, -50);
+        p.lineTo(50, -50);
+        p.lineTo(30, 50)
+        p.moveTo(50, 50);
+        p.lineTo(-50, 50);
+        p.lineTo(-42, 10);
+        return p;
+    })(),
+    k: (()=>{
+        let p = new Path2D();
+        p.moveTo(-50, -50);
+        p.lineTo(-30, -50)
+        p.lineTo(-50, 50);
         p.moveTo(50, -50);
-        p.lineTo(50, 50); 
+        p.lineTo(-10, 0);
+        p.lineTo(30, 50);
+        p.lineTo(50, 50);
+        return p;
+    })(),
+    l: (()=>{
+        let p = new Path2D();
+        p.moveTo(-50, -50);
+        p.lineTo(-30, -50);
         p.lineTo(-50, 50);
-        p.moveTo(20, 0);
-        p.lineTo(-50, 0);
+        p.lineTo(50, 50);
+        p.moveTo(30, 50);
+        p.lineTo(35, 25);
+        return p;
+    })(),
+    ";": (()=>{
+        let p = new Path2D();
+        p.lineTo(45, -25);
+        p.lineTo(50, -50);
         p.lineTo(-50, -50);
-        return p;
-    })(),
-    u: (()=>{
-        let p = new Path2D();
-        p.moveTo(-50, -50);
-        p.lineTo(-50, 50)
-        p.lineTo(50, 50);
-        p.lineTo(50, -50);
-        return p;
-    })(),
-    i: (()=>{
-        let p = new Path2D();
-        p.moveTo(-50, -50);
-        p.lineTo(0, -50)
-        p.lineTo(0, 50);
-        p.lineTo(50, 50);
-        p.moveTo(25, -50);
-        p.lineTo(50, -50);
-        p.moveTo(-25, 50);
+        p.moveTo(-30, -50);
         p.lineTo(-50, 50);
-        return p;
-    })(),
-    o: (()=>{
-        let p = new Path2D();
-        p.moveTo(-50, -50);
-        p.lineTo(50, -50)
         p.lineTo(50, 50);
-        p.lineTo(-50, 50)
-        p.closePath();
-        return p;
-    })(),
-    p: (()=>{
-        let p = new Path2D();
-        p.moveTo(-50, 50);
-        p.lineTo(-50, -50);
-        p.lineTo(50, -50);
-        p.lineTo(50, 0);
-        p.lineTo(-20, 0);
-        return p;
-    })(),
-    tapNote: (()=>{
-        let p = new Path2D();
-        p.moveTo(0, -100);
-        p.lineTo(100, 0);
-        p.lineTo(0, 100);
-        p.lineTo(-100, 0);
-        p.closePath();
-        p.moveTo(0, -50);
-        p.lineTo(0, 50);
-        p.moveTo(-50, 0);
-        p.lineTo(50, 0);
-        return p;
-    })(),
-    dragNote: (()=>{
-        let p = new Path2D();
-        p.moveTo(0, -100);
-        p.lineTo(100, 0);
-        p.lineTo(0, 100);
-        p.lineTo(-100, 0);
-        p.closePath();
-        p.moveTo(-50, 0);
-        p.lineTo(50, 0);
+        p.moveTo(30, 50);
+        p.lineTo(35, 25);
         return p;
     })(),
 };
@@ -284,7 +274,7 @@ let drawqwerty =()=> {
     ctx.lineJoin = "round";
     ctx.lineWidth = 3;
     ctx.globalAlpha = 1;
-    "qwertyuiop".split("").forEach((x, y) => {
+    "asdfghjkl;".split("").forEach((x, y) => {
         ctx.save();
         ctx.globalAlpha = judgeAlpha[y];
         ctx.translate(judgeXPos[y], judgeYPos[y]);
@@ -350,14 +340,14 @@ let drawNotes =()=> {
                 ctx.fillStyle = "#88ffff44";
                 ctx.fill(pathPreset.diamond);
                 ctx.stroke(pathPreset.diamond);
-                ctx.stroke(pathPreset["qwertyuiop".charAt(x.lane)]);
+                ctx.stroke(pathPreset["asdfghjkl;".charAt(x.lane)]);
             } break;
             case 2: {
                 ctx.strokeStyle = "#ffff88";
                 ctx.fillStyle = "#ffff8844";
                 ctx.fill(pathPreset.diamond);
                 ctx.stroke(pathPreset.diamond);
-                ctx.stroke(pathPreset["qwertyuiop".charAt(x.lane)]);
+                ctx.stroke(pathPreset["asdfghjkl;".charAt(x.lane)]);
             } break;
             case 3: {
                 ctx.strokeStyle = "#88ffff";
