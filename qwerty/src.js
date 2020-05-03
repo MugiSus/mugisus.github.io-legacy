@@ -297,7 +297,9 @@ let drawqwerty =()=> {
         ctx.moveTo(120, diagLeng);
         ctx.lineTo(120, -diagLeng);
         ctx.stroke();
-        ctx.globalAlpha = (0.05 + pressed[y] * 0.05) * judgeAlpha[y] + Math.max(1 - (nowTime - pressedTime[y]) / 200 || 0, 0) * 0.2 * Math.min(judgeAlpha[y], 1);
+        ctx.globalAlpha = 0.05 * judgeAlpha[y];
+        ctx.fillRect(-120, -diagLeng, 240, diagLeng * 2);
+        ctx.globalAlpha = ((0.1 * pressed[y]) + Math.max(1 - (nowTime - pressedTime[y]) / 400 || 0, 0) * 0.9) * Math.min(judgeAlpha[y], 1) * 0.5;
         ctx.fillRect(-120, -diagLeng, 240, diagLeng * 2);
         ctx.restore();
     });
@@ -650,24 +652,23 @@ function main(){
 }
 
 document.addEventListener("keydown", (event) => {
-    if (event.key == " ") startGame();
+    if (event.key == " ") {
+        
+        let params = new URLSearchParams(location.search);
+
+        generateScore(params.get("title") || "dead_soul");
+    
+        let startTime = (60 / bpm * 1000) * ((params.get("time") * 1 || 0) - 4);
+        let judgeOffset = params.get("offset") * 1 || 0;
+    
+        snd[bgm].pause();
+        snd[bgm].volume = bgmvol;
+        snd[bgm].currentTime = (startTime + offset + judgeOffset) / 1000;
+        setTimeout(()=>snd[bgm].play(), (startTime + offset + judgeOffset) * -1);
+    
+        startedTime = new Date().getTime() - startTime;
+    }
 });
-
-function startGame() {
-    let params = new URLSearchParams(location.search);
-
-    generateScore(params.get("title") || "dead_soul");
-
-    let startTime = (60 / bpm * 1000) * ((params.get("time") * 1 || 0) - 4);
-    let judgeOffset = params.get("offset") * 1 || 0;
-
-    snd[bgm].pause();
-    snd[bgm].volume = bgmvol;
-    snd[bgm].currentTime = (startTime + offset + judgeOffset) / 1000;
-    setTimeout(()=>snd[bgm].play(), (startTime + offset + judgeOffset) * -1);
-
-    startedTime = new Date().getTime() - startTime;
-}
 
 judgeDir = new Array(10).fill(0);
 judgeXPos = new Array(10).fill(0).map((x,y) => (y - 4.5) * 250);
