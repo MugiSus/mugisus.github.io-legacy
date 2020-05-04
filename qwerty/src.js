@@ -478,8 +478,10 @@ let judgeNotes =()=> {
     });
     
     if (judgeQueue.length) {
-        infoStyle.alpha = 0.3;
-        infoStyle.ypos = -100;
+        if (judgeQueue.some(x => x == "perfect" || x == "good")) {
+            infoStyle.alpha = 0.3;
+            infoStyle.ypos = -100;
+        }
         judgeQueue.sort((a,b) => ["perfect", "good", "far", "lost"].indexOf(a) - ["perfect", "good", "far", "lost"].indexOf(b));
 
         judgeQueue.forEach(x=>{
