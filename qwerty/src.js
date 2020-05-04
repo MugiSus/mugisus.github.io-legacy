@@ -123,6 +123,7 @@ let pathPreset = {
 };
 
 let score = {},
+    title,
     author,
     bgm, 
     bgmvol, 
@@ -251,6 +252,9 @@ let getPosByPath =(pathStr)=> {
 }
 
 let countJudge =(judge, time)=> {
+    infoStyle.ypos = -100;
+    infoStyle.alpha = 0.15;
+
     judgeCount[judge]++;
     if (judge == "good" || judge == "perfect") {
         judgeCount.combo++;
@@ -289,7 +293,7 @@ let drawqwerty =()=> {
         ctx.stroke();
         ctx.globalAlpha = 0.05 * judgeAlpha[y];
         ctx.fillRect(-120, -diagLeng, 240, diagLeng * 2);
-        ctx.globalAlpha = ((0.1 * pressed[y]) + Math.max(1 - (nowTime - pressedTime[y]) / 400 || 0, 0) * 0.9) * Math.min(judgeAlpha[y], 1) * 0.5;
+        ctx.globalAlpha = (0.25 * pressed[y] + Math.max(1 - (nowTime - pressedTime[y]) / 500 || 0, 0) * 0.75) * Math.min(judgeAlpha[y], 1) * 0.3;
         ctx.fillRect(-120, -diagLeng, 240, diagLeng * 2);
         ctx.restore();
     });
@@ -434,31 +438,36 @@ let judgeNotes =()=> {
             return false;
         }
 
-        if (!x.effected) {
-            switch (x.type) {
-                case 1: {
-                    if (nearestTapnote[x.lane].endTime - nowTime > x.endTime - nowTime) nearestTapnote[x.lane] = x;
-                } break;
-                case 2: {
-                    if (pressed[x.lane]) {
-                        if (Math.abs(x.endTime - nowTime) < judgeRate.perfect) x.judge = "perfect";
-                        else if (Math.abs(x.endTime - nowTime) < judgeRate.good) x.judge = "good";
-                        else if (x.endTime - nowTime < 0 && x.endTime - nowTime > -judgeRate.far) x.judge = "far";
-                    }
-                } break;
-            }
+        switch (x.type) {
+            case 1: {
+                if (!x.effected && nearestTapnote[x.lane].endTime - nowTime > x.endTime - nowTime) nearestTapnote[x.lane] = x;
+            } break;
+            case 2: {
+                if (!x.effected && pressed[x.lane]) {
+                    if (Math.abs(x.endTime - nowTime) < judgeRate.perfect) x.judge = "perfect";
+                    else if (Math.abs(x.endTime - nowTime) < judgeRate.good) x.judge = "good";
+                    else if (x.endTime - nowTime < 0 && x.endTime - nowTime > -judgeRate.far) x.judge = "far";
+                }
+            } break;
         }
 
-        if (x.type == 2 && !x.effected && x.judge && x.judge != "lost" && x.endTime - nowTime <= 0) {
+        if (x.type == 2 && !x.effected && x.judge && x.judge != "lost" && x.endTime < nowTime) {
             effects.push(new effect(x.lane, x.judge, x.judge == "good" || x.judge == "perfect"));
-            countJudge(x.judge, x.endTime);
+            if (!x.id) countJudge(x.judge, x.endTime);
             x.effected = true;
         }
 
-        if (x.type <= 2 && x.id && x.judge != "lost" && x.effected && !pressed[x.lane] && drewId[x.id].endTime - nowTime > judgeRate.longNoteTerm) {
-            x.judge = "lost";
-            countJudge(x.judge, x.endTime);
-            x.effected = true;
+        if (x.type <= 2 && x.id && x.judge != "lost" && x.effected) {
+            if (drewId[x.id].endTime - nowTime > judgeRate.longNoteTerm) {
+                if (!pressed[x.lane]) {
+                    x.judge = "lost";
+                    countJudge(x.judge, x.endTime);
+                    x.effected = true;
+                }
+            } else if (drewId[x.id].endTime < nowTime) {
+                countJudge(x.judge, x.endTime);
+                x.effected = true;
+            }
         }
         
         return false;
@@ -470,7 +479,7 @@ let judgeNotes =()=> {
             else if (Math.abs(pressedTime[x.lane] - x.endTime) < judgeRate.good) x.judge = "good";
             else x.judge = "far";
             
-            countJudge(x.judge, x.endTime);
+            if (!x.id) countJudge(x.judge, x.endTime);
             effects.push(new effect(x.lane, x.judge, x.judge == "good" || x.judge == "perfect"));
             x.effected = true;
         }
@@ -539,8 +548,6 @@ let drawEffects =()=> {
             snd["se/note.ogg"].currentTime = 0.025;
             snd["se/note.ogg"].play();
             x.sound = false;
-            infoStyle.ypos = -100;
-            infoStyle.alpha = 0.15;
         }
     });
 
@@ -548,17 +555,33 @@ let drawEffects =()=> {
 }
 
 let drawInfos =()=> {
+    let time = Math.min(nowTime / 1000, (snd[bgm] || []).duration);
+
+    if (title) {
+        ctx.fillStyle = "#ffffff";
+        ctx.globalAlpha = 0.15 + Math.sin(time / 3 * Math.PI * 2) * 0.05
+        ctx.textAlign = "left";
+        ctx.font = "200 150px Oswald";
+        ctx.fillText(title, -1500, 750);
+        ctx.font = "300 100px Oswald";
+        ctx.fillText(author, -1500, 850);
+        ctx.fillRect(-1550, 625, 20, 225 * snd[bgm].currentTime / snd[bgm].duration);
+        ctx.globalAlpha *= 0.35;
+        ctx.fillRect(-1550, 625 + 225 * snd[bgm].currentTime / snd[bgm].duration, 20, 225 * (1 - snd[bgm].currentTime / snd[bgm].duration));
+
+    }
+
     if (judgeCount.combo > 2) {
         ctx.save();
         infoStyle.ypos += -infoStyle.ypos / 10;
         infoStyle.alpha += (0.1 - infoStyle.alpha) / 30;
         ctx.fillStyle = "#ffffff";
         ctx.textAlign = "center";
-        ctx.translate(0, infoStyle.ypos + Math.sin(new Date().getTime() / 5000 * Math.PI * 2) * 30)
+        ctx.translate(0, infoStyle.ypos + Math.sin(time / 5 * Math.PI * 2) * 30)
         ctx.globalAlpha = infoStyle.alpha;
-        ctx.font = "200px Oswald";
+        ctx.font = "200 200px Oswald";
         ctx.fillText("COMBO", 0, -400);
-        ctx.font = "900px Oswald";
+        ctx.font = "200 900px Oswald";
         ctx.fillText(judgeCount.combo, 0, 400);
         ctx.restore();
     }
