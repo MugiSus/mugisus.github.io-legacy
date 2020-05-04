@@ -144,7 +144,6 @@ let score = {},
     pressedTime = new Array(10).fill(-Infinity), 
     pressed = [], 
     newPressed = new Array(10).fill(false),
-    showScore = 0,
     fullComboAmount = 0,
     infoStyle = {
         ypos: 0, 
@@ -321,7 +320,7 @@ let drawNotes =()=> {
         let ypos = time > 0 ? -1600 + getPathFromX(x.path, (1 - time) * 100) * 16 : (x.id ? 0 : (nowTime - x.endTime) / 1000 * 200 * x.reversed);
 
         ctx.save();
-        ctx.globalAlpha = x.type >= 3 ? 1 : x.id || time > 0 ? Math.max(Math.min((1600 - Math.abs(Math.sin(judgeDir[x.lane]) * ypos + judgeXPos[x.lane])) / 100, 1) * Math.min((900 - Math.abs(Math.cos(judgeDir[x.lane]) * ypos + judgeYPos[x.lane])) / 100, 1), 0) : 1 - Math.min((nowTime - x.endTime) / 1000, 1);
+        ctx.globalAlpha = x.type >= 3 ? 1 : x.id || time > 0 ? Math.max(Math.min((1600 - Math.abs(Math.sin(judgeDir[x.lane]) * -ypos + judgeXPos[x.lane])) / 100, 1) * Math.min((900 - Math.abs(Math.cos(judgeDir[x.lane]) * ypos + judgeYPos[x.lane])) / 100, 1), 0) : 1 - Math.min((nowTime - x.endTime) / 1000, 1);
         ctx.globalAlpha *= judgeAlpha[x.lane];
         if (x.effected) ctx.globalAlpha *= (x.judge == "lost" || x.judge == "far") ? 0.5 : 1;
 
@@ -449,7 +448,7 @@ let judgeNotes =()=> {
             x.effected = true;
         }
 
-        if (x.type <= 2 && x.id && x.judge != "lost" && x.effected) {
+        if (x.type <= 2 && drewId[x.id] && x.judge != "lost" && x.effected) {
             if (drewId[x.id].endTime - nowTime > judgeRate.longNoteTerm) {
                 if (!pressed[x.lane]) {
                     x.judge = "lost";
@@ -588,10 +587,9 @@ let drawInfos =()=> {
         ctx.fillRect(-1500, -125 + 250 * snd[bgm].currentTime / snd[bgm].duration, 25, 225 * (1 - snd[bgm].currentTime / snd[bgm].duration));
         
         ctx.globalAlpha = infoStyle.alpha;
-        showScore += (judgeStatus.score - showScore) / 1;
         ctx.textAlign = "right";
         ctx.font = "300 150px Oswald";
-        ctx.fillText(("0000000" + Math.floor(showScore)).substr(-7), 1450, 60);
+        ctx.fillText(("0000000" + Math.floor(judgeStatus.score)).substr(-7), 1450, 60);
         ctx.fillStyle = "#bbffff";
         ctx.globalAlpha = judgeStatus.far || judgeStatus.lost ? 0.05 : 0.25 + Math.sin(time / 2 * Math.PI * 2) * 0.05;
         ctx.fillRect(1500, -60, -25, 60);
