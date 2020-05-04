@@ -144,11 +144,14 @@ let score = {},
     pressedTime = new Array(10).fill(-Infinity), 
     pressed = [], 
     newPressed = new Array(10).fill(false),
+    showScore = 0,
+    fullComboAmount = 0,
     infoStyle = {
         ypos: 0, 
         alpha: 0
     },
-    judgeCount = {
+    judgeStatus = {
+        score:0,
         maxCombo: 0,
         combo: 0,
         perfect: 0,
@@ -161,7 +164,7 @@ const judgeRate = {
     far:250, 
     good:150, 
     perfect:50,
-    perfectsupereme: 30,
+    perfect_supereme: 30,
     longNoteTerm:300
 };
 
@@ -249,18 +252,6 @@ let getPosByPath =(pathStr)=> {
     }
 
     return pos;
-}
-
-let countJudge =(judge, time)=> {
-    infoStyle.ypos = -100;
-    infoStyle.alpha = 0.15;
-
-    judgeCount[judge]++;
-    if (judge == "good" || judge == "perfect") {
-        judgeCount.combo++;
-        if (judgeCount.maxCombo < judgeCount.combo) judgeCount.maxCombo = judgeCount.combo;
-    } else judgeCount.combo = 0;
-
 }
 
 let getPathFromX =(pos, px)=> {
@@ -426,6 +417,7 @@ let drawNotes =()=> {
 
 let judgeNotes =()=> {
     let nearestTapnote = new Array(10).fill({endTime: Infinity});
+    let judgeQueue = [];
 
     notes.some(x => {
 
@@ -433,7 +425,7 @@ let judgeNotes =()=> {
 
         if (x.type <= 2 && !x.judge && x.endTime - nowTime < -judgeRate.far) {
             x.judge = "lost";
-            countJudge(x.judge, x.endTime);
+            judgeQueue.push(x.judge);
             x.effected = true;
             return false;
         }
@@ -453,7 +445,7 @@ let judgeNotes =()=> {
 
         if (x.type == 2 && !x.effected && x.judge && x.judge != "lost" && x.endTime < nowTime) {
             effects.push(new effect(x.lane, x.judge, x.judge == "good" || x.judge == "perfect"));
-            if (!x.id) countJudge(x.judge, x.endTime);
+            if (!x.id) judgeQueue.push(x.judge);
             x.effected = true;
         }
 
@@ -461,11 +453,11 @@ let judgeNotes =()=> {
             if (drewId[x.id].endTime - nowTime > judgeRate.longNoteTerm) {
                 if (!pressed[x.lane]) {
                     x.judge = "lost";
-                    countJudge(x.judge, x.endTime);
+                    judgeQueue.push(x.judge);
                     x.effected = true;
                 }
             } else if (drewId[x.id].endTime < nowTime) {
-                countJudge(x.judge, x.endTime);
+                judgeQueue.push(x.judge);
                 x.effected = true;
             }
         }
@@ -479,11 +471,29 @@ let judgeNotes =()=> {
             else if (Math.abs(pressedTime[x.lane] - x.endTime) < judgeRate.good) x.judge = "good";
             else x.judge = "far";
             
-            if (!x.id) countJudge(x.judge, x.endTime);
+            if (!x.id) judgeQueue.push(x.judge);
             effects.push(new effect(x.lane, x.judge, x.judge == "good" || x.judge == "perfect"));
             x.effected = true;
         }
     });
+    
+    if (judgeQueue.length) {
+        infoStyle.alpha = 0.3;
+        infoStyle.ypos = -100;
+        judgeQueue.sort((a,b) => ["perfect", "good", "far", "lost"].indexOf(a) - ["perfect", "good", "far", "lost"].indexOf(b));
+
+        judgeQueue.forEach(x=>{
+            judgeStatus[x]++;
+            if (x == "good" || x == "perfect") {
+                judgeStatus.combo++;
+                if (judgeStatus.maxCombo < judgeStatus.combo) judgeStatus.maxCombo = judgeStatus.combo;
+            } else judgeStatus.combo = 0;
+        });
+
+        judgeQueue = [];
+    }
+
+    judgeStatus.score = (judgeStatus.perfect * 1 + judgeStatus.good * 0.75) / fullComboAmount * 900000 + judgeStatus.maxCombo / fullComboAmount * 100000 + judgeStatus.perfect_supereme;
 
     newPressed = new Array(10).fill(false);
 }
@@ -557,34 +567,52 @@ let drawEffects =()=> {
 let drawInfos =()=> {
     let time = Math.min(nowTime / 1000, (snd[bgm] || []).duration);
 
+    infoStyle.ypos += -infoStyle.ypos / 10;
+    infoStyle.alpha += (0.1 - infoStyle.alpha) / 30;
+
+    ctx.save();
+    
     if (title) {
+        ctx.translate(0, infoStyle.ypos / 3 + Math.sin(time / 5 * Math.PI * 2) * 30);
+        ctx.globalAlpha = infoStyle.alpha;
         ctx.fillStyle = "#ffffff";
-        ctx.globalAlpha = 0.15 + Math.sin(time / 3 * Math.PI * 2) * 0.05
         ctx.textAlign = "left";
         ctx.font = "200 150px Oswald";
-        ctx.fillText(title, -1500, 750);
+        ctx.fillText(title, -1450, 0);
         ctx.font = "300 100px Oswald";
-        ctx.fillText(author, -1500, 850);
-        ctx.fillRect(-1550, 625, 20, 225 * snd[bgm].currentTime / snd[bgm].duration);
-        ctx.globalAlpha *= 0.35;
-        ctx.fillRect(-1550, 625 + 225 * snd[bgm].currentTime / snd[bgm].duration, 20, 225 * (1 - snd[bgm].currentTime / snd[bgm].duration));
-
+        ctx.fillText(author, -1450, 100);
+        ctx.fillRect(-1500, -125, 25, 250 * snd[bgm].currentTime / snd[bgm].duration);
+        ctx.globalAlpha *= 0.4;
+        ctx.fillRect(-1500, -125 + 250 * snd[bgm].currentTime / snd[bgm].duration, 25, 225 * (1 - snd[bgm].currentTime / snd[bgm].duration));
+        
+        ctx.globalAlpha = infoStyle.alpha;
+        showScore += (judgeStatus.score - showScore) / 1;
+        ctx.textAlign = "right";
+        ctx.font = "300 150px Oswald";
+        ctx.fillText(("0000000" + Math.floor(showScore)).substr(-7), 1450, 60);
+        ctx.fillStyle = "#bbffff";
+        ctx.globalAlpha = judgeStatus.far || judgeStatus.lost ? 0.05 : 0.25 + Math.sin(time / 2 * Math.PI * 2) * 0.05;
+        ctx.fillRect(1500, -60, -25, 60);
+        ctx.fillStyle = "#ffffbb";
+        ctx.globalAlpha = judgeStatus.good || judgeStatus.far || judgeStatus.lost ? 0.05 : 0.25 + Math.sin(time / 2 * Math.PI * 2) * 0.05;
+        ctx.fillRect(1500, 0, -25, 60);
     }
 
-    if (judgeCount.combo > 2) {
-        ctx.save();
-        infoStyle.ypos += -infoStyle.ypos / 10;
-        infoStyle.alpha += (0.1 - infoStyle.alpha) / 30;
+    ctx.restore();
+    ctx.save();
+    ctx.translate(0, infoStyle.ypos + Math.sin(time / 5 * Math.PI * 2) * 30);
+    ctx.globalAlpha = infoStyle.alpha;
+    
+    if (judgeStatus.combo > 2) {
         ctx.fillStyle = "#ffffff";
         ctx.textAlign = "center";
-        ctx.translate(0, infoStyle.ypos + Math.sin(time / 5 * Math.PI * 2) * 30)
-        ctx.globalAlpha = infoStyle.alpha;
         ctx.font = "200 200px Oswald";
         ctx.fillText("COMBO", 0, -400);
         ctx.font = "200 900px Oswald";
-        ctx.fillText(judgeCount.combo, 0, 400);
-        ctx.restore();
+        ctx.fillText(judgeStatus.combo, 0, 400);
     }
+
+    ctx.restore();
 }
 
 let deleteNotes =()=> {
@@ -620,6 +648,7 @@ let generateScore =(scoreName)=> {
     notes = [];
     laneMoves = [];
 
+    fullComboAmount = 0;
     score[scoreName].match(/score:((.|\n)*)/)[1].split("\n").filter(x=>x).forEach(x=>{
         let arr = x.split(/ +/);
         let reversed = arr[2].charAt(0) == "-";
@@ -627,21 +656,25 @@ let generateScore =(scoreName)=> {
         arr[2] = reversed ? pathes[arr[2].substr(1)].map(x=>x.map(x => x.map((x, y) => y >= 1 ? x * -1 + 200 : x))) : pathes[arr[2]];
         arr[3] *= 60 / bpm * 1000;
         arr[4] *= 60 / bpm * 1000;
+        if (arr[0] == 1 || arr[0] == 2) fullComboAmount += arr[1].length;
         if (arr[0] <= 4) arr[1].split("").forEach(x => notes.push(new note(arr[0], x * 1, arr[2], arr[3], arr[4], arr[5] ? arr[5] + x : 0, reversed)));
         else arr[1].split("").forEach(x => laneMoves.push(new laneMove(arr[0], x * 1, arr[2], arr[3], arr[4], arr[5] * 1, arr[6] * 1)));
     });
     notes.sort((a, b) => (a.endTime - a.speed) - (b.endTime - b.speed));
     laneMoves.sort((a, b) => (a.endTime - a.speed) - (b.endTime - b.speed));
 
+    showScore = 0;
     effects = [];
+    longlotesEffect = 0;
     infoStyle = {
         ypos: 0, 
         alpha: 0
     };
-    longlotesEffect = 0;
-    judgeCount = {
+    judgeStatus = {
+        score:0,
         maxCombo: 0,
         combo: 0,
+        perfect_supereme: 0,
         perfect: 0,
         good: 0,
         far: 0,
