@@ -115,9 +115,9 @@ let pathPreset = {
         p.lineTo(-50, -50);
         p.lineTo(50, -50);
         p.lineTo(30, 50);
+        p.moveTo(50, 50);
         p.lineTo(-50, 50);
-        p.lineTo(50, 50);
-        p.lineTo(35, 25);
+        p.lineTo(-45, 25);
         return p;
     })(),
 };
@@ -307,7 +307,6 @@ let moveLanes =()=> {
 }
 
 let drawNotes =()=> {
-    ctx.lineWidth = 3;
     ctx.globalAlpha = 1;
     longlotesEffect = ++longlotesEffect % 15;
 
@@ -320,6 +319,7 @@ let drawNotes =()=> {
         let ypos = time > 0 ? -1600 + getPathFromX(x.path, (1 - time) * 100) * 16 : (x.id ? 0 : (nowTime - x.endTime) / 1000 * 200 * x.reversed);
 
         ctx.save();
+        ctx.lineWidth = 3;
         ctx.globalAlpha = x.type >= 3 ? 1 : x.id || time > 0 ? Math.max(Math.min((1600 - Math.abs(Math.sin(judgeDir[x.lane]) * -ypos + judgeXPos[x.lane])) / 100, 1) * Math.min((900 - Math.abs(Math.cos(judgeDir[x.lane]) * ypos + judgeYPos[x.lane])) / 100, 1), 0) : 1 - Math.min((nowTime - x.endTime) / 1000, 1);
         ctx.globalAlpha *= judgeAlpha[x.lane];
         if (x.effected) ctx.globalAlpha *= (x.judge == "lost" || x.judge == "far") ? 0.5 : 1;
@@ -352,13 +352,22 @@ let drawNotes =()=> {
                 ctx.fillStyle = "#ffff8844";
             } break;
         }
+        
+        if (time < 1 && time > 0 && !x.effected && (x.type <= 2 || (drewId[x.id].judge == "good" || drewId[x.id].judge == "perfect"))) {
+            if (x.type >= 3) ctx.translate(0, -ypos);
+            let size = (1 - time) ** 3;
+            ctx.lineWidth = size * 5;
+            ctx.scale(-size + 2, -size + 2);
+            ctx.stroke(pathPreset.diamond);
+        }
 
         if (x.id && !drewId[x.id]) drewId[x.id] = {
             start: -diagLeng * x.reversed,
             end: -diagLeng * x.reversed,
             lane: x.lane,
             color: ctx.fillStyle,
-            endTime: Infinity
+            endTime: Infinity,
+            judge: false
         }
 
         if (x.id && x.type <= 2) {
@@ -368,16 +377,7 @@ let drawNotes =()=> {
         } else if (x.type >= 3) {
             drewId[x.id].end = ypos;
             drewId[x.id].endTime = x.endTime;
-            if (time < 0) delete drewId[x.id];
-            else time = (x.endTime - nowTime) / (x.endTime - drewId[x.id].endTime);
-            ctx.translate(0, -ypos);
-        }
-
-        if (time < 1 && time > 0 && !x.effected) {
-            let size = (1 - time) ** 3;
-            ctx.globalAlpha *= size;
-            ctx.scale(-size + 2, -size + 2);
-            ctx.stroke(pathPreset.diamond);
+            if (time <= 0) delete drewId[x.id];
         }
 
         ctx.restore();
