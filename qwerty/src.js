@@ -526,14 +526,14 @@ let drawEffects =()=> {
 
         switch (x.state) {
             case "far": {
-                ctx.lineWidth = Math.max((1 - size) * 5, 0);
+                ctx.lineWidth = Math.max((1 - size) * 10, 0);
                 ctx.scale(size * 0.5 + 1, size * 0.5 + 1);
                 ctx.stroke(pathPreset.diamond);
                 ctx.globalAlpha = (1 - size) * 0.5
                 ctx.fill(pathPreset.diamond);
             } break;
             case "good": {
-                ctx.lineWidth = Math.max((1 - size) * 7.5, 0);
+                ctx.lineWidth = Math.max((1 - size) * 10, 0);
                 ctx.scale(size * 1.5 + 1, size * 1.5 + 1);
                 ctx.stroke(pathPreset.diamond);
             } break;
