@@ -110,13 +110,13 @@ let pathPreset = {
     })(),
     ";": (()=>{
         let p = new Path2D();
-        p.lineTo(45, -25);
-        p.lineTo(50, -50);
+        p.lineTo(-35, -25);
+        p.lineTo(-30, -50);
         p.lineTo(-50, -50);
-        p.moveTo(-30, -50);
+        p.lineTo(50, -50);
+        p.lineTo(30, 50);
         p.lineTo(-50, 50);
         p.lineTo(50, 50);
-        p.moveTo(30, 50);
         p.lineTo(35, 25);
         return p;
     })(),
@@ -309,7 +309,7 @@ let moveLanes =()=> {
 let drawNotes =()=> {
     ctx.lineWidth = 3;
     ctx.globalAlpha = 1;
-    longlotesEffect = ++longlotesEffect % 20;
+    longlotesEffect = ++longlotesEffect % 15;
 
     notes.some(x => {
 
@@ -437,12 +437,12 @@ let judgeNotes =()=> {
                 if (!x.effected && pressed[x.lane]) {
                     if (Math.abs(x.endTime - nowTime) < judgeRate.perfect) x.judge = "perfect";
                     else if (Math.abs(x.endTime - nowTime) < judgeRate.good) x.judge = "good";
-                    else if (x.endTime - nowTime < 0 && x.endTime - nowTime > -judgeRate.far) x.judge = "far";
+                    else if (Math.abs(x.endTime - nowTime) < judgeRate.far) x.judge = "far";
                 }
             } break;
         }
 
-        if (x.type == 2 && !x.effected && x.judge && x.judge != "lost" && x.endTime < nowTime) {
+        if (x.type == 2 && !x.effected && x.judge && ((x.judge == "perfect" && x.endTime <= nowTime) || (x.judge == "good" && x.endTime + judgeRate.perfect <= nowTime) || (x.judge == "far" && x.endTime + judgeRate.good <= nowTime))) {
             effects.push(new effect(x.lane, x.judge, x.judge == "good" || x.judge == "perfect"));
             if (!x.id) judgeQueue.push(x.judge);
             x.effected = true;
@@ -501,8 +501,10 @@ let judgeNotes =()=> {
 
 let drawEffects =()=> {
     effects.forEach(x=>{
-        let size = ((new Date().getTime() - x.time) / 1000 - 1) ** 3 + 1;
+        let size = ((new Date().getTime() - x.time) / 750 - 1) ** 3 + 1;
 
+        if (size >= 1) return;
+        
         switch (x.state) {
             case "far": {
                 ctx.strokeStyle = "#ff8888";
@@ -519,7 +521,7 @@ let drawEffects =()=> {
         }
 
         ctx.save();
-        ctx.globalAlpha = Math.max(1 - ((new Date().getTime() - x.time) / 1000), 0);
+        //ctx.globalAlpha = Math.max(1 - ((new Date().getTime() - x.time) / 1000), 0);
         ctx.translate(judgeXPos[x.lane], judgeYPos[x.lane]);
         ctx.rotate(judgeDir[x.lane]);
 
@@ -531,14 +533,13 @@ let drawEffects =()=> {
                 ctx.fill(pathPreset.diamond);
             } break;
             case "good": {
+                ctx.lineWidth = Math.max((1 - size) * 10, 0);
                 ctx.scale(size * 1.5 + 1, size * 1.5 + 1);
                 ctx.stroke(pathPreset.diamond);
             } break;
             case "perfect": {
+                ctx.lineWidth = Math.max((1 - size) * 15, 0);
                 ctx.scale(size * 2.5 + 1, size * 2.5 + 1);
-                ctx.stroke(pathPreset.diamond);
-                ctx.globalAlpha *= 0.5;
-                ctx.scale(0.8, 0.8);
                 ctx.stroke(pathPreset.diamond);
             } break;
         }
@@ -550,7 +551,7 @@ let drawEffects =()=> {
             ctx.translate(judgeXPos[x.lane] + Math.sin(i.rad) * 100, judgeYPos[x.lane] + Math.cos(i.rad) * 100);
             ctx.scale(i.size, i.size);
             ctx.translate(Math.sin(i.rad) * size * 1000, Math.cos(i.rad) * size * 1000);
-            ctx.globalAlpha = Math.max(1 - size, 0);
+            ctx.scale(1 - size, 1 - size);
             ctx.fill(pathPreset.diamond);
             ctx.restore();
         })
