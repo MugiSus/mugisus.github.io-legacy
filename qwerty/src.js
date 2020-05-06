@@ -196,12 +196,12 @@ let laneMove = class {
 }
 
 let effect = class {
-    constructor(lane, state, sound){
+    constructor(lane, state, sound = false){
         this.lane = lane;
         this.state = state;
         this.sound = sound;
         this.time = new Date().getTime();
-        this.particle = new Array(state == "perfect" ? 8 : state == "good" ? 5 : 0).fill(0).map(() => {return {rad: Math.random() * Math.PI * 2, size: 0.1 + Math.random() * 0.3}});
+        this.particle = new Array(state == "perfect" ? 6 : state == "good" ? 4 : 0).fill(0).map(() => {return {rad: Math.random() * Math.PI * 2, size: 0.1 + Math.random() * 0.3}});
     }
 }
 
@@ -308,7 +308,7 @@ let moveLanes =()=> {
 
 let drawNotes =()=> {
     ctx.globalAlpha = 1;
-    longlotesEffect = ++longlotesEffect % 15;
+    longlotesEffect = ++longlotesEffect % 12;
 
     notes.some(x => {
 
@@ -521,24 +521,24 @@ let drawEffects =()=> {
         }
 
         ctx.save();
-        //ctx.globalAlpha = Math.max(1 - ((new Date().getTime() - x.time) / 1000), 0);
         ctx.translate(judgeXPos[x.lane], judgeYPos[x.lane]);
         ctx.rotate(judgeDir[x.lane]);
 
         switch (x.state) {
             case "far": {
+                ctx.lineWidth = Math.max((1 - size) * 5, 0);
                 ctx.scale(size * 0.5 + 1, size * 0.5 + 1);
                 ctx.stroke(pathPreset.diamond);
-                ctx.globalAlpha *= 0.25;
+                ctx.globalAlpha = (1 - size) * 0.5
                 ctx.fill(pathPreset.diamond);
             } break;
             case "good": {
-                ctx.lineWidth = Math.max((1 - size) * 10, 0);
+                ctx.lineWidth = Math.max((1 - size) * 7.5, 0);
                 ctx.scale(size * 1.5 + 1, size * 1.5 + 1);
                 ctx.stroke(pathPreset.diamond);
             } break;
             case "perfect": {
-                ctx.lineWidth = Math.max((1 - size) * 15, 0);
+                ctx.lineWidth = Math.max((1 - size) * 10, 0);
                 ctx.scale(size * 2.5 + 1, size * 2.5 + 1);
                 ctx.stroke(pathPreset.diamond);
             } break;
@@ -548,9 +548,11 @@ let drawEffects =()=> {
 
         x.particle.forEach(i=>{
             ctx.save();
-            ctx.translate(judgeXPos[x.lane] + Math.sin(i.rad) * 100, judgeYPos[x.lane] + Math.cos(i.rad) * 100);
+            ctx.translate(judgeXPos[x.lane], judgeYPos[x.lane]);
+            ctx.rotate(i.rad);
+            ctx.translate(0, 100);
             ctx.scale(i.size, i.size);
-            ctx.translate(Math.sin(i.rad) * size * 1000, Math.cos(i.rad) * size * 1000);
+            ctx.translate(0, size * 1000);
             ctx.scale(1 - size, 1 - size);
             ctx.fill(pathPreset.diamond);
             ctx.restore();
