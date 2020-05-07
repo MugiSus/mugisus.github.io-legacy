@@ -170,7 +170,7 @@ const judgeRate = {
 const diagLeng = (3200 ** 2 + 1800 ** 2) ** 0.5;
 
 let note = class {
-    constructor(type, lane, path, endTime, speed, id, reversed){
+    constructor(type, lane, path, endTime, speed, id, reversed, multi){
         this.type = type;
         this.lane = lane;
         this.path = path;
@@ -178,6 +178,7 @@ let note = class {
         this.speed = speed;
         this.id = id || 0;
         this.reversed = reversed ? -1 : 1;
+        this.multi = multi || false;
         this.judge = false;
         this.effected = false;
     }
@@ -359,6 +360,10 @@ let drawNotes =()=> {
             ctx.lineWidth = size * 5;
             ctx.scale(-size + 2, -size + 2);
             ctx.stroke(pathPreset.diamond);
+            if (x.multi) {
+                ctx.scale(1.2, 1.2);
+                ctx.stroke(pathPreset.diamond);
+            }
         }
 
         if (x.id && !drewId[x.id]) drewId[x.id] = {
@@ -651,18 +656,29 @@ let generateScore =(scoreName)=> {
     notes = [];
     laneMoves = [];
 
+    let notesTime = [];
     fullComboAmount = 0;
     score[scoreName].match(/score:((.|\n)*)/)[1].split("\n").filter(x=>x).forEach(x=>{
         let arr = x.split(/ +/);
         let reversed = arr[2].charAt(0) == "-";
+        let multi = arr[0] <= 2 && arr[1].length != 1;
         arr[0] *= 1;
         arr[2] = reversed ? pathes[arr[2].substr(1)].map(x=>x.map(x => x.map((x, y) => y >= 1 ? x * -1 + 200 : x))) : pathes[arr[2]];
         arr[3] *= 60 / bpm * 1000;
         arr[4] *= 60 / bpm * 1000;
-        if (arr[0] == 1 || arr[0] == 2) fullComboAmount += arr[1].length;
-        if (arr[0] <= 4) arr[1].split("").forEach(x => notes.push(new note(arr[0], x * 1, arr[2], arr[3], arr[4], arr[5] ? arr[5] + x : 0, reversed)));
+        if (arr[0] <= 2) {
+            fullComboAmount += arr[1].length;
+            let index = notesTime.findIndex(x => x[0] <= arr[3]);
+            if ((notesTime[index] || [])[0] == arr[3]) {
+                multi = true;
+                notes[notesTime[index][1]].multi = true;
+            }
+            else notesTime.splice(index, 0, [arr[3], notes.length]);
+        }
+        if (arr[0] <= 4) arr[1].split("").forEach(x => notes.push(new note(arr[0], x * 1, arr[2], arr[3], arr[4], arr[5] ? arr[5] + x : 0, reversed, multi)));
         else arr[1].split("").forEach(x => laneMoves.push(new laneMove(arr[0], x * 1, arr[2], arr[3], arr[4], arr[5] * 1, arr[6] * 1)));
     });
+    console.log(notesTime);
     notes.sort((a, b) => (a.endTime - a.speed) - (b.endTime - b.speed));
     laneMoves.sort((a, b) => (a.endTime - a.speed) - (b.endTime - b.speed));
 
