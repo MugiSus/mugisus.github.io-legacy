@@ -276,7 +276,7 @@ let drawqwerty =()=> {
         ctx.translate(judgeXPos[y], judgeYPos[y]);
         ctx.rotate(judgeDir[y]);
         ctx.stroke(pathPreset.diamond);
-        ctx.stroke(pathPreset[x]);
+        ctx.stroke(pathPreset["asdfghjkl;".charAt(y)]);
         ctx.beginPath();
         ctx.moveTo(-120, diagLeng);
         ctx.lineTo(-120, -diagLeng);
@@ -631,8 +631,8 @@ let deleteNotes =()=> {
 }
 
 let getKeyInput =()=> {
-    "asdfghjkl;".split("").forEach((x, y)=>{
-        if ((keydown[x] || mouseState.touchx.some(x => judgeXPos[y] - 125 < x && judgeXPos[y] + 125 > x )) && !pressed[y]) {
+    usingkeys.forEach((x, y)=>{
+        if ((keydown[x] || mouseState.touchx.some(x => judgeXPos[y] - 125 < x && judgeXPos[y] + 125 > x)) && !pressed[y]) {
             pressed[y] = true;
             pressedTime[y] = nowTime;
             newPressed[y] = true;
@@ -680,7 +680,6 @@ let generateScore =(scoreName)=> {
         if (arr[0] <= 4) arr[1].split("").forEach(x => notes.push(new note(arr[0], x * 1, arr[2], arr[3], arr[4], arr[5] ? arr[5] + x : 0, reversed, multi)));
         else arr[1].split("").forEach(x => laneMoves.push(new laneMove(arr[0], x * 1, arr[2], arr[3], arr[4], arr[5] * 1, arr[6] * 1)));
     });
-    console.log(notesTime);
     notes.sort((a, b) => (a.endTime - a.speed) - (b.endTime - b.speed));
     laneMoves.sort((a, b) => (a.endTime - a.speed) - (b.endTime - b.speed));
 
