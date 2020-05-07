@@ -264,7 +264,6 @@ let getPathFromX =(pos, px)=> {
 }
 
 let drawqwerty =()=> {
-    ctx.font = "120px Orbitron";
     ctx.strokeStyle = "#ffffff";
     ctx.fillStyle = "#ffffff";
     ctx.lineCap = "round";
@@ -310,7 +309,6 @@ let moveLanes =()=> {
 }
 
 let drawNotes =()=> {
-    ctx.font = "120px Orbitron";
     ctx.textAlign = "center";
     ctx.globalAlpha = 1;
     longlotesEffect = ++longlotesEffect % 12;
@@ -339,14 +337,14 @@ let drawNotes =()=> {
                 ctx.fillStyle = "#88ffff44";
                 ctx.fill(pathPreset.diamond);
                 ctx.stroke(pathPreset.diamond);
-                ctx.stroke(pathPreset[usingkeys[x.lane]]);
+                ctx.stroke(pathPreset["asdfghjkl;".charAt(x.lane)]);
             } break;
             case 2: {
                 ctx.strokeStyle = "#ffff88";
                 ctx.fillStyle = "#ffff8844";
                 ctx.fill(pathPreset.diamond);
                 ctx.stroke(pathPreset.diamond);
-                ctx.stroke(pathPreset[usingkeys[x.lane]]);
+                ctx.stroke(pathPreset["asdfghjkl;".charAt(x.lane)]);
             } break;
             case 3: {
                 ctx.strokeStyle = "#88ffff";
