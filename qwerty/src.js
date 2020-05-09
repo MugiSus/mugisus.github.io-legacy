@@ -642,8 +642,14 @@ let getKeyInput =()=> {
 
 
 let setLaneKey =(keyString)=> {
+    if (keyString.length != 10) {
+        console.error("length of this argument has to be 10");
+        return 1;
+    }
     laneKeys = keyString.split("");
     setCookie("lanekey", keyString);
+    console.info(`%csucceded! lanekey = %c${keyString}`, "color:#88bbff", "color:#ffffff")
+    return 0;
 }
 
 let generateScore =(scoreName)=> {
