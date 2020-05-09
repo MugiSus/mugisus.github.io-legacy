@@ -51,7 +51,7 @@ document.addEventListener("mousemove", (event)=>{
     mouseState.y = (event.clientY - canvas.height / 2) / ratio;
 });
 
-canvas.addEventListener("wheel", (event)=>{mouseState["wheel"] += event.deltaY > 0 ? -1 : 1}, {passive: false});
+canvas.addEventListener("wheel", (event)=>{mouseState.wheel += event.deltaY > 0 ? -1 : 1}, {passive: false});
 
 document.addEventListener("keydown", (event)=>{keydown[event.key] = true;});
 document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
@@ -59,6 +59,9 @@ document.addEventListener("keyup", (event)=>{keydown[event.key] = false;});
 window.addEventListener("resize", ()=>{resize()});
 
 canvas.oncontextmenu =()=> {return false};
+
+let getCookie =(key)=> (document.cookie.match(new RegExp(`${key}=(.*?)(?:;|$)`)) || [0,undefined])[1]
+let setCookie =(key, value)=> document.cookie = `${key}=${value}; max-age=157680000;`;
 
 resize();
 

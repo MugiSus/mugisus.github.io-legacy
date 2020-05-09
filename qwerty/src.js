@@ -130,10 +130,10 @@ let score = {},
     bpm, 
     offset, 
     pathes = {}, 
-    judgeYPos = [], 
-    judgeXPos = [], 
-    judgeDir = [], 
-    judgeAlpha = [],
+    judgeDir = new Array(10).fill(0),
+    judgeXPos = new Array(10).fill(0).map((x,y) => (y - 4.5) * 250),
+    judgeYPos = new Array(10).fill(700),
+    judgeAlpha = new Array(10).fill(1),
     notes = [], 
     laneMoves = [], 
     effects = [], 
@@ -145,7 +145,7 @@ let score = {},
     pressed = [], 
     newPressed = new Array(10).fill(false),
     fullComboAmount = 0,
-    usingkeys = "asdfghjkl;".split(""),
+    laneKeys = [],
     infoStyle = {
         ypos: 0, 
         alpha: 0
@@ -270,7 +270,7 @@ let drawqwerty =()=> {
     ctx.lineJoin = "round";
     ctx.lineWidth = 3;
     ctx.globalAlpha = 1;
-    usingkeys.forEach((x, y) => {
+    laneKeys.forEach((x, y) => {
         ctx.save();
         ctx.globalAlpha = judgeAlpha[y];
         ctx.translate(judgeXPos[y], judgeYPos[y]);
@@ -631,13 +631,19 @@ let deleteNotes =()=> {
 }
 
 let getKeyInput =()=> {
-    usingkeys.forEach((x, y)=>{
+    laneKeys.forEach((x, y)=>{
         if ((keydown[x] || mouseState.touchx.some(x => judgeXPos[y] - 125 < x && judgeXPos[y] + 125 > x)) && !pressed[y]) {
             pressed[y] = true;
             pressedTime[y] = nowTime;
             newPressed[y] = true;
         } else if (!keydown[x]) pressed[y] = false;
     })
+}
+
+
+let setLaneKey =(keyString)=> {
+    laneKeys = keyString.split("");
+    setCookie("lanekey", keyString);
 }
 
 let generateScore =(scoreName)=> {
@@ -736,18 +742,14 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-judgeDir = new Array(10).fill(0);
-judgeXPos = new Array(10).fill(0).map((x,y) => (y - 4.5) * 250);
-judgeYPos = new Array(10).fill(700);
-judgeAlpha = new Array(10).fill(1);
+setLaneKey(getCookie("lanekey") || "asdfghjkl;");
 
 let keyInterval =()=> setInterval(()=>{getKeyInput()}, 10);
 
+getKeyInput();
 setTimeout(keyInterval, 100);
 setTimeout(keyInterval, 102.5);
 setTimeout(keyInterval, 105);
 setTimeout(keyInterval, 107.5);
-
-getKeyInput();
 
 main();
