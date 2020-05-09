@@ -647,7 +647,7 @@ let setLaneKey =(keyString)=> {
         return 1;
     }
     laneKeys = keyString.split("");
-    setCookie("lanekey", keyString);
+    localStorage.setItem("lanekey", keyString);
     console.info(`%csucceded! lanekey = %c${keyString}`, "color:#88bbff", "color:#ffffff")
     return 0;
 }
@@ -748,7 +748,7 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-setLaneKey(getCookie("lanekey") || "asdfghjkl;");
+setLaneKey(localStorage.getItem("lanekey") || "asdfghjkl;");
 
 let keyInterval =()=> setInterval(()=>{getKeyInput()}, 10);
 

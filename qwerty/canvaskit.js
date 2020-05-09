@@ -60,13 +60,6 @@ window.addEventListener("resize", ()=>{resize()});
 
 canvas.oncontextmenu =()=> {return false};
 
-let getCookie =(key)=> {
-    let reg = new RegExp(`${key}=(.*?)(?:;|$)`)
-    if (document.cookie.match(reg)) return unescape(RegExp.$1)
-    return "";
-}
-let setCookie =(key, value)=> document.cookie = `${key}=${escape(value)}; max-age=157680000;`;
-
 resize();
 
 //end kit
