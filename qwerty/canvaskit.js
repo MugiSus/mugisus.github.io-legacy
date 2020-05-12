@@ -62,11 +62,6 @@ canvas.oncontextmenu =()=> {return false};
 
 resize();
 
-//end kit
-
-document.title = "QWERTY";
-
-//loading images
 
 let img = {}, loadedImgs = 0;
 imgPath.forEach(x=>{
@@ -104,3 +99,7 @@ ctx.__proto__.image =(name, x, y, w, h, ox = 0, oy = 0, r = 0)=> {
     ctx.drawImage(img[name], -w * ox, -h * oy, w, h);
     ctx.restore();
 }
+
+//end kit
+
+document.title = "QWERTY";

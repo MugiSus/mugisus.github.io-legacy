@@ -1,126 +1,30 @@
-let pathPreset = {
-    diamond: (()=>{
-        let p = new Path2D();
-        p.moveTo(0, -100);
-        p.lineTo(100, 0);
-        p.lineTo(0, 100);
-        p.lineTo(-100, 0);
-        p.closePath();
-        return p;
-    })(),
-    a: (()=>{
-        let p = new Path2D();
-        p.moveTo(-50, 50);
-        p.lineTo(-30, -50);
-        p.moveTo(-50, -50);
-        p.lineTo(50, -50);
-        p.lineTo(30, 50);
-        p.lineTo(50, 50);
-        p.moveTo(-40, 0);
-        p.lineTo(40, 0);
-        return p;
-    })(),
-    s: (()=>{
-        let p = new Path2D();
-        p.moveTo(-50, 50);
-        p.lineTo(50, 50);
-        p.moveTo(30, 50);
-        p.lineTo(40, 0);
-        p.lineTo(-40, 0);
-        p.lineTo(-30, -50);
-        p.moveTo(-50, -50);
-        p.lineTo(50, -50);
-        return p;
-    })(),
-    d: (()=>{
-        let p = new Path2D();
-        p.moveTo(-50, -50);
-        p.lineTo(30, -50);
-        p.lineTo(42, -10);
-        p.lineTo(30, 50);
-        p.moveTo(50, 50);
-        p.lineTo(-50, 50);
-        p.lineTo(-30, -50);
-        return p;
-    })(),
-    f: (()=>{
-        let p = new Path2D();
-        p.moveTo(-50, 50);
-        p.lineTo(-30, -50);
-        p.moveTo(-50, -50);
-        p.lineTo(50, -50);
-        p.moveTo(-40, 0);
-        p.lineTo(40, 0);
-        return p;
-    })(),
-    g: (()=>{
-        let p = new Path2D();
-        p.moveTo(50, -50);
-        p.lineTo(-50, -50);
-        p.moveTo(-30, -50);
-        p.lineTo(-50, 50);
-        p.lineTo(50, 50);
-        p.moveTo(30, 50);
-        p.lineTo(40, 0);
-        p.lineTo(0, 0);
-        return p;
-    })(),
-    h: (()=>{
-        let p = new Path2D();
-        p.moveTo(-50, -50);
-        p.lineTo(-30, -50); 
-        p.lineTo(-50, 50);
-        p.moveTo(-40, 0);
-        p.lineTo(40, 0);
-        p.moveTo(50, 50);
-        p.lineTo(30, 50);
-        p.lineTo(50, -50);
-        return p;
-    })(),
-    j: (()=>{
-        let p = new Path2D();
-        p.moveTo(10, -50);
-        p.lineTo(50, -50);
-        p.lineTo(30, 50)
-        p.moveTo(50, 50);
-        p.lineTo(-50, 50);
-        p.lineTo(-42, 10);
-        return p;
-    })(),
-    k: (()=>{
-        let p = new Path2D();
-        p.moveTo(-50, -50);
-        p.lineTo(-30, -50)
-        p.lineTo(-50, 50);
-        p.moveTo(50, -50);
-        p.lineTo(-10, 0);
-        p.lineTo(30, 50);
-        p.lineTo(50, 50);
-        return p;
-    })(),
-    l: (()=>{
-        let p = new Path2D();
-        p.moveTo(-50, -50);
-        p.lineTo(-30, -50);
-        p.lineTo(-50, 50);
-        p.lineTo(50, 50);
-        p.moveTo(30, 50);
-        p.lineTo(35, 25);
-        return p;
-    })(),
-    ";": (()=>{
-        let p = new Path2D();
-        p.lineTo(-35, -25);
-        p.lineTo(-30, -50);
-        p.lineTo(-50, -50);
-        p.lineTo(50, -50);
-        p.lineTo(30, 50);
-        p.moveTo(50, 50);
-        p.lineTo(-50, 50);
-        p.lineTo(-45, 25);
-        return p;
-    })(),
-};
+let pathPreset = {};
+`
+diamond: M 0,-100 100,0 0,100 -100,0 z
+
+q: M -50,-50 50,-50 30,50 M 50,50 -50,50 -30,-50 M 0,50 5,25 35,25
+w: M -50,-50 -30,-50 -50,50 50,50 M 30,50 50,-50 M -10,50 6,-30
+e: M -50,-50 50,-50 46,-30 M -30,-50 -50,50 50,50 M 30,50 34,30 M -40,0 20,0
+r: M -50,50 -30,-50 M -50,-50 50,-50 40,0 0,0 30,50, 50,50
+t: M -50,-50 -30,-50 -50,50 50,50 M 30,50 35,25 M -35,-25 45,-25
+y: M -50,-50 -30,-50 -40,0 40,0 M 50,-50 30,50 M 50,50 -50,50 -45,25
+u: M -50,-50 -30,-50 -50,50 50,50 M 30,50 50,-50
+i: M -50,-50 -10,-50 M 50,-50 10,-50 -10,50 -50,50 M 10,50 50,50
+o: M -50,-50 50,-50 30,50 M 50,50 -50,50 -30,-50
+p: M -50,50 -30,-50 M -50,-50 50,-50 40,0 0,0
+
+a: M -50,50 -30,-50 M -50,-50 50,-50 30,50 50,50 M -40,0 40,0
+s: M -50,50 50,50 M 30,50 40,0 -40,0 -30,-50 M -50,-50 50,-50
+d: M -50,-50 30,-50 42,-10 30,50 M 50,50 -50,50 -30,-50
+f: M -50,50 -30,-50 M -50,-50 50,-50 M -40,0 40,0
+g: M 50,-50 -50,-50 -30,-50 -50,50 50,50 M 30,50 40,0 0,0
+h: M -50,-50 -30,-50 -50,50 M -40,0 40,0 M 50,50 30,50 50,-50
+j: M 10,-50 50,-50 30,50 M 50,50 -50,50 -42,10
+k: M -50,-50 -30,-50 -50,50 M 50,-50 -10,0 30,50 50,50
+l: M -50,-50 -30,-50 -50,50 50,50 30,50 35,25
+;: M -35,-25 -30,-50 -50,-50 50,-50 30,50 50,50 -50,50 -45,25
+
+`.split("\n").filter(x=>x).forEach(x => pathPreset[x.substring(0, x.indexOf(" ") - 1)] = new Path2D(x.substring(x.indexOf(" "))));
 
 let score = {},
     title,
@@ -276,7 +180,7 @@ let drawqwerty =()=> {
         ctx.translate(judgeXPos[y], judgeYPos[y]);
         ctx.rotate(judgeDir[y]);
         ctx.stroke(pathPreset.diamond);
-        ctx.stroke(pathPreset["asdfghjkl;".charAt(y)]);
+        ctx.stroke(pathPreset[laneKeys[y]]);
         ctx.beginPath();
         ctx.moveTo(-120, diagLeng);
         ctx.lineTo(-120, -diagLeng);
@@ -300,10 +204,10 @@ let moveLanes =()=> {
         else time = (x.endTime - nowTime) / x.speed;
 
         switch (x.type) {
-            case 6: judgeAlpha[x.lane] = getPathFromX(x.path, (1 - time) * 100) / 100 * (x.max - x.min) + x.min; break;
-            case 7: judgeDir[x.lane] = (getPathFromX(x.path, (1 - time) * 100) / 100 * (x.max - x.min) + x.min) * Math.PI * 2; break;
-            case 8: judgeXPos[x.lane] = getPathFromX(x.path, (1 - time) * 100) / 100 * (x.max - x.min) + x.min; break;
-            case 9: judgeYPos[x.lane] = getPathFromX(x.path, (1 - time) * 100) / 100 * (x.max - x.min) + x.min; break;
+            case "a": judgeAlpha[x.lane] = getPathFromX(x.path, (1 - time) * 100) / 100 * (x.max - x.min) + x.min; break;
+            case "d": judgeDir[x.lane] = (getPathFromX(x.path, (1 - time) * 100) / 100 * (x.max - x.min) + x.min) * Math.PI * 2; break;
+            case "x": judgeXPos[x.lane] = getPathFromX(x.path, (1 - time) * 100) / 100 * (x.max - x.min) + x.min; break;
+            case "y": judgeYPos[x.lane] = getPathFromX(x.path, (1 - time) * 100) / 100 * (x.max - x.min) + x.min; break;
         }
     });
 }
@@ -337,14 +241,14 @@ let drawNotes =()=> {
                 ctx.fillStyle = "#88ffff44";
                 ctx.fill(pathPreset.diamond);
                 ctx.stroke(pathPreset.diamond);
-                ctx.stroke(pathPreset["asdfghjkl;".charAt(x.lane)]);
+                ctx.stroke(pathPreset[laneKeys[x.lane]]);
             } break;
             case 2: {
                 ctx.strokeStyle = "#ffff88";
                 ctx.fillStyle = "#ffff8844";
                 ctx.fill(pathPreset.diamond);
                 ctx.stroke(pathPreset.diamond);
-                ctx.stroke(pathPreset["asdfghjkl;".charAt(x.lane)]);
+                ctx.stroke(pathPreset[laneKeys[x.lane]]);
             } break;
             case 3: {
                 ctx.strokeStyle = "#88ffff";
@@ -643,7 +547,10 @@ let getKeyInput =()=> {
 
 let setLaneKey =(keyString)=> {
     if (keyString.length != 10) {
-        console.error("length of this argument has to be 10");
+        console.error("length is not 10");
+        return 1;
+    } else if (keyString.match(/[a-z0-9\-\^@\[;:\]\,\.\/\\]/g).length != 10) {
+        console.error("includes invalid key");
         return 1;
     }
     laneKeys = keyString.split("");
@@ -676,7 +583,7 @@ let generateScore =(scoreName)=> {
         let arr = x.split(/ +/);
         let reversed = arr[2].charAt(0) == "-";
         let multi = arr[0] <= 2 && arr[1].length != 1;
-        arr[0] *= 1;
+        if (arr[0] * 1) arr[0] *= 1;
         arr[2] = reversed ? pathes[arr[2].substr(1)].map(x=>x.map(x => x.map((x, y) => y >= 1 ? x * -1 + 200 : x))) : pathes[arr[2]];
         arr[3] *= 60 / bpm * 1000;
         arr[4] *= 60 / bpm * 1000;
@@ -689,7 +596,7 @@ let generateScore =(scoreName)=> {
             }
             else notesTime.splice(index, 0, [arr[3], notes.length]);
         }
-        if (arr[0] <= 4) arr[1].split("").forEach(x => notes.push(new note(arr[0], x * 1, arr[2], arr[3], arr[4], arr[5] ? arr[5] + x : 0, reversed, multi)));
+        if (arr[0] <= 5) arr[1].split("").forEach(x => notes.push(new note(arr[0], x * 1, arr[2], arr[3], arr[4], arr[5] ? arr[5] + x : 0, reversed, multi)));
         else arr[1].split("").forEach(x => laneMoves.push(new laneMove(arr[0], x * 1, arr[2], arr[3], arr[4], arr[5] * 1, arr[6] * 1)));
     });
     notes.sort((a, b) => (a.endTime - a.speed) - (b.endTime - b.speed));
