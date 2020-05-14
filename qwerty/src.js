@@ -544,21 +544,6 @@ let getKeyInput =()=> {
     })
 }
 
-
-let setLaneKey =(keyString)=> {
-    if (keyString.length != 10) {
-        console.error("length is not 10");
-        return 1;
-    } else if (keyString.match(/[a-z0-9\-\^@\[;:\]\,\.\/\\]/g).length != 10) {
-        console.error("includes invalid key");
-        return 1;
-    }
-    laneKeys = keyString.split("");
-    localStorage.setItem("lanekey", keyString);
-    console.info(`%csucceded! lanekey = %c${keyString}`, "color:#88bbff", "color:#ffffff")
-    return 0;
-}
-
 let generateScore =(scoreName)=> {
     drewId = {};
     pressedTime = new Array(10).fill(-Infinity);
@@ -644,7 +629,7 @@ document.addEventListener("keydown", (event) => {
         generateScore(params.get("title") || "dead_soul");
     
         let startTime = (60 / bpm * 1000) * ((params.get("time") * 1 || 0) - 4);
-        let judgeOffset = params.get("offset") * 1 || 0;
+        let judgeOffset = localStorage.getItem("offset") * 1 || 0;
     
         snd[bgm].pause();
         snd[bgm].volume = bgmvol;
@@ -655,7 +640,7 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-setLaneKey(localStorage.getItem("lanekey") || "asdfghjkl;");
+laneKeys = (localStorage.getItem("lanekey") || "qwertyuiop").split("");
 
 let keyInterval =()=> setInterval(()=>{getKeyInput()}, 10);
 
