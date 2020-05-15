@@ -5,6 +5,7 @@
 const sndPath = `
 bgm/dead_soul_by_sound_souler.ogg
 bgm/Destr0yer-feat-Nikki-Simmons.ogg
+bgm/cut173_edition_brain_power.ogg
 se/note.ogg
 `.split("\n").filter(x=>x!=""&&x.charAt(0)!="#");
 
