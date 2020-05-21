@@ -25,7 +25,6 @@ l: M -50,-50 -30,-50 -50,50 50,50 30,50 35,25
 ;: M -35,-25 -30,-50 -50,-50 50,-50 30,50 50,50 -50,50 -45,25
 
 `.split("\n").filter(x=>x).forEach(x => pathPreset[x.substring(0, x.indexOf(" ") - 1)] = new Path2D(x.substring(x.indexOf(" "))));
-
 let score = {},
     title,
     author,
@@ -70,7 +69,40 @@ const judgeRate = {
     perfect:50,
     perfect_supereme: 30,
     longNoteTerm:300
-};
+    },
+    // colorList = {
+    //     backGround: "#101020",
+    //     white: "#d0d0ff",
+    //     tapNote: "#88ffff",
+    //     tapNoteFill: "#88ffff44",
+    //     slideNote: "#ffff88",
+    //     slideNoteFill:"#ffff8844",
+    //     perfect: "#ffff88",
+    //     good: "#88ffff",
+    //     far: "#ff8888"
+    // };
+    colorList = {
+        backGround: "#101020",
+        white: "#b0b0ff",
+        tapNote: "#9090ffff",
+        tapNoteFill: "#7d7dff66",
+        slideNote: "#d0d0ff",
+        slideNoteFill:"#d0d0ff88",
+        perfect: "#7d7dff",
+        good: "#b0b0cc",
+        far: "#666666"
+    };
+    // colorList = {
+    //     backGround: "#101020",
+    //     white: "#f0b0ff",
+    //     tapNote: "#f090ffff",
+    //     tapNoteFill: "#f07dff66",
+    //     slideNote: "#f0d0ff",
+    //     slideNoteFill:"#f0d0ff88",
+    //     perfect: "#f07dff",
+    //     good: "#c0b0cc",
+    //     far: "#666666"
+    // };
 
 const diagLeng = (3200 ** 2 + 1800 ** 2) ** 0.5;
 
@@ -168,8 +200,8 @@ let getPathFromX =(pos, px)=> {
 }
 
 let drawqwerty =()=> {
-    ctx.strokeStyle = "#ffffff";
-    ctx.fillStyle = "#ffffff";
+    ctx.strokeStyle = colorList.white;
+    ctx.fillStyle = colorList.white;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.lineWidth = 3;
@@ -237,26 +269,26 @@ let drawNotes =()=> {
 
         switch (x.type) {
             case 1: {
-                ctx.strokeStyle = "#88ffff";
-                ctx.fillStyle = "#88ffff44";
+                ctx.strokeStyle = colorList.tapNote;
+                ctx.fillStyle = colorList.tapNoteFill;
                 ctx.fill(pathPreset.diamond);
                 ctx.stroke(pathPreset.diamond);
                 ctx.stroke(pathPreset[laneKeys[x.lane]]);
             } break;
             case 2: {
-                ctx.strokeStyle = "#ffff88";
-                ctx.fillStyle = "#ffff8844";
+                ctx.strokeStyle = colorList.slideNote;
+                ctx.fillStyle = colorList.slideNoteFill;
                 ctx.fill(pathPreset.diamond);
                 ctx.stroke(pathPreset.diamond);
                 ctx.stroke(pathPreset[laneKeys[x.lane]]);
             } break;
             case 3: {
-                ctx.strokeStyle = "#88ffff";
-                ctx.fillStyle = "#88ffff44";
+                ctx.strokeStyle = colorList.tapNote;
+                ctx.fillStyle = colorList.tapNoteFill;
             } break;
             case 4: {
-                ctx.strokeStyle = "#ffff88";
-                ctx.fillStyle = "#ffff8844";
+                ctx.strokeStyle = colorList.slideNote;
+                ctx.fillStyle = colorList.slideNoteFill;
             } break;
         }
         
@@ -418,16 +450,16 @@ let drawEffects =()=> {
         
         switch (x.state) {
             case "far": {
-                ctx.strokeStyle = "#ff8888";
-                ctx.fillStyle = "#ff8888";
+                ctx.strokeStyle = colorList.far;
+                ctx.fillStyle = colorList.far;
             } break;
             case "good": {
-                ctx.strokeStyle = "#88ffff";
-                ctx.fillStyle = "#88ffff";
+                ctx.strokeStyle = colorList.good;
+                ctx.fillStyle = colorList.good;
             } break;
             case "perfect": {
-                ctx.strokeStyle = "#ffff88";
-                ctx.fillStyle = "#ffff88";
+                ctx.strokeStyle = colorList.perfect;
+                ctx.fillStyle = colorList.perfect;
             } break;
         }
 
@@ -490,7 +522,7 @@ let drawInfos =()=> {
     if (title) {
         ctx.translate(0, infoStyle.ypos / 3 + Math.sin(time / 5 * Math.PI * 2) * 30);
         ctx.globalAlpha = infoStyle.alpha;
-        ctx.fillStyle = "#ffffff";
+        ctx.fillStyle = colorList.white;
         ctx.textAlign = "left";
         ctx.font = "200 150px Oswald";
         ctx.fillText(title, -1450, 0);
@@ -501,13 +533,14 @@ let drawInfos =()=> {
         ctx.fillRect(-1500, -125 + 250 * snd[bgm].currentTime / snd[bgm].duration, 25, 225 * (1 - snd[bgm].currentTime / snd[bgm].duration));
         
         ctx.globalAlpha = infoStyle.alpha;
+        ctx.fillStyle = colorList.white;
         ctx.textAlign = "right";
         ctx.font = "300 150px Oswald";
         ctx.fillText(("0000000" + Math.floor(judgeStatus.score)).substr(-7), 1450, 60);
-        ctx.fillStyle = "#bbffff";
+        ctx.fillStyle = colorList.good;
         ctx.globalAlpha = judgeStatus.far || judgeStatus.lost ? 0.05 : 0.25 + Math.sin(time / 2 * Math.PI * 2) * 0.05;
         ctx.fillRect(1500, -60, -25, 60);
-        ctx.fillStyle = "#ffffbb";
+        ctx.fillStyle = colorList.perfect;
         ctx.globalAlpha = judgeStatus.good || judgeStatus.far || judgeStatus.lost ? 0.05 : 0.25 + Math.sin(time / 2 * Math.PI * 2) * 0.05;
         ctx.fillRect(1500, 0, -25, 60);
     }
@@ -518,7 +551,7 @@ let drawInfos =()=> {
     ctx.globalAlpha = infoStyle.alpha;
     
     if (judgeStatus.combo > 2) {
-        ctx.fillStyle = "#ffffff";
+        ctx.fillStyle = colorList.white;
         ctx.textAlign = "center";
         ctx.font = "200 200px Oswald";
         ctx.fillText("COMBO", 0, -400);
@@ -538,7 +571,7 @@ let getKeyInput =()=> {
     laneKeys.forEach((x, y)=>{
         if ((keydown[x] || mouseState.touchx.some(x => judgeXPos[y] - 125 < x && judgeXPos[y] + 125 > x)) && !pressed[y]) {
             pressed[y] = true;
-            pressedTime[y] = nowTime;
+            pressedTime[y] = new Date().getTime() - startedTime;
             newPressed[y] = true;
         } else if (!keydown[x]) pressed[y] = false;
     })
@@ -646,8 +679,9 @@ let keyInterval =()=> setInterval(()=>{getKeyInput()}, 10);
 
 getKeyInput();
 setTimeout(keyInterval, 100);
-setTimeout(keyInterval, 102.5);
-setTimeout(keyInterval, 105);
-setTimeout(keyInterval, 107.5);
+setTimeout(keyInterval, 102);
+setTimeout(keyInterval, 104);
+setTimeout(keyInterval, 106);
+setTimeout(keyInterval, 108);
 
 main();
