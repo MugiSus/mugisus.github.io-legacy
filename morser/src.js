@@ -107,7 +107,7 @@ function main(){
     ctx.fillRect(-5,-15,120,30);
     ctx.globalAlpha = alpha["c"];
     ctx.textAlign = "left";
-    ctx.font = "10px sans-serif";
+    ctx.font = "20px Montserrat 300";
     ctx.fillText("Clear", -115, 60);
     ctx.globalAlpha = alpha["e"];
     ctx.textAlign = "right";
@@ -119,12 +119,12 @@ function main(){
     ctx.textAlign = "center";
 
     result = Object.keys(morse)[Object.values(morse).indexOf(stack.join(""))]
-    ctx.fillText(stack.map(x => x == "-" ? "ー" : "・").join("") + "  " + (result || " "), 0, -60);
+    ctx.fillText(stack.map(x => x == "-" ? "_" : ".").join(" ") + "  " + (result || " "), 0, 60);
 
     ctx.globalAlpha = 0.5;
-    ctx.font = "5px sans-serif";
-    ctx.fillText(stack.map(x => x == "-" ? "ー" : "・").join("") + "・ ... " + Object.keys(morse).filter(x => morse[x].slice(0,stack.length+1) == stack.join("") + ".").join(" "), 0, -37);
-    ctx.fillText(stack.map(x => x == "-" ? "ー" : "・").join("") + "ー ... " + Object.keys(morse).filter(x => morse[x].slice(0,stack.length+1) == stack.join("") + "-").join(" "), 0, -30);
+    ctx.font = "10px Montserrat";
+    ctx.fillText(stack.map(x => x == "-" ? "_" : ".").join(" ") + " .  ... " + Object.keys(morse).filter(x => morse[x].slice(0,stack.length+1) == stack.join("") + ".").join(" "), 0, -55);
+    ctx.fillText(stack.map(x => x == "-" ? "_" : ".").join(" ") + " _  ... " + Object.keys(morse).filter(x => morse[x].slice(0,stack.length+1) == stack.join("") + "-").join(" "), 0, -40);
 
     requestAnimationFrame(main);
 }
