@@ -44,7 +44,8 @@ class EntityInfo {
 }
 
 class Entity {
-    constructor(entityInfo, x, y) {
+    constructor(entityName, entityInfo, x, y) {
+        this.name = entityName;
         this.info = entityInfo;
         this.x = x;
         this.y = y;
@@ -69,8 +70,15 @@ let entityID = 0;
 let entitiesArray = [];
 let wiresArray = []
 
-let CreateEntity =(entityInfo, x, y)=> entitiesArray[entityID++] = new Entity(entityInfo, x, y);
+let CreateEntity =(entityName, x, y)=> entitiesArray[entityID++] = new Entity(entityName, ENTITY_INFOES[entityName], x, y);
 let CreateWire =(entityOut, entityIn, outputPinNumber, inputPinNumber)=> wiresArray.push(new Wire(entityOut, entityIn, outputPinNumber, inputPinNumber))
+
+let Export =(entitiesArray, wiresArray)=> {
+    let result = "";
+    entitiesArray.forEach(entity => result += `${entity.name},${entity.x.toString(36)},${entity.y.toString(36)};`);
+    wiresArray.forEach(wire => result += `${wire.entityOut.toString(36)},${wire.entityIn.toString(36)},${wire.outputPinNumber.toString(36)},${wire.inputPinNumber.toString(36)};`);
+    return result;
+}
 
 function EvaluateWires() {
     wiresArray.forEach(item => {
@@ -221,9 +229,11 @@ function DrawWires() {
 
 function Main() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    EvaluateWires();
-    EvaluateEntities();
+
+    for (let i = 0; i < 50; i++) {
+        EvaluateWires();
+        EvaluateEntities();
+    }
 
     DrawWires();
     DrawEntities();
@@ -231,6 +241,4 @@ function Main() {
     requestAnimationFrame(Main);
 }
 
-ctx.scale(1.2, 1.2);
-ctx.translate(-120, -30)
 window.addEventListener("load", Main);
