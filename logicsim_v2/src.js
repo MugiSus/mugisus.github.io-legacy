@@ -44,13 +44,13 @@ class EntityInfo {
 }
 
 class Entity {
-    constructor(entityName, entityInfo, x, y) {
+    constructor(entityName, entityInfo, x, y, bool) {
         this.name = entityName;
         this.info = entityInfo;
         this.x = x;
         this.y = y;
         this.input = 0;
-        this.output = 0;
+        this.output = bool || 0;
         this.draftInput = 0;
     }
 }
@@ -66,18 +66,45 @@ class Wire {
 }
 
 let clickedInThisFrame = false;
-let entityID = 0;
-let entitiesArray = [];
-let wiresArray = []
+let entityID = 0, entitiesArray = [], wiresArray = [];
 
-let CreateEntity =(entityName, x, y)=> entitiesArray[entityID++] = new Entity(entityName, ENTITY_INFOES[entityName], x, y);
+let InitalizeField =()=> {
+    entityID = 0;
+    entitiesArray = [];
+    wiresArray = []
+}
+let CreateEntity =(entityName, x, y, bool)=> entitiesArray[entityID++] = new Entity(entityName, ENTITY_INFOES[entityName], x, y, bool);
 let CreateWire =(entityOut, entityIn, outputPinNumber, inputPinNumber)=> wiresArray.push(new Wire(entityOut, entityIn, outputPinNumber, inputPinNumber))
 
-let Export =(entitiesArray, wiresArray)=> {
-    let result = "";
-    entitiesArray.forEach(entity => result += `${entity.name},${entity.x.toString(36)},${entity.y.toString(36)};`);
-    wiresArray.forEach(wire => result += `${wire.entityOut.toString(36)},${wire.entityIn.toString(36)},${wire.outputPinNumber.toString(36)},${wire.inputPinNumber.toString(36)};`);
+let Export =(entities, wires)=> {
+    let result = 
+        entities.map(entity => `${entity.name},${entity.x.toString(36)},${entity.y.toString(36)},${(entity.output * 1).toString(36)}`).join(";") + 
+        ";;" + 
+        wires.map(wire => `${wire.entityOut.toString(36)},${wire.entityIn.toString(36)},${wire.outputPinNumber.toString(36)},${wire.inputPinNumber.toString(36)}`).join(";");
     return result;
+}
+
+let Import =(string)=> {
+    InitalizeField();
+    string.split(";;")[0].split(";").forEach(entity => {
+        let entityArray = entity.split(",");
+        CreateEntity(
+            entityArray[0],
+            parseInt(entityArray[1], 36),
+            parseInt(entityArray[2], 36),
+            parseInt(entityArray[3], 36)
+        );
+    })
+    string.split(";;")[1].split(";").forEach(wire => {
+        let wireArray = wire.split(",");
+        CreateWire(
+            parseInt(wireArray[0], 36),
+            parseInt(wireArray[1], 36),
+            parseInt(wireArray[2], 36),
+            parseInt(wireArray[3], 36)
+        );
+    })
+    return 0;
 }
 
 function EvaluateWires() {
@@ -227,6 +254,10 @@ function DrawWires() {
     }
 }
 
+function ControlCamera() {
+    
+}
+
 function Main() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -234,6 +265,8 @@ function Main() {
         EvaluateWires();
         EvaluateEntities();
     }
+
+    ControlCamera();
 
     DrawWires();
     DrawEntities();
