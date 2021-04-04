@@ -43,6 +43,7 @@ body{
 #yearsold {
     display: inline-block;
     font-size: 1vw;
+    animation: gaming 2s linear infinite;
 }
 
 @keyframes gaming {
