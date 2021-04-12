@@ -62,18 +62,18 @@ class rain {
     }
 }
 
-let a = 300, w = 2000, waveTimer = 2500, bubbles = [], rains = [], arrowpos = 750;
+let a = 300, w = 2000, waveTimer = 2500, bubbles = [], rains = [], arrowpos = 500, scrolly = 0;
 
 let startedTime = new Date().getTime(), timer;
 
 function Main() {
     requestAnimationFrame(Main);
 
-    ctx.beginPath();
-    ctx.rect(-1600, -900, 3200, 1800);
-    ctx.clip();
-    
+    ctx.save();
     ctx.clearRect(canvas.width / -2 / scaleRatio, canvas.height / -2 / scaleRatio, canvas.width / scaleRatio, canvas.height / scaleRatio);
+
+    scrolly += (-window.pageYOffset - scrolly) / 7.5;
+    ctx.translate(0, scrolly / scaleRatio * 0.5);
     
     a = (1 + Math.sin(new Date().getTime() / 1000) * 0.3) * 80;
     
@@ -89,12 +89,13 @@ function Main() {
     ctx.textAlign = "center";
     timer = new Date().getTime() - startedTime;
 
-    if (timer > 1000 && timer < 4000) {
+    if (timer > 1000 && timer < 5000) {
         ctx.font = "800 220px 'M PLUS Rounded 1c'";
         for (let i = 0; i < 7; i++) {
             if (1000 + i * 100 > timer) break;
             if (GetShownOrHidden([0, 1, 50, 57, 100, 113, 150, 169, 200, 225, 250, 281, 300, 337, 350, 393, 400, 449, 450, 500], timer - (1000 + i * 100))) {
                 let ypos = -500 + Math.max(0, (timer - (2000 + i * 100)) / 1000) ** 5 * 800;
+
                 ctx.strokeText("MugiSus".charAt(i), -990 + 330 * i, ypos);
                 if (ypos > 300) {
                     let randnum = 1 + Math.random() * 2.5;
@@ -109,7 +110,7 @@ function Main() {
 
     randnum = -4.5 + Math.random() * 6;
     for (let j = 0; j < randnum; j++)
-        bubbles.push(new bubble(-1600 + Math.random() * 3200, 1000));
+        bubbles.push(new bubble(-1600 + Math.random() * 3200, 1000 + window.pageYOffset / scaleRatio));
 
     if (timer > 4000) {
         ctx.lineWidth = 1.5;
@@ -121,9 +122,9 @@ function Main() {
     }
 
     if (timer > 10000) {
-        arrowpos += (650 - arrowpos) / 10;
+        arrowpos += (650 - arrowpos) / 5;
         if (GetShownOrHidden([0, 1, 50, 57, 100, 113, 150, 169, 200, 225, 250, 281, 300, 337, 350, 393, 400, 449, 450, 500], timer - 10000)) {
-            let ypos = 700 + Math.sin(timer / 1000 + 1.5) * 50;
+            let ypos = -600 + Math.sin(timer / 1000 + 1.5) * 50;
             ctx.strokeText("scroll for more information", 0, ypos);
             ctx.strokeText("↓", -arrowpos, ypos);
             ctx.strokeText("↓", arrowpos, ypos);
@@ -135,11 +136,14 @@ function Main() {
     bubbles.forEach(x => x.draw());
     rains.forEach(x => x.draw());
     ctx.stroke();
-    bubbles = bubbles.filter(x => x.y > 300 && x.y < 2500);
+    bubbles = bubbles.filter(x => x.y > 300);
     rains = rains.filter(x => x.y < 300);
+
+    ctx.restore();
 
 }
 
 window.addEventListener("load", ()=>{
+    scrolly = -window.pageYOffset;
     Main();
 })
