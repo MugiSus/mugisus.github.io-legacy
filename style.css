@@ -6,8 +6,8 @@ body{
     background-color: #181818;
     overflow-x: hidden;
 
-    margin-left: 10vw;
-    margin-right: 10vw;
+    padding-left: 10vw;
+    padding-right: 10vw;
     font-family: 'M PLUS Rounded 1c';
     font-weight: 500;
     font-size: 1vw;
