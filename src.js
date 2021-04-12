@@ -97,8 +97,8 @@ function Main() {
                 let ypos = -500 + Math.max(0, (timer - (2000 + i * 100)) / 1000) ** 5 * 800;
 
                 ctx.strokeText("MugiSus".charAt(i), -990 + 330 * i, ypos);
-                if (ypos > 300) {
-                    let randnum = 1 + Math.random() * 2.5;
+                if (ypos > 300 && ypos < 4000) {
+                    let randnum = 1 + Math.random() * 2;
                     for (let j = 0; j < randnum; j++)
                         bubbles.push(new bubble(-990 + 330 * i + -100 + Math.random() * 200, ypos + -50 + Math.random() * 100));
                 }
@@ -108,9 +108,11 @@ function Main() {
 
     let randnum;
 
-    randnum = -4.5 + Math.random() * 6;
-    for (let j = 0; j < randnum; j++)
-        bubbles.push(new bubble(-1600 + Math.random() * 3200, 1000 + window.pageYOffset / scaleRatio));
+    if (bubbles.length < 100) {
+        randnum = -4.8 + Math.random() * 6;
+        for (let j = 0; j < randnum; j++)
+            bubbles.push(new bubble(-1600 + Math.random() * 3200, 1000 - scrolly / scaleRatio * 0.5));
+    }
 
     if (timer > 4000) {
         ctx.lineWidth = 1.5;
