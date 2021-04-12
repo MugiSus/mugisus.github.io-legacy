@@ -111,7 +111,7 @@ function Main() {
     if (bubbles.length < 100) {
         randnum = -4.8 + Math.random() * 6;
         for (let j = 0; j < randnum; j++)
-            bubbles.push(new bubble(-1600 + Math.random() * 3200, 1000 - scrolly / scaleRatio * 0.5));
+            bubbles.push(new bubble(-1600 + Math.random() * 3200, canvas.height / 2 / scaleRatio + 100 - scrolly / scaleRatio * 0.5));
     }
 
     if (timer > 4000) {
