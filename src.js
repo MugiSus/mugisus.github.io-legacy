@@ -79,11 +79,11 @@ function Main() {
     
     ctx.strokeStyle = "#e0e0e0";
     ctx.lineWidth = 5;
-    ctx.stroke(GetWavePath(a, w, new Date().getTime() / 3000));
+    ctx.stroke(GetWavePath(a, w, new Date().getTime() / 4000));
     ctx.lineWidth = 3;
-    ctx.stroke(GetWavePath(a * 0.7, w * 0.9, new Date().getTime() / 1500 * 0.1));
+    ctx.stroke(GetWavePath(a * 0.7, w * 0.9, new Date().getTime() / 10000 + 0.1));
     ctx.lineWidth = 2;
-    ctx.stroke(GetWavePath(a * 0.3, w * 0.75, new Date().getTime() / 1000 + 0.25));
+    ctx.stroke(GetWavePath(a * 0.3, w * 0.75, new Date().getTime() / 1500 + 0.25));
     
     ctx.lineWidth = 3;
     ctx.textAlign = "center";

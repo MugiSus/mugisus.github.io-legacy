@@ -56,11 +56,6 @@ body{
     transition-duration: 0.5s;
 }
 
-.social-icons:hover{
-    opacity: 0.8;
-    transition-duration: 0.2s;
-}  
-
 .lang{
     height: 1.5vw;
 }
