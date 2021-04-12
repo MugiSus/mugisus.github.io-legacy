@@ -126,7 +126,7 @@ function Main() {
     if (timer > 10000) {
         arrowpos += (650 - arrowpos) / 5;
         if (GetShownOrHidden([0, 1, 50, 57, 100, 113, 150, 169, 200, 225, 250, 281, 300, 337, 350, 393, 400, 449, 450, 500], timer - 10000)) {
-            let ypos = -600 + Math.sin(timer / 1000 + 1.5) * 50;
+            let ypos = -550 + Math.sin(timer / 1000 + 1.5) * 50;
             ctx.strokeText("Scroll for more informations", 0, ypos);
             ctx.strokeText("↓", -arrowpos, ypos);
             ctx.strokeText("↓", arrowpos, ypos);

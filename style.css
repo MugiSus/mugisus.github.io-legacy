@@ -6,6 +6,8 @@ body{
     background-color: #181818;
     overflow-x: hidden;
 
+    margin-left: 10vw;
+    margin-right: 10vw;
     font-family: 'M PLUS Rounded 1c';
     font-weight: 500;
     font-size: 1vw;
@@ -50,8 +52,8 @@ body{
 }
 
 .social-icons{
-    height: 2.5vw;
-    width: 2.5vw;
+    height: 3vw;
+    width: 3vw;
     margin: 0.5vw;
     transition-duration: 0.5s;
 }
