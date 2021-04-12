@@ -81,9 +81,9 @@ function Main() {
     ctx.lineWidth = 5;
     ctx.stroke(GetWavePath(a, w, new Date().getTime() / 3000));
     ctx.lineWidth = 3;
-    ctx.stroke(GetWavePath(a * 0.7, w * 0.9, new Date().getTime() / 1500));
+    ctx.stroke(GetWavePath(a * 0.7, w * 0.9, new Date().getTime() / 1500 * 0.1));
     ctx.lineWidth = 2;
-    ctx.stroke(GetWavePath(a * 0.3, w * 0.75, new Date().getTime() / 1000));
+    ctx.stroke(GetWavePath(a * 0.3, w * 0.75, new Date().getTime() / 1000 + 0.25));
     
     ctx.lineWidth = 3;
     ctx.textAlign = "center";
@@ -127,7 +127,7 @@ function Main() {
         arrowpos += (650 - arrowpos) / 5;
         if (GetShownOrHidden([0, 1, 50, 57, 100, 113, 150, 169, 200, 225, 250, 281, 300, 337, 350, 393, 400, 449, 450, 500], timer - 10000)) {
             let ypos = -600 + Math.sin(timer / 1000 + 1.5) * 50;
-            ctx.strokeText("scroll for more information", 0, ypos);
+            ctx.strokeText("Scroll for more informations", 0, ypos);
             ctx.strokeText("↓", -arrowpos, ypos);
             ctx.strokeText("↓", arrowpos, ypos);
         }
