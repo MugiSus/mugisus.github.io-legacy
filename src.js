@@ -26,7 +26,7 @@ let GetWavePath =(amplitude, wavelength, phase)=> {
 }
 
 let GetShownOrHidden =(timingpoints, time)=> {
-    return timingpoints.findIndex((x) => x > time) % 2;
+    return !(timingpoints.findIndex((x) => x > time) % 2);
 }
 
 class bubble {
