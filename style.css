@@ -5,22 +5,26 @@ body{
     margin: 0;
     background-color: #181818;
     overflow-x: hidden;
+}
 
+::-webkit-scrollbar{
+    display: none;
+}
+
+#content{
     font-family: 'M PLUS Rounded 1c';
     font-weight: 500;
     font-size: 1vw;
     color: #a0a0a0;
+    padding-left: 10vw;
+    padding-right: 10vw;
 }
 
-#canvas {
+#canvas{
     position: fixed;
     left: 0px;
     top: 0px; 
     z-index: -2147483647;
-}
-
-::-webkit-scrollbar {
-    display: none;
 }
 
 #page-title{
@@ -46,11 +50,17 @@ body{
     font-size: 1vw;
 }
 
+#tips{
+    color: #c0c0c040;
+    font-size: 1vw;
+    margin-bottom: 5vw;
+}
+
 .social-icons{
     height: 3vw;
     width: 3vw;
     margin: 0.5vw;
-    margin-bottom: 15vh;
+    margin-bottom: 10vh;
 }
 
 .lang{
@@ -65,5 +75,5 @@ a{
 
 a:hover{
     opacity: 0.6;
-    transition-duration: 0.1s;
+    transition-duration: 0.15s;
 }

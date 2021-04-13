@@ -42,7 +42,7 @@ class bubble {
         ctx.moveTo(this.x + this.size, this.y);
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         this.x += this.ax *= 0.99;
-        this.y += Math.max(this.ay += -0.15, -15);
+        this.y += Math.max(this.ay += -0.10, -15);
     }
 }
 
