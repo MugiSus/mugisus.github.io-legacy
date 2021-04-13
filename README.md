@@ -1,3 +1,3 @@
-# mmgiss.github.io
+# mugisus.github.io
 
 MugiSusのリポジトリです。
