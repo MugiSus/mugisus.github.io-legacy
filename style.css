@@ -37,16 +37,20 @@ body{
 }
 
 #watermark{
+    position: fixed;
+    width: 100vw;
+    text-align: center;
+    bottom: 0px;
     color: #c0c0c040;
     font-weight: 800;
     font-size: 1vw;
-    margin-top: 10vh;
 }
 
 .social-icons{
     height: 3vw;
     width: 3vw;
     margin: 0.5vw;
+    margin-bottom: 15vh;
 }
 
 .lang{
