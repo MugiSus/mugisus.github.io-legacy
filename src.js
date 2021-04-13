@@ -116,7 +116,6 @@ function Main() {
 
     if (timer > 4000) {
         ctx.lineWidth = 1.5;
-        ctx.font = "800 80px 'M PLUS Rounded 1c'";
         
         randnum = Math.min(-3, -6 + (timer - 4000) / 20000 * 3) + Math.random() * 6;
         for (let j = 0; j < randnum; j++)
@@ -124,7 +123,8 @@ function Main() {
     }
 
     if (timer > 10000) {
-        arrowpos += (650 - arrowpos) / 5;
+        ctx.font = "800 100px 'M PLUS Rounded 1c'";
+        arrowpos += (800 - arrowpos) / 5;
         if (GetShownOrHidden([0, 1, 50, 57, 100, 113, 150, 169, 200, 225, 250, 281, 300, 337, 350, 393, 400, 449, 450, 500], timer - 10000)) {
             let ypos = -550 + Math.sin(timer / 1000 + 1.5) * 50;
             ctx.strokeText("Scroll for more informations", 0, ypos);

@@ -5,7 +5,7 @@ body{
     margin: 0;
     background-color: #181818;
     overflow-x: hidden;
-    
+
     font-family: 'M PLUS Rounded 1c';
     font-weight: 500;
     font-size: 1vw;
@@ -19,18 +19,12 @@ body{
     z-index: -2147483647;
 }
 
-#brank {
-    left: 0px;
-    top: 0px;
-    width: 100vw;
-    height: 100vh;
-}
-
 ::-webkit-scrollbar {
     display: none;
 }
 
 #page-title{
+    margin-top: 100vh;
     color: #e0e0e0;
     font-weight: 800;
     font-size: 6vw;
@@ -53,7 +47,6 @@ body{
     height: 3vw;
     width: 3vw;
     margin: 0.5vw;
-    transition-duration: 0.5s;
 }
 
 .lang{
