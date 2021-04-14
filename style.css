@@ -41,13 +41,14 @@ body{
 }
 
 #watermark{
+    font-family: 'M PLUS Rounded 1c';
     position: fixed;
     width: 100vw;
     text-align: center;
     bottom: 0px;
     color: #c0c0c040;
     font-weight: 800;
-    font-size: 1vw;
+    font-size: 1.2vw;
 }
 
 #tips{
