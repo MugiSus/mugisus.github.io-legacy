@@ -30,7 +30,7 @@ document.getElementById("dispatcher").addEventListener("click", function() {
     localStorage["textToSound"] = textToSound;
     localStorage["soundSec"] = soundSec;
     
-    alert(`going to sound '${textToSound}' ${soundSec} sec per note`);
+    alert(`going to sound "${textToSound}" ${soundSec} sec per note`);
     if (confirm("ready?")) {
         for (let i = 0; i < textToSound.length; i++) {
             console.log(`attempting ${i}...`);
