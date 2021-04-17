@@ -1,7 +1,9 @@
 
 const frequency = [440, 528, 633, 760, 912, 1095, 1314, 1577];
-
 let context;
+
+document.getElementById("text").value = localStorage["textToSound"] || "Dual-tone multi-frequency signaling (DTMF) is a telecommunication signaling system using the voice-frequency band over telephone lines between telephone equipment and other communications devices and switching centers. - Wikipedia";
+document.getElementById("sec").value = localStorage["soundSec"] || 0.12;
 
 window.addEventListener("load", () => {
     context = new AudioContext();
@@ -21,8 +23,12 @@ function beep(hertz, start, len) {
 }
 
 document.getElementById("dispatcher").addEventListener("click", function() {
+    
     let textToSound = document.getElementById("text").value;
     let soundSec = document.getElementById("sec").value;
+
+    localStorage["textToSound"] = textToSound;
+    localStorage["soundSec"] = soundSec;
     
     alert(`going to sound '${textToSound}' ${soundSec} sec per note`);
     if (confirm("ready?")) {
