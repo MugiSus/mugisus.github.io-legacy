@@ -1,5 +1,5 @@
 
-const frequency = new Array(8).fill(0).map((_, i) => 440 * 1.35 ** i);
+const frequency = new Array(16).fill(0).map((_, i) => 440 * (2 ** ((i * 4 - 6) / 12)));
 let context;
 
 document.getElementById("text").value = localStorage["textToSound"] || "hello, world! ðøüþÿ";
