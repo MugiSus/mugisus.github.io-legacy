@@ -1,5 +1,5 @@
 
-const frequency = [440, 528, 633, 760, 912, 1095, 1314, 1577];
+const frequency = new Array(8).fill(0).map((_, i) => 440 * 1.35 ** i);
 let context;
 
 document.getElementById("text").value = localStorage["textToSound"] || "Dual-tone multi-frequency signaling (DTMF) is a telecommunication signaling system using the voice-frequency band over telephone lines between telephone equipment and other communications devices and switching centers. - Wikipedia";
@@ -16,6 +16,7 @@ function beep(hertz, start, len) {
     gainNode.gain.value = 0.25;
     
     let oscillatorNode = new OscillatorNode(context);
+    oscillatorNode.type = "sine";
     oscillatorNode.frequency.value = hertz;
     oscillatorNode.connect(gainNode);
     oscillatorNode.start(context.currentTime + start);
@@ -35,7 +36,7 @@ document.getElementById("dispatcher").addEventListener("click", function() {
         for (let i = 0; i < textToSound.length; i++) {
             console.log(`attempting ${i}...`);
             frequency.forEach((f, index) => {
-                if ((textToSound.codePointAt(i) >> index) & 1) beep(f, i * soundSec, soundSec * 0.9);
+                if ((textToSound.codePointAt(i) >> index) & 1) beep(f, i * soundSec, soundSec * 0.75);
             });
         }
     }
