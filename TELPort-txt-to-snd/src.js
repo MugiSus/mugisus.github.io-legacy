@@ -1,12 +1,16 @@
 
-const frequency = new Array(16).fill(0).map((_, i) => 440 * (2 ** ((i * 4 - 6) / 12)));
-let context;
+const frequency = new Array(16).fill(0).map((_, i) => {
+    if (i < 12)
+        return 880 * 2 ** (i / 12);
+    if (i < 36)
+        return 1760 * 2 ** ((i - 12) / 24);
+});
 
 document.getElementById("text").value = localStorage["textToSound"] || "hello, world! ðøüþÿ";
 document.getElementById("sec").value = localStorage["soundSec"] || 0.5;
 
 window.addEventListener("load", () => {
-    context = new AudioContext();
+    
 })
 
 function beep(hertz, start, len) {
@@ -24,6 +28,8 @@ function beep(hertz, start, len) {
 }
 
 document.getElementById("dispatcher").addEventListener("click", function() {
+
+    let context = new AudioContext();
     
     let textToSound = document.getElementById("text").value;
     let soundSec = document.getElementById("sec").value;
