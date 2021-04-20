@@ -9,9 +9,7 @@ const frequency = new Array(16).fill(0).map((_, i) => {
 document.getElementById("text").value = localStorage["textToSound"] || "hello, world! ðøüþÿ";
 document.getElementById("sec").value = localStorage["soundSec"] || 0.5;
 
-window.addEventListener("load", () => {
-    
-})
+let context;
 
 function beep(hertz, start, len) {
     
@@ -29,7 +27,7 @@ function beep(hertz, start, len) {
 
 document.getElementById("dispatcher").addEventListener("click", function() {
 
-    let context = new AudioContext();
+    context = new AudioContext();
     
     let textToSound = document.getElementById("text").value;
     let soundSec = document.getElementById("sec").value;
