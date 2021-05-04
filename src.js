@@ -146,10 +146,12 @@ function Main() {
 }
 
 window.addEventListener("load", ()=>{
+    let yearsold = document.getElementById("yearsold");
+    let date = new Date();
+    yearsold.innerHTML = (date.getFullYear() - 2003) - (date.getMonth() < 4 && date.getDate() < 5);
+    if (date.getMonth() == 4 && date.getDate() == 5) yearsold.style.animation = "gaming 2s linear infinite";
+
     scrolly = -window.pageYOffset;
     Main();
-
-    let date = new Date();
-    document.getElementById("yearsold").innerHTML = (date.getFullYear() - 2003) - (date.getMonth() < 4 && date.getDate() < 5);
 })
 

@@ -44,6 +44,13 @@ body{
     display: inline-block;
 }
 
+@keyframes gaming {
+    0% { color: #ff88ff; }
+    33% { color: #ffff88; }
+    66% { color: #88ffff; }
+    100% { color: #ff88ff; }
+}
+
 #watermark{
     font-family: 'M PLUS Rounded 1c';
     position: fixed;
