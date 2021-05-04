@@ -40,6 +40,10 @@ body{
     font-size: 4vw;
 }
 
+#yearsold {
+    display: inline-block;
+}
+
 #watermark{
     font-family: 'M PLUS Rounded 1c';
     position: fixed;

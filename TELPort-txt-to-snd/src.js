@@ -1,4 +1,7 @@
 
+let date = new Date();
+document.getElementById("yearsold").innerHTML = date.getFullYear() - 2003 + (date.getMonth() >= 4 && date.getDate() >= 5);
+
 const frequency = new Array(16).fill(0).map((_, i) => {
     if (i < 12)
         return 880 * 2 ** (i / 12);
