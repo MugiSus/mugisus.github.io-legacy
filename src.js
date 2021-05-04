@@ -152,3 +152,4 @@ window.addEventListener("load", ()=>{
     let date = new Date();
     document.getElementById("yearsold").innerHTML = (date.getFullYear() - 2003) - (date.getMonth() < 4 && date.getDate() < 5);
 })
+
