@@ -42,13 +42,14 @@ body{
 
 #yearsold {
     display: inline-block;
+    font-size: 1vw;
 }
 
 @keyframes gaming {
-    0% { color: #ffbbff; text-shadow: 0px 0px 15px #ffddff;}
-    33% { color: #ffff88; text-shadow: 0px 0px 15px #ffffdd;}
-    66% { color: #88ffff; text-shadow: 0px 0px 15px #ddffff;}
-    100% { color: #ffbbff; text-shadow: 0px 0px 15px #ffddff;}
+    0% { color: #ffbbff; text-shadow: 0px 0px 1vw #ffddff;}
+    33% { color: #ffff88; text-shadow: 0px 0px 1vw #ffffdd;}
+    66% { color: #88ffff; text-shadow: 0px 0px 1vw #ddffff;}
+    100% { color: #ffbbff; text-shadow: 0px 0px 1vw #ffddff;}
 }
 
 #watermark{
