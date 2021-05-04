@@ -45,10 +45,10 @@ body{
 }
 
 @keyframes gaming {
-    0% { color: #ffbbff; }
-    33% { color: #ffff88; }
-    66% { color: #88ffff; }
-    100% { color: #ffbbff; }
+    0% { color: #ffbbff; text-shadow: 0px 0px 15px #ffddff;}
+    33% { color: #ffff88; text-shadow: 0px 0px 15px #ffffdd;}
+    66% { color: #88ffff; text-shadow: 0px 0px 15px #ddffff;}
+    100% { color: #ffbbff; text-shadow: 0px 0px 15px #ffddff;}
 }
 
 #watermark{
