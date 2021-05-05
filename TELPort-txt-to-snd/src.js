@@ -37,11 +37,16 @@ document.getElementById("dispatcher").addEventListener("click", function() {
     
     alert(`going to sound "${textToSound}" ${soundSec} sec per note`);
     if (confirm("ready?")) {
-        for (let i = 0; i < textToSound.length; i++) {
+
+        let mainInterval, i = 0;
+
+        mainInterval = setInterval(function() {
             console.log(`attempting ${i}...`);
             frequency.forEach((f, index) => {
-                if ((textToSound.codePointAt(i) >> index) & 1) beep(f, i * soundSec, soundSec * 0.8);
+                if ((textToSound.codePointAt(i) >> index) & 1) beep(f, 0, soundSec * 0.8);
             });
-        }
+            i++;
+            if (i >= textToSound.length) clearInterval(mainInterval);
+        }, soundSec * 1000);
     }
 })
