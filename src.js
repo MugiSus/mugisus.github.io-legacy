@@ -142,7 +142,6 @@ function Main() {
     rains = rains.filter(x => x.y < 300);
 
     ctx.restore();
-
 }
 
 window.addEventListener("load", ()=>{

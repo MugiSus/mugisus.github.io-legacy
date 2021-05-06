@@ -54,16 +54,13 @@ document.getElementById("call-button").addEventListener("click", function() {
     }
 })
 
-document.getElementById("rec-button").addEventListener("click", function() {
+document.getElementById("rec-button").addEventListener("click", async() => {
     alert("work in progress. sorry!");
-    return;
 
-    context = new AudioContext();
-    
-    const stream = navigator.mediaDevices.getUserMedia({audio: true}); //Failed to execute 'createMediaStreamSource' on 'AudioContext': parameter 1 is not of type 'MediaStream'.
-    const input = context.createMediaStreamSource(stream);
-    
-    const analyzer = context.createAnalyser();
-    
+    const audioCtx = new AudioContext();
+    const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+    const input  = audioCtx.createMediaStreamSource(stream);
+    const analyzer = audioCtx.createAnalyser();
     input.connect(analyzer);
+    
 })

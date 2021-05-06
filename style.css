@@ -41,8 +41,6 @@ body{
 }
 
 #yearsold {
-    display: inline;
-    _display: inline;
     /*font-size: 1vw;*/
     animation: gaming 2s linear infinite;
 }
