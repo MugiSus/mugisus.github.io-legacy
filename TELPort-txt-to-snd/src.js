@@ -9,7 +9,8 @@ const frequency = new Array(16).fill(0).map((_, i) => {
 document.getElementById("text").value = localStorage["textToSound"] || "hello, world! ðøüþÿ";
 document.getElementById("sec").value = localStorage["soundSec"] || 0.5;
 
-document.getElementById("boxes").innerHTML = frequency.map((x, y) => `<div class="box" id="${y}"><span>${Math.round(x)}Hz</span></div>`).join(" ");
+document.getElementById("boxes").innerHTML = frequency.map((x, y) => `<div class="box"><span>${Math.round(x)}Hz<br>2<sup>${y}</sup></span></div>`).join(" ");
+let boxesHTMLCollection = document.getElementsByClassName("box");
 
 let context;
 
@@ -38,15 +39,22 @@ document.getElementById("call-button").addEventListener("click", function() {
     localStorage["soundSec"] = soundSec;
     
     alert(`going to sound "${textToSound}" ${soundSec} sec per note`);
-
+    
     if (confirm("ready?")) {
+
+        textToSound += '\0';
+        
         let mainInterval;
         let i = 0;
 
         mainInterval = setInterval(function() {
             console.log(`attempting ${i}...`);
             frequency.forEach((f, index) => {
-                if ((textToSound.codePointAt(i) >> index) & 1) beep(f, 0, soundSec * 0.8);
+                if ((textToSound.codePointAt(i) >> index) & 1) {
+                    beep(f, 0, soundSec * 0.8);
+                    boxesHTMLCollection[index].style.background = "#ffc050c0";
+                }
+                else boxesHTMLCollection[index].style.background = "#ffc05020";
             });
             i++;
             if (i >= textToSound.length) clearInterval(mainInterval);
@@ -54,13 +62,24 @@ document.getElementById("call-button").addEventListener("click", function() {
     }
 })
 
+let frequencyData;
+
 document.getElementById("rec-button").addEventListener("click", async() => {
     alert("work in progress. sorry!");
 
-    const audioCtx = new AudioContext();
+    return;
+
+    context = new AudioContext();
     const stream = await navigator.mediaDevices.getUserMedia({audio: true});
-    const input  = audioCtx.createMediaStreamSource(stream);
-    const analyzer = audioCtx.createAnalyser();
-    input.connect(analyzer);
-    
+    const input = context.createMediaStreamSource(stream);
+    const analyser = context.createAnalyser();
+    analyser.fftSize = 2048;
+    input.connect(analyser);
+    frequencyData = new Uint8Array(analyser.frequencyBinCount);
+
+    let ratePerSample = context.sampleRate / analyser.fftSize;
+
+    setInterval(() => {
+        analyser.getByteFrequencyData(frequencyData);
+    }, 10)
 })

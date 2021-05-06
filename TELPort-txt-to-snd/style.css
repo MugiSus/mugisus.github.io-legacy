@@ -32,7 +32,8 @@ body{
     margin: 0.5vw;
     width: 3.5vw;
     height: 3.5vw;
-    background: #ffbf5020; /* on: #ffbf50a0 */
+    background: #ffc05020; /* on: #ffc050c0 */
+    transition-duration: 0.05s;
 }
 
 .box span{
