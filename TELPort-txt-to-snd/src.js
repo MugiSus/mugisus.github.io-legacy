@@ -9,6 +9,8 @@ const frequency = new Array(16).fill(0).map((_, i) => {
 document.getElementById("text").value = localStorage["textToSound"] || "hello, world! ðøüþÿ";
 document.getElementById("sec").value = localStorage["soundSec"] || 0.5;
 
+document.getElementById("boxes").innerHTML = frequency.map((x, y) => `<div class="box" id="${y}"><span>${Math.round(x)}Hz</span></div>`).join(" ");
+
 let context;
 
 function beep(hertz, start, len) {
@@ -25,7 +27,7 @@ function beep(hertz, start, len) {
     oscillatorNode.stop(context.currentTime + start + len);
 }
 
-document.getElementById("dispatcher").addEventListener("click", function() {
+document.getElementById("call-button").addEventListener("click", function() {
 
     context = new AudioContext();
     
@@ -36,9 +38,10 @@ document.getElementById("dispatcher").addEventListener("click", function() {
     localStorage["soundSec"] = soundSec;
     
     alert(`going to sound "${textToSound}" ${soundSec} sec per note`);
-    if (confirm("ready?")) {
 
-        let mainInterval, i = 0;
+    if (confirm("ready?")) {
+        let mainInterval;
+        let i = 0;
 
         mainInterval = setInterval(function() {
             console.log(`attempting ${i}...`);
@@ -49,4 +52,18 @@ document.getElementById("dispatcher").addEventListener("click", function() {
             if (i >= textToSound.length) clearInterval(mainInterval);
         }, soundSec * 1000);
     }
+})
+
+document.getElementById("rec-button").addEventListener("click", function() {
+    alert("work in progress. sorry!");
+    return;
+
+    context = new AudioContext();
+    
+    const stream = navigator.mediaDevices.getUserMedia({audio: true}); //Failed to execute 'createMediaStreamSource' on 'AudioContext': parameter 1 is not of type 'MediaStream'.
+    const input = context.createMediaStreamSource(stream);
+    
+    const analyzer = context.createAnalyser();
+    
+    input.connect(analyzer);
 })

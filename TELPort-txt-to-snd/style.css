@@ -17,3 +17,30 @@ body{
 #demo{
     height:50vh
 }
+
+#call-button{
+    color: #448866;
+}
+
+#rec-button{
+    color: #884444;
+}
+
+.box{
+    position: relative;
+    display: inline-block;
+    margin: 0.5vw;
+    width: 3.5vw;
+    height: 3.5vw;
+    background: #ffbf5020; /* on: #ffbf50a0 */
+}
+
+.box span{
+    position: absolute;
+    display: inline;
+    top: 50%;
+    left: 50%;
+    color: #ffebc7;
+    transform: translate(-50%,-50%);
+    font-size: 0.8vw;
+}
