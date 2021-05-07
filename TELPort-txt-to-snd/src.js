@@ -1,9 +1,11 @@
 
-const frequency = new Array(16).fill(0).map((_, i) => {
-    if (i < 12)
-        return 880 * 2 ** (i / 12);
-    if (i < 36)
-        return 1760 * 2 ** ((i - 12) / 24);
+const frequency = new Array(17).fill(0).map((_, i) => {
+    if (i < 6)
+        return 440 * 2 ** (i / 6);
+    if (i < 18)
+        return 880 * 2 ** ((i - 6) / 12);
+    if (i < 42)
+        return 1760 * 2 ** ((i - 18) / 24);
 });
 
 document.getElementById("text").value = localStorage["textToSound"] || "hello, world! ðøüþÿ";
@@ -11,6 +13,13 @@ document.getElementById("sec").value = localStorage["soundSec"] || 0.5;
 
 document.getElementById("boxes").innerHTML = frequency.map((x, y) => `<div class="box"><span>${Math.round(x)}Hz<br>2<sup>${y}</sup></span></div>${y % 8 == 7 ? "<br>" : ""}`).join(" ");
 let boxesHTMLCollection = document.getElementsByClassName("box");
+const boxColorsCollection = {
+    yellow_mute : "#ffdd8820",
+    red_mute : "#ff888820",
+    red_sound : "#ff8888f0",
+    green_mute : "#88ffa020",
+    green_sound : "#88ffa0f0",
+}
 
 let context;
 
@@ -41,23 +50,25 @@ document.getElementById("call-button").addEventListener("click", function() {
     alert(`going to sound "${textToSound}" ${soundSec} sec per note`);
     
     if (confirm("ready?")) {
-
-        textToSound += '\0';
         
         let mainInterval;
         let i = 0;
 
         mainInterval = setInterval(function() {
+            if (i >= textToSound.length) {
+                [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.yellow_mute);
+                clearInterval(mainInterval);
+                return;
+            }
             console.log(`attempting ${i}...`);
             frequency.forEach((f, index) => {
                 if ((textToSound.codePointAt(i) >> index) & 1) {
                     beep(f, 0, soundSec * 0.8);
-                    boxesHTMLCollection[index].style.background = "#ffc050c0";
+                    boxesHTMLCollection[index].style.background = boxColorsCollection.green_sound;
                 }
-                else boxesHTMLCollection[index].style.background = "#ffc05020";
+                else boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
             });
             i++;
-            if (i >= textToSound.length) clearInterval(mainInterval);
         }, soundSec * 1000);
     }
 })
@@ -65,7 +76,11 @@ document.getElementById("call-button").addEventListener("click", function() {
 let frequencyData;
 
 document.getElementById("rec-button").addEventListener("click", async() => {
+    [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.red_mute);
+
     alert("work in progress. sorry!");
+
+    [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.yellow_mute);
 
     return;
 

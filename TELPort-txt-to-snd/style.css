@@ -32,8 +32,8 @@ body{
     margin: 0.5vw;
     width: 5vw;
     height: 5vw;
-    background: #ffc05020; /* on: #ffc050c0 */
-    transition-duration: 0.08s;
+    background: #ffdd8820;
+    transition-duration: 0.15s;
 }
 
 .box span{
@@ -41,7 +41,7 @@ body{
     display: inline;
     top: 50%;
     left: 50%;
-    color: #ffebc7;
+    color: #f0f0f0;
     transform: translate(-50%,-50%);
     font-size: 1vw;
 }
