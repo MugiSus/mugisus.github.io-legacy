@@ -30,10 +30,10 @@ body{
     position: relative;
     display: inline-block;
     margin: 0.5vw;
-    width: 3.5vw;
-    height: 3.5vw;
+    width: 5vw;
+    height: 5vw;
     background: #ffc05020; /* on: #ffc050c0 */
-    transition-duration: 0.05s;
+    transition-duration: 0.08s;
 }
 
 .box span{
@@ -43,5 +43,5 @@ body{
     left: 50%;
     color: #ffebc7;
     transform: translate(-50%,-50%);
-    font-size: 0.8vw;
+    font-size: 1vw;
 }

@@ -9,7 +9,7 @@ const frequency = new Array(16).fill(0).map((_, i) => {
 document.getElementById("text").value = localStorage["textToSound"] || "hello, world! ðøüþÿ";
 document.getElementById("sec").value = localStorage["soundSec"] || 0.5;
 
-document.getElementById("boxes").innerHTML = frequency.map((x, y) => `<div class="box"><span>${Math.round(x)}Hz<br>2<sup>${y}</sup></span></div>`).join(" ");
+document.getElementById("boxes").innerHTML = frequency.map((x, y) => `<div class="box"><span>${Math.round(x)}Hz<br>2<sup>${y}</sup></span></div>${y % 8 == 7 ? "<br>" : ""}`).join(" ");
 let boxesHTMLCollection = document.getElementsByClassName("box");
 
 let context;
