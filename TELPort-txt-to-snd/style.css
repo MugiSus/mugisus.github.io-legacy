@@ -18,6 +18,11 @@ body{
     height:50vh
 }
 
+#heard-letter{
+    font-size: 2vw;
+    color: #bbbb66;
+}
+
 #call-button{
     color: #448866;
 }

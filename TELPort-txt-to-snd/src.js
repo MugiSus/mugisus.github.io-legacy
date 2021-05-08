@@ -65,14 +65,18 @@ function soundText(textToSound, soundSec) {
 
 function listenTextLoop() {
     listenTextLoop_reqId = requestAnimationFrame(listenTextLoop);
+    let codePoint = 0;
 
     frequency.forEach((f, index) => {
         analyser.getByteFrequencyData(frequencyData);
-        if (threshold <= frequencyData[Math.floor(f / (context.sampleRate / analyser.fftSize))])
+        if (threshold <= frequencyData[Math.floor(f / (context.sampleRate / analyser.fftSize))]) {
             boxesHTMLCollection[index].style.background = boxColorsCollection.red_sound;
-        else 
+            codePoint += 2 ** index;
+        } else 
             boxesHTMLCollection[index].style.background = boxColorsCollection.red_mute;
     });
+
+    document.getElementById("heard-letter").innerHTML = `[${String.fromCodePoint(codePoint)}]`;
 }
 
 document.getElementById("call-button").addEventListener("click", function() {
