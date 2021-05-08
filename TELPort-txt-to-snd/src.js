@@ -23,8 +23,10 @@ const boxColorsCollection = {
     green_sound : "#88ffa0f0",
 }
 
-let context, frequencyData;
-let stream, input, analyser, threshold;
+let context;
+
+let soundText_intervalId;
+let frequencyData, stream, input, analyser, threshold, listenTextLoop_reqId;
 
 function beep(hertz, start, len) {
     let gainNode = new GainNode(context);
@@ -40,13 +42,12 @@ function beep(hertz, start, len) {
 }
 
 function soundText(textToSound, soundSec) {
-    let mainInterval;
     let i = 0;
 
-    mainInterval = setInterval(function() {
+    soundText_intervalId = setInterval(function() {
         if (i >= textToSound.length) {
             [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.yellow_mute);
-            clearInterval(mainInterval);
+            clearInterval(soundText_intervalId);
             return;
         }
         console.log(`attempting ${i}...`);
@@ -63,6 +64,8 @@ function soundText(textToSound, soundSec) {
 }
 
 function listenTextLoop() {
+    listenTextLoop_reqId = requestAnimationFrame(listenTextLoop);
+
     frequency.forEach((f, index) => {
         analyser.getByteFrequencyData(frequencyData);
         if (threshold <= frequencyData[Math.floor(f / (context.sampleRate / analyser.fftSize))])
@@ -70,10 +73,12 @@ function listenTextLoop() {
         else 
             boxesHTMLCollection[index].style.background = boxColorsCollection.red_mute;
     });
-    requestAnimationFrame(listenTextLoop);
 }
 
 document.getElementById("call-button").addEventListener("click", function() {
+    clearInterval(soundText_intervalId);
+    cancelAnimationFrame(listenTextLoop_reqId);
+
     context = new AudioContext();
     
     let textToSound = document.getElementById("text").value;
@@ -91,7 +96,9 @@ document.getElementById("call-button").addEventListener("click", function() {
 
 
 document.getElementById("rec-button").addEventListener("click", async() => {
-    
+    clearInterval(soundText_intervalId);
+    cancelAnimationFrame(listenTextLoop_reqId);
+
     if (!stream) {
         context = new AudioContext();
         stream = await navigator.mediaDevices.getUserMedia({audio: true});
@@ -108,8 +115,6 @@ document.getElementById("rec-button").addEventListener("click", async() => {
     alert(`>>>caution: work in progress<<<\n\nthreshold = ${threshold};\nanalyser.fftSize = ${analyser.fftSize};`);
     frequencyData = new Uint8Array(analyser.frequencyBinCount);
     
-    if (confirm("ready?")) {
-        [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.red_mute);
-        listenTextLoop();
-    }
+    [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.red_mute);
+    listenTextLoop();
 })
