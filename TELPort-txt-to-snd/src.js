@@ -21,10 +21,10 @@ const boxColorsCollection = {
     green_sound : "#88ffa0f0",
 }
 
-let context;
+let context, frequencyData;
+let stream, input, analyser;
 
 function beep(hertz, start, len) {
-    
     let gainNode = new GainNode(context);
     gainNode.connect(context.destination);
     gainNode.gain.value = 0.25;
@@ -37,8 +37,42 @@ function beep(hertz, start, len) {
     oscillatorNode.stop(context.currentTime + start + len);
 }
 
-document.getElementById("call-button").addEventListener("click", function() {
+function soundText(textToSound, soundSec) {
+    let mainInterval;
+    let i = 0;
 
+    mainInterval = setInterval(function() {
+        if (i >= textToSound.length) {
+            [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.yellow_mute);
+            clearInterval(mainInterval);
+            return;
+        }
+        console.log(`attempting ${i}...`);
+        frequency.forEach((f, index) => {
+            if ((textToSound.codePointAt(i) >> index) & 1) {
+                beep(f, 0, soundSec * 0.8);
+                boxesHTMLCollection[index].style.background = boxColorsCollection.green_sound;
+            }
+            else 
+                boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
+        });
+        i++;
+    }, soundSec * 1000);
+}
+
+function listenText() {
+    frequency.forEach((f, index) => {
+        analyser.getByteFrequencyData(frequencyData);
+
+        if (128 < frequencyData[Math.floor(f / (context.sampleRate / analyser.fftSize))])
+            boxesHTMLCollection[index].style.background = boxColorsCollection.red_sound;
+        else 
+            boxesHTMLCollection[index].style.background = boxColorsCollection.red_mute;
+    });
+    requestAnimationFrame(listenText);
+}
+
+document.getElementById("call-button").addEventListener("click", function() {
     context = new AudioContext();
     
     let textToSound = document.getElementById("text").value;
@@ -50,51 +84,29 @@ document.getElementById("call-button").addEventListener("click", function() {
     alert(`going to sound "${textToSound}" ${soundSec} sec per note`);
     
     if (confirm("ready?")) {
-        
-        let mainInterval;
-        let i = 0;
-
-        mainInterval = setInterval(function() {
-            if (i >= textToSound.length) {
-                [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.yellow_mute);
-                clearInterval(mainInterval);
-                return;
-            }
-            console.log(`attempting ${i}...`);
-            frequency.forEach((f, index) => {
-                if ((textToSound.codePointAt(i) >> index) & 1) {
-                    beep(f, 0, soundSec * 0.8);
-                    boxesHTMLCollection[index].style.background = boxColorsCollection.green_sound;
-                }
-                else boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
-            });
-            i++;
-        }, soundSec * 1000);
+        soundText(textToSound, soundSec);
     }
 })
 
-let frequencyData;
 
 document.getElementById("rec-button").addEventListener("click", async() => {
     [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.red_mute);
-
     alert("work in progress. sorry!");
 
-    [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.yellow_mute);
+    if (!stream) {
+        context = new AudioContext();
+        stream = await navigator.mediaDevices.getUserMedia({audio: true});
+        input = context.createMediaStreamSource(stream);
+        analyser = context.createAnalyser();
+        analyser.fftSize = 2048;
+        input.connect(analyser);
+    }
 
-    return;
-
-    context = new AudioContext();
-    const stream = await navigator.mediaDevices.getUserMedia({audio: true});
-    const input = context.createMediaStreamSource(stream);
-    const analyser = context.createAnalyser();
-    analyser.fftSize = 2048;
-    input.connect(analyser);
     frequencyData = new Uint8Array(analyser.frequencyBinCount);
 
-    let ratePerSample = context.sampleRate / analyser.fftSize;
+    //let ratePerSample = context.sampleRate / analyser.fftSize;
 
-    setInterval(() => {
-        analyser.getByteFrequencyData(frequencyData);
-    }, 10)
+    if (confirm("ready?")) {
+        listenText();
+    }
 })
