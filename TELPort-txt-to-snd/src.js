@@ -11,6 +11,7 @@ const frequency = new Array(17).fill(0).map((_, i) => {
 document.getElementById("text").value = localStorage["textToSound"] || "hello, world! ðøüþÿ";
 document.getElementById("sec").value = localStorage["soundSec"] || 0.5;
 document.getElementById("fft-size").value = localStorage["fft-size"] || 12;
+document.getElementById("threshold").value = localStorage["threshold"] || 128;
 
 document.getElementById("boxes").innerHTML = frequency.map((x, y) => `<div class="box"><span>${Math.round(x)}Hz<br>2<sup>${y}</sup></span></div>${y % 8 == 7 ? "<br>" : ""}`).join(" ");
 let boxesHTMLCollection = document.getElementsByClassName("box");
@@ -23,12 +24,12 @@ const boxColorsCollection = {
 }
 
 let context, frequencyData;
-let stream, input, analyser;
+let stream, input, analyser, threshold;
 
 function beep(hertz, start, len) {
     let gainNode = new GainNode(context);
     gainNode.connect(context.destination);
-    gainNode.gain.value = 0.25;
+    gainNode.gain.value = 0.1;
     
     let oscillatorNode = new OscillatorNode(context);
     oscillatorNode.type = "sine";
@@ -61,15 +62,15 @@ function soundText(textToSound, soundSec) {
     }, soundSec * 1000);
 }
 
-function listenText() {
+function listenTextLoop() {
     frequency.forEach((f, index) => {
         analyser.getByteFrequencyData(frequencyData);
-        if (128 < frequencyData[Math.floor(f / (context.sampleRate / analyser.fftSize))])
+        if (threshold <= frequencyData[Math.floor(f / (context.sampleRate / analyser.fftSize))])
             boxesHTMLCollection[index].style.background = boxColorsCollection.red_sound;
         else 
             boxesHTMLCollection[index].style.background = boxColorsCollection.red_mute;
     });
-    requestAnimationFrame(listenText);
+    requestAnimationFrame(listenTextLoop);
 }
 
 document.getElementById("call-button").addEventListener("click", function() {
@@ -90,8 +91,6 @@ document.getElementById("call-button").addEventListener("click", function() {
 
 
 document.getElementById("rec-button").addEventListener("click", async() => {
-    [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.red_mute);
-    alert("work in progress. sorry!");
     
     if (!stream) {
         context = new AudioContext();
@@ -100,14 +99,17 @@ document.getElementById("rec-button").addEventListener("click", async() => {
         analyser = context.createAnalyser();
         input.connect(analyser);
     }
-
+    
+    threshold = document.getElementById("threshold").value;
+    localStorage["threshold"] = document.getElementById("threshold").value;
     analyser.fftSize = 2 ** document.getElementById("fft-size").value;
     localStorage["fft-size"] = document.getElementById("fft-size").value;
-
-    alert(`analyser.fftSize = ${analyser.fftSize};`);
+    
+    alert(`>>>caution: work in progress<<<\n\nthreshold = ${threshold};\nanalyser.fftSize = ${analyser.fftSize};`);
     frequencyData = new Uint8Array(analyser.frequencyBinCount);
-
+    
     if (confirm("ready?")) {
-        listenText();
+        [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.red_mute);
+        listenTextLoop();
     }
 })
