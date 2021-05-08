@@ -1,5 +1,5 @@
 
-const frequency = new Array(17).fill(0).map((_, i) => {
+const frequency = new Array(24).fill(0).map((_, i) => {
     if (i < 6)
         return 440 * 2 ** (i / 6);
     if (i < 18)
@@ -47,10 +47,15 @@ function soundText(textToSound, soundSec) {
     soundText_intervalId = setInterval(function() {
         if (i >= textToSound.length) {
             [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.yellow_mute);
+            document.getElementById("surrogate-pare").innerHTML = "SURROGATE PARE NOT DETECTED";
+            document.getElementById("surrogate-pare").style.opacity = "0.2";
+            document.getElementById("heard-letter").innerHTML = `[]`;
             clearInterval(soundText_intervalId);
             return;
         }
+
         console.log(`attempting ${i}...`);
+
         frequency.forEach((f, index) => {
             if ((textToSound.codePointAt(i) >> index) & 1) {
                 beep(f, 0, soundSec * 0.8);
@@ -59,7 +64,19 @@ function soundText(textToSound, soundSec) {
             else 
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
         });
-        i++;
+
+        if (textToSound.codePointAt(i) > 2 ** 16) {
+            console.log(`detected surrogate pare at ${i}.`);
+            document.getElementById("surrogate-pare").innerHTML = "SURROGATE PARE DETECTED";
+            document.getElementById("surrogate-pare").style.opacity = "1";
+            document.getElementById("heard-letter").innerHTML = `[${textToSound.charAt(i) + textToSound.charAt(i + 1)}]`;
+            i += 2;
+        } else {
+            document.getElementById("surrogate-pare").innerHTML = "SURROGATE PARE NOT DETECTED";
+            document.getElementById("surrogate-pare").style.opacity = "0.2";
+            document.getElementById("heard-letter").innerHTML = `[${textToSound.charAt(i)}]`;
+            i++;
+        }
     }, soundSec * 1000);
 }
 
@@ -76,6 +93,13 @@ function listenTextLoop() {
             boxesHTMLCollection[index].style.background = boxColorsCollection.red_mute;
     });
 
+    if (codePoint > 2 ** 16) {
+        document.getElementById("surrogate-pare").innerHTML = "SURROGATE PARE DETECTED";
+        document.getElementById("surrogate-pare").style.opacity = "1";
+    } else {
+        document.getElementById("surrogate-pare").innerHTML = "SURROGATE PARE NOT DETECTED";
+        document.getElementById("surrogate-pare").style.opacity = "0.2";
+    }
     document.getElementById("heard-letter").innerHTML = `[${String.fromCodePoint(codePoint)}]`;
 }
 
