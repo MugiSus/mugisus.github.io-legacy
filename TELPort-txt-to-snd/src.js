@@ -23,6 +23,7 @@ const boxColorsCollection = {
     green_sound : "#88ffa0f0",
 }
 
+const AudioContext = window.AudioContext || window.webkitAudioContext;
 let context;
 
 let soundText_intervalId;
@@ -47,8 +48,8 @@ function soundText(textToSound, soundSec) {
     soundText_intervalId = setInterval(function() {
         if (i >= textToSound.length) {
             [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.yellow_mute);
-            document.getElementById("surrogate-pare").innerHTML = "SURROGATE PARE NOT DETECTED";
-            document.getElementById("surrogate-pare").style.opacity = "0.2";
+            document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR NOT DETECTED";
+            document.getElementById("surrogate-pair").style.opacity = "0.2";
             document.getElementById("heard-letter").innerHTML = `[]`;
             clearInterval(soundText_intervalId);
             return;
@@ -66,14 +67,14 @@ function soundText(textToSound, soundSec) {
         });
 
         if (textToSound.codePointAt(i) > 2 ** 16) {
-            console.log(`detected surrogate pare at ${i}.`);
-            document.getElementById("surrogate-pare").innerHTML = "SURROGATE PARE DETECTED";
-            document.getElementById("surrogate-pare").style.opacity = "1";
+            console.log(`detected surrogate pair at ${i}.`);
+            document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR DETECTED";
+            document.getElementById("surrogate-pair").style.opacity = "1";
             document.getElementById("heard-letter").innerHTML = `[${textToSound.charAt(i) + textToSound.charAt(i + 1)}]`;
             i += 2;
         } else {
-            document.getElementById("surrogate-pare").innerHTML = "SURROGATE PARE NOT DETECTED";
-            document.getElementById("surrogate-pare").style.opacity = "0.2";
+            document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR NOT DETECTED";
+            document.getElementById("surrogate-pair").style.opacity = "0.2";
             document.getElementById("heard-letter").innerHTML = `[${textToSound.charAt(i)}]`;
             i++;
         }
@@ -94,11 +95,11 @@ function listenTextLoop() {
     });
 
     if (codePoint > 2 ** 16) {
-        document.getElementById("surrogate-pare").innerHTML = "SURROGATE PARE DETECTED";
-        document.getElementById("surrogate-pare").style.opacity = "1";
+        document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR DETECTED";
+        document.getElementById("surrogate-pair").style.opacity = "1";
     } else {
-        document.getElementById("surrogate-pare").innerHTML = "SURROGATE PARE NOT DETECTED";
-        document.getElementById("surrogate-pare").style.opacity = "0.2";
+        document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR NOT DETECTED";
+        document.getElementById("surrogate-pair").style.opacity = "0.2";
     }
     document.getElementById("heard-letter").innerHTML = `[${String.fromCodePoint(codePoint)}]`;
 }
