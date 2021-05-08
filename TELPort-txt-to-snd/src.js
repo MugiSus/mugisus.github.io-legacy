@@ -63,7 +63,6 @@ function soundText(textToSound, soundSec) {
 function listenText() {
     frequency.forEach((f, index) => {
         analyser.getByteFrequencyData(frequencyData);
-
         if (128 < frequencyData[Math.floor(f / (context.sampleRate / analyser.fftSize))])
             boxesHTMLCollection[index].style.background = boxColorsCollection.red_sound;
         else 
@@ -93,12 +92,14 @@ document.getElementById("rec-button").addEventListener("click", async() => {
     [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.red_mute);
     alert("work in progress. sorry!");
 
+    alert(`analyser.fftSize = ${fftSize}.`);
+
     if (!stream) {
         context = new AudioContext();
         stream = await navigator.mediaDevices.getUserMedia({audio: true});
         input = context.createMediaStreamSource(stream);
         analyser = context.createAnalyser();
-        analyser.fftSize = 2048;
+        analyser.fftSize = 2 ** 13;
         input.connect(analyser);
     }
 
