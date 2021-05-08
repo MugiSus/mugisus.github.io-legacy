@@ -10,6 +10,7 @@ const frequency = new Array(17).fill(0).map((_, i) => {
 
 document.getElementById("text").value = localStorage["textToSound"] || "hello, world! ðøüþÿ";
 document.getElementById("sec").value = localStorage["soundSec"] || 0.5;
+document.getElementById("fft-size").value = localStorage["fft-size"] || 12;
 
 document.getElementById("boxes").innerHTML = frequency.map((x, y) => `<div class="box"><span>${Math.round(x)}Hz<br>2<sup>${y}</sup></span></div>${y % 8 == 7 ? "<br>" : ""}`).join(" ");
 let boxesHTMLCollection = document.getElementsByClassName("box");
@@ -91,21 +92,20 @@ document.getElementById("call-button").addEventListener("click", function() {
 document.getElementById("rec-button").addEventListener("click", async() => {
     [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.red_mute);
     alert("work in progress. sorry!");
-
-    alert(`analyser.fftSize = ${fftSize}.`);
-
+    
     if (!stream) {
         context = new AudioContext();
         stream = await navigator.mediaDevices.getUserMedia({audio: true});
         input = context.createMediaStreamSource(stream);
         analyser = context.createAnalyser();
-        analyser.fftSize = 2 ** 13;
         input.connect(analyser);
     }
 
-    frequencyData = new Uint8Array(analyser.frequencyBinCount);
+    analyser.fftSize = 2 ** document.getElementById("fft-size").value;
+    localStorage["fft-size"] = document.getElementById("fft-size").value;
 
-    //let ratePerSample = context.sampleRate / analyser.fftSize;
+    alert(`analyser.fftSize = ${analyser.fftSize};`);
+    frequencyData = new Uint8Array(analyser.frequencyBinCount);
 
     if (confirm("ready?")) {
         listenText();
