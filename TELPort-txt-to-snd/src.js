@@ -87,6 +87,7 @@ function listenTextLoop() {
     listenTextLoop_reqId = requestAnimationFrame(listenTextLoop);
     let codePoint = 0;
     analyser.getByteFrequencyData(frequencyData);
+    //analyser.getByteTimeDomainData(timeDomainData);
 
     frequency.forEach((f, index) => {
         if (threshold <= frequencyData[Math.floor(f / (context.sampleRate / analyser.fftSize))]) {
@@ -97,7 +98,6 @@ function listenTextLoop() {
     });
     
     if (codePoint > 2 ** 16) {
-        console.log(codePoint);
         document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR DETECTED";
         document.getElementById("surrogate-pair").style.opacity = "1";
     } else {
@@ -148,7 +148,7 @@ document.getElementById("rec-button").addEventListener("click", async() => {
     
     alert(`>>>caution: work in progress<<<\n\nthreshold = ${threshold};\nanalyser.fftSize = ${analyser.fftSize};`);
     frequencyData = new Uint8Array(analyser.frequencyBinCount);
-    timeDomainData = new Uint8Array(analyser.frequencyBinCount);
+    timeDomainData = new Uint8Array(analyser.fftSize);
     
     [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.red_mute);
     listenTextLoop();
