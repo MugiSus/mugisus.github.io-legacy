@@ -59,23 +59,25 @@ function soundText(textToSound, soundSec) {
 
         frequency.forEach((f, index) => {
             if ((textToSound.codePointAt(i) >> index) & 1) {
-                beep(f, 0, soundSec * 0.8);
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_sound;
-            }
-            else 
+                beep(f, 0, soundSec * 0.75);
+            } else if (index == 24) {
+                boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
+                beep(f, soundSec * 0.5, soundSec * 0.25);
+                setTimeout(() => boxesHTMLCollection[index].style.background = boxColorsCollection.green_sound, soundSec * 600);
+            } else 
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
         });
 
         if (textToSound.codePointAt(i) > 2 ** 16) {
-            console.log(`detected surrogate pair at ${i}.`);
             document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR DETECTED";
             document.getElementById("surrogate-pair").style.opacity = "1";
-            document.getElementById("heard-letter").innerHTML = `[${textToSound.charAt(i) + textToSound.charAt(i + 1)}]`;
+            document.getElementById("heard-letter").innerHTML = `[${textToSound[i] + textToSound[i + 1]}]`;
             i += 2;
         } else {
             document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR NOT DETECTED";
             document.getElementById("surrogate-pair").style.opacity = "0.2";
-            document.getElementById("heard-letter").innerHTML = `[${textToSound.charAt(i)}]`;
+            document.getElementById("heard-letter").innerHTML = `[${textToSound[i]}]`;
             i++;
         }
     }, soundSec * 1000);
@@ -84,23 +86,25 @@ function soundText(textToSound, soundSec) {
 function listenTextLoop() {
     listenTextLoop_reqId = requestAnimationFrame(listenTextLoop);
     let codePoint = 0;
+    analyser.getByteFrequencyData(frequencyData);
 
     frequency.forEach((f, index) => {
-        analyser.getByteFrequencyData(frequencyData);
         if (threshold <= frequencyData[Math.floor(f / (context.sampleRate / analyser.fftSize))]) {
             boxesHTMLCollection[index].style.background = boxColorsCollection.red_sound;
             codePoint += 2 ** index;
         } else 
             boxesHTMLCollection[index].style.background = boxColorsCollection.red_mute;
     });
-
+    
     if (codePoint > 2 ** 16) {
+        console.log(codePoint);
         document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR DETECTED";
         document.getElementById("surrogate-pair").style.opacity = "1";
     } else {
         document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR NOT DETECTED";
         document.getElementById("surrogate-pair").style.opacity = "0.2";
     }
+    
     document.getElementById("heard-letter").innerHTML = `[${String.fromCodePoint(codePoint)}]`;
 }
 
@@ -116,9 +120,10 @@ document.getElementById("call-button").addEventListener("click", function() {
     localStorage["textToSound"] = textToSound;
     localStorage["soundSec"] = soundSec;
     
-    alert(`going to sound "${textToSound}" ${soundSec} sec per note`);
+    alert(`going to sound "${textToSound.length > 50 ? textToSound.substring(0, 100) + "..." : textToSound}" ${soundSec} sec per note`);
     
     if (confirm("ready?")) {
+        [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.green_mute);
         soundText(textToSound, soundSec);
     }
 })
@@ -143,6 +148,7 @@ document.getElementById("rec-button").addEventListener("click", async() => {
     
     alert(`>>>caution: work in progress<<<\n\nthreshold = ${threshold};\nanalyser.fftSize = ${analyser.fftSize};`);
     frequencyData = new Uint8Array(analyser.frequencyBinCount);
+    timeDomainData = new Uint8Array(analyser.frequencyBinCount);
     
     [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.red_mute);
     listenTextLoop();
