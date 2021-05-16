@@ -15,12 +15,13 @@ document.getElementById("threshold").value = localStorage["threshold"] || 128;
 
 document.getElementById("boxes").innerHTML = frequency.map((x, y) => `<div class="box"><span>${Math.round(x)}Hz<br>2<sup>${y}</sup></span></div>${y % 8 == 7 ? "<br>" : ""}`).join(" ");
 let boxesHTMLCollection = document.getElementsByClassName("box");
+
 const boxColorsCollection = {
-    yellow_mute : "#ffdd8820",
-    red_mute : "#ff888820",
-    red_sound : "#ff8888f0",
-    green_mute : "#88ffa020",
-    green_sound : "#88ffa0f0",
+    yellow_mute : "#ffdd8818",
+    red_mute : "#ff888818",
+    red_sound : "#ff8888b0",
+    green_mute : "#88ffa018",
+    green_sound : "#88ffa0b0",
 }
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -85,16 +86,17 @@ function soundText(textToSound, soundSec) {
 
 function listenTextLoop() {
     listenTextLoop_reqId = requestAnimationFrame(listenTextLoop);
+    
     let codePoint = 0;
     analyser.getByteFrequencyData(frequencyData);
-    //analyser.getByteTimeDomainData(timeDomainData);
-
+    analyser.getByteTimeDomainData(timeDomainData);
+    
     frequency.forEach((f, index) => {
         if (threshold <= frequencyData[Math.floor(f / (context.sampleRate / analyser.fftSize))]) {
             boxesHTMLCollection[index].style.background = boxColorsCollection.red_sound;
             codePoint += 2 ** index;
         } else 
-            boxesHTMLCollection[index].style.background = boxColorsCollection.red_mute;
+        boxesHTMLCollection[index].style.background = boxColorsCollection.red_mute;
     });
     
     if (codePoint > 2 ** 16) {
@@ -106,6 +108,7 @@ function listenTextLoop() {
     }
     
     document.getElementById("heard-letter").innerHTML = `[${String.fromCodePoint(codePoint)}]`;
+
 }
 
 document.getElementById("call-button").addEventListener("click", function() {
@@ -142,8 +145,8 @@ document.getElementById("rec-button").addEventListener("click", async() => {
     }
     
     threshold = document.getElementById("threshold").value;
-    localStorage["threshold"] = document.getElementById("threshold").value;
     analyser.fftSize = 2 ** document.getElementById("fft-size").value;
+    localStorage["threshold"] = document.getElementById("threshold").value;
     localStorage["fft-size"] = document.getElementById("fft-size").value;
     
     alert(`>>>caution: work in progress<<<\n\nthreshold = ${threshold};\nanalyser.fftSize = ${analyser.fftSize};`);

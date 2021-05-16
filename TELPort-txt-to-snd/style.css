@@ -44,6 +44,7 @@ body{
     margin: 0.5vw;
     width: 5vw;
     height: 5vw;
+    border-radius: 0.5vw;
     background: #ffdd8820;
     transition-duration: 0.15s;
 }
