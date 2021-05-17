@@ -10,8 +10,8 @@ const frequency = new Array(24).fill(0).map((_, i) => {
 
 document.getElementById("text").value = localStorage["textToSound"] || "hello, world! ðøüþÿ";
 document.getElementById("sec").value = localStorage["soundSec"] || 0.5;
-document.getElementById("fft-size").value = localStorage["fft-size"] || 12;
-document.getElementById("threshold").value = localStorage["threshold"] || 128;
+document.getElementById("fft-size").value = localStorage["fft-size"] || 13;
+document.getElementById("threshold").value = localStorage["threshold"] || 160;
 
 document.getElementById("boxes").innerHTML = frequency.map((x, y) => `<div class="box"><span>${Math.round(x)}Hz<br>2<sup>${y}</sup></span></div>${y % 8 == 7 ? "<br>" : ""}`).join(" ");
 let boxesHTMLCollection = document.getElementsByClassName("box");
@@ -89,7 +89,7 @@ function listenTextLoop() {
     
     let codePoint = 0;
     analyser.getByteFrequencyData(frequencyData);
-    analyser.getByteTimeDomainData(timeDomainData);
+    //analyser.getByteTimeDomainData(timeDomainData);
     
     frequency.forEach((f, index) => {
         if (threshold <= frequencyData[Math.floor(f / (context.sampleRate / analyser.fftSize))]) {
