@@ -22,6 +22,8 @@ let note1, note2;
 
 [...document.getElementsByClassName("box")].forEach((x, y) => {
     x.addEventListener("mousedown", () => {
+        document.getElementsByClassName("hz")[0].innerHTML = frequency[0][Math.floor(y / 3)] + "<sub>Hz</sub>";
+        document.getElementsByClassName("hz")[1].innerHTML = frequency[1][y % 3] + "<sub>Hz</sub>";
         note1 = beep(frequency[0][Math.floor(y / 3)]);
         note2 = beep(frequency[1][y % 3]);
     });
