@@ -11,6 +11,21 @@ body{
     display: none;
 }
 
+#icon{
+    width: 20vw;
+    border-radius: 10vw;
+    box-shadow: 0px 0px 4vw #ffffbb88;
+    opacity: 0.3;
+    transition-duration: 0.7s;
+}
+
+#icon:hover{
+    opacity: 0.9;
+    border-radius: 1vw;
+    transform: translate(0, -0.3vw);
+    transition-duration: 0.3s;
+}
+
 #content{
     font-family: 'M PLUS Rounded 1c';
     font-weight: 500;
