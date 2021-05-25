@@ -16,14 +16,32 @@ body{
     border-radius: 10vw;
     box-shadow: 0px 0px 4vw #ffffbb88;
     opacity: 0.3;
-    transition-duration: 0.7s;
+    transition-duration: 1s;
+    cursor: pointer;
 }
 
 #icon:hover{
     opacity: 0.9;
     border-radius: 1vw;
-    transform: translate(0, -0.3vw);
-    transition-duration: 0.3s;
+    transform: translateY(-1vw);
+    transition-duration: 0.5s;
+}
+
+#icon:active{
+    transform: translateY(-0.5vw);
+    transition-duration: 0.2s;
+}
+
+#icon-description{
+    font-size: 0.9vw;
+    font-weight: 600;
+    overflow: hidden;
+    display: inline-block;
+    height: 0%;
+    opacity: 0;
+    transform: rotateX(-85deg) scaleY(0);
+    transform-origin: top;
+    transition-duration: 1s;
 }
 
 #content{
@@ -61,10 +79,22 @@ body{
 }
 
 @keyframes gaming {
-    0% { color: #ffbbff; text-shadow: 0px 0px 1vw #ffddff;}
-    33% { color: #ffff88; text-shadow: 0px 0px 1vw #ffffdd;}
-    66% { color: #88ffff; text-shadow: 0px 0px 1vw #ddffff;}
-    100% { color: #ffbbff; text-shadow: 0px 0px 1vw #ffddff;}
+    0% {
+        color: #ffbbff;
+        text-shadow: 0px 0px 1vw #ffddff;
+    }
+    33% {
+        color: #ffff88;
+        text-shadow: 0px 0px 1vw #ffffdd;
+    }
+    66% {
+        color: #88ffff;
+        text-shadow: 0px 0px 1vw #ddffff;
+    }
+    100% {
+        color: #ffbbff;
+        text-shadow: 0px 0px 1vw #ffddff;
+    }
 }
 
 #watermark{

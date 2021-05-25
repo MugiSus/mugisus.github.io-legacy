@@ -154,3 +154,18 @@ window.addEventListener("load", ()=>{
     Main();
 })
 
+document.getElementById("icon").addEventListener("mousedown", () => {
+    document.getElementById("icon-description").style = `
+        transform: rotateX(0deg);
+        transition-duration: 1s;
+        opacity: 1;
+    `;
+});
+
+document.getElementById("icon").addEventListener("mouseleave", () => {
+    document.getElementById("icon-description").style = `
+        transform: rotateX(-85deg);
+        transition-duration: 0.75s;
+        opacity: 0;
+    `;
+})
