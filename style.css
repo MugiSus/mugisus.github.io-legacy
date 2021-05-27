@@ -33,13 +33,12 @@ body{
 }
 
 #icon-description{
-    font-size: 0.9vw;
+    font-size: 1vw;
     font-weight: 600;
     overflow: hidden;
     display: inline-block;
-    height: 0%;
     opacity: 0;
-    transform: rotateX(-85deg) scaleY(0);
+    transform: rotateX(-85deg);
     transform-origin: top;
     transition-duration: 1s;
 }
@@ -47,7 +46,7 @@ body{
 #content{
     font-family: 'M PLUS Rounded 1c';
     font-weight: 500;
-    font-size: 1vw;
+    font-size: 1.1vw;
     color: #a0a0a0;
     padding-left: 10vw;
     padding-right: 10vw;

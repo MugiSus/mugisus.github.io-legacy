@@ -74,6 +74,7 @@ function soundText(textToSound, soundSec) {
             document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR DETECTED";
             document.getElementById("surrogate-pair").style.opacity = "1";
             document.getElementById("heard-letter").innerHTML = `[${textToSound[i] + textToSound[i + 1]}]`;
+            console.log(`surrogate pair detected! skipped ${i + 1}`);
             i += 2;
         } else {
             document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR NOT DETECTED";
@@ -116,6 +117,10 @@ document.getElementById("call-button").addEventListener("click", function() {
     cancelAnimationFrame(listenTextLoop_reqId);
 
     context = new AudioContext();
+
+    const emptySource = context.createBufferSource();
+    emptySource.start();
+    emptySource.stop();
     
     let textToSound = document.getElementById("text").value;
     let soundSec = document.getElementById("sec").value;
@@ -138,6 +143,10 @@ document.getElementById("rec-button").addEventListener("click", async() => {
 
     if (!stream) {
         context = new AudioContext();
+        const emptySource = context.createBufferSource();
+        emptySource.start();
+        emptySource.stop();
+
         stream = await navigator.mediaDevices.getUserMedia({audio: true});
         input = context.createMediaStreamSource(stream);
         analyser = context.createAnalyser();
