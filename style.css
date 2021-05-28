@@ -37,10 +37,11 @@ body{
     font-weight: 600;
     overflow: hidden;
     display: inline-block;
+    height: 0vw;
     opacity: 0;
     transform: rotateX(-85deg);
     transform-origin: top;
-    transition-duration: 1s;
+    transition-timing-function: ease;
 }
 
 #content{
@@ -48,8 +49,7 @@ body{
     font-weight: 500;
     font-size: 1.1vw;
     color: #a0a0a0;
-    padding-left: 10vw;
-    padding-right: 10vw;
+    padding: 10px;
 }
 
 #canvas{

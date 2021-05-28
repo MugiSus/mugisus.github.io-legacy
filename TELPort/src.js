@@ -1,5 +1,5 @@
 
-const frequency = new Array(24).fill(0).map((_, i) => {
+const frequency = new Array(32).fill(0).map((_, i) => {
     if (i < 6)
         return 440 * 2 ** (i / 6);
     if (i < 18)
@@ -44,7 +44,7 @@ function beep(hertz, start, len) {
 }
 
 function soundText(textToSound, soundSec) {
-    let i = 0;
+    let i = 0, soundCtr = 0;
 
     soundText_intervalId = setInterval(function() {
         if (i >= textToSound.length) {
@@ -61,11 +61,7 @@ function soundText(textToSound, soundSec) {
         frequency.forEach((f, index) => {
             if ((textToSound.codePointAt(i) >> index) & 1) {
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_sound;
-                beep(f, 0, soundSec * 0.75);
-            } else if (index == 24) {
-                boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
-                beep(f, soundSec * 0.5, soundSec * 0.25);
-                setTimeout(() => boxesHTMLCollection[index].style.background = boxColorsCollection.green_sound, soundSec * 600);
+                beep(f, 0, soundSec * 0.8);
             } else 
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
         });
@@ -82,6 +78,8 @@ function soundText(textToSound, soundSec) {
             document.getElementById("heard-letter").innerHTML = `[${textToSound[i]}]`;
             i++;
         }
+        soundCtr++;
+
     }, soundSec * 1000);
 }
 
@@ -109,7 +107,6 @@ function listenTextLoop() {
     }
     
     document.getElementById("heard-letter").innerHTML = `[${String.fromCodePoint(codePoint)}]`;
-
 }
 
 document.getElementById("call-button").addEventListener("click", function() {
@@ -117,10 +114,6 @@ document.getElementById("call-button").addEventListener("click", function() {
     cancelAnimationFrame(listenTextLoop_reqId);
 
     context = new AudioContext();
-
-    const emptySource = context.createBufferSource();
-    emptySource.start();
-    emptySource.stop();
     
     let textToSound = document.getElementById("text").value;
     let soundSec = document.getElementById("sec").value;
