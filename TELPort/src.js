@@ -61,7 +61,7 @@ function soundText(textToSound, soundSec) {
         frequency.forEach((f, index) => {
             if (((textToSound.codePointAt(i) >> index) & 1)) {
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_sound;
-                beep(f, 0, soundSec * 0.75);
+                beep(f, 0, soundSec * 0.7);
             } else 
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
         });
@@ -149,6 +149,7 @@ document.getElementById("rec-button").addEventListener("click", async() => {
     initallaize();
 
     heardChars = {};
+    document.getElementById("received-text").value = "";
 
     if (!stream) {
         context = new AudioContext();
