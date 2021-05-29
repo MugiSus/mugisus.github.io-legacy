@@ -153,21 +153,3 @@ window.addEventListener("load", ()=>{
     scrolly = -window.pageYOffset;
     Main();
 })
-
-document.getElementById("icon").addEventListener("mousedown", () => {
-    document.getElementById("icon-description").style = `
-        transition-duration: 1s;
-        transform: rotateX(0deg);
-        height: 10vw;
-        opacity: 1;
-    `;
-});
-
-document.getElementById("icon").addEventListener("mouseleave", () => {
-    document.getElementById("icon-description").style = `
-        transition-duration: 0.75s;
-        transform: rotateX(-85deg);
-        height: 3vw;
-        opacity: 0;
-    `;
-})

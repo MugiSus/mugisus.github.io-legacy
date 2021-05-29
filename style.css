@@ -32,16 +32,29 @@ body{
     transition-duration: 0.2s;
 }
 
+#icon-description-checkbox{
+    display: none;
+}
+
 #icon-description{
     font-size: 1vw;
     font-weight: 600;
     overflow: hidden;
     display: inline-block;
-    height: 0vw;
+    height: 3vw;
     opacity: 0;
     transform: rotateX(-85deg);
     transform-origin: top;
     transition-timing-function: ease;
+    transition-duration: 1s;
+}
+
+#icon-description-checkbox:checked + #icon-description-label + #icon-description{
+    transition-timing-function: ease;
+    transition-duration: 1s;
+    transform: rotateX(0deg);
+    height: 10vw;
+    opacity: 1;
 }
 
 #content{
@@ -49,7 +62,8 @@ body{
     font-weight: 500;
     font-size: 1.1vw;
     color: #a0a0a0;
-    padding: 10px;
+    padding-left: 10vw;
+    padding-right: 10vw;
 }
 
 #canvas{
