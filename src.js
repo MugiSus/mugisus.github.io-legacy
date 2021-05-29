@@ -153,3 +153,6 @@ window.addEventListener("load", ()=>{
     scrolly = -window.pageYOffset;
     Main();
 })
+
+document.getElementById("icon").addEventListener("mousedown", () => document.getElementById("icon-description-checkbox").checked = true);
+document.getElementById("icon").addEventListener("mouseleave", () => document.getElementById("icon-description-checkbox").checked = false);

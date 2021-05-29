@@ -41,7 +41,7 @@ body{
     font-weight: 600;
     overflow: hidden;
     display: inline-block;
-    height: 3vw;
+    height: 5vw;
     opacity: 0;
     transform: rotateX(-85deg);
     transform-origin: top;
