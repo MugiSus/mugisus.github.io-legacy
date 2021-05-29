@@ -130,8 +130,14 @@ body{
 .social-icons{
     height: 3vw;
     width: 3vw;
-    margin: 0.5vw;
-    margin-bottom: 10vh;
+    margin-left: 0.5vw;
+    margin-right: 0.5vw;
+}
+
+.social-icons-desctiption{
+    position: absolute;
+    text-align: center;
+    display: inline;
 }
 
 .lang{

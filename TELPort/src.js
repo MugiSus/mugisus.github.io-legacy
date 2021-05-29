@@ -28,7 +28,7 @@ const AudioContext = window.AudioContext || window.webkitAudioContext;
 let context;
 
 let soundText_intervalId;
-let frequencyData, stream, input, analyser, threshold, listenTextLoop_reqId;
+let frequencyData, stream, input, analyser, threshold, listenTextLoop_reqId, heardChars;
 
 function beep(hertz, start, len) {
     let gainNode = new GainNode(context);
@@ -59,9 +59,9 @@ function soundText(textToSound, soundSec) {
         console.log(`attempting ${i}...`);
 
         frequency.forEach((f, index) => {
-            if ((textToSound.codePointAt(i) >> index) & 1) {
+            if (((textToSound.codePointAt(i) >> index) & 1)) {
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_sound;
-                beep(f, 0, soundSec * 0.8);
+                beep(f, 0, soundSec * 0.75);
             } else 
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
         });
@@ -98,7 +98,13 @@ function listenTextLoop() {
         boxesHTMLCollection[index].style.background = boxColorsCollection.red_mute;
     });
     
-    if (codePoint > 2 ** 16) {
+    if (codePoint == 0 && Object.keys(heardChars).length > 1) {
+        let confirmedCodePoint = Object.keys(heardChars).reduce((x, y) => heardChars[x] > heardChars[y] ? x : y, 0);
+        document.getElementById("confirmed-letter").innerHTML = `[${String.fromCodePoint(confirmedCodePoint)}]`;
+        document.getElementById("received-text").value += String.fromCodePoint(confirmedCodePoint);
+
+        heardChars = {};
+    } else if (codePoint > 2 ** 16) {
         document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR DETECTED";
         document.getElementById("surrogate-pair").style.opacity = "1";
     } else {
@@ -107,11 +113,20 @@ function listenTextLoop() {
     }
     
     document.getElementById("heard-letter").innerHTML = `[${String.fromCodePoint(codePoint)}]`;
+    if (codePoint) {
+        if (!heardChars[codePoint]) heardChars[codePoint] = 0;
+        heardChars[codePoint]++;
+    }
+}
+
+function initallaize(){
+    clearInterval(soundText_intervalId);
+    cancelAnimationFrame(listenTextLoop_reqId);
+    [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.yellow_mute);
 }
 
 document.getElementById("call-button").addEventListener("click", function() {
-    clearInterval(soundText_intervalId);
-    cancelAnimationFrame(listenTextLoop_reqId);
+    initallaize();
 
     context = new AudioContext();
     
@@ -131,8 +146,9 @@ document.getElementById("call-button").addEventListener("click", function() {
 
 
 document.getElementById("rec-button").addEventListener("click", async() => {
-    clearInterval(soundText_intervalId);
-    cancelAnimationFrame(listenTextLoop_reqId);
+    initallaize();
+
+    heardChars = {};
 
     if (!stream) {
         context = new AudioContext();
