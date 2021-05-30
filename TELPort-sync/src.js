@@ -115,7 +115,7 @@ function listenText(soundSec) {
 
 function initallaize(){
     clearInterval(soundText_intervalId);
-    cancelAnimationFrame(listenText_intervalId);
+    clearInterval(listenText_intervalId);
     [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.yellow_mute);
 }
 
