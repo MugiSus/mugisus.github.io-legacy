@@ -12,6 +12,7 @@ document.getElementById("text").value = localStorage["textToSound"] || "hello, w
 document.getElementById("sec").value = localStorage["soundSec"] || 0.5;
 document.getElementById("fft-size").value = localStorage["fft-size"] || 13;
 document.getElementById("threshold").value = localStorage["threshold"] || 160;
+document.getElementById("fast-as-possible").checked = localStorage["fast-as-possible"] || false;
 
 document.getElementById("boxes").innerHTML = frequency.map((x, y) => `<div class="box"><span>${Math.round(x)}Hz<br>2<sup>${y}</sup></span></div>${y % 8 == 7 ? "<br>" : ""}`).join(" ");
 let boxesHTMLCollection = document.getElementsByClassName("box");
@@ -28,7 +29,7 @@ const AudioContext = window.AudioContext || window.webkitAudioContext;
 let context;
 
 let soundText_intervalId;
-let frequencyData, stream, input, analyser, threshold, listenTextLoop_reqId, heardChars;
+let frequencyData, stream, input, analyser, threshold, fftSize, listenTextLoop_reqId, heardChars, fastAsPossible;
 let frameCounter = 0;
 
 function beep(hertz, start, len) {
@@ -85,8 +86,8 @@ function soundText(textToSound, soundSec) {
 }
 
 function listenTextLoop() {
-    listenTextLoop_reqId = requestAnimationFrame(listenTextLoop);
-    
+    listenTextLoop_reqId = fastAsPossible ? setTimeout(listenTextLoop, 0) : requestAnimationFrame(listenTextLoop);
+
     let codePoint = 0;
     analyser.getByteFrequencyData(frequencyData);
     //analyser.getByteTimeDomainData(timeDomainData);
@@ -165,11 +166,15 @@ document.getElementById("rec-button").addEventListener("click", async() => {
     }
     
     threshold = document.getElementById("threshold").value;
-    analyser.fftSize = 2 ** document.getElementById("fft-size").value;
-    localStorage["threshold"] = document.getElementById("threshold").value;
-    localStorage["fft-size"] = document.getElementById("fft-size").value;
+    fftSize = document.getElementById("fft-size").value;
+    fastAsPossible = document.getElementById("fast-as-possible").checked;
     
-    alert(`>>>caution: work in progress<<<\n\nthreshold = ${threshold};\nanalyser.fftSize = ${analyser.fftSize};`);
+    localStorage["threshold"] = threshold;
+    localStorage["fft-size"] = fftSize;
+    localStorage["fast-as-possible"] = fastAsPossible;
+    analyser.fftSize = 2 ** fftSize;
+    
+    alert(`>>>caution: work in progress<<<\n\nthreshold = ${threshold};\nanalyser.fftSize = ${analyser.fftSize};\nfastAsPossible = ${fastAsPossible}`);
     frequencyData = new Uint8Array(analyser.frequencyBinCount);
     timeDomainData = new Uint8Array(analyser.fftSize);
     
