@@ -28,7 +28,7 @@ const AudioContext = window.AudioContext || window.webkitAudioContext;
 let context;
 
 let soundText_intervalId;
-let frequencyData, stream, input, analyser, threshold, listenTextLoop_reqId, heardChars;
+let frequencyData, stream, input, analyser, threshold, listenText_intervalId, heardChars;
 let frameCounter = 0;
 
 function beep(hertz, start, len) {
@@ -62,7 +62,7 @@ function soundText(textToSound, soundSec) {
         frequency.forEach((f, index) => {
             if (((textToSound.codePointAt(i) >> index) & 1)) {
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_sound;
-                beep(f, 0, soundSec * 0.4);
+                beep(f, 0, soundSec * 0.9);
             } else 
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
         });
@@ -84,45 +84,38 @@ function soundText(textToSound, soundSec) {
     }, soundSec * 1000);
 }
 
-function listenTextLoop() {
-    listenTextLoop_reqId = requestAnimationFrame(listenTextLoop);
+function listenText(soundSec) {
     
-    let codePoint = 0;
-    analyser.getByteFrequencyData(frequencyData);
-    //analyser.getByteTimeDomainData(timeDomainData);
-    
-    frequency.forEach((f, index) => {
-        if (threshold <= frequencyData[Math.floor(f / (context.sampleRate / analyser.fftSize))]) {
-            boxesHTMLCollection[index].style.background = boxColorsCollection.red_sound;
-            codePoint += 2 ** index;
-        } else 
-        boxesHTMLCollection[index].style.background = boxColorsCollection.red_mute;
-    });
-    
-    if (codePoint == 0 && Object.keys(heardChars).length > 1) {
-        let confirmedCodePoint = Object.keys(heardChars).reduce((x, y) => heardChars[x] > heardChars[y] ? x : y, 0);
-        document.getElementById("confirmed-letter").innerHTML = `[${String.fromCodePoint(confirmedCodePoint)}]`;
-        document.getElementById("received-text").value += String.fromCodePoint(confirmedCodePoint);
+    listenText_intervalId = setInterval(function() {
+        let codePoint = 0;
+        analyser.getByteFrequencyData(frequencyData);
+        //analyser.getByteTimeDomainData(timeDomainData);
+        
+        frequency.forEach((f, index) => {
+            if (threshold <= frequencyData[Math.floor(f / (context.sampleRate / analyser.fftSize))]) {
+                boxesHTMLCollection[index].style.background = boxColorsCollection.red_sound;
+                codePoint += 2 ** index;
+            } else 
+            boxesHTMLCollection[index].style.background = boxColorsCollection.red_mute;
+        });
+        
+        if (codePoint > 2 ** 16) {
+            document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR DETECTED";
+            document.getElementById("surrogate-pair").style.opacity = "1";
+        } else {
+            document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR NOT DETECTED";
+            document.getElementById("surrogate-pair").style.opacity = "0.2";
+        }
+        
+        document.getElementById("heard-letter").innerHTML = `[${String.fromCodePoint(codePoint)}]`;
+        document.getElementById("received-text").value += String.fromCodePoint(codePoint);
 
-        heardChars = {};
-    } else if (codePoint > 2 ** 16) {
-        document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR DETECTED";
-        document.getElementById("surrogate-pair").style.opacity = "1";
-    } else {
-        document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR NOT DETECTED";
-        document.getElementById("surrogate-pair").style.opacity = "0.2";
-    }
-    
-    document.getElementById("heard-letter").innerHTML = `[${String.fromCodePoint(codePoint)}]`;
-    if (codePoint) {
-        if (!heardChars[codePoint]) heardChars[codePoint] = 0;
-        heardChars[codePoint]++;
-    }
+    }, soundSec * 1000)
 }
 
 function initallaize(){
     clearInterval(soundText_intervalId);
-    cancelAnimationFrame(listenTextLoop_reqId);
+    cancelAnimationFrame(listenText_intervalId);
     [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.yellow_mute);
 }
 
@@ -166,13 +159,16 @@ document.getElementById("rec-button").addEventListener("click", async() => {
     
     threshold = document.getElementById("threshold").value;
     analyser.fftSize = 2 ** document.getElementById("fft-size").value;
+    let soundSec = document.getElementById("sec").value;
+    
     localStorage["threshold"] = document.getElementById("threshold").value;
     localStorage["fft-size"] = document.getElementById("fft-size").value;
+    localStorage["soundSec"] = soundSec;
     
-    alert(`>>>caution: work in progress<<<\n\nthreshold = ${threshold};\nanalyser.fftSize = ${analyser.fftSize};`);
+    alert(`>>>caution: work in progress<<<\n\nthreshold = ${threshold};\nanalyser.fftSize = ${analyser.fftSize};\n${soundSec} sec per note`);
     frequencyData = new Uint8Array(analyser.frequencyBinCount);
     timeDomainData = new Uint8Array(analyser.fftSize);
     
     [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.red_mute);
-    listenTextLoop();
+    listenText(soundSec);
 })
