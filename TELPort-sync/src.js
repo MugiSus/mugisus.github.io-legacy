@@ -27,8 +27,9 @@ const boxColorsCollection = {
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 let context;
 
-let soundText_intervalId;
-let frequencyData, stream, input, analyser, threshold, fftSize, listenTextLoop_reqId, heardChars;
+let soundSec;
+let textToSound, soundText_intervalId;
+let frequencyData, stream, input, analyser, threshold, fftSize, listenTextLoop_reqId, listenTime;
 let frameCounter = 0;
 
 function beep(hertz, start, len) {
@@ -44,7 +45,7 @@ function beep(hertz, start, len) {
     oscillatorNode.stop(context.currentTime + start + len);
 }
 
-function soundText(textToSound, soundSec) {
+function soundText() {
     let i = 0, soundCtr = 0;
 
     soundText_intervalId = setInterval(function() {
@@ -62,7 +63,7 @@ function soundText(textToSound, soundSec) {
         frequency.forEach((f, index) => {
             if (((textToSound.codePointAt(i) >> index) & 1)) {
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_sound;
-                beep(f, 0, soundSec * 0.4);
+                beep(f, 0, soundSec * 0.95);
             } else 
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
         });
@@ -99,24 +100,32 @@ function listenTextLoop() {
         boxesHTMLCollection[index].style.background = boxColorsCollection.red_mute;
     });
     
-    if (codePoint == 0 && Object.keys(heardChars).length > 1) {
-        let confirmedCodePoint = Object.keys(heardChars).reduce((x, y) => heardChars[x] > heardChars[y] ? x : y, 0);
-        document.getElementById("confirmed-letter").innerHTML = `[${String.fromCodePoint(confirmedCodePoint)}]`;
-        document.getElementById("received-text").value += String.fromCodePoint(confirmedCodePoint);
-
-        heardChars = {};
-    } else if (codePoint > 2 ** 16) {
+    if (codePoint > 2 ** 16) {
         document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR DETECTED";
         document.getElementById("surrogate-pair").style.opacity = "1";
     } else {
         document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR NOT DETECTED";
         document.getElementById("surrogate-pair").style.opacity = "0.2";
     }
+
+    let fromCodePointLetter;
+
+    try {
+        fromCodePointLetter = String.fromCodePoint(codePoint);
+    } catch(err) {
+        fromCodePointLetter = '\ufffd';
+        console.error(err);
+    }
     
-    document.getElementById("heard-letter").innerHTML = `[${String.fromCodePoint(codePoint)}]`;
-    if (codePoint) {
-        if (!heardChars[codePoint]) heardChars[codePoint] = 0;
-        heardChars[codePoint]++;
+    document.getElementById("heard-letter").innerHTML = `[${fromCodePointLetter}]`;
+    
+    if (listenTime < new Date().getTime()) {
+        document.getElementById("confirmed-letter").innerHTML = `[${fromCodePointLetter}]`;
+        document.getElementById("received-text").value += fromCodePointLetter;
+
+        heardChars = {};
+
+        listenTime += soundSec * 1000;
     }
 }
 
@@ -131,8 +140,8 @@ document.getElementById("call-button").addEventListener("click", function() {
 
     context = new AudioContext();
     
-    let textToSound = document.getElementById("text").value;
-    let soundSec = document.getElementById("sound-sec").value;
+    textToSound = document.getElementById("text").value;
+    soundSec = document.getElementById("sound-sec").value;
 
     localStorage["textToSound"] = textToSound;
     localStorage["soundSec"] = soundSec;
@@ -141,7 +150,7 @@ document.getElementById("call-button").addEventListener("click", function() {
     
     if (confirm("ready?")) {
         [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.green_mute);
-        soundText(textToSound, soundSec);
+        soundText();
     }
 })
 
@@ -166,9 +175,11 @@ document.getElementById("rec-button").addEventListener("click", async() => {
     
     threshold = document.getElementById("threshold").value;
     fftSize = document.getElementById("fft-size").value;
+    soundSec = document.getElementById("sound-sec").value;
     
     localStorage["threshold"] = threshold;
     localStorage["fft-size"] = fftSize;
+    localStorage["soundSec"] = soundSec;
     analyser.fftSize = 2 ** fftSize;
     
     alert(`>>>caution: work in progress<<<\n\nthreshold = ${threshold};\nanalyser.fftSize = ${analyser.fftSize};`);
@@ -177,5 +188,6 @@ document.getElementById("rec-button").addEventListener("click", async() => {
     
     [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.red_mute);
 
+    listenTime = new Date().getTime() + soundSec * 1000;
     listenTextLoop();
 })
