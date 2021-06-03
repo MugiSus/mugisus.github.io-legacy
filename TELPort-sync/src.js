@@ -63,7 +63,7 @@ function soundText() {
         frequency.forEach((f, index) => {
             if (((textToSound.codePointAt(i) >> index) & 1)) {
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_sound;
-                beep(f, 0, soundSec * 0.95);
+                beep(f, 0, soundSec * 0.8);
             } else 
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
         });
