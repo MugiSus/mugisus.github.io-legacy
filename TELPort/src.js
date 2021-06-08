@@ -62,7 +62,7 @@ function soundText(textToSound, soundSec) {
         frequency.forEach((f, index) => {
             if (((textToSound.codePointAt(i) >> index) & 1)) {
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_sound;
-                beep(f, 0, soundSec * 0.4);
+                beep(f, 0, soundSec * 0.5);
             } else 
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
         });
@@ -99,7 +99,7 @@ function listenTextLoop() {
         boxesHTMLCollection[index].style.background = boxColorsCollection.red_mute;
     });
     
-    if (codePoint == 0 && Object.keys(heardChars).length > 1) {
+    if (codePoint == 0 && Object.keys(heardChars).length > 0) {
         let confirmedCodePoint = Object.keys(heardChars).reduce((x, y) => heardChars[x] > heardChars[y] ? x : y, 0);
         document.getElementById("confirmed-letter").innerHTML = `[${String.fromCodePoint(confirmedCodePoint)}]`;
         document.getElementById("received-text").value += String.fromCodePoint(confirmedCodePoint);
