@@ -21,7 +21,7 @@ body{
     transition-duration: 0.15s;
 }
 
-.textarea{
+textarea{
     color:#bbbb66;
     background-color: #303030;
 }
