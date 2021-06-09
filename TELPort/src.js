@@ -62,7 +62,7 @@ function soundText(textToSound, soundSec) {
         frequency.forEach((f, index) => {
             if (((textToSound.codePointAt(i) >> index) & 1)) {
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_sound;
-                beep(f, 0, soundSec * 0.5);
+                beep(f, 0, soundSec * 0.35);
             } else 
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
         });
@@ -171,7 +171,7 @@ document.getElementById("rec-button").addEventListener("click", async() => {
     localStorage["fft-size"] = fftSize;
     analyser.fftSize = 2 ** fftSize;
     
-    alert(`>>>caution: work in progress<<<\n\nthreshold = ${threshold};\nanalyser.fftSize = ${analyser.fftSize};`);
+    alert(`initalization succeded!\n>>>caution: work in progress<<<\n\nthreshold = ${threshold};\nanalyser.fftSize = ${analyser.fftSize};`);
     frequencyData = new Uint8Array(analyser.frequencyBinCount);
     timeDomainData = new Uint8Array(analyser.fftSize);
     
