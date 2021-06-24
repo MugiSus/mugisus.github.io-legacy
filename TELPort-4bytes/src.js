@@ -44,42 +44,40 @@ function beep(hertz, start, len) {
     oscillatorNode.stop(context.currentTime + start + len);
 }
 
+function getSingleHertzComponent(timeDomainData, targetHertz, sampleLeng) {
+    let sumsin = 0, sumcos = 0;
+
+    timeDomainData.slice(0, sampleLeng).map(x => x - 127).forEach((x, y) => {
+        sumsin += x * Math.sin((y / (44000 / targetHertz)) * Math.PI * 2);
+        sumcos += x * Math.cos((y / (44000 / targetHertz)) * Math.PI * 2);
+    });
+
+    return ((sumsin / sampleLeng) ** 2 + (sumcos / sampleLeng) ** 2) ** 0.5;
+}
+
 function soundText(textToSound, soundSec) {
-    let i = 0, soundCtr = 0;
+    let i = 0;
 
     soundText_intervalId = setInterval(function() {
         if (i >= textToSound.length) {
             [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.yellow_mute);
-            document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR NOT DETECTED";
-            document.getElementById("surrogate-pair").style.opacity = "0.2";
-            document.getElementById("heard-letter").innerHTML = `[]`;
+            document.getElementById("heard-letter").innerHTML = `[][][][]`;
             clearInterval(soundText_intervalId);
             return;
         }
 
-        console.log(`attempting ${i}...`);
+        console.log(`attempting ${i} ~ ${i + 3}...`);
 
         frequency.forEach((f, index) => {
-            if (((textToSound.codePointAt(i) >> index) & 1)) {
+            if ((textToSound.codePointAt(i + Math.floor(index / 8)) >> (index % 8)) & 1) {
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_sound;
                 beep(f, 0, soundSec * 0.35);
             } else 
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
         });
 
-        if (textToSound.codePointAt(i) > 2 ** 16) {
-            document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR DETECTED";
-            document.getElementById("surrogate-pair").style.opacity = "1";
-            document.getElementById("heard-letter").innerHTML = `[${textToSound[i] + textToSound[i + 1]}]`;
-            console.log(`surrogate pair detected! skipped ${i + 1}`);
-            i += 2;
-        } else {
-            document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR NOT DETECTED";
-            document.getElementById("surrogate-pair").style.opacity = "0.2";
-            document.getElementById("heard-letter").innerHTML = `[${textToSound[i]}]`;
-            i++;
-        }
-        soundCtr++;
+        document.getElementById("heard-letter").innerHTML = `[${(textToSound.slice(i, i + 4) + "\0\0\0").slice(0, 4).split("").join("][")}]`;
+        i += 4;
 
     }, soundSec * 1000);
 }
@@ -89,31 +87,41 @@ function listenTextLoop() {
 
     let codePoint = 0;
     analyser.getByteFrequencyData(frequencyData);
-    analyser.getByteTimeDomainData(timeDomainData);
+    // analyser.getByteTimeDomainData(timeDomainData);
     
     frequency.forEach((f, index) => {
         if (threshold <= frequencyData[Math.floor(f / (context.sampleRate / analyser.fftSize))]) {
             boxesHTMLCollection[index].style.background = boxColorsCollection.red_sound;
-            codePoint += 2 ** index;
+            codePoint += 1 << index;
         } else 
-        boxesHTMLCollection[index].style.background = boxColorsCollection.red_mute;
+            boxesHTMLCollection[index].style.background = boxColorsCollection.red_mute;
     });
     
     if (codePoint == 0 && Object.keys(heardChars).length > 0) {
         let confirmedCodePoint = Object.keys(heardChars).reduce((x, y) => heardChars[x] > heardChars[y] ? x : y, 0);
-        document.getElementById("confirmed-letter").innerHTML = `[${String.fromCodePoint(confirmedCodePoint)}]`;
-        document.getElementById("received-text").value += String.fromCodePoint(confirmedCodePoint);
+
+        let confirmed4bytes = [
+            (confirmedCodePoint >> 0) & 0xFF,
+            (confirmedCodePoint >> 8) & 0xFF,
+            (confirmedCodePoint >> 16) & 0xFF,
+            (confirmedCodePoint >> 24) & 0xFF
+        ].map(x => x ? String.fromCodePoint(x) : "");
+
+        document.getElementById("confirmed-letter").innerHTML = `[${confirmed4bytes.join("][")}]`;
+        document.getElementById("received-text").value += confirmed4bytes.join("");
 
         heardChars = {};
-    } else if (codePoint > 2 ** 16) {
-        document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR DETECTED";
-        document.getElementById("surrogate-pair").style.opacity = "1";
-    } else {
-        document.getElementById("surrogate-pair").innerHTML = "SURROGATE PAIR NOT DETECTED";
-        document.getElementById("surrogate-pair").style.opacity = "0.2";
     }
+
+    let heardLetters = [
+        (codePoint >> 0) & 0xFF,
+        (codePoint >> 8) & 0xFF,
+        (codePoint >> 16) & 0xFF,
+        (codePoint >> 24) & 0xFF
+    ].map(x => x ? String.fromCodePoint(x) : "");
     
-    document.getElementById("heard-letter").innerHTML = `[${String.fromCodePoint(codePoint)}]`;
+    document.getElementById("heard-letter").innerHTML = `[${heardLetters.join("][")}]`;
+
     if (codePoint) {
         if (!heardChars[codePoint]) heardChars[codePoint] = 0;
         heardChars[codePoint]++;
@@ -149,7 +157,8 @@ document.getElementById("call-button").addEventListener("click", function() {
 document.getElementById("rec-button").addEventListener("click", async() => {
     initallaize();
 
-    heardChars = {};
+    confirmedCodePoints = [0, 0, 0, 0];
+    heardChars = [{}, {}, {}, {}];
     document.getElementById("received-text").value = "";
 
     if (!stream) {
