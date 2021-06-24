@@ -1,11 +1,13 @@
 
-const frequency = new Array(32).fill(0).map((_, i) => {
+const frequency = new Array(48).fill(0).map((_, i) => {
     if (i < 6)
         return 440 * 2 ** (i / 6);
     if (i < 18)
         return 880 * 2 ** ((i - 6) / 12);
     if (i < 42)
         return 1760 * 2 ** ((i - 18) / 24);
+    if (i < 90)
+        return 3520 * 2 ** ((i - 42) / 48);
 });
 
 document.getElementById("text").value = localStorage["textToSound"] || "hello, world! ðøüþÿ";
@@ -61,23 +63,23 @@ function soundText(textToSound, soundSec) {
     soundText_intervalId = setInterval(function() {
         if (i >= textToSound.length) {
             [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.yellow_mute);
-            document.getElementById("heard-letter").innerHTML = `[][][][]`;
+            document.getElementById("heard-letter").innerHTML = `[][][][][][]`;
             clearInterval(soundText_intervalId);
             return;
         }
 
-        console.log(`attempting ${i} ~ ${i + 3}...`);
+        console.log(`attempting ${i} ~ ${i + 6}...`);
 
         frequency.forEach((f, index) => {
             if ((textToSound.codePointAt(i + Math.floor(index / 8)) >> (index % 8)) & 1) {
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_sound;
-                beep(f, 0, soundSec * 0.35);
+                beep(f, 0, soundSec * 0.4);
             } else 
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
         });
 
-        document.getElementById("heard-letter").innerHTML = `[${(textToSound.slice(i, i + 4) + "\0\0\0").slice(0, 4).split("").join("][")}]`;
-        i += 4;
+        document.getElementById("heard-letter").innerHTML = `[${(textToSound.slice(i, i + 6) + "\0\0\0\0\0").slice(0, 6).split("").join("][")}]`;
+        i += 6;
 
     }, soundSec * 1000);
 }
@@ -92,7 +94,7 @@ function listenTextLoop() {
     frequency.forEach((f, index) => {
         if (threshold <= frequencyData[Math.floor(f / (context.sampleRate / analyser.fftSize))]) {
             boxesHTMLCollection[index].style.background = boxColorsCollection.red_sound;
-            codePoint += 1 << index;
+            codePoint += 2 ** index;
         } else 
             boxesHTMLCollection[index].style.background = boxColorsCollection.red_mute;
     });
@@ -104,7 +106,9 @@ function listenTextLoop() {
             (confirmedCodePoint >> 0) & 0xFF,
             (confirmedCodePoint >> 8) & 0xFF,
             (confirmedCodePoint >> 16) & 0xFF,
-            (confirmedCodePoint >> 24) & 0xFF
+            (confirmedCodePoint >> 24) & 0xFF,
+            ((confirmedCodePoint / 0x100) >> 24) & 0xFF,
+            ((confirmedCodePoint / 0x10000) >> 24) & 0xFF,
         ].map(x => x ? String.fromCodePoint(x) : "");
 
         document.getElementById("confirmed-letter").innerHTML = `[${confirmed4bytes.join("][")}]`;
@@ -117,7 +121,9 @@ function listenTextLoop() {
         (codePoint >> 0) & 0xFF,
         (codePoint >> 8) & 0xFF,
         (codePoint >> 16) & 0xFF,
-        (codePoint >> 24) & 0xFF
+        (codePoint >> 24) & 0xFF,
+        ((codePoint / 0x100) >> 24) & 0xFF,
+        ((codePoint / 0x10000) >> 24) & 0xFF,
     ].map(x => x ? String.fromCodePoint(x) : "");
     
     document.getElementById("heard-letter").innerHTML = `[${heardLetters.join("][")}]`;
@@ -158,7 +164,7 @@ document.getElementById("rec-button").addEventListener("click", async() => {
     initallaize();
 
     confirmedCodePoints = [0, 0, 0, 0];
-    heardChars = [{}, {}, {}, {}];
+    heardChars = {};
     document.getElementById("received-text").value = "";
 
     if (!stream) {
