@@ -1,13 +1,16 @@
 
+const firstFreuency = 440;
+const bytes = 6;
+
 const frequency = new Array(48).fill(0).map((_, i) => {
     if (i < 6)
-        return 440 * 2 ** (i / 6);
+        return firstFreuency * 2 ** (i / 6);
     if (i < 18)
-        return 880 * 2 ** ((i - 6) / 12);
+        return firstFreuency * 2 ** (1 + (i - 6) / 12);
     if (i < 42)
-        return 1760 * 2 ** ((i - 18) / 24);
+        return firstFreuency * 2 ** (2 + (i - 18) / 24);
     if (i < 90)
-        return 3520 * 2 ** ((i - 42) / 48);
+        return firstFreuency * 2 ** (3 + (i - 42) / 48);
 });
 
 document.getElementById("text").value = localStorage["textToSound"] || "hello, world! ðøüþÿ";
@@ -63,12 +66,12 @@ function soundText(textToSound, soundSec) {
     soundText_intervalId = setInterval(function() {
         if (i >= textToSound.length) {
             [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.yellow_mute);
-            document.getElementById("heard-letter").innerHTML = `[][][][][][]`;
+            document.getElementById("heard-letter").innerHTML = `[]`;
             clearInterval(soundText_intervalId);
             return;
         }
 
-        console.log(`attempting ${i} ~ ${i + 6}...`);
+        console.log(`attempting ${i} ~ ${i + bytes}...`);
 
         frequency.forEach((f, index) => {
             if ((textToSound.codePointAt(i + Math.floor(index / 8)) >> (index % 8)) & 1) {
@@ -78,8 +81,8 @@ function soundText(textToSound, soundSec) {
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
         });
 
-        document.getElementById("heard-letter").innerHTML = `[${(textToSound.slice(i, i + 6) + "\0\0\0\0\0").slice(0, 6).split("").join("][")}]`;
-        i += 6;
+        document.getElementById("heard-letter").innerHTML = `[${textToSound.slice(i, i + bytes)}]`;
+        i += bytes;
 
     }, soundSec * 1000);
 }
@@ -102,31 +105,23 @@ function listenTextLoop() {
     if (codePoint == 0 && Object.keys(heardChars).length > 0) {
         let confirmedCodePoint = Object.keys(heardChars).reduce((x, y) => heardChars[x] > heardChars[y] ? x : y, 0);
 
-        let confirmed4bytes = [
-            (confirmedCodePoint >> 0) & 0xFF,
-            (confirmedCodePoint >> 8) & 0xFF,
-            (confirmedCodePoint >> 16) & 0xFF,
-            (confirmedCodePoint >> 24) & 0xFF,
-            ((confirmedCodePoint / 0x100) >> 24) & 0xFF,
-            ((confirmedCodePoint / 0x10000) >> 24) & 0xFF,
-        ].map(x => x ? String.fromCodePoint(x) : "");
+        let confirmed4bytes = new Array(bytes).fill(0).map((_, i) => {
+            let byte = (confirmedCodePoint / 2 ** (i * 8)) & 0xFF;
+            return byte ? String.fromCodePoint(byte) : "";
+        });
 
-        document.getElementById("confirmed-letter").innerHTML = `[${confirmed4bytes.join("][")}]`;
+        document.getElementById("confirmed-letter").innerHTML = `[${confirmed4bytes.join("")}]`;
         document.getElementById("received-text").value += confirmed4bytes.join("");
 
         heardChars = {};
     }
 
-    let heardLetters = [
-        (codePoint >> 0) & 0xFF,
-        (codePoint >> 8) & 0xFF,
-        (codePoint >> 16) & 0xFF,
-        (codePoint >> 24) & 0xFF,
-        ((codePoint / 0x100) >> 24) & 0xFF,
-        ((codePoint / 0x10000) >> 24) & 0xFF,
-    ].map(x => x ? String.fromCodePoint(x) : "");
+    let heardLetters = new Array(bytes).fill(0).map((_, i) => {
+        let byte = (codePoint / 2 ** (i * 8)) & 0xFF;
+        return byte ? String.fromCodePoint(byte) : "";
+    });
     
-    document.getElementById("heard-letter").innerHTML = `[${heardLetters.join("][")}]`;
+    document.getElementById("heard-letter").innerHTML = `[${heardLetters.join("")}]`;
 
     if (codePoint) {
         if (!heardChars[codePoint]) heardChars[codePoint] = 0;
