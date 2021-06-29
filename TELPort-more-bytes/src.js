@@ -1,5 +1,5 @@
 const firstFreuency = 1750;
-const bytes = 8;
+const bytes = 6;
 
 const frequency = new Array(8 * bytes).fill(0).map((_, i) => {
     return firstFreuency + 25 * i;
