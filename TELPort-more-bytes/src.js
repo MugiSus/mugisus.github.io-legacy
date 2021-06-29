@@ -1,16 +1,8 @@
+const firstFreuency = 1750;
+const bytes = 8;
 
-const firstFreuency = 440;
-const bytes = 6;
-
-const frequency = new Array(48).fill(0).map((_, i) => {
-    if (i < 6)
-        return firstFreuency * 2 ** (i / 6);
-    if (i < 18)
-        return firstFreuency * 2 ** (1 + (i - 6) / 12);
-    if (i < 42)
-        return firstFreuency * 2 ** (2 + (i - 18) / 24);
-    if (i < 90)
-        return firstFreuency * 2 ** (3 + (i - 42) / 48);
+const frequency = new Array(8 * bytes).fill(0).map((_, i) => {
+    return firstFreuency + 25 * i;
 });
 
 document.getElementById("text").value = localStorage["textToSound"] || "hello, world! ðøüþÿ";
@@ -105,13 +97,13 @@ function listenTextLoop() {
     if (codePoint == 0 && Object.keys(heardChars).length > 0) {
         let confirmedCodePoint = Object.keys(heardChars).reduce((x, y) => heardChars[x] > heardChars[y] ? x : y, 0);
 
-        let confirmed4bytes = new Array(bytes).fill(0).map((_, i) => {
+        let confirmedBytes = new Array(bytes).fill(0).map((_, i) => {
             let byte = (confirmedCodePoint / 2 ** (i * 8)) & 0xFF;
             return byte ? String.fromCodePoint(byte) : "";
         });
 
-        document.getElementById("confirmed-letter").innerHTML = `[${confirmed4bytes.join("")}]`;
-        document.getElementById("received-text").value += confirmed4bytes.join("");
+        document.getElementById("confirmed-letter").innerHTML = `[${confirmedBytes.join("")}]`;
+        document.getElementById("received-text").value += confirmedBytes.join("");
 
         heardChars = {};
     }
@@ -128,6 +120,7 @@ function listenTextLoop() {
         heardChars[codePoint]++;
     }
 }
+
 function initallaize(){
     clearInterval(soundText_intervalId);
     cancelAnimationFrame(listenTextLoop_reqId);
@@ -167,7 +160,7 @@ document.getElementById("rec-button").addEventListener("click", async() => {
     input.connect(analyser);
     
     confirmedCodePoints = new Array(bytes).fill(0);
-    heardChars = [];
+    heardChars = new Array(bytes).fill(0).map(() => new Object());
     document.getElementById("received-text").value = "";
     
     threshold = document.getElementById("threshold").value;
