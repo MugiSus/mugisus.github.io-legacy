@@ -47,9 +47,9 @@ textarea{
 .box{
     position: relative;
     display: inline-block;
-    margin: 0.5vw;
-    width: 5vw;
-    height: 5vw;
+    width: 4.5vw;
+    height: 4.5vw;
+    margin: 0.2vw;
     border-radius: 0.5vw;
     background: #ffdd8818;
     transition-duration: 0.15s;
@@ -62,7 +62,7 @@ textarea{
     left: 50%;
     color: #f0f0f0;
     transform: translate(-50%,-50%);
-    font-size: 1vw;
+    font-size: 0.9vw;
 }
 
 #demo{

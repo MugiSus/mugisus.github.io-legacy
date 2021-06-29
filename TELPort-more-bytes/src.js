@@ -1,8 +1,8 @@
-const firstFreuency = 1750;
-const bytes = 8;
+const firstFreuency = 1000;
+const bytes = 40;
 
 const frequency = new Array(8 * bytes).fill(0).map((_, i) => {
-    return firstFreuency + 25 * i;
+    return firstFreuency + 20 * i;
 });
 
 document.getElementById("text").value = localStorage["textToSound"] || "hello, world! ðøüþÿ";
@@ -10,7 +10,7 @@ document.getElementById("sound-sec").value = localStorage["soundSec"] || 0.5;
 document.getElementById("fft-size").value = localStorage["fft-size"] || 13;
 document.getElementById("threshold").value = localStorage["threshold"] || 160;
 
-document.getElementById("boxes").innerHTML = frequency.map((x, y) => `<div class="box"><span>${Math.round(x)}Hz<br>2<sup>${y}</sup></span></div>${y % 8 == 7 ? "<br>" : ""}`).join(" ");
+document.getElementById("boxes").innerHTML = frequency.map((x, y) => `<div class="box"><span>${Math.round(x)}Hz<br>2<sup>${y}</sup></span></div>${(y + 1) % 16 ? "" : "<br>"}`).join(" ");
 let boxesHTMLCollection = document.getElementsByClassName("box");
 
 const boxColorsCollection = {
@@ -31,7 +31,7 @@ let frameCounter = 0;
 function beep(hertz, start, len) {
     let gainNode = new GainNode(context);
     gainNode.connect(context.destination);
-    gainNode.gain.value = 0.1;
+    gainNode.gain.value = 0.007;
     
     let oscillatorNode = new OscillatorNode(context);
     oscillatorNode.type = "sine";
@@ -79,8 +79,13 @@ function soundText(textToSound, soundSec) {
     }, soundSec * 1000);
 }
 
+let fps = 0;
+
 function listenTextLoop() {
     listenTextLoop_reqId = requestAnimationFrame(listenTextLoop);
+    //listenTextLoop_reqId = setTimeout(listenTextLoop, 1000 / 120);
+
+    if (fps++ % 120 == 0) console.log("cycle");
 
     let codePoints = new Array(bytes).fill(0);
     let isMute = true;
@@ -97,10 +102,7 @@ function listenTextLoop() {
     });
     
     if (isMute && heardChars.some(x => Object.keys(x).length)) {
-        //let confirmedCodePoint = heardChars.map(x => Object.keys(x).reduce((p, c) => Math.max(x[p], x[c])));
-
         let confirmedBytes = heardChars.map(x => Object.keys(x).reduce((p, c) => x[p] > x[c] ? p : c)).map(x => x * 1 ? String.fromCodePoint(x) : "");
-        console.log(confirmedBytes);
 
         document.getElementById("confirmed-letter").innerHTML = `[${confirmedBytes.join("")}]`;
         document.getElementById("received-text").value += confirmedBytes.join("");
@@ -118,7 +120,9 @@ function listenTextLoop() {
 
 function initallaize(){
     clearInterval(soundText_intervalId);
+    //clearTimeout(listenTextLoop_reqId);
     cancelAnimationFrame(listenTextLoop_reqId);
+
     [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.yellow_mute);
 
     context = new AudioContext();
@@ -145,7 +149,6 @@ document.getElementById("call-button").addEventListener("click", function() {
     }
 })
 
-
 document.getElementById("rec-button").addEventListener("click", async() => {
     initallaize();
 
@@ -154,7 +157,6 @@ document.getElementById("rec-button").addEventListener("click", async() => {
     analyser = context.createAnalyser();
     input.connect(analyser);
     
-    //confirmedCodePoints = new Array(bytes).fill(0);
     heardChars = new Array(bytes).fill(0).map(() => new Object());
     
     document.getElementById("received-text").value = "";
