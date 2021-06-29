@@ -1,5 +1,5 @@
 const firstFreuency = 1750;
-const bytes = 6;
+const bytes = 8;
 
 const frequency = new Array(8 * bytes).fill(0).map((_, i) => {
     return firstFreuency + 25 * i;
@@ -82,43 +82,38 @@ function soundText(textToSound, soundSec) {
 function listenTextLoop() {
     listenTextLoop_reqId = requestAnimationFrame(listenTextLoop);
 
-    let codePoint = 0;
+    let codePoints = new Array(bytes).fill(0);
+    let isMute = true;
     analyser.getByteFrequencyData(frequencyData);
     // analyser.getByteTimeDomainData(timeDomainData);
     
     frequency.forEach((f, index) => {
         if (threshold <= frequencyData[Math.floor(f / (context.sampleRate / analyser.fftSize))]) {
             boxesHTMLCollection[index].style.background = boxColorsCollection.red_sound;
-            codePoint += 2 ** index;
+            codePoints[Math.floor(index / 8)] += 2 ** (index % 8);
+            isMute = false;
         } else 
             boxesHTMLCollection[index].style.background = boxColorsCollection.red_mute;
     });
     
-    if (codePoint == 0 && Object.keys(heardChars).length > 0) {
-        let confirmedCodePoint = Object.keys(heardChars).reduce((x, y) => heardChars[x] > heardChars[y] ? x : y, 0);
+    if (isMute && heardChars.some(x => Object.keys(x).length)) {
+        //let confirmedCodePoint = heardChars.map(x => Object.keys(x).reduce((p, c) => Math.max(x[p], x[c])));
 
-        let confirmedBytes = new Array(bytes).fill(0).map((_, i) => {
-            let byte = (confirmedCodePoint / 2 ** (i * 8)) & 0xFF;
-            return byte ? String.fromCodePoint(byte) : "";
-        });
+        let confirmedBytes = heardChars.map(x => Object.keys(x).reduce((p, c) => x[p] > x[c] ? p : c)).map(x => x * 1 ? String.fromCodePoint(x) : "");
+        console.log(confirmedBytes);
 
         document.getElementById("confirmed-letter").innerHTML = `[${confirmedBytes.join("")}]`;
         document.getElementById("received-text").value += confirmedBytes.join("");
 
-        heardChars = {};
+        heardChars = new Array(bytes).fill(0).map(() => new Object());
+    } else if (!isMute) {
+        codePoints.forEach((x, i) => {
+            if (x && !heardChars[i][x]) heardChars[i][x] = 0;
+            else heardChars[i][x]++;
+        })
     }
-
-    let heardLetters = new Array(bytes).fill(0).map((_, i) => {
-        let byte = (codePoint / 2 ** (i * 8)) & 0xFF;
-        return byte ? String.fromCodePoint(byte) : "";
-    });
     
-    document.getElementById("heard-letter").innerHTML = `[${heardLetters.join("")}]`;
-
-    if (codePoint) {
-        if (!heardChars[codePoint]) heardChars[codePoint] = 0;
-        heardChars[codePoint]++;
-    }
+    document.getElementById("heard-letter").innerHTML = `[${codePoints.map(x => x ? String.fromCodePoint(x) : "").join("")}]`;
 }
 
 function initallaize(){
@@ -159,10 +154,10 @@ document.getElementById("rec-button").addEventListener("click", async() => {
     analyser = context.createAnalyser();
     input.connect(analyser);
     
-    confirmedCodePoints = new Array(bytes).fill(0);
+    //confirmedCodePoints = new Array(bytes).fill(0);
     heardChars = new Array(bytes).fill(0).map(() => new Object());
-    document.getElementById("received-text").value = "";
     
+    document.getElementById("received-text").value = "";
     threshold = document.getElementById("threshold").value;
     fftSize = document.getElementById("fft-size").value;
 
@@ -173,8 +168,6 @@ document.getElementById("rec-button").addEventListener("click", async() => {
     alert(`initalization succeded!\n>>>caution: work in progress<<<\n\nthreshold = ${threshold};\nanalyser.fftSize = ${analyser.fftSize};`);
     frequencyData = new Uint8Array(analyser.frequencyBinCount);
     timeDomainData = new Uint8Array(analyser.fftSize);
-    
-    [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.red_mute);
 
     listenTextLoop();
 })
