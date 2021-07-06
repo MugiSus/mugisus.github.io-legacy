@@ -26,6 +26,13 @@ textarea{
     background-color: #303030;
 }
 
+#sound-sec-number, #threshold-number {
+    border-style: solid;
+    border-width: 1px;
+    color:#bbbb66;
+    background-color: #303030;
+}
+
 #heard-letter{
     font-size: 2vw;
     color: #bbbb66;
