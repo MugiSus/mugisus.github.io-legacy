@@ -7,7 +7,7 @@ const frequency = new Array(8 * bytes).fill(0).map((_, i) => {
 
 document.getElementById("text").value = localStorage["textToSound"] ?? "hello, world! ðøüþÿ";
 document.getElementById("sound-sec").value = localStorage["soundSec"] ?? 0.5;
-document.getElementById("visualize").checked = localStorage["visualize"] == "true";
+document.getElementById("visualize").checked = (localStorage["visualize"] ?? "true") == "true";
 document.getElementById("fft-size").value = localStorage["fft-size"] ?? 13;
 document.getElementById("threshold").value = localStorage["threshold"] ?? 160;
 
