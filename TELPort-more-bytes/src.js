@@ -35,7 +35,7 @@ let frequencyData, stream, input, analyser, threshold, fftSize, listenTextLoop_r
 function beep(hertz, start, len) {
     let gainNode = new GainNode(context);
     gainNode.connect(context.destination);
-    gainNode.gain.value = 0.005;
+    gainNode.gain.value = 0.007;
     
     let oscillatorNode = new OscillatorNode(context);
     oscillatorNode.type = "sine";
@@ -86,7 +86,7 @@ function soundText(textToSound, soundSec) {
 
 function listenTextLoop() {
     listenTextLoop_reqId = requestAnimationFrame(listenTextLoop);
-    //listenTextLoop_reqId = setTimeout(listenTextLoop, 1000 / 120);
+    //listenTextLoop_reqId = setTimeout(listenTextLoop, 1000 / 100);
 
     let codePoints = new Array(bytes).fill(0);
     let isMute = true;
