@@ -221,4 +221,4 @@ document.getElementById("sound-sec-number").addEventListener("change", () => {
     document.getElementById("sound-sec").value = document.getElementById("sound-sec-number").value;
 });
 
-loadElementsValue("input, textarea");
+loadElementsValue("#text, #sound-sec, #sound-sec-number, #visualize, #fft-size, #threshold, #threshold-number");
