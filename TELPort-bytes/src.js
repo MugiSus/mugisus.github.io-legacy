@@ -128,6 +128,7 @@ function listenTextLoop() {
         heardChars[codePoint]++;
     }
 }
+
 function initallaize(){
     clearInterval(soundText_intervalId);
     cancelAnimationFrame(listenTextLoop_reqId);

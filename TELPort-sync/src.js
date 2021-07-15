@@ -1,11 +1,11 @@
-const firstFreuency = (44100 / 8192) * 150;
-const bytes = 40;
+const firstFreuency = (44100 / 8192) * 200;
+const bytes = 44;
 
 const frequency = new Array(8 * bytes).fill(0).map((_, i) => {
-    return firstFreuency + (44100 / 8192 * 3) * i;
+    return firstFreuency + (44100 / 8192 * 4) * i;
 });
 
-let loadInputs =()=> document.querySelectorAll("input, textarea").forEach(x => x.value = localStorage[`telport-text-to-sound ${x.id}`] ?? {
+let loadElementsValue =(elements)=> document.querySelectorAll(elements).forEach(x => x.value = localStorage[`telport-text-to-sound ${x.id}`] ?? {
     "text": "hello, world!",
     "sound-sec": 0.5,
     "sound-sec-number": 0.5,
@@ -15,9 +15,7 @@ let loadInputs =()=> document.querySelectorAll("input, textarea").forEach(x => x
     "threshold-number": 160
 }[x.id]);
 
-loadInputs();
-
-let saveInputs =()=> document.querySelectorAll("input, textarea").forEach(x => localStorage[`telport-text-to-sound ${x.id}`] = x.value);
+let saveElementsValue =(elements)=> document.querySelectorAll(elements).forEach(x => localStorage[`telport-text-to-sound ${x.id}`] = x.value ?? x.checked);
 
 document.getElementById("boxes").innerHTML = frequency.map((x, y) => `<div class="box"><span>${Math.round(x)}Hz<br>2<sup>${y}</sup></span></div>${(y + 1) % 16 ? "" : "<br>"}`).join(" ");
 let boxesHTMLCollection = document.getElementsByClassName("box");
@@ -33,9 +31,9 @@ const boxColorsCollection = {
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 let context;
 
-let visualize;
-let soundText_intervalId, textToSound, soundSec;
-let frequencyData, stream, input, analyser, threshold, fftSize, listenTextLoop_reqId, heardChars;
+let visualize, soundSec;
+let soundText_intervalId, textToSound;
+let frequencyData, stream, input, analyser, threshold, fftSize, listenTextLoop_reqId, heardChars, nextConfirmTime;
 
 function beep(hertz, start, len) {
     let gainNode = new GainNode(context);
@@ -78,7 +76,7 @@ function soundText(textToSound, soundSec) {
             if ((textToSound.codePointAt(i + Math.floor(index / 8)) >> (index % 8)) & 1) {
                 if (visualize)
                     boxesHTMLCollection[index].style.background = boxColorsCollection.green_sound;
-                beep(f, 0, soundSec * 0.45);
+                beep(f, 0, soundSec * 0.90);
             } else if (visualize) 
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
         });
@@ -108,13 +106,25 @@ function listenTextLoop() {
             boxesHTMLCollection[index].style.background = boxColorsCollection.red_mute;
     });
     
-    if (isMute && heardChars.some(x => Object.keys(x).length)) {
-        let confirmedBytes = heardChars.map(x => Object.keys(x).reduce((p, c) => x[p] > x[c] ? p : c)).map(x => x * 1 ? String.fromCodePoint(x) : "");
-
-        document.getElementById("confirmed-letter").innerHTML = `[${confirmedBytes.join("")}]`;
-        document.getElementById("received-text").value += confirmedBytes.join("");
-
-        heardChars = new Array(bytes).fill(0).map(() => new Object());
+    if (nextConfirmTime < new Date().getTime()) {
+        nextConfirmTime += soundSec * 1000;
+        document.getElementById("confirmed-letter").style.transitionDuration = "0s";
+        document.getElementById("confirmed-letter").style.color = "#bbbb66";
+        requestAnimationFrame(() => {
+            document.getElementById("confirmed-letter").style.transitionDuration = "0.2s";
+            document.getElementById("confirmed-letter").style.color = "#bbbb6644";
+        })
+        
+        if (heardChars.some(x => Object.keys(x).length)) {
+            let confirmedBytes = codePoints.map(x => x * 1 ? String.fromCodePoint(x) : "");
+    
+            document.getElementById("confirmed-letter").innerHTML = `[${confirmedBytes.join("")}]`;
+            document.getElementById("received-text").value += confirmedBytes.join("");
+    
+            heardChars = new Array(bytes).fill(0).map(() => new Object());
+        } else {
+            document.getElementById("confirmed-letter").innerHTML = `[]`;
+        }
     } else if (!isMute) {
         codePoints.forEach((x, i) => {
             if (x && !heardChars[i][x]) heardChars[i][x] = 0;
@@ -137,8 +147,6 @@ function initallaize(){
     const emptySource = context.createBufferSource();
     emptySource.start();
     emptySource.stop();
-
-    saveInputs();
 }
 
 document.getElementById("call-button").addEventListener("click", function() {
@@ -147,19 +155,23 @@ document.getElementById("call-button").addEventListener("click", function() {
     textToSound = document.getElementById("text").value;
     soundSec = document.getElementById("sound-sec").value;
     visualize = document.getElementById("visualize").checked;
+
+    saveElementsValue("#text, #sound-sec, #sound-sec-number, #visualize");
     
-    alert(`going to sound "${textToSound.length > 50 ? textToSound.substring(0, 100) + "..." : textToSound}" ${soundSec} sec per note`);
+    //alert(`going to sound "${textToSound.length > 50 ? textToSound.substring(0, 100) + "..." : textToSound}" ${soundSec} sec per note`);
     
-    if (confirm("ready?")) {
-        [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.green_mute);
-        soundText(textToSound, soundSec);
-    }
+    [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.green_mute);
+    soundText(textToSound, soundSec);
 });
 
 document.getElementById("rec-button").addEventListener("click", async() => {
     initallaize();
 
-    stream = await navigator.mediaDevices.getUserMedia({audio: true});
+    stream = await navigator.mediaDevices.getUserMedia({audio: {
+        echoCancellation: false,
+        noiseSuppression: false,
+        autoGainControl: false,
+    }});
     input = context.createMediaStreamSource(stream);
     analyser = context.createAnalyser();
     input.connect(analyser);
@@ -167,31 +179,38 @@ document.getElementById("rec-button").addEventListener("click", async() => {
     heardChars = new Array(bytes).fill(0).map(() => new Object());
     
     document.getElementById("received-text").value = "";
-
+    
+    soundSec = document.getElementById("sound-sec").value;
     threshold = document.getElementById("threshold").value;
     fftSize = document.getElementById("fft-size").value;
     visualize = document.getElementById("visualize").checked;
 
+    saveElementsValue("#sound-sec, #sound-sec-number, #threshold, #fft-size, #visualize");
+    
     analyser.fftSize = 2 ** fftSize;
-    analyser.maxDecibels = 30;
+    analyser.maxDecibels = 0;
     analyser.minDecibels = -100;
     
-    alert(`initalization succeded!\n>>>caution: work in progress<<<\n\nthreshold = ${threshold};\nanalyser.fftSize = ${analyser.fftSize};`);
+    //alert(`initalization succeded!\n>>>caution: work in progress<<<\n\nthreshold = ${threshold};\nanalyser.fftSize = ${analyser.fftSize};`);
     frequencyData = new Uint8Array(analyser.frequencyBinCount);
     timeDomainData = new Uint8Array(analyser.fftSize);
-
+    
     [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.red_mute);
+
+    nextConfirmTime = new Date().getTime() + soundSec * 1000;
     listenTextLoop();
 });
 
 document.getElementById("threshold").addEventListener("change", () => {
     document.getElementById("threshold-number").value = document.getElementById("threshold").value;
     threshold = document.getElementById("threshold").value;
+    saveElementsValue("#threshold, #threshold-number");
 });
 
 document.getElementById("threshold-number").addEventListener("change", () => {
     document.getElementById("threshold").value = document.getElementById("threshold-number").value;
     threshold = document.getElementById("threshold").value;
+    saveElementsValue("#threshold, #threshold-number");
 });
 
 document.getElementById("sound-sec").addEventListener("change", () => {
@@ -201,3 +220,5 @@ document.getElementById("sound-sec").addEventListener("change", () => {
 document.getElementById("sound-sec-number").addEventListener("change", () => {
     document.getElementById("sound-sec").value = document.getElementById("sound-sec-number").value;
 });
+
+loadElementsValue("input, textarea");
