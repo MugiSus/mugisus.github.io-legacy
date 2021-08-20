@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@500;800&display=swap');
 
 body{
-    font-family: 'M PLUS Rounded 1c';
+    font-family: 'M PLUS 1p';
     font-weight: 500;
     color: #d0d0d0;
     text-align: center;
@@ -38,6 +38,10 @@ textarea{
 
 #call-button{
     color: #448866;
+}
+
+#tuning-button, #auto-threshold-button{
+    color: #888866;
 }
 
 #rec-button{

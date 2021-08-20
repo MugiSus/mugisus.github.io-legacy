@@ -1,8 +1,16 @@
-const firstFreuency = (44100 / 8192) * 200;
-const bytes = 40;
+const TuningString = "Tuning completed. It is time to telport.";
+const TuningBits = TuningString.split("").map(char => {
+    let bits = char.charCodeAt(0);
+    bits = (bits & 0x55) + (bits >> 1 & 0x55);
+    bits = (bits & 0x33) + (bits >> 2 & 0x33);
+    return bits = (bits & 0x0f) + (bits >> 4 & 0x0f);
+}).reduce((previous, current) => previous + current);
 
-const frequency = new Array(8 * bytes).fill(0).map((_, i) => {
-    return firstFreuency + (44100 / 8192 * 4) * i;
+const FirstFreuency = (44100 / 8192) * 200;
+const Bytes = 40;
+
+const frequency = new Array(8 * Bytes).fill(0).map((_, i) => {
+    return FirstFreuency + (44100 / 8192 * 4) * i;
 });
 
 let loadElementsValue =(elements)=> document.querySelectorAll(elements).forEach(x => x.value = localStorage[`telport-text-to-sound ${x.id}`] ?? {
@@ -33,7 +41,7 @@ let context;
 
 let visualize, soundSec;
 let soundText_intervalId, textToSound;
-let frequencyData, stream, input, analyser, threshold, fftSize, listenTextLoop_reqId, heardChars, nextConfirmTime;
+let frequencyData, stream, input, analyser, threshold, fftSize, listenTextLoop_reqId, heardChars, nextConfirmTime, allBitAmplitudes;
 
 function beep(hertz, start, len) {
     let gainNode = new GainNode(context);
@@ -62,7 +70,7 @@ function getSingleHertzComponent(timeDomainData, targetHertz, sampleLeng) {
 function soundText(textToSound, soundSec) {
     let i = 0;
 
-    soundText_intervalId = setInterval(function() {
+    let soundTextRound = function() {
         if (i >= textToSound.length) {
             [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.yellow_mute);
             document.getElementById("heard-letter").innerHTML = `[]`;
@@ -70,7 +78,7 @@ function soundText(textToSound, soundSec) {
             return;
         }
 
-        console.log(`attempting ${i} ~ ${i + bytes}...`);
+        console.log(`attempting ${i} ~ ${i + Bytes}...`);
 
         frequency.forEach((f, index) => {
             if ((textToSound.codePointAt(i + Math.floor(index / 8)) >> (index % 8)) & 1) {
@@ -81,18 +89,45 @@ function soundText(textToSound, soundSec) {
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
         });
 
-        document.getElementById("heard-letter").innerHTML = `[${textToSound.slice(i, i + bytes)}]`;
-        i += bytes;
+        document.getElementById("heard-letter").innerHTML = `[${textToSound.slice(i, i + Bytes)}]`;
+        i += Bytes;
+    }
 
-    }, soundSec * 1000);
+    soundText_intervalId = setInterval(soundTextRound, soundSec * 1000);
+    soundTextRound();
+}
+
+async function listenInitialize() {
+    stream = await navigator.mediaDevices.getUserMedia({audio: {
+        echoCancellation: false,
+        noiseSuppression: false,
+        autoGainControl: false,
+    }});
+    input = context.createMediaStreamSource(stream);
+    analyser = context.createAnalyser();
+    input.connect(analyser);
+    
+    heardChars = new Array(Bytes).fill(0).map(() => new Object());
+    
+    analyser.fftSize = 2 ** fftSize;
+    analyser.maxDecibels = 0;
+    analyser.minDecibels = -100;
+    
+    frequencyData = new Uint8Array(analyser.frequencyBinCount);
+    timeDomainData = new Uint8Array(analyser.fftSize);
+    
+    [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.red_mute);
+
+    nextConfirmTime = new Date().getTime() + soundSec * 1000;
 }
 
 function listenTextLoop() {
     listenTextLoop_reqId = requestAnimationFrame(listenTextLoop);
     //listenTextLoop_reqId = setTimeout(listenTextLoop, 1000 / 100);
 
-    let codePoints = new Array(bytes).fill(0);
-    let isMute = true;
+    heardBits = 0;
+    allBitAmplitudes = new Array(Bytes);
+    let codePoints = new Array(Bytes).fill(0);
     analyser.getByteFrequencyData(frequencyData);
     // analyser.getByteTimeDomainData(timeDomainData);
     
@@ -101,9 +136,10 @@ function listenTextLoop() {
             if (visualize)
                 boxesHTMLCollection[index].style.background = boxColorsCollection.red_sound;
             codePoints[Math.floor(index / 8)] += 2 ** (index % 8);
-            isMute = false;
+            heardBits++;
         } else if (visualize)
             boxesHTMLCollection[index].style.background = boxColorsCollection.red_mute;
+        allBitAmplitudes[index] = frequencyData[Math.floor(f / (context.sampleRate / analyser.fftSize))];
     });
     
     if (nextConfirmTime < new Date().getTime()) {
@@ -121,11 +157,11 @@ function listenTextLoop() {
             document.getElementById("confirmed-letter").innerHTML = `[${confirmedBytes.join("")}]`;
             document.getElementById("received-text").value += confirmedBytes.join("");
     
-            heardChars = new Array(bytes).fill(0).map(() => new Object());
+            heardChars = new Array(Bytes).fill(0).map(() => new Object());
         } else {
             document.getElementById("confirmed-letter").innerHTML = `[]`;
         }
-    } else if (!isMute) {
+    } else if (heardBits) {
         codePoints.forEach((x, i) => {
             if (x && !heardChars[i][x]) heardChars[i][x] = 0;
             else heardChars[i][x]++;
@@ -136,12 +172,13 @@ function listenTextLoop() {
 }
 
 function initallaize(){
+    
     clearInterval(soundText_intervalId);
-    //clearTimeout(listenTextLoop_reqId);
     cancelAnimationFrame(listenTextLoop_reqId);
-
+    
     [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.yellow_mute);
-
+    
+    if (context) context.close();
     context = new AudioContext();
 
     const emptySource = context.createBufferSource();
@@ -166,17 +203,6 @@ document.getElementById("call-button").addEventListener("click", function() {
 
 document.getElementById("rec-button").addEventListener("click", async() => {
     initallaize();
-
-    stream = await navigator.mediaDevices.getUserMedia({audio: {
-        echoCancellation: false,
-        noiseSuppression: false,
-        autoGainControl: false,
-    }});
-    input = context.createMediaStreamSource(stream);
-    analyser = context.createAnalyser();
-    input.connect(analyser);
-    
-    heardChars = new Array(bytes).fill(0).map(() => new Object());
     
     document.getElementById("received-text").value = "";
     
@@ -186,19 +212,42 @@ document.getElementById("rec-button").addEventListener("click", async() => {
     visualize = document.getElementById("visualize").checked;
 
     saveElementsValue("#sound-sec, #sound-sec-number, #threshold, #fft-size, #visualize");
-    
-    analyser.fftSize = 2 ** fftSize;
-    analyser.maxDecibels = 0;
-    analyser.minDecibels = -100;
-    
-    //alert(`initalization succeded!\n>>>caution: work in progress<<<\n\nthreshold = ${threshold};\nanalyser.fftSize = ${analyser.fftSize};`);
-    frequencyData = new Uint8Array(analyser.frequencyBinCount);
-    timeDomainData = new Uint8Array(analyser.fftSize);
-    
-    [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.red_mute);
 
-    nextConfirmTime = new Date().getTime() + soundSec * 1000;
+    await listenInitialize();
     listenTextLoop();
+});
+
+document.getElementById("tuning-button").addEventListener("click", ()=>{
+    initallaize();
+
+    if (document.getElementById("tuning-button").value == "start tuning") {
+        document.getElementById("tuning-button").value = "stop tuning";
+        saveElementsValue("#text, #sound-sec, #sound-sec-number, #visualize");
+        soundText(TuningString, 3600);
+    } else
+        document.getElementById("tuning-button").value = "start tuning";
+});
+
+document.getElementById("auto-threshold-button").addEventListener("click", ()=>{
+    let thresholdLow, thresholdHigh, tempThreshold;
+    
+    tempThreshold = 128;
+    for (let i = 0; i < 16; i++)
+        tempThreshold += (allBitAmplitudes.map(x => x > tempThreshold).reduce((x, y) => x + y) > TuningBits ? 1 : -1) * 2 ** (6 - i);
+    thresholdLow = tempThreshold;
+
+    tempThreshold = 128;
+    for (let i = 0; i < 16; i++)
+        tempThreshold += (allBitAmplitudes.map(x => x > tempThreshold).reduce((x, y) => x + y) < TuningBits ? -1 : 1) * 2 ** (6 - i);
+    thresholdHigh = tempThreshold;
+
+    console.log(thresholdLow, thresholdHigh);
+    threshold = Math.floor(thresholdLow + (thresholdHigh - thresholdLow) * 0.75);
+
+    document.getElementById("threshold-number").value = threshold;
+    document.getElementById("threshold").value = threshold;
+
+    saveElementsValue("#threshold, #threshold-number");
 });
 
 document.getElementById("threshold").addEventListener("change", () => {
