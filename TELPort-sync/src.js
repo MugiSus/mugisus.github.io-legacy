@@ -242,7 +242,7 @@ document.getElementById("auto-threshold-button").addEventListener("click", ()=>{
     thresholdHigh = tempThreshold;
 
     console.log(thresholdLow, thresholdHigh);
-    threshold = Math.floor(thresholdLow + (thresholdHigh - thresholdLow) * 0.75);
+    threshold = Math.floor(thresholdLow + (thresholdHigh - thresholdLow) * 0.6);
 
     document.getElementById("threshold-number").value = threshold;
     document.getElementById("threshold").value = threshold;
