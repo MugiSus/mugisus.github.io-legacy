@@ -232,17 +232,17 @@ document.getElementById("auto-threshold-button").addEventListener("click", ()=>{
     let thresholdLow, thresholdHigh, tempThreshold;
     
     tempThreshold = 128;
-    for (let i = 0; i < 16; i++)
-        tempThreshold += (allBitAmplitudes.map(x => x > tempThreshold).reduce((x, y) => x + y) > TuningBits ? 1 : -1) * 2 ** (6 - i);
+    for (let i = 0; i < 8; i++)
+        tempThreshold += ([0, ...allBitAmplitudes.map(x => x > tempThreshold)].reduce((x, y) => x + y) > TuningBits ? 1 : -1) * 2 ** (6 - i);
     thresholdLow = tempThreshold;
 
     tempThreshold = 128;
-    for (let i = 0; i < 16; i++)
-        tempThreshold += (allBitAmplitudes.map(x => x > tempThreshold).reduce((x, y) => x + y) < TuningBits ? -1 : 1) * 2 ** (6 - i);
+    for (let i = 0; i < 8; i++)
+        tempThreshold += ([0, ...allBitAmplitudes.map(x => x > tempThreshold)].reduce((x, y) => x + y) < TuningBits ? -1 : 1) * 2 ** (6 - i);
     thresholdHigh = tempThreshold;
 
     console.log(thresholdLow, thresholdHigh);
-    threshold = Math.floor(thresholdLow + (thresholdHigh - thresholdLow) * 0.6);
+    threshold = Math.floor(thresholdLow + (thresholdHigh - thresholdLow) * 0.5);
 
     document.getElementById("threshold-number").value = threshold;
     document.getElementById("threshold").value = threshold;
