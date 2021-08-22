@@ -11,14 +11,6 @@ body{
     display: none;
 }
 
-.blurer{
-    position: fixed;
-    top: 0px;
-    width: 100vw;
-    height: 10vh;
-    backdrop-filter: blur(0.05vw);
-}
-
 #icon{
     width: 20vw;
     border-radius: 10vw;
