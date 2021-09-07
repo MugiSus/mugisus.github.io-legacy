@@ -1,0 +1,18 @@
+body{
+    color: #f0f0f0;
+    text-align: center;
+    background-color: #181818;
+}
+
+#box-container {
+    line-height: 0;
+}
+
+.box{
+    position: relative;
+    display: inline-block;
+    height: 30px;
+    width: 30px;
+    margin: 4px;
+    background-color: #303030;
+}
