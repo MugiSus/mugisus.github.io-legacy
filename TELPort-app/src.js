@@ -1,10 +1,4 @@
-/**
- * Tuning completed. It is time to telport. pR-DXK-Hs3zUWaPjDQK
- * ------------------------------------------------------------
- * +*-*+-_-* Tuning completed. It is time to telport. *-_-+*-*+
- */
-
-const TuningString = "+*-*+-_-* Tuning completed. It is time to telport. *-_-+*-*+";
+const TuningString = "Tuning completed. It is time to telport.";
 const TuningBits = TuningString.split("").map(char => {
     let bits = char.charCodeAt(0);
     bits = (bits & 0x55) + (bits >> 1 & 0x55);
@@ -12,8 +6,8 @@ const TuningBits = TuningString.split("").map(char => {
     return bits = (bits & 0x0f) + (bits >> 4 & 0x0f);
 }).reduce((previous, current) => previous + current);
 
-const FirstFreuency = (44100 / 8192) * 1600;
-const Bytes = 60;
+const FirstFreuency = (44100 / 8192) * 200;
+const Bytes = 40;
 
 const frequency = new Array(8 * Bytes).fill(0).map((_, i) => {
     return FirstFreuency + (44100 / 8192 * 4) * i;
@@ -129,11 +123,13 @@ async function listenInitialize() {
 
 function listenTextLoop() {
     listenTextLoop_reqId = requestAnimationFrame(listenTextLoop);
+    //listenTextLoop_reqId = setTimeout(listenTextLoop, 1000 / 100);
 
     heardBits = 0;
     allBitAmplitudes = new Array(Bytes);
     let codePoints = new Array(Bytes).fill(0);
     analyser.getByteFrequencyData(frequencyData);
+    // analyser.getByteTimeDomainData(timeDomainData);
     
     frequency.forEach((f, index) => {
         if (threshold <= frequencyData[Math.floor(f / (context.sampleRate / analyser.fftSize))]) {
@@ -143,19 +139,17 @@ function listenTextLoop() {
             heardBits++;
         } else if (visualize)
             boxesHTMLCollection[index].style.background = boxColorsCollection.red_mute;
-
         allBitAmplitudes[index] = frequencyData[Math.floor(f / (context.sampleRate / analyser.fftSize))];
     });
     
     if (nextConfirmTime < new Date().getTime()) {
         nextConfirmTime += soundSec * 1000;
-
         document.getElementById("confirmed-letter").style.transitionDuration = "0s";
         document.getElementById("confirmed-letter").style.color = "#bbbb66";
         requestAnimationFrame(() => {
             document.getElementById("confirmed-letter").style.transitionDuration = "0.2s";
             document.getElementById("confirmed-letter").style.color = "#bbbb6644";
-        }) // flash
+        })
         
         if (heardChars.some(x => Object.keys(x).length)) {
             let confirmedBytes = codePoints.map(x => x * 1 ? String.fromCodePoint(x) : "");
@@ -169,10 +163,8 @@ function listenTextLoop() {
         }
     } else if (heardBits) {
         codePoints.forEach((x, i) => {
-            if (x && !heardChars[i][x])
-                heardChars[i][x] = 0;
-            else
-                heardChars[i][x]++;
+            if (x && !heardChars[i][x]) heardChars[i][x] = 0;
+            else heardChars[i][x]++;
         })
     }
     

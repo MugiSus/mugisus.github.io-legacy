@@ -27,12 +27,12 @@ textarea{
 }
 
 #heard-letter{
-    font-size: 2vw;
+    font-size: 2rem;
     color: #bbbb66;
 }
 
 #confirmed-letter{
-    font-size: 1.5vw;
+    font-size: 1.5rem;
     color: #bbbb6644;
 }
 

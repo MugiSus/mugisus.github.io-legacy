@@ -1,27 +1,8 @@
 <!DOCTYPE html>
     <head>
-        <title>text to sound</title>
+        <title>TELPort; The Soundwave Telecommunication Protocol</title>
         <link rel="stylesheet" type="text/css" href="style.css">
-        <!-- アドレスバー等のブラウザのUIを非表示 -->
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <!-- default（Safariと同じ） / black（黒） / black-translucent（ステータスバーをコンテンツに含める） -->
-        <meta name="apple-mobile-web-app-status-bar-style" content="black">
-        <!-- ホーム画面に表示されるアプリ名 -->
-        <meta name="apple-mobile-web-app-title" content="TELPort">
-        <!-- ホーム画面に表示されるアプリアイコン -->
-        <link rel="apple-touch-icon" href="telport-logo-6.png">
-
-        <!-- ウェブアプリマニフェストの読み込み -->
-        <link rel="manifest" href="manifest.json">
-        <!-- ServiceWorkerの登録 -->
-        <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-            .then((reg) => {
-                console.log('Service worker registered.', reg);
-            });
-        }
-        </script>
+        <meta name="theme-color" content="#648079">
     </head>
     <body>
         <br>
@@ -34,8 +15,8 @@
         <input type="button" value="start tuning" id="tuning-button">
         <input type="button" value="call" id="call-button"><br><br>
         <div id="boxes"></div>
-        <span id="heard-letter">[heard letters appears here]</span><br>
-        <span id="confirmed-letter">[confirmed letters appears here]</span><br><br>
+        <span id="heard-letter">[heard letters appear here]</span><br>
+        <span id="confirmed-letter">[confirmed letters appear here]</span><br><br>
         threshold(マイクしきい値):<input type="range" id="threshold" min="0" max="255" step="1">
         <input id="threshold-number" type="number" min="0" max="255" step="1">
         <input type="button" value="AUTO" id="auto-threshold-button"><br>
