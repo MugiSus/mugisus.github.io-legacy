@@ -1,4 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@500;800&display=swap');
+@font-face {
+	font-family: 'M PLUS 1p';
+	src: url(MPLUSRounded1c-Medium.ttf);
+}
 
 body{
     font-family: 'M PLUS 1p';
@@ -11,7 +14,7 @@ body{
 }
 
 #instruction{
-    font-weight: 800;
+    font-weight: 500;
 }
 
 textarea{

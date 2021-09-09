@@ -1,4 +1,4 @@
-const cacheName = "TELPort-test-v4";
+const cacheName = "TELPort-test-v6";
 const cacheFiles = [
     "style.css",
     "telport-logo-6-192x192-ios.png",
@@ -8,7 +8,8 @@ const cacheFiles = [
     "src.js",
     "sw.js",
     "telport-logo-6-192x192-maskable.png",
-    "telport-logo-6-512x512-maskable.png"
+    "telport-logo-6-512x512-maskable.png",
+    "MPLUSRounded1c-Medium.ttf"
 ];
 
 self.addEventListener('fetch', (event) => {
