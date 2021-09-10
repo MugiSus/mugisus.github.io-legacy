@@ -27,25 +27,20 @@
 
     </head>
     <body>
-        <br>
-        <span id="instruction">Input any text you want to listen to.</span><br><br>
-
-        <textarea id="text" cols="60" rows="10"></textarea><br><br>
-        speed(再生速度):<input type="range" id="sound-sec" min="0.05" max="1" step="0.01">
-        <input id="sound-sec-number" type="number" min="0.05" max="1" step="0.01"><br>
-        visualize?:<input type="checkbox" id="visualize"></input><br><br>
-        <input type="button" value="start tuning" id="tuning-button">
-        <input type="button" value="call" id="call-button"><br><br>
-        <div id="boxes"></div>
-        <span id="heard-letter">[heard letters appear here]</span><br>
-        <span id="confirmed-letter">[confirmed letters appear here]</span><br><br>
-        threshold(マイクしきい値):<input type="range" id="threshold" min="0" max="255" step="1">
-        <input id="threshold-number" type="number" min="0" max="255" step="1">
-        <input type="button" value="AUTO" id="auto-threshold-button"><br>
-        analyser.fftSize(周波数解析精度):<input type="range" id="fft-size" min="8" max="15" step="1"><br><br>
-        <input type="button" value="receive" id="rec-button"><br><br>
-        <textarea id="received-text" cols="60" rows="10"></textarea><br><br>
-
-        <script src="src.js"></script>
+        <div class="container">
+            <div>
+                <img src="button-listen.svg" id="button-listen"><br>
+                <img src="text-listen-ja.svg" id="text-listen">
+            </div>
+            <img src="button-selector.svg" id="button-selector">
+            <div>
+                <img src="text-call-ja.svg" id="text-call"><br>
+                <img src="button-call.svg" id="button-call">
+            </div>
+        </div>
+        <img src="text-version.svg" id="text-version">
+        
+        <script src="scroolCanceler.js"></script>
+        <!--<script src="src.js"></script>-->
     </body>
 <html>

@@ -56,24 +56,11 @@ function beep(hertz, start, len) {
     oscillatorNode.stop(context.currentTime + start + len);
 }
 
-function getSingleHertzComponent(timeDomainData, targetHertz, sampleLeng) {
-    let sumsin = 0, sumcos = 0;
-
-    timeDomainData.slice(0, sampleLeng).map(x => x - 127).forEach((x, y) => {
-        sumsin += x * Math.sin((y / (context.sampleRate / targetHertz)) * Math.PI * 2);
-        sumcos += x * Math.cos((y / (context.sampleRate / targetHertz)) * Math.PI * 2);
-    });
-
-    return ((sumsin / sampleLeng) ** 2 + (sumcos / sampleLeng) ** 2) ** 0.5;
-}
-
 function soundText(textToSound, soundSec) {
     let i = 0;
 
     let soundTextRound = function() {
         if (i >= textToSound.length) {
-            [...boxesHTMLCollection].forEach(x => x.style.background = boxColorsCollection.yellow_mute);
-            document.getElementById("heard-letter").innerHTML = `[]`;
             clearInterval(soundText_intervalId);
             return;
         }
@@ -82,8 +69,6 @@ function soundText(textToSound, soundSec) {
 
         frequency.forEach((f, index) => {
             if ((textToSound.codePointAt(i + Math.floor(index / 8)) >> (index % 8)) & 1) {
-                if (visualize)
-                    boxesHTMLCollection[index].style.background = boxColorsCollection.green_sound;
                 beep(f, 0, soundSec * 0.90);
             } else if (visualize) 
                 boxesHTMLCollection[index].style.background = boxColorsCollection.green_mute;
