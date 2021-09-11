@@ -4,12 +4,15 @@ const cacheFiles = [
     "telport-logo-6-192x192-ios.png",
     "telport-logo-6-192x192.png",
     "telport-logo-6-512x512.png",
-    "index.html",
-    "src.js",
-    "sw.js",
     "telport-logo-6-192x192-maskable.png",
     "telport-logo-6-512x512-maskable.png",
-    "MPLUSRounded1c-Medium.ttf"
+    "index.html",
+    "scroll-canceler.js",
+    "service-worker.js",
+    "src.js",
+    "button-call-ja.svg",
+    "button-listen-ja.svg",
+    "button-selector-ja.svg",
 ];
 
 self.addEventListener('fetch', (event) => {

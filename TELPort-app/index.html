@@ -19,7 +19,7 @@
         <!-- ServiceWorkerの登録 -->
         <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').then(reg => {
+            navigator.serviceWorker.register('service-worker.js').then(reg => {
                 console.log('Service worker registered.', reg);
             });
         }
@@ -29,12 +29,12 @@
     <body>
         <div class="container">
             <img src="button-listen-ja.svg" id="button-listen">
-            <img src="button-selector.svg" id="button-selector">
+            <img src="button-selector-ja.svg" id="button-selector">
             <img src="button-call-ja.svg" id="button-call">
         </div>
         <img src="text-version.svg" id="text-version">
         
-        <script src="scrollCanceler.js"></script>
+        <script src="scroll-canceler.js"></script>
         <!--<script src="src.js"></script>-->
     </body>
 <html>
