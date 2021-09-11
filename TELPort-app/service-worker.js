@@ -1,4 +1,4 @@
-const cacheName = "TELPort-test-v9";
+const cacheName = "TELPort-test-v10";
 const cacheFiles = [
     "style.css",
     "telport-logo-6-192x192-ios.png",
@@ -44,12 +44,14 @@ self.addEventListener('activate', event => {
     console.log('[Service Worker] Activate');
     event.waitUntil(
         caches.keys().then(keyList => {
-            return Promise.all(keyList.map(key => {
-                if (key != cacheName) {
-                    console.log(`[Service Worker] Deleting Cache: ${key}`)
-                    return caches.delete(key);
-                }
-            }));
+            return Promise.all(
+                keyList.map(key => {
+                    if (key != cacheName) {
+                        console.log(`[Service Worker] Deleting Cache: ${key}`)
+                        return caches.delete(key);
+                    }
+                })
+            );
         })
     );
 });
