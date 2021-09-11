@@ -22,8 +22,9 @@ body {
     justify-content: space-between;
 }
 
+
 #button-listen {
-    margin: 6.25vh 6.25vh 0;
+    margin-top: 6.25vh;
     height: 10vh;
 }
 
@@ -33,7 +34,7 @@ body {
 }
 
 #button-call {
-    margin: 0 6.25vh 6.25vh;
+    margin-bottom: 6.25vh;
     height: 10vh;
 }
 
