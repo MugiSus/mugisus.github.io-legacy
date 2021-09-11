@@ -3,7 +3,6 @@ html, body{
 }
 
 body {
-    font-family: 'M PLUS 1p';
     background-color: #f0f3f3;
     text-align: center;
     margin: 0;
@@ -18,17 +17,17 @@ body {
 }
 
 #button-listen {
-    margin: 6.25vh 6.25vh 0;
+    margin: 6.25vh 3vh 0;
     height: 12.5vh;
 }
 
 #button-selector {
-    margin: 0 2vh;
+    margin: 0 3vh;
     height: 32vh;
 }
 
 #button-call {
-    margin: 0 6.25vh 6.25vh;
+    margin: 0 3vh 6.25vh;
     height: 12.5vh;
 }
 
