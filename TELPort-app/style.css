@@ -1,35 +1,76 @@
 html, body{
     overflow: hidden;
     touch-action: manipulation;
+    user-select: none;
 }
 
 body {
-    background-color: #f0f3f3;
     text-align: center;
     margin: 0;
+    background-color: #f0f3f3;
 }
 
 .container {
-    height: 100vh;
-    margin: 0px;
+    position: fixed;
     display: flex;
+    text-align: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     flex-flow: column;
-    justify-content: space-between;
+    justify-content: center;
+}
+
+.container.main {
+    background-color: #f0f3f3;
 }
 
 #button-listen {
-    margin: 6.25vh 3vh 0;
+    margin: 6.25vh 0 auto;
     height: 12.5vh;
-}
-
-#button-selector {
-    margin: 0 3vh;
-    height: 32vh;
 }
 
 #button-call {
-    margin: 0 3vh 6.25vh;
+    margin: auto 0 6.25vh;
     height: 12.5vh;
+}
+
+#button-selector-container {
+    position: relative;
+
+    width: 32vh;
+    height: 32vh;
+}
+
+#button-selector-container, #button-listen, #button-call {
+    transition-property: transform;
+    transition-duration: 100ms;
+}
+
+#button-selector-container:active, #button-listen:active, #button-call:active {
+    transform: scale(95%);
+}
+
+#button-selector-empty {
+    position: absolute;
+    left: 0;
+    height: 32vh;
+}
+
+#button-selector-fulfilled {
+    position: absolute;
+    left: 0;
+    height: 32vh;
+    transition-timing-function: cubic-bezier(0.5, 0, 0, 1);
+    transition-duration: 1000ms;
+    clip-path: polygon(0 0, 10.5% 0, 0 10.5%, 0 0);
+}
+
+#button-selector-fulfilled.fulfilled {
+    transition-timing-function: cubic-bezier(0.6, 0, 0, 1);
+    clip-path: polygon(0 0, 188.5% 0, 0 188.5%, 0 0);
 }
 
 #text-version {
@@ -37,4 +78,56 @@ body {
     bottom: 1.5vh;
     right: 1.5vh;
     height: 2vh;
+}
+
+.container.modal {
+    z-index: 10000;
+    background-color: #59716b60;
+}
+
+.modal-window {
+    display: flex;
+    background-color: #e4ecea;
+    border-radius: 1vh;
+    justify-content: center;
+    flex-flow: column;
+    transform: scale(90%);
+    transition-timing-function: ease-in;
+    transition-duration: 300ms;
+}
+
+.container.modal.opened > .modal-window {
+    transition-timing-function: ease-out;
+    transform: scale(100%);
+}
+
+#selector-textarea {
+    margin: 1em;
+    font-size: large;
+    resize: none;
+    width: 80vw;
+    height: 40vh;
+    color: #425853;
+    background-color: #f0f3f3;
+    border-color: #f0f3f3;
+    border-width: 0.5vh;
+    border-radius: 1vh;
+}
+
+.description {
+    font-style: italic;
+    color: #425853;
+    margin-top: 0.5em;
+}
+
+.container.modal {
+    visibility: hidden;
+    opacity: 0%;
+    transition-duration: opacity;
+    transition-duration: 300ms;
+}
+
+.container.modal.opened {
+    visibility: visible;
+    opacity: 100%;
 }

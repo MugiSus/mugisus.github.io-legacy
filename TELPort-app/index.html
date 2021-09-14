@@ -27,14 +27,26 @@
 
     </head>
     <body>
-        <div class="container">
+        <div class="container main">
             <img src="button-listen-ja.svg" id="button-listen">
-            <img src="button-selector-ja.svg" id="button-selector">
+            <div id="button-selector-container">
+                <img src="button-selector-empty-ja.svg" id="button-selector-empty">
+                <img src="button-selector-fulfilled-ja.svg" id="button-selector-fulfilled">
+            </div>    
             <img src="button-call-ja.svg" id="button-call">
         </div>
+        
+        <div class="container modal modal-selector">
+            <div class="modal-window">
+                <div class="description">Input any half-length string you want to call.</div>
+                <textarea id="selector-textarea" spellcheck="false"></textarea>
+            </div>
+        </div>
+
         <img src="text-version.svg" id="text-version">
         
         <script src="scroll-canceler.js"></script>
-        <!--<script src="src.js"></script>-->
+        <script src="modal-manager.js"></script>
+        <!-- <script src="src.js"></script> -->
     </body>
 <html>
