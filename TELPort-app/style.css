@@ -103,10 +103,10 @@ body {
 
 #selector-textarea {
     margin: 1em;
-    font-size: large;
+    font-size: 20px;
     resize: none;
     width: 80vw;
-    height: 40vh;
+    height: 30vh;
     color: #425853;
     background-color: #f0f3f3;
     border-color: #f0f3f3;
@@ -116,6 +116,7 @@ body {
 
 .description {
     font-style: italic;
+    font-size: 20px;
     color: #425853;
     margin-top: 0.5em;
 }
