@@ -1,4 +1,4 @@
-const cacheName = "TELPort-test-v21";
+const cacheName = "TELPort-test-v22";
 const cacheFiles = [
     "style.css",
     "telport-logo-6-192x192-ios.png",
