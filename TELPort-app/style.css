@@ -83,6 +83,7 @@ body {
 }
 
 .container.modal {
+    pointer-events: none;
     z-index: 10000;
     background-color: #59716b60;
     visibility: hidden;
@@ -92,6 +93,7 @@ body {
 }
 
 .container.modal.opened {
+    pointer-events: auto;
     visibility: visible;
     opacity: 100%;
 }
