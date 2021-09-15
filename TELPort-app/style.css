@@ -63,6 +63,7 @@ body {
     position: absolute;
     left: 0;
     height: 32vh;
+    transition-property: clip-path;
     transition-timing-function: cubic-bezier(0.5, 0, 0, 1);
     transition-duration: 1000ms;
     clip-path: polygon(0 0, 10.5% 0, 0 10.5%, 0 0);
@@ -74,6 +75,7 @@ body {
 }
 
 #text-version {
+    z-index: 100;
     position: fixed;
     bottom: 1.5vh;
     right: 1.5vh;
@@ -83,6 +85,15 @@ body {
 .container.modal {
     z-index: 10000;
     background-color: #59716b60;
+    visibility: hidden;
+    opacity: 0%;
+    transition-property: opacity, visibility;
+    transition-duration: 300ms;
+}
+
+.container.modal.opened {
+    visibility: visible;
+    opacity: 100%;
 }
 
 .modal-window {
@@ -92,18 +103,20 @@ body {
     justify-content: center;
     flex-flow: column;
     transform: scale(90%);
+    transition-property: transform;
     transition-timing-function: ease-in;
     transition-duration: 300ms;
 }
 
 .container.modal.opened > .modal-window {
+    transition-property: transform;
     transition-timing-function: ease-out;
     transform: scale(100%);
 }
 
 #selector-textarea {
     margin: 1em;
-    font-size: 20px;
+    font-size: 22px;
     resize: none;
     width: 80vw;
     height: 50vh;
@@ -116,19 +129,7 @@ body {
 
 .description {
     font-style: italic;
-    font-size: 20px;
+    font-size: 22px;
     color: #425853;
     margin-top: 0.5em;
-}
-
-.container.modal {
-    visibility: hidden;
-    opacity: 0%;
-    transition-duration: opacity;
-    transition-duration: 300ms;
-}
-
-.container.modal.opened {
-    visibility: visible;
-    opacity: 100%;
 }
