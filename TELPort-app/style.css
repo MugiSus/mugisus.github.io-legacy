@@ -93,8 +93,8 @@ body {
 
 #button-selector-fulfilled.fulfilled + #fulfilled-wave {
     visibility: visible;
-    transition-delay: 1000ms;
-    transition-duration: 700ms;
+    transition-delay: 1100ms;
+    transition-duration: 1000ms;
     opacity: 0%;
     left: -10%;
     right: -10%;
