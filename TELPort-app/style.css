@@ -40,7 +40,6 @@ body {
 
 #button-selector-container {
     position: relative;
-
     width: 32vh;
     height: 32vh;
 }
@@ -57,13 +56,13 @@ body {
 #button-selector-empty {
     position: absolute;
     left: 0;
-    height: 32vh;
+    height: 100%;
 }
 
 #button-selector-fulfilled {
     position: absolute;
     left: 0;
-    height: 32vh;
+    height: 100%;
     transition-property: clip-path;
     transition-timing-function: cubic-bezier(0.5, 0, 0, 1);
     transition-duration: 1000ms;
@@ -73,6 +72,34 @@ body {
 #button-selector-fulfilled.fulfilled {
     transition-timing-function: cubic-bezier(0.6, 0, 0, 1);
     clip-path: polygon(0 0, 188.5% 0, 0 188.5%, 0 0);
+}
+
+#fulfilled-wave {
+    position: absolute;
+    visibility: hidden;
+    opacity: 100%;
+    pointer-events: none;
+    left: 2%;
+    right: 2%;
+    top: 2%;
+    bottom: 2%;
+    transition-property: visivility, all;
+    transition-timing-function: step-start, cubic-bezier(0.1, 0.82, 0.25, 1);
+    transition-delay: 0;
+    transition-duration: 0;
+    box-shadow: 0 0 0 0.75vh #59716b;
+    border-radius: 20.7%;
+}
+
+#button-selector-fulfilled.fulfilled + #fulfilled-wave {
+    visibility: visible;
+    transition-delay: 1000ms;
+    transition-duration: 700ms;
+    opacity: 0%;
+    left: -10%;
+    right: -10%;
+    top: -10%;
+    bottom: -10%;
 }
 
 #text-version {
@@ -102,7 +129,7 @@ body {
 .modal-window {
     display: flex;
     background-color: #e4ecea;
-    border-radius: 1vh;
+    border-radius: 0.5em;
     justify-content: center;
     flex-flow: column;
     transform: scale(90%);
@@ -118,21 +145,28 @@ body {
 }
 
 #selector-textarea {
-    margin: 1em;
-    font-size: 22px;
+    margin: 0 1em;
+    font-size: 20px;
     resize: none;
     width: 80vw;
-    height: 50vh;
+    height: 40vh;
     color: #425853;
     background-color: #f0f3f3;
     border-color: #f0f3f3;
     border-width: 0.5vh;
-    border-radius: 1vh;
+    border-radius: 0.5em;
+}
+
+#selector-file {
+    background-color: #59716b20;
+    padding: 0.5em;
+    border-radius: 0.3em 0.3em;
+    margin: 0em auto 1em;
 }
 
 .description {
     font-style: italic;
-    font-size: 22px;
+    font-size: 20px;
     color: #425853;
-    margin-top: 0.5em;
+    margin: 0.5em;
 }

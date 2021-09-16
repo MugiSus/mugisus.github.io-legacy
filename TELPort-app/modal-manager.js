@@ -1,11 +1,12 @@
-let selectedText = "";
+var selectedText, selectedFile;
 
 [...document.getElementsByClassName("container modal")].forEach(element => {
     element.addEventListener("click", () => {
         element.classList.remove("opened");
 
-        selectedText = document.getElementById("selector-textarea").value
-        if (selectedText.length)
+        selectedText = document.getElementById("selector-textarea").value;
+        selectedFile = document.getElementById("selector-file").files[0];
+        if (selectedText.length || selectedFile?.name)
             document.getElementById("button-selector-fulfilled").classList.add("fulfilled");
         else
             document.getElementById("button-selector-fulfilled").classList.remove("fulfilled");

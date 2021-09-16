@@ -32,14 +32,17 @@
             <div id="button-selector-container">
                 <img src="button-selector-empty-ja.svg" id="button-selector-empty">
                 <img src="button-selector-fulfilled-ja.svg" id="button-selector-fulfilled">
-            </div>    
+                <div id="fulfilled-wave"></div>
+            </div>
             <img src="button-call-ja.svg" id="button-call">
         </div>
         
         <div class="container modal modal-selector">
             <div class="modal-window">
-                <div class="description">Input any half-length string you want to call.</div>
+                <div class="description">Type any half-width characters string.</div>
                 <textarea id="selector-textarea" spellcheck="false"></textarea>
+                <div class="description">...Or choose any file you would like to call.</div>
+                <input type="file" id="selector-file">
             </div>
         </div>
 
