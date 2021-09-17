@@ -75,6 +75,7 @@ body {
 }
 
 #fulfilled-wave {
+    z-index: -999;
     position: absolute;
     visibility: hidden;
     opacity: 100%;
@@ -88,7 +89,7 @@ body {
     transition-delay: 0;
     transition-duration: 0;
     box-shadow: 0 0 0 0.75vh #59716b;
-    border-radius: 20.7%;
+    border-radius: 50%;
 }
 
 #button-selector-fulfilled.fulfilled + #fulfilled-wave {
@@ -96,10 +97,10 @@ body {
     transition-delay: 1100ms;
     transition-duration: 1000ms;
     opacity: 0%;
-    left: -10%;
-    right: -10%;
-    top: -10%;
-    bottom: -10%;
+    left: -30%;
+    right: -30%;
+    top: -30%;
+    bottom: -30%;
 }
 
 #text-version {

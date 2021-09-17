@@ -1,4 +1,4 @@
-const cacheName = "TELPort-test-v22";
+const cacheName = "TELPort-test-v25";
 const cacheFiles = [
     "style.css",
     "telport-logo-6-192x192-ios.png",
@@ -17,6 +17,8 @@ const cacheFiles = [
     "button-selector-fulfilled-ja.svg",
     "button-ok.svg",
 ];
+
+console.log(`[Service Worker] cacheName: ${cacheName}`);
 
 self.addEventListener('install', event => {
     console.log('[Service Worker] Install');
