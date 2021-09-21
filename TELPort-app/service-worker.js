@@ -1,4 +1,4 @@
-const cacheName = "TELPort-test-v25";
+const cacheName = "TELPort-test-v27";
 const cacheFiles = [
     "style.css",
     "telport-logo-6-192x192-ios.png",
@@ -9,13 +9,14 @@ const cacheFiles = [
     "index.html",
     "scroll-canceler.js",
     "service-worker.js",
-    "modal-manager.js",
+    "elements-manager.js",
     "src.js",
     "button-call-ja.svg",
     "button-listen-ja.svg",
     "button-selector-empty-ja.svg",
     "button-selector-fulfilled-ja.svg",
-    "button-ok.svg",
+    "button-listen-auto-threshold.svg",
+    "Inter-VariableFont_slnt,wght.ttf",
 ];
 
 console.log(`[Service Worker] cacheName: ${cacheName}`);
@@ -31,7 +32,7 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
-    console.log('[Service Worker] Fetch');
+    console.log('[Service Worker] Fetch');00
     event.respondWith(
         caches.match(event.request).then(resource => {
             console.log(`[Service Worker] Fetching resource: ${event.request.url}`);

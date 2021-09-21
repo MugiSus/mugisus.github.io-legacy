@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'Inter';
+    src: url("Inter-VariableFont_slnt,wght.ttf");
+}
+
 html, body{
     overflow: hidden;
     touch-action: manipulation;
@@ -5,7 +10,8 @@ html, body{
 }
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+    font-family: Inter, Arial, Helvetica, sans-serif;
     text-align: center;
     margin: 0;
     background-color: #f0f3f3;
@@ -44,12 +50,12 @@ body {
     height: 32vh;
 }
 
-#button-selector-container, #button-listen, #button-call {
+.button {
     transition-property: transform;
     transition-duration: 100ms;
 }
 
-#button-selector-container:active, #button-listen:active, #button-call:active {
+.button:active {
     transform: scale(95%);
 }
 
@@ -80,10 +86,10 @@ body {
     visibility: hidden;
     opacity: 100%;
     pointer-events: none;
-    left: 2%;
-    right: 2%;
-    top: 2%;
-    bottom: 2%;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
     transition-property: visivility, all;
     transition-timing-function: step-start, cubic-bezier(0.1, 0.82, 0.25, 1);
     transition-delay: 0;
@@ -141,21 +147,27 @@ body {
 
 .container.modal.opened > .modal-window {
     transition-property: transform;
-    transition-timing-function: ease-out;
+    transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
     transform: scale(100%);
 }
 
-#selector-textarea {
+textarea {
     margin: 0 1em;
+    font-family: Inter, Arial, Helvetica, sans-serif;
+    font-weight: 300;
     font-size: 20px;
     resize: none;
-    width: 80vw;
-    height: 40vh;
     color: #425853;
     background-color: #f0f3f3;
     border-color: #f0f3f3;
     border-width: 0.5vh;
     border-radius: 0.5em;
+    border-style: solid;
+}
+
+#selector-textarea, #listen-textarea {
+    width: 80vw;
+    height: 40vh;
 }
 
 #selector-file {
@@ -167,7 +179,89 @@ body {
 
 .description {
     font-style: italic;
+    font-weight: 500;
     font-size: 20px;
     color: #425853;
     margin: 0.5em;
+}
+
+#listen-heard-chars {
+    font-weight: 300;
+    font-size: 25px;
+}
+
+#listen-threshold-container {
+    margin: auto;
+    margin-top: 1em;
+    display: flex;
+}
+
+#range-listen-threshold {
+    width: 50vw;
+    margin: auto 1.5em;
+}
+
+#button-listen-auto-threshold {
+    height: 2em;
+}
+
+.input-range {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    appearance: none;
+    background-color: #c5d4d1;
+    height: 0.6em;
+    border-radius: 0.3em;
+}
+
+.input-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    position: relative;
+    border: none;
+    width: 1.3em;
+    height: 1.3em;
+    display: block;
+    background-color: #59716b;
+    border-radius: 50%;
+}
+
+.input-range::-moz-range-thumb {
+    -moz-appearance: none;
+    cursor: pointer;
+    position: relative;
+    border: none;
+    width: 1.3em;
+    height: 1.3em;
+    display: block;
+    background-color: #59716b;
+    border-radius: 50%;
+}
+
+#button-call-auto-threshold {
+    margin: 1em;
+    height: 7vh;
+}
+
+#call-play-stop-container {
+    position: relative;
+    margin: 0 auto 2em;
+    height: 11.24vh;
+    width: 32.45vh;
+}
+
+#button-call-play {
+    pointer-events: visible;
+    position: absolute;
+    left: 0;
+    height: 100%;
+}
+
+#button-call-stop {
+    pointer-events: visible;
+    position: absolute;
+    right: 0;
+    height: 100%;
 }

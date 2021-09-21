@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="74.5mm"
+   height="53mm"
+   viewBox="0 0 74.5 53"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.1 (1:1.1+202105261517+ce6663b3b7)"
+   sodipodi:docname="button-call-play.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.0347625"
+     inkscape:cx="287.98879"
+     inkscape:cy="154.62485"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-paths="true"
+     inkscape:bbox-nodes="true"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:snap-bbox-midpoints="true"
+     inkscape:object-paths="true"
+     inkscape:snap-intersection-paths="true"
+     inkscape:snap-smooth-nodes="true"
+     inkscape:snap-midpoints="true"
+     inkscape:snap-object-midpoints="true"
+     inkscape:snap-center="true"
+     inkscape:snap-page="true"
+     inkscape:snap-text-baseline="true"
+     inkscape:pagecheckerboard="true"
+     showguides="false"
+     inkscape:guide-bbox="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0">
+    <sodipodi:guide
+       position="76.500002,1.5734021e-07"
+       orientation="1,0"
+       id="guide68628" />
+    <sodipodi:guide
+       position="-2.8401154e-08,36.500002"
+       orientation="0,-1"
+       id="guide88809" />
+    <sodipodi:guide
+       position="23.000001,36.500002"
+       orientation="-0.60876143,-0.79335334"
+       id="guide95265" />
+    <sodipodi:guide
+       position="16.5,36.500095"
+       orientation="0.70710678,-0.70710678"
+       id="guide18451" />
+    <sodipodi:guide
+       position="16.5,36.500002"
+       orientation="-0.70710678,-0.70710678"
+       id="guide18511" />
+    <sodipodi:guide
+       position="16.5,51.500001"
+       orientation="1,0"
+       id="guide28489" />
+    <sodipodi:guide
+       position="-11.901404,98.527595"
+       orientation="0.5,0.8660254"
+       id="guide41037" />
+    <sodipodi:guide
+       position="-11.901404,98.527595"
+       orientation="1,0"
+       id="guide41039" />
+    <sodipodi:guide
+       position="-11.901404,83.603611"
+       orientation="-0.5,0.8660254"
+       id="guide41128" />
+    <sodipodi:guide
+       position="37.250001,26.500001"
+       orientation="-1,0"
+       id="guide43233" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="レイヤー 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:#f0f3f3;stroke:#59726c;stroke-width:3;stroke-linecap:round;stroke-linejoin:round"
+       d="M 73,51.5 H 26.5 c -13.85,0 -25,-11.15 -25,-25 0,-13.85 11.15,-25 25,-25 H 73 Z"
+       id="path40828"
+       sodipodi:nodetypes="cssscc" />
+    <g
+       aria-label="LISTEN"
+       id="text5490"
+       style="font-size:22.9306px;line-height:1.25;font-family:'Mplus 1p';-inkscape-font-specification:'Mplus 1p';letter-spacing:2.64583px;fill:#f0f3f3;stroke-width:0.070004"
+       transform="translate(0,0.437319)" />
+    <path
+       style="opacity:1;fill:#59726c;fill-opacity:1;stroke:#59726c;stroke-width:3;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       d="M 31.745,15.49989 50.755149,26.500264 31.745,37.500638 Z"
+       id="path41366" />
+  </g>
+</svg>
