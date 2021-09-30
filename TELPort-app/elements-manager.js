@@ -53,12 +53,12 @@ document.getElementById("button-call-stop").addEventListener("click", () => {
 })
 
 document.getElementById("text-version").addEventListener("click", () => {
-    fetch(location.host).then(() => {
+    fetch("dummy").then(() => {
         caches.keys().then((keys) => {
             keys.forEach((key) => caches.delete(key));
         });
         location.reload();
-    }).catch(() => {
-        console.log("network disconnected");
+    }).catch((err) => {
+        console.error(err);
     })
 })
