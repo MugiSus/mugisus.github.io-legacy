@@ -115,6 +115,7 @@ body {
     bottom: 1.5vh;
     right: 1.5vh;
     height: 2vh;
+    cursor: pointer;
 }
 
 .container.modal {

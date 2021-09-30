@@ -52,5 +52,13 @@ document.getElementById("button-call-stop").addEventListener("click", () => {
     initialize();
 })
 
-
-//document.getElementsByClassName("container modal modal-selector")[0].classList.add("opened");
+document.getElementById("text-version").addEventListener("click", () => {
+    fetch(location.host).then(() => {
+        caches.keys().then((keys) => {
+            keys.forEach((key) => caches.delete(key));
+        });
+        location.reload();
+    }).catch(() => {
+        console.log("network disconnected");
+    })
+})
