@@ -1,4 +1,4 @@
-const cacheName = "TELPort-test-v27";
+const cacheName = "TELPort-test-v28";
 const cacheFiles = [
     "/TELPort-app/",
     "/TELPort-app/telport-logo-6-192x192-ios.png",
@@ -19,7 +19,6 @@ const cacheFiles = [
     "/TELPort-app/button-listen-auto-threshold.svg",
     "/TELPort-app/button-selector-empty-ja.svg",
     "/TELPort-app/button-selector-fulfilled-ja.svg",
-    "/TELPort-app/button-listen-auto-threshold.svg",
     "/TELPort-app/Inter-VariableFont_slnt,wght.ttf",
 ];
 

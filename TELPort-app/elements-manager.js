@@ -1,4 +1,4 @@
-var selectedText, selectedFile;
+let selectedText, selectedFile;
 
 [...document.getElementsByClassName("container modal")].forEach(element => {
     element.addEventListener("click", () => {
@@ -14,7 +14,10 @@ var selectedText, selectedFile;
                     document.getElementById("button-selector-fulfilled").classList.remove("fulfilled");
             } break;
             case "modal-listen": {
-
+                initialize();
+            } break;
+            case "modal-call": {
+                initialize();
             } break;
         }
         
@@ -35,6 +38,11 @@ document.getElementById("button-listen").addEventListener("click", () => {
 document.getElementById("button-listen-auto-threshold").addEventListener("click", () => {
     listen_autoThreshold();
 });
+
+document.getElementById("range-listen-threshold").addEventListener("change", (event) => {
+    threshold = event.target.value * 1;
+    console.log(`threshold set: ${threshold}`);
+})
 
 document.getElementById("button-call").addEventListener("click", () => {
     document.getElementById("modal-call").classList.add("opened");

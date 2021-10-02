@@ -12,14 +12,19 @@ const Frequencies = new Array(8 * BytesPerRound).fill(0).map((_, i) => {
     return FirstFreuency + (44100 / 8192 * 4) * i;
 });
 
-const GainHighValue = 0.0075;
+const GainHighValue = 0.0075; // call
 
-const AudioContext = window.AudioContext || window.webkitAudioContext;
-let context;
-let speed = 200; // milliseconds
+const AudioContext = window.AudioContext || window.webkitAudioContext; // both (listen, call)
+let context; // both
 
-let intervalID;
-let requestAnimationFrameID;
+let speed = 200; // milliseconds // both
+
+let requestAnimationFrameID; // liten
+let intervalID; // call
+
+const listenTextarea = document.getElementById("listen-textarea"); // listen
+let threshold, stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, nextConfirmTime; // listen
+threshold = 110;
 
 function initialize() {
     clearInterval(intervalID);
@@ -37,7 +42,7 @@ function call_oneRound(uint8array, speed) {
     uint8array.forEach((byte, index) => {
         if (byte) {
             for (let i = 0; i < 8; i++) {
-                if (byte & (1 << i)) {  
+                if ((byte >> i) & 1) {  
                     let gainNode = new GainNode(context);
                     gainNode.connect(context.destination);
                     gainNode.gain.value = GainHighValue;
@@ -65,12 +70,53 @@ function call_callString(string, speed) {
     }, speed);
 }
 
-function listen_StartlistenStringLoop() {
+async function listen_StartlistenStringLoop() {
     initialize();
+
+    stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+            echoCancellation: false,
+            noiseSuppression: false,
+            autoGainControl: false,
+        }
+    });
+
+    input = context.createMediaStreamSource(stream);
+    analyser = context.createAnalyser();
+    input.connect(analyser);
+    
+    analyser.fftSize = 8192;
+    analyser.maxDecibels = 0;
+    analyser.minDecibels = -100;
+    
+    heardUint8Array = new Uint8Array(BytesPerRound);
+    frequencyData = new Uint8Array(analyser.frequencyBinCount);
+    
+    nextConfirmTime = new Date().getTime() + speed * 1000;
+
     listen_listenStringLoop();
 }
 
 function listen_listenStringLoop() {
-    
+    analyser.getByteFrequencyData(frequencyData);
+
+    if (nextConfirmTime > new Date().getTime()) {
+        heardUint8Array = new Uint8Array(BytesPerRound);
+        nextConfirmTime += speed * 1000;
+        heardBitCount = 0;
+        
+        Frequencies.forEach((frequency, index) => {
+            if (threshold <= frequencyData[Math.trunc(frequency / (context.sampleRate / analyser.fftSize))]) {
+                heardUint8Array[Math.trunc(index / 8)] |= 1 << index % 8;
+                heardBitCount++;
+            }
+        });
+
+        if (heardBitCount) {
+            console.log(heardUint8Array);
+            listenTextarea.value += Array.from(heardUint8Array).map(byte => String.fromCodePoint(byte)).join("");
+        }
+    }
+
     requestAnimationFrameID = requestAnimationFrame(listen_listenStringLoop);
 }
