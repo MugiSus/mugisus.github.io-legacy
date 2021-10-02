@@ -29,7 +29,7 @@ document.getElementById("button-selector-container").addEventListener("click", (
 
 document.getElementById("button-listen").addEventListener("click", () => {
     document.getElementById("modal-listen").classList.add("opened");
-    listen_listenString();
+    listen_StartlistenStringLoop();
 });
 
 document.getElementById("button-listen-auto-threshold").addEventListener("click", () => {
@@ -42,15 +42,15 @@ document.getElementById("button-call").addEventListener("click", () => {
 
 document.getElementById("button-call-auto-threshold").addEventListener("click", () => {
     call_callString(TuningString, 3600000);
-})
+});
 
 document.getElementById("button-call-play").addEventListener("click", () => {
     call_callString(document.getElementById("selector-textarea").value, speed);
-})
+});
 
 document.getElementById("button-call-stop").addEventListener("click", () => {
     initialize();
-})
+});
 
 document.getElementById("text-version").addEventListener("click", () => {
     fetch("dummy").then(() => {
@@ -60,5 +60,5 @@ document.getElementById("text-version").addEventListener("click", () => {
         location.reload();
     }).catch((err) => {
         console.error(err);
-    })
-})
+    });
+});

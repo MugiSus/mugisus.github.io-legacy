@@ -22,7 +22,6 @@ let intervalID;
 let requestAnimationFrameID;
 
 function initialize() {
-
     clearInterval(intervalID);
     cancelAnimationFrame(requestAnimationFrameID);
 
@@ -34,8 +33,8 @@ function initialize() {
     emptySource.stop();
 }
 
-function call_oneRound(bytes, speed) {
-    bytes.forEach((byte, index) => {
+function call_oneRound(uint8array, speed) {
+    uint8array.forEach((byte, index) => {
         if (byte) {
             for (let i = 0; i < 8; i++) {
                 if (byte & (1 << i)) {  
@@ -66,11 +65,12 @@ function call_callString(string, speed) {
     }, speed);
 }
 
-function listen_listenString() {
+function listen_StartlistenStringLoop() {
     initialize();
     listen_listenStringLoop();
 }
 
 function listen_listenStringLoop() {
+    
     requestAnimationFrameID = requestAnimationFrame(listen_listenStringLoop);
 }
