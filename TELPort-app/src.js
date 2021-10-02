@@ -38,7 +38,7 @@ function call_oneRound(bytes, speed) {
     bytes.forEach((byte, index) => {
         if (byte) {
             for (let i = 0; i < 8; i++) {
-                if (byte & (128 >> i)) {
+                if (byte & (1 << i)) {  
                     let gainNode = new GainNode(context);
                     gainNode.connect(context.destination);
                     gainNode.gain.value = GainHighValue;
@@ -57,11 +57,11 @@ function call_oneRound(bytes, speed) {
 function call_callString(string, speed) {
     initialize();
 
-    call_oneRound(string.slice(0, 40).split("").map(char => char.codePointAt(0) || 0), speed);
+    call_oneRound(Uint8Array.of(...string.slice(0, 40).split("").map(char => char.codePointAt(0) || 0)), speed);
     let index = 1;
     intervalID = setInterval(function() {
         if (index * BytesPerRound > string.length) clearInterval(intervalID);
-        call_oneRound(string.slice(index * BytesPerRound, (index + 1) * BytesPerRound).split("").map(char => char.codePointAt(0) || 0), speed);
+        call_oneRound(Uint8Array.of(...string.slice(index * BytesPerRound, (index + 1) * BytesPerRound).split("").map(char => char.codePointAt(0) & 0xFF || 0)), speed);
         index++;
     }, speed);
 }
