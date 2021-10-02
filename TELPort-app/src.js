@@ -92,7 +92,7 @@ async function listen_StartlistenStringLoop() {
     heardUint8Array = new Uint8Array(BytesPerRound);
     frequencyData = new Uint8Array(analyser.frequencyBinCount);
     
-    nextConfirmTime = new Date().getTime() + speed * 1000;
+    nextConfirmTime = new Date().getTime() + speed;
 
     listen_listenStringLoop();
 }
@@ -101,7 +101,7 @@ function listen_listenStringLoop() {
     analyser.getByteFrequencyData(frequencyData);
 
     if (nextConfirmTime <= new Date().getTime()) {
-        nextConfirmTime += speed * 1000;
+        nextConfirmTime += speed;
         heardUint8Array = new Uint8Array(BytesPerRound);
         heardBitCount = 0;
         
