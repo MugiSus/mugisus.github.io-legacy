@@ -100,9 +100,9 @@ async function listen_StartlistenStringLoop() {
 function listen_listenStringLoop() {
     analyser.getByteFrequencyData(frequencyData);
 
-    if (nextConfirmTime > new Date().getTime()) {
-        heardUint8Array = new Uint8Array(BytesPerRound);
+    if (nextConfirmTime <= new Date().getTime()) {
         nextConfirmTime += speed * 1000;
+        heardUint8Array = new Uint8Array(BytesPerRound);
         heardBitCount = 0;
         
         Frequencies.forEach((frequency, index) => {
