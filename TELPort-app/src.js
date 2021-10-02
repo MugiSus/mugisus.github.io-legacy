@@ -112,7 +112,7 @@ function listen_listenStringLoop() {
             }
         });
 
-        let heardStringRound = Array.from(heardUint8Array).map(byte => String.fromCodePoint(byte)).join("");
+        let heardStringRound = Array.from(heardUint8Array).map(byte => byte ? String.fromCodePoint(byte) : "").join("");
         
         if (heardBitCount) {
             document.getElementById("listen-heard-chars").innerHTML = `[${heardStringRound.slice(0, 20)}<br>${heardStringRound.slice(20, 40)}]`
