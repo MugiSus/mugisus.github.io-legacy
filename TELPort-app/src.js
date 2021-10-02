@@ -112,9 +112,13 @@ function listen_listenStringLoop() {
             }
         });
 
+        let heardStringRound = Array.from(heardUint8Array).map(byte => String.fromCodePoint(byte)).join("");
+        
         if (heardBitCount) {
-            console.log(heardUint8Array);
-            listenTextarea.value += Array.from(heardUint8Array).map(byte => String.fromCodePoint(byte)).join("");
+            document.getElementById("listen-heard-chars").innerHTML = `[${heardStringRound.slice(0, 20)}<br>${heardStringRound.slice(20, 40)}]`
+            listenTextarea.value += heardStringRound;
+        } else {
+            document.getElementById("listen-heard-chars").innerHTML = `[...Heard characters <br>will appear here...]`
         }
     }
 
