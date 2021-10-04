@@ -187,8 +187,14 @@ textarea {
 }
 
 #listen-heard-chars {
+    color: #90b1a9;
     font-weight: 300;
     font-size: 25px;
+}
+
+#listen-heard-chars.heard {
+    color: #425853;
+    opacity: 100%;
 }
 
 #listen-threshold-container {

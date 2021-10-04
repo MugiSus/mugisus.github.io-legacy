@@ -100,27 +100,32 @@ async function listen_StartlistenStringLoop() {
 function listen_listenStringLoop() {
     analyser.getByteFrequencyData(frequencyData);
 
+    heardUint8Array = new Uint8Array(BytesPerRound);
+    heardBitCount = 0;
+    
+    Frequencies.forEach((frequency, index) => {
+        if (threshold <= frequencyData[Math.trunc(frequency / (context.sampleRate / analyser.fftSize))]) {
+            heardUint8Array[Math.trunc(index / 8)] |= 1 << index % 8;
+            heardBitCount++;
+        }
+    });
+
+    let heardStringRound = Array.from(heardUint8Array).map(byte => byte ? String.fromCodePoint(byte) : "").join("");
+
     if (nextConfirmTime <= new Date().getTime()) {
         nextConfirmTime += speed;
-        heardUint8Array = new Uint8Array(BytesPerRound);
-        heardBitCount = 0;
-        
-        Frequencies.forEach((frequency, index) => {
-            if (threshold <= frequencyData[Math.trunc(frequency / (context.sampleRate / analyser.fftSize))]) {
-                heardUint8Array[Math.trunc(index / 8)] |= 1 << index % 8;
-                heardBitCount++;
-            }
-        });
 
-        let heardStringRound = Array.from(heardUint8Array).map(byte => byte ? String.fromCodePoint(byte) : "").join("");
-        
-        if (heardBitCount) {
-            document.getElementById("listen-heard-chars").innerHTML = `[${heardStringRound.slice(0, 20)}<br>${heardStringRound.slice(20, 40)}]`
+        if (heardBitCount)
             listenTextarea.value += heardStringRound;
-        } else {
-            document.getElementById("listen-heard-chars").innerHTML = `[...Heard characters <br>will appear here...]`
-        }
     }
-
+    
+    if (heardBitCount) {
+        document.getElementById("listen-heard-chars").classList.add("heard");
+        document.getElementById("listen-heard-chars").innerHTML = `[${heardStringRound.slice(0, BytesPerRound / 2)}<br>${heardStringRound.slice(BytesPerRound / 2, BytesPerRound)}]`
+    } else {
+        document.getElementById("listen-heard-chars").classList.remove("heard");
+        document.getElementById("listen-heard-chars").innerHTML = `[...Heard characters <br>will appear here...]`
+    }
+    
     requestAnimationFrameID = requestAnimationFrame(listen_listenStringLoop);
 }
