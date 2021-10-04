@@ -48,10 +48,10 @@ body {
     color: var(--color-c70);
     font-style: italic;
     font-weight: 400;
-    font-size: 1.5rem;
-    letter-spacing: 0.07rem;
-    bottom: 0.5rem;
-    right: 0.75rem;
+    font-size: 3.5vh;
+    letter-spacing: 0.15vh;
+    bottom: 1vh;
+    right: 1.5vh;
     z-index: 100;
 }
 
@@ -138,11 +138,28 @@ body {
 /* call */
 
 #window-call {
+    position: relative;
     background-color: var(--color-c95);
+}
+
+#call-exit-arrow {
+    position: absolute;
+    top: 1.5vh;
+    right: 1.5vh;
+    height: 3.5vh;
 }
 
 /* listen */
 
 #window-listen {
+    position: relative;
     background-color: var(--color-c45);
+}
+
+#listen-exit-arrow {
+    position: absolute;
+    top: 1.5vh;
+    left: 1.5vh;
+    height: 3.5vh;
+    transform: scaleX(-100%);
 }
