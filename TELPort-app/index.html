@@ -17,61 +17,52 @@
         <!-- ウェブアプリマニフェストの読み込み -->
         <link rel="manifest" href="manifest.json">
         <!-- ServiceWorkerの登録 -->
-        <script>
+        <!--script>
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('service-worker.js').then(reg => {
                     console.log(`Service worker registered ${reg}`);
                 });
             }
-        </script>
+        </script-->
     </head>
     <body>
-        <div class="container main">
-            <img src="button-listen-ja.svg" class="button" id="button-listen">
-            <div class="button" id="button-selector-container">
-                <img src="button-selector-empty-ja.svg" id="button-selector-empty">
-                <img src="button-selector-fulfilled-ja.svg" id="button-selector-fulfilled">
-                <div id="fulfilled-wave"></div>
+        <div id="container">
+            <div id="window-call" class="window">
+    
             </div>
-            <img src="button-call-ja.svg" class="button" id="button-call">
-        </div>
-
-        <div class="container modal" id="modal-listen">
-            <div class="modal-window">
-                <div class="description">Listened string will appear here...</div>
-                <textarea spellcheck="false" id="listen-textarea"></textarea>
-                <div id="listen-threshold-container">
-                    <input type="range" class="input-range" id="range-listen-threshold" step="1" min="0" max="255">
-                    <img src="button-listen-auto-threshold.svg" class="button" id="button-listen-auto-threshold">
+    
+            <div id="window-startup" class="window">
+                <div id="startup-call-container" class="startup-container">
+                    <img id="startup-call-title" class="startup-title" src="startup-call-title-ja.svg">
+                    <div class="startup-swipearrow-container" id="startup-call-swipearrow-container">
+                        <img class="startup-swipearrow" src="startup-swipe-arrow-call.svg">
+                        <img class="startup-swipearrow" src="startup-swipe-arrow-call.svg">
+                        <img class="startup-swipearrow" src="startup-swipe-arrow-call.svg">
+                    </div>
+                    <img id="startup-call-icon" class="startup-icon" src="startup-call-icon.svg">
                 </div>
-                <div class="description" id="listen-heard-chars">[...Heard characters <br>will appear here...]</div>
-            </div>
-        </div>
-        
-        <div class="container modal" id="modal-selector">
-            <div class="modal-window">
-                <div class="description">Type any half-width characters string...</div>
-                <textarea spellcheck="false" id="selector-textarea"></textarea>
-                <div class="description">...Or select any file you would like to call.</div>
-                <input type="file" id="selector-file">
-            </div>
-        </div>
-
-        <div class="container modal" id="modal-call">
-            <div class="modal-window">
-                <div class="description">Doesn't work very well? Try auto-tuning.</div>
-                <img src="button-call-auto-threshold.svg" class="button" id="button-call-auto-threshold">
-                <div id="call-play-stop-container">
-                    <img src="button-call-play.svg" class="button" id="button-call-play">
-                    <img src="button-call-stop.svg" class="button" id="button-call-stop">
+                <div id="startup-listen-container" class="startup-container">
+                    <img id="startup-listen-title" class="startup-title" src="startup-listen-title-ja.svg">
+                    <div class="startup-swipearrow-container" id="startup-listen-swipearrow-container">
+                        <img class="startup-swipearrow" src="startup-swipe-arrow-listen.svg">
+                        <img class="startup-swipearrow" src="startup-swipe-arrow-listen.svg">
+                        <img class="startup-swipearrow" src="startup-swipe-arrow-listen.svg">
+                    </div>
+                    <img id="startup-listen-icon" class="startup-icon" src="startup-listen-icon.svg">
                 </div>
             </div>
+    
+            <div id="window-listen" class="window">
+    
+            </div>
         </div>
 
-        <img src="text-version.svg" id="text-version">
+        <div id="text-version">
+            TELPort v0.0.1
+        </div>
         
-        <script src="scroll-canceler.js"></script>
+        <script src="scroll-manager.js"></script>
         <script src="src.js"></script>
-        <script src="elements-manager.js"></script>
+        <!--script src="elements-manager.js"></script-->
     </body>
 <html>

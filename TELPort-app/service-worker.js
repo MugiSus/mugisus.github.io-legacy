@@ -11,14 +11,6 @@ const cacheFiles = [
     "/TELPort-app/elements-manager.js",
     "/TELPort-app/scroll-canceler.js",
     "/TELPort-app/src.js",
-    "/TELPort-app/button-call-auto-threshold.svg",
-    "/TELPort-app/button-call-ja.svg",
-    "/TELPort-app/button-call-play.svg",
-    "/TELPort-app/button-call-stop.svg",
-    "/TELPort-app/button-listen-ja.svg",
-    "/TELPort-app/button-listen-auto-threshold.svg",
-    "/TELPort-app/button-selector-empty-ja.svg",
-    "/TELPort-app/button-selector-fulfilled-ja.svg",
     "/TELPort-app/Inter-VariableFont_slnt,wght.ttf",
 ];
 
