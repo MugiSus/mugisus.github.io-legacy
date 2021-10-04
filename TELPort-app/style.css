@@ -43,6 +43,20 @@ body {
     height: 100vh;
 }
 
+#text-version {
+    position: fixed;
+    color: var(--color-c70);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.5rem;
+    letter-spacing: 0.07rem;
+    bottom: 0.5rem;
+    right: 0.75rem;
+    z-index: 100;
+}
+
+/* startup */
+
 .startup-container {
     position: relative;
     display: flex;
@@ -76,31 +90,36 @@ body {
 .startup-swipearrow {
     margin: 5vh 0.75vh 0vh;
     height: 4.2vh;
-    animation: startup-swipearrow-flash 1000ms ease-out infinite;
-}
-
-#startup-call-swipearrow-container {
-    flex-direction: row;
+    animation: startup-swipearrow-flash 1350ms ease-out infinite;
 }
 
 #startup-listen-swipearrow-container {
-    flex-direction: row-reverse;
+    transform: scaleX(-100%);
 }
 
-.startup-swipearrow:nth-child(3){
+.startup-swipearrow:nth-child(5){
     animation-delay: 0ms;
 }
 
+.startup-swipearrow:nth-child(4){
+    animation-delay: -100ms;
+}
+
+.startup-swipearrow:nth-child(3){
+    animation-delay: -200ms;
+}
+
 .startup-swipearrow:nth-child(2){
-    animation-delay: -150ms;
+    animation-delay: -300ms;
 }
 
 .startup-swipearrow:nth-child(1){
-    animation-delay: -300ms;
+    animation-delay: -400ms;
 }
 
 @keyframes startup-swipearrow-flash {
     from {
+        transform: translateX(-15%);
         opacity: 100%;
     }
     to {
@@ -116,14 +135,14 @@ body {
     height: 26.666vh;
 }
 
-#text-version {
-    position: fixed;
-    color: var(--color-c70);
-    font-style: italic;
-    font-weight: 400;
-    font-size: 1.5rem;
-    letter-spacing: 0.07rem;
-    bottom: 0.5rem;
-    right: 0.75rem;
-    z-index: 100;
+/* call */
+
+#window-call {
+    background-color: var(--color-c95);
+}
+
+/* listen */
+
+#window-listen {
+    background-color: var(--color-c45);
 }
