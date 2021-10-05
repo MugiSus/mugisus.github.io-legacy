@@ -186,8 +186,6 @@ textarea:focus {
     transform: scale(95%);
     -webkit-transform: scale(95%);
     -moz-transform: scale(95%);
-    
-    
 }
 
 .exit-arrow {
