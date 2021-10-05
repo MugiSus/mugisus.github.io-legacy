@@ -104,8 +104,6 @@ body {
     transform: scaleX(-100%);
     -webkit-transform: scaleX(-100%);
     -moz-transform: scaleX(-100%);
-    -ms-transform: scaleX(-100%);
-    -o-transform: scaleX(-100%);
 }
 
 .startup-swipearrow:nth-child(5){
@@ -186,8 +184,8 @@ textarea:focus {
     transform: scale(95%);
     -webkit-transform: scale(95%);
     -moz-transform: scale(95%);
-    -ms-transform: scale(95%);
-    -o-transform: scale(95%);
+    
+    
 }
 
 .exit-arrow {
@@ -289,6 +287,4 @@ textarea:focus {
     transform: scaleX(-100%);
     -webkit-transform: scaleX(-100%);
     -moz-transform: scaleX(-100%);
-    -ms-transform: scaleX(-100%);
-    -o-transform: scaleX(-100%);
 }
