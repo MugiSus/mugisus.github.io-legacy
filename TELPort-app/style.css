@@ -37,6 +37,9 @@ body {
 }
 
 .window {
+    position: relative;
+    display: flex;
+    flex-flow: column;
     flex: none;
     scroll-snap-align: center;
     width: 100vw;
@@ -48,12 +51,13 @@ body {
     color: var(--color-c70);
     font-style: italic;
     font-weight: 400;
-    font-size: 3.5vh;
+    font-size: 3vh;
     letter-spacing: 0.15vh;
     bottom: 1vh;
     right: 1.5vh;
     z-index: 100;
 }
+
 
 /* startup */
 
@@ -90,7 +94,7 @@ body {
 .startup-swipearrow {
     margin: 5vh 0.75vh 0vh;
     height: 4.2vh;
-    animation: startup-swipearrow-flash 1350ms ease-out infinite;
+    animation: startup-swipearrow-flash 1500ms ease-out infinite;
 }
 
 #startup-listen-swipearrow-container {
@@ -135,11 +139,53 @@ body {
     height: 26.666vh;
 }
 
+
+/* both (listen, call) */
+
+textarea {
+    resize: none;
+    background-color: var(--color-c98);
+    border-color: var(--color-c98);
+    border-radius: 0.3em;
+    border-width: 0.3em;
+    width: 77.777vw;
+    height: 45vh;
+    color: var(--color-c55);
+    font-size: 25px;
+    font-family: 'Inter';
+    font-weight: 300;
+    font-style: italic;
+    margin-bottom: 1.5vh;
+}
+
+textarea:focus {
+    outline: none;
+}
+
+.button-text {
+    margin-top: 1.5vh;
+    height: 2.9vh;
+}
+
+.button {
+    transition-property: transform;
+    transition-duration: 150ms;
+    margin-top: 1vh;
+    height: 8.333vh;
+}
+
+.button:active{
+    transform: scale(95%);
+}
+
+
 /* call */
 
 #window-call {
     position: relative;
     background-color: var(--color-c95);
+    justify-content: center;
+    align-items: center;
 }
 
 #call-exit-arrow {
@@ -149,11 +195,14 @@ body {
     height: 3.5vh;
 }
 
+
 /* listen */
 
 #window-listen {
     position: relative;
     background-color: var(--color-c45);
+    justify-content: center;
+    align-items: center;
 }
 
 #listen-exit-arrow {
@@ -162,4 +211,29 @@ body {
     left: 1.5vh;
     height: 3.5vh;
     transform: scaleX(-100%);
+}
+
+.listen-range {
+    width: 80vw;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: var(--color-c25);
+    height: 1vh;
+    border-radius: 0.5vh;
+    margin: 1.5vh;
+}
+
+.listen-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    position: relative;
+    border: none;
+    width: 3.52vh;
+    height: 2.2vh;
+    display: block;
+    background: url("listen-slider-thumb.svg");
+    background-size: cover;
+    border-radius: 0.2vh;
 }

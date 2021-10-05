@@ -29,12 +29,17 @@
         <div id="container">
             <div id="window-call" class="window">
                 <img id="call-exit-arrow" src="exit-arrow.svg">
+                <textarea id="call-textarea"></textarea>
+                <img id="call-text-tuning" class="button-text" src="call-text-tuning.svg">
+                <img id="call-button-tuning" class="button" src="call-button-tuning.svg">
+                <img id="call-text-send" class="button-text" src="call-text-send.svg">
+                <img id="call-button-send" class="button" src="call-button-send.svg">
             </div>
     
             <div id="window-startup" class="window">
                 <div id="startup-call-container" class="startup-container">
                     <img id="startup-call-title" class="startup-title" src="startup-call-title-ja.svg">
-                    <div class="startup-swipearrow-container" id="startup-call-swipearrow-container">
+                    <div id="startup-call-swipearrow-container" class="startup-swipearrow-container">
                         <img class="startup-swipearrow" src="startup-swipe-arrow-call.svg">
                         <img class="startup-swipearrow" src="startup-swipe-arrow-call.svg">
                         <img class="startup-swipearrow" src="startup-swipe-arrow-call.svg">
@@ -45,7 +50,7 @@
                 </div>
                 <div id="startup-listen-container" class="startup-container">
                     <img id="startup-listen-title" class="startup-title" src="startup-listen-title-ja.svg">
-                    <div class="startup-swipearrow-container" id="startup-listen-swipearrow-container">
+                    <div id="startup-listen-swipearrow-container" class="startup-swipearrow-container">
                         <img class="startup-swipearrow" src="startup-swipe-arrow-listen.svg">
                         <img class="startup-swipearrow" src="startup-swipe-arrow-listen.svg">
                         <img class="startup-swipearrow" src="startup-swipe-arrow-listen.svg">
@@ -58,6 +63,12 @@
     
             <div id="window-listen" class="window">
                 <img id="listen-exit-arrow" src="exit-arrow.svg">
+                <textarea id="listen-textarea"></textarea>
+                <input type="range" class="listen-range threshold-range" min="0" max="255" step="1">
+                <input type="range" class="listen-range threshold-range" min="0" max="255" step="1">
+                <input type="range" class="listen-range threshold-range" min="0" max="255" step="1">
+                <img id="listen-text-tuning" class="button-text" src="listen-text-tuning.svg">
+                <img id="listen-button-tuning" class="button" src="listen-button-tuning.svg">
             </div>
         </div>
 
