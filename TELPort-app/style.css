@@ -14,6 +14,7 @@
 }
 
 html, body {
+    -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
     user-select: none;
     overflow: hidden;
@@ -174,6 +175,7 @@ textarea:focus {
     transition-duration: 150ms;
     margin-top: 1vh;
     height: 8.333vh;
+    cursor: pointer;
 }
 
 .button:active{

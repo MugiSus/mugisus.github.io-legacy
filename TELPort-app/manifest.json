@@ -29,6 +29,6 @@
     ],
     "start_url": "/TELPort-app/index.html",
     "display": "standalone",
-    "background_color": "#4f655f",
-    "theme_color": "#4f655f"
+    "background_color": "#384944",
+    "theme_color": "#384944"
 }
