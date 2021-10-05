@@ -22,7 +22,6 @@ let speed = 200; // milliseconds // both
 let requestAnimationFrameID; // liten
 let intervalID; // call
 
-const listenTextarea = document.getElementById("listen-textarea"); // listen
 let threshold, stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, nextConfirmTime; // listen
 threshold = new Uint8Array(document.getElementById("listen-threshold-range-container").children.length);
 
@@ -115,16 +114,17 @@ function listen_listenStringLoop() {
     if (nextConfirmTime <= new Date().getTime()) {
         nextConfirmTime += speed;
 
-        if (heardBitCount)
-            listenTextarea.value += heardStringRound;
+        if (heardBitCount) {
+            document.getElementById("listen-textarea").value += heardStringRound;
+        }
     }
     
     if (heardBitCount) {
-        document.getElementById("listen-heard-chars").classList.add("heard");
-        document.getElementById("listen-heard-chars").innerHTML = `[${heardStringRound.slice(0, BytesPerRound / 2)}<br>${heardStringRound.slice(BytesPerRound / 2, BytesPerRound)}]`
+        document.getElementById("listen-text-heard-chars").classList.add("heard");
+        document.getElementById("listen-text-heard-chars").innerHTML = `[${heardStringRound.slice(0, BytesPerRound / 2)}<br>${heardStringRound.slice(BytesPerRound / 2, BytesPerRound)}]`
     } else {
-        document.getElementById("listen-heard-chars").classList.remove("heard");
-        document.getElementById("listen-heard-chars").innerHTML = `[...Waiting for<br>your input...]`
+        document.getElementById("listen-text-heard-chars").classList.remove("heard");
+        document.getElementById("listen-text-heard-chars").innerHTML = `[...Waiting for<br>your input...]`
     }
     
     requestAnimationFrameID = requestAnimationFrame(listen_listenStringLoop);

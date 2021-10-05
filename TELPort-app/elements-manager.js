@@ -29,22 +29,27 @@ document.getElementById("text-version").addEventListener("click", () => {
     });
 });
 
+
 // scroll manager
 
-document.getElementById("window-startup").scrollIntoView()
+document.getElementById("window-startup").scrollIntoView();
 
 document.getElementById("startup-call-container").addEventListener("click", () => {
-    document.getElementById("window-call").scrollIntoView({behavior: "smooth"})
+    document.getElementById("window-call").scrollIntoView({behavior: "smooth"});
 });
 
 document.getElementById("startup-listen-container").addEventListener("click", () => {
-    document.getElementById("window-listen").scrollIntoView({behavior: "smooth"})
+    document.getElementById("window-listen").scrollIntoView({behavior: "smooth"});
 });
 
 document.getElementById("call-exit-arrow").addEventListener("click", () => {
-    document.getElementById("window-startup").scrollIntoView({behavior: "smooth"})
+    document.getElementById("window-startup").scrollIntoView({behavior: "smooth"});
 });
 
 document.getElementById("listen-exit-arrow").addEventListener("click", () => {
-    document.getElementById("window-startup").scrollIntoView({behavior: "smooth"})
+    document.getElementById("window-startup").scrollIntoView({behavior: "smooth"});
 });
+
+
+// localStorage
+
