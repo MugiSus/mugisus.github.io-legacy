@@ -128,8 +128,10 @@ body {
 
 @keyframes startup-swipearrow-flash {
     0% {
-        transform: translateX(-15%);
         opacity: 100%;
+        transform: translateX(-15%);
+        -webkit-transform: translateX(-15%);
+        -moz-transform: translateX(-15%);
     }
     100% {
         opacity: 25%;
