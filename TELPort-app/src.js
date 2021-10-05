@@ -24,7 +24,7 @@ let intervalID; // call
 
 const listenTextarea = document.getElementById("listen-textarea"); // listen
 let threshold, stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, nextConfirmTime; // listen
-threshold = 110;
+threshold = new Uint8Array(document.getElementById("listen-threshold-range-container").children.length);
 
 function initialize() {
     clearInterval(intervalID);
@@ -104,7 +104,7 @@ function listen_listenStringLoop() {
     heardBitCount = 0;
     
     Frequencies.forEach((frequency, index) => {
-        if (threshold <= frequencyData[Math.trunc(frequency / (context.sampleRate / analyser.fftSize))]) {
+        if (threshold[0] <= frequencyData[Math.trunc(frequency / (context.sampleRate / analyser.fftSize))]) {
             heardUint8Array[Math.trunc(index / 8)] |= 1 << index % 8;
             heardBitCount++;
         }

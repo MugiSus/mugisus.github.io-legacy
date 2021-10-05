@@ -122,11 +122,11 @@ body {
 }
 
 @keyframes startup-swipearrow-flash {
-    from {
+    0% {
         transform: translateX(-15%);
         opacity: 100%;
     }
-    to {
+    100% {
         opacity: 25%;
     }
 }

@@ -1,64 +1,25 @@
-let selectedText, selectedFile;
-
-[...document.getElementsByClassName("container modal")].forEach(element => {
-    element.addEventListener("click", () => {
-        element.classList.remove("opened");
-
-        switch (element.id) {
-            case "modal-selector": {
-                selectedText = document.getElementById("selector-textarea").value;
-                selectedFile = document.getElementById("selector-file").files[0];
-                if (selectedText.length || selectedFile?.name)
-                    document.getElementById("button-selector-fulfilled").classList.add("fulfilled");
-                else
-                    document.getElementById("button-selector-fulfilled").classList.remove("fulfilled");
-            } break;
-            case "modal-listen": {
-                initialize();
-            } break;
-            case "modal-call": {
-                initialize();
-            } break;
-        }
-        
-    });
-});
-
 [...document.getElementsByClassName("modal-window")].forEach(x => x.addEventListener("click", event => event.stopPropagation()));
 
-document.getElementById("button-selector-container").addEventListener("click", () => {
-    document.getElementById("modal-selector").classList.add("opened");
-});
-
-document.getElementById("button-listen").addEventListener("click", () => {
-    document.getElementById("modal-listen").classList.add("opened");
-    listen_StartlistenStringLoop();
-});
-
-document.getElementById("button-listen-auto-threshold").addEventListener("click", () => {
+document.getElementById("listen-button-tuning").addEventListener("click", () => {
     listen_autoThreshold();
 });
 
-document.getElementById("range-listen-threshold").addEventListener("change", (event) => {
-    threshold = event.target.value * 1;
-    console.log(`threshold set: ${threshold}`);
-})
+[...document.getElementById("listen-threshold-range-container").children].forEach((element, index) => element.addEventListener("change", (event) => {
+    threshold[index] = element.value * 1;
+    console.log(`threshold ${index} set: ${threshold[index]}`);
+}));
 
-document.getElementById("button-call").addEventListener("click", () => {
-    document.getElementById("modal-call").classList.add("opened");
-});
-
-document.getElementById("button-call-auto-threshold").addEventListener("click", () => {
+document.getElementById("call-button-tuning").addEventListener("click", () => {
     call_callString(TuningString, 3600000);
 });
 
-document.getElementById("button-call-play").addEventListener("click", () => {
-    call_callString(document.getElementById("selector-textarea").value, speed);
+document.getElementById("call-button-send").addEventListener("click", () => {
+    call_callString(document.getElementById("call-textarea").value, speed);
 });
 
-document.getElementById("button-call-stop").addEventListener("click", () => {
-    initialize();
-});
+// document.getElementById("call-button-stop").addEventListener("click", () => {
+//     initialize();
+// });
 
 document.getElementById("text-version").addEventListener("click", () => {
     fetch("dummy").then(() => {
@@ -69,4 +30,24 @@ document.getElementById("text-version").addEventListener("click", () => {
     }).catch((err) => {
         console.error(err);
     });
+});
+
+// scroll manager
+
+document.getElementById("window-startup").scrollIntoView()
+
+document.getElementById("startup-call-container").addEventListener("click", () => {
+    document.getElementById("window-call").scrollIntoView({behavior: "smooth"})
+});
+
+document.getElementById("startup-listen-container").addEventListener("click", () => {
+    document.getElementById("window-listen").scrollIntoView({behavior: "smooth"})
+});
+
+document.getElementById("call-exit-arrow").addEventListener("click", () => {
+    document.getElementById("window-startup").scrollIntoView({behavior: "smooth"})
+});
+
+document.getElementById("listen-exit-arrow").addEventListener("click", () => {
+    document.getElementById("window-startup").scrollIntoView({behavior: "smooth"})
 });
