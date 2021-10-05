@@ -48,11 +48,12 @@ body {
 
 #text-version {
     position: fixed;
+    cursor: pointer;
     color: var(--color-c70);
     font-style: italic;
     font-weight: 400;
     font-size: 3vh;
-    letter-spacing: 0.15vh;
+    letter-spacing: 0.1vh;
     bottom: 1vh;
     right: 1.5vh;
     z-index: 100;
@@ -63,6 +64,7 @@ body {
 
 .startup-container {
     position: relative;
+    cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -94,7 +96,7 @@ body {
 .startup-swipearrow {
     margin: 5vh 0.75vh 0vh;
     height: 4.2vh;
-    animation: startup-swipearrow-flash 1500ms ease-out infinite;
+    animation: startup-swipearrow-flash 1600ms ease-out infinite;
 }
 
 #startup-listen-swipearrow-container {
@@ -178,6 +180,13 @@ textarea:focus {
     transform: scale(95%);
 }
 
+.exit-arrow {
+    position: absolute;
+    top: 1.5vh;
+    height: 3.5vh;
+    cursor: pointer;
+}
+
 
 /* call */
 
@@ -189,10 +198,7 @@ textarea:focus {
 }
 
 #call-exit-arrow {
-    position: absolute;
-    top: 1.5vh;
     right: 1.5vh;
-    height: 3.5vh;
 }
 
 
@@ -205,12 +211,12 @@ textarea:focus {
     align-items: center;
 }
 
-#listen-exit-arrow {
-    position: absolute;
-    top: 1.5vh;
-    left: 1.5vh;
-    height: 3.5vh;
-    transform: scaleX(-100%);
+#listen-heard-chars {
+    color: var(--color-c85);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 3vh;
+    margin: 1vh;
 }
 
 #listen-threshold-range-container {
@@ -254,4 +260,9 @@ textarea:focus {
     background: url("listen-slider-thumb.svg");
     background-size: cover;
     border-radius: 0.2vh;
+}
+
+#listen-exit-arrow {
+    transform: scaleX(-100%);
+    left: 1.5vh;
 }

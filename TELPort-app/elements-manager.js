@@ -1,25 +1,22 @@
-[...document.getElementsByClassName("modal-window")].forEach(x => x.addEventListener("click", event => event.stopPropagation()));
+[...document.getElementsByClassName("modal-window")].forEach(element => element.addEventListener("click", event => event.stopPropagation()));
 
 document.getElementById("listen-button-tuning").addEventListener("click", () => {
     listen_autoThreshold();
 });
 
 [...document.getElementById("listen-threshold-range-container").children].forEach((element, index) => element.addEventListener("change", (event) => {
+    event.stopPropagation();
     threshold[index] = element.value * 1;
     console.log(`threshold ${index} set: ${threshold[index]}`);
 }));
 
-document.getElementById("call-button-tuning").addEventListener("click", () => {
+document.getElementById("call-button-tuning").addEventListener("click", (event) => {
     call_callString(TuningString, 3600000);
 });
 
-document.getElementById("call-button-send").addEventListener("click", () => {
+document.getElementById("call-button-send").addEventListener("click", (event) => {
     call_callString(document.getElementById("call-textarea").value, speed);
 });
-
-// document.getElementById("call-button-stop").addEventListener("click", () => {
-//     initialize();
-// });
 
 document.getElementById("text-version").addEventListener("click", () => {
     fetch("dummy").then(() => {

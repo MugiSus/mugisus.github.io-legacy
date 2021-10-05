@@ -124,7 +124,7 @@ function listen_listenStringLoop() {
         document.getElementById("listen-heard-chars").innerHTML = `[${heardStringRound.slice(0, BytesPerRound / 2)}<br>${heardStringRound.slice(BytesPerRound / 2, BytesPerRound)}]`
     } else {
         document.getElementById("listen-heard-chars").classList.remove("heard");
-        document.getElementById("listen-heard-chars").innerHTML = `[...Heard characters <br>will appear here...]`
+        document.getElementById("listen-heard-chars").innerHTML = `[...Waiting for<br>your input...]`
     }
     
     requestAnimationFrameID = requestAnimationFrame(listen_listenStringLoop);

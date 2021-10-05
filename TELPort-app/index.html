@@ -17,18 +17,18 @@
         <!-- ウェブアプリマニフェストの読み込み -->
         <link rel="manifest" href="manifest.json">
         <!-- ServiceWorkerの登録 -->
-        <!--script>
+        <script>
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('service-worker.js').then(reg => {
                     console.log(`Service worker registered ${reg}`);
                 });
             }
-        </script-->
+        </script>
     </head>
     <body>
         <div id="container">
             <div id="window-call" class="window">
-                <img id="call-exit-arrow" src="exit-arrow.svg">
+                <img id="call-exit-arrow" class="exit-arrow" src="exit-arrow.svg">
                 <textarea id="call-textarea"></textarea>
                 <img id="call-text-tuning" class="button-text" src="call-text-tuning.svg">
                 <img id="call-button-tuning" class="button" src="call-button-tuning.svg">
@@ -62,8 +62,9 @@
             </div>
     
             <div id="window-listen" class="window">
-                <img id="listen-exit-arrow" src="exit-arrow.svg">
+                <img id="listen-exit-arrow" class="exit-arrow" src="exit-arrow.svg">
                 <textarea id="listen-textarea"></textarea>
+                <div id="listen-heard-chars">[...Waiting for<br>your input...]</div>
                 <div id="listen-threshold-range-container">
                     <input type="range" class="listen-range threshold-range" min="0" max="255" step="1">
                     <input type="range" class="listen-range threshold-range" min="0" max="255" step="1">
