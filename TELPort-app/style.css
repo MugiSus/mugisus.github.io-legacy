@@ -147,7 +147,7 @@ textarea {
     background-color: var(--color-c98);
     border-color: var(--color-c98);
     border-radius: 0.3em;
-    border-width: 0.3em;
+    border-width: 0.4em;
     width: 77.777vw;
     height: 45vh;
     color: var(--color-c55);
@@ -213,6 +213,10 @@ textarea:focus {
     transform: scaleX(-100%);
 }
 
+#listen-threshold-range-container {
+    margin: 1.5vh
+}
+
 .listen-range {
     width: 80vw;
     -webkit-appearance: none;
@@ -226,6 +230,20 @@ textarea:focus {
 
 .listen-range::-webkit-slider-thumb {
     -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    position: relative;
+    border: none;
+    width: 3.52vh;
+    height: 2.2vh;
+    display: block;
+    background: url("listen-slider-thumb.svg");
+    background-size: cover;
+    border-radius: 0.2vh;
+}
+
+.listen-range::-moz-slider-thumb {
+    -moz-appearance: none;
     appearance: none;
     cursor: pointer;
     position: relative;
