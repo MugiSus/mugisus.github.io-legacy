@@ -155,9 +155,7 @@ textarea {
     border-color: var(--color-c98);
     border-radius: 0.3em;
     border-width: 0.4em;
-    width: 77.777vw;
-    height: 45vh;
-    color: var(--color-c55);
+    width: 75vw;
     font-size: 25px;
     font-family: 'Inter';
     font-weight: 300;
@@ -205,6 +203,11 @@ textarea:focus {
     align-items: center;
 }
 
+#call-textarea {
+    color: var(--color-c55);
+    height: 55vh;
+}
+
 #call-input-file-label {
     
 }
@@ -229,18 +232,21 @@ textarea:focus {
 
 #listen-textarea {
     color: var(--color-c25);
+    height: 30vh;
 }
 
 #listen-text-heard-chars {
     color: var(--color-c85);
+    height: 8vh;
     font-style: italic;
     font-weight: 300;
     font-size: 3vh;
+    line-height: 4vh;
     margin: 1vh;
 }
 
 #listen-threshold-range-container {
-    margin: 1.5vh
+    margin: 1vh
 }
 
 .listen-range {
@@ -248,7 +254,7 @@ textarea:focus {
     -moz-appearance: none;
     appearance: none;
     background-color: var(--color-c25);
-    width: 80vw;
+    width: 75vw;
     height: 1vh;
     border-radius: 0.5vh;
     margin: 1.5vh;

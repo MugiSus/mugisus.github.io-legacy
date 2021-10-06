@@ -112,7 +112,7 @@ function listen_listenStringLoop() {
     let heardStringRound = Array.from(heardUint8Array).map(byte => byte ? String.fromCodePoint(byte) : "").join("");
 
     if (nextConfirmTime <= new Date().getTime()) {
-        nextConfirmTime += speed;
+        nextConfirmTime += speed * Math.ceil((new Date().getTime() - nextConfirmTime) / speed);
 
         if (heardBitCount) {
             document.getElementById("listen-textarea").value += heardStringRound;
