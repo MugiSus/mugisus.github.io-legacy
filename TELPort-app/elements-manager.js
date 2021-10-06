@@ -4,7 +4,11 @@ let updateCancelVariableImages =()=> {
         "call-button-send",
         "listen-button-receive",
     ].forEach(elementId => {
-        document.getElementById(elementId).src = `${elementId}${document.getElementById(elementId).hasAttribute("clicked") ? "-cancel" : ""}.svg`
+        document.getElementById(elementId).src = `${
+            elementId
+        }${
+            document.getElementById(elementId).hasAttribute("clicked") ? "-cancel" : ""
+        }.svg`
     })
 }
 
