@@ -22,7 +22,7 @@ let speed = 200; // milliseconds // both
 let requestAnimationFrameID; // liten
 let intervalID; // call
 
-let threshold, stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, nextConfirmTime; // listen
+let threshold, stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, eachBitAmplitudes, nextConfirmTime; // listen
 threshold = new Uint8Array(document.getElementById("listen-threshold-range-container").children.length);
 
 function initialize() {
@@ -92,6 +92,7 @@ async function listen_StartlistenStringLoop() {
     analyser.minDecibels = -100;
     
     heardUint8Array = new Uint8Array(BytesPerRound);
+    eachBitAmplitudes = new Uint8Array(BytesPerRound * 8);
     frequencyData = new Uint8Array(analyser.frequencyBinCount);
     
     nextConfirmTime = new Date().getTime() + speed;
@@ -106,7 +107,8 @@ function listen_listenStringLoop() {
     heardBitCount = 0;
     
     Frequencies.forEach((frequency, index) => {
-        if (threshold[0] <= frequencyData[Math.trunc(frequency / (context.sampleRate / analyser.fftSize))]) {
+        eachBitAmplitudes[index] = frequencyData[Math.trunc(frequency / (context.sampleRate / analyser.fftSize))];
+        if (eachBitAmplitudes[index] >= threshold[0]) {
             heardUint8Array[Math.trunc(index / 8)] |= 1 << index % 8;
             heardBitCount++;
         }
@@ -132,4 +134,16 @@ function listen_listenStringLoop() {
     }
     
     requestAnimationFrameID = requestAnimationFrame(listen_listenStringLoop);
+}
+
+function listen_tuning() {
+    let allThresholdTestsResult = [...new Array(256).keys()].map(tempThreshold => eachBitAmplitudes.reduce((currentBitCount, amplitudes) => currentBitCount + (amplitudes >= tempThreshold), 0));
+    console.log(allThresholdTestsResult);
+
+    lowestThreshold = allThresholdTestsResult.indexOf(TuningBits);
+    highestThreshold = allThresholdTestsResult.lastIndexOf(TuningBits);
+
+    threshold[0] = lowestThreshold + (highestThreshold - lowestThreshold) * 0.7;
+
+    document.getElementsByClassName("threshold-range")[0].value = threshold[0];
 }

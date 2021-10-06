@@ -52,7 +52,7 @@ let listenLoopEnabled = false;
 }));
 
 document.getElementById("listen-button-tuning").addEventListener("click", () => {
-    listen_autoThreshold();
+    listen_tuning();
 });
 
 document.getElementById("listen-button-receive").addEventListener("click", (event) => {
