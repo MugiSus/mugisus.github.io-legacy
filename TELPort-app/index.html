@@ -31,9 +31,15 @@
                 <img id="call-exit-arrow" class="exit-arrow" src="exit-arrow.svg">
                 <textarea id="call-textarea"></textarea>
                 <img id="call-text-tuning" class="button-text" src="call-text-tuning.svg">
-                <img id="call-button-tuning" class="button" src="call-button-tuning.svg">
+                <div class="button-container cancelable-button-container">
+                    <img id="call-button-tuning" class="button" src="call-button-tuning.svg">
+                    <img id="call-button-tuning-cancel" class="button cancel" src="call-button-tuning-cancel.svg">
+                </div>
                 <img id="call-text-send" class="button-text" src="call-text-send.svg">
-                <img id="call-button-send" class="button" src="call-button-send.svg">
+                <div class="button-container cancelable-button-container">
+                    <img id="call-button-send" class="button" src="call-button-send.svg">
+                    <img id="call-button-send-cancel" class="button cancel" src="call-button-send-cancel.svg">
+                </div>
             </div>
     
             <div id="window-startup" class="window">
@@ -71,9 +77,14 @@
                     <input type="range" class="listen-range threshold-range" min="0" max="255" step="1">
                 </div>
                 <img id="listen-text-tuning" class="button-text" src="listen-text-tuning.svg">
-                <img id="listen-button-tuning" class="button" src="listen-button-tuning.svg">
+                <div class="button-container">
+                    <img id="listen-button-tuning" class="button" src="listen-button-tuning.svg">
+                </div>
                 <img id="listen-text-receive" class="button-text" src="listen-text-receive.svg">
-                <img id="listen-button-receive" class="button" src="listen-button-receive.svg">
+                <div class="button-container cancelable-button-container">
+                    <img id="listen-button-receive" class="button" src="listen-button-receive.svg">
+                    <img id="listen-button-receive-cancel" class="button cancel" src="listen-button-receive-cancel.svg">
+                </div>
             </div>
         </div>
 

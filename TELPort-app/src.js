@@ -64,8 +64,7 @@ function call_callString(string, speed) {
     let index = 1;
     intervalID = setInterval(function() {
         if (index * BytesPerRound > string.length) {
-            document.getElementById("call-button-send").removeAttribute("clicked");
-            document.getElementById("call-button-send").src = "call-button-send.svg";
+            document.getElementById("call-button-send").parentElement.classList.remove("clicked");
             clearInterval(intervalID);
         }
         call_oneRound(Uint8Array.of(...string.slice(index * BytesPerRound, (index + 1) * BytesPerRound).split("").map(char => char.codePointAt(0) & 0xFF || 0)), speed);

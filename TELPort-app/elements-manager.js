@@ -1,42 +1,3 @@
-let updateCancelVariableImages =()=> {
-    [
-        "call-button-tuning",
-        "call-button-send",
-        "listen-button-receive",
-    ].forEach(elementId => {
-        document.getElementById(elementId).src = `${
-            elementId
-        }${
-            document.getElementById(elementId).hasAttribute("clicked") ? "-cancel" : ""
-        }.svg`
-    })
-}
-
-// call
-
-document.getElementById("call-button-tuning").addEventListener("click", (event) => {
-    document.getElementById("call-button-send").removeAttribute("clicked");
-    document.getElementById("listen-button-receive").removeAttribute("clicked");
-
-    if (event.target.toggleAttribute("clicked"))
-        call_callString(TuningString, 3600000);
-    else 
-        initialize();
-
-    updateCancelVariableImages();
-});
-
-document.getElementById("call-button-send").addEventListener("click", (event) => {
-    document.getElementById("call-button-tuning").removeAttribute("clicked");
-    document.getElementById("listen-button-receive").removeAttribute("clicked");
-
-    if (event.target.toggleAttribute("clicked"))
-        call_callString(document.getElementById("call-textarea").value, speed);
-    else
-        initialize();
-
-    updateCancelVariableImages();
-});
 
 document.getElementById("text-version").addEventListener("click", () => {
     fetch("dummy").then(() => {
@@ -47,6 +8,36 @@ document.getElementById("text-version").addEventListener("click", () => {
     }).catch((err) => {
         console.error(err);
     });
+});
+
+
+// both
+
+[...document.getElementsByClassName("cancelable-button-container")].forEach(element => element.addEventListener("click", (event) => {
+    if (element.classList.toggle("clicked")) {
+        [...document.getElementsByClassName("cancelable-button-container")].forEach(element => {
+            if (element != event.currentTarget) element.classList.remove("clicked");
+        });
+    }
+}));
+
+
+// call
+
+document.getElementById("call-button-tuning").addEventListener("click", (event) => {
+    call_callString(TuningString, 3600000);
+});
+
+document.getElementById("call-button-tuning-cancel").addEventListener("click", () => {
+    initialize();
+});
+
+document.getElementById("call-button-send").addEventListener("click", (event) => {
+    call_callString(document.getElementById("call-textarea").value, speed);
+});
+
+document.getElementById("call-button-send-cancel").addEventListener("click", () => {
+    initialize();
 });
 
 
@@ -65,17 +56,12 @@ document.getElementById("listen-button-tuning").addEventListener("click", () => 
 });
 
 document.getElementById("listen-button-receive").addEventListener("click", (event) => {
-    document.getElementById("call-button-send").removeAttribute("clicked");
-    document.getElementById("call-button-tuning").removeAttribute("clicked");
-
-    if (event.target.toggleAttribute("clicked")) 
-        listen_StartlistenStringLoop();
-    else 
-        initialize();
-
-    updateCancelVariableImages();
+    listen_StartlistenStringLoop();
 });
 
+document.getElementById("listen-button-receive-cancel").addEventListener("click", (event) => {
+    initialize();
+});
 
 
 // scroll manager
@@ -91,11 +77,13 @@ document.getElementById("startup-listen-container").addEventListener("click", ()
 });
 
 document.getElementById("call-exit-arrow").addEventListener("click", () => {
+    [...document.getElementsByClassName("cancelable-button-container")].forEach(element => element.classList.remove("clicked"));
     initialize();
     document.getElementById("window-startup").scrollIntoView({behavior: "smooth"});
 });
 
 document.getElementById("listen-exit-arrow").addEventListener("click", () => {
+    [...document.getElementsByClassName("cancelable-button-container")].forEach(element => element.classList.remove("clicked"));
     initialize();
     document.getElementById("window-startup").scrollIntoView({behavior: "smooth"});
 });

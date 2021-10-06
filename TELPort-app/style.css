@@ -177,18 +177,34 @@ textarea:focus {
     height: 2.4vh;
 }
 
-.button {
+.button-container {
+    display: flex;
+    position: relative;
+    cursor: pointer;
     transition-property: transform;
     transition-duration: 150ms;
-    margin-top: 0.8vh;
     height: 8.333vh;
-    cursor: pointer;
+    width: 36.111vh;
+    margin-top: 0.8vh;
+    justify-content: center;
+    align-items: center;
 }
 
-.button:active{
+.button-container:active{
     transform: scale(95%);
     -webkit-transform: scale(95%);
     -moz-transform: scale(95%);
+}
+
+.button {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+}
+
+.cancelable-button-container:not(.clicked) > .button.cancel, .cancelable-button-container.clicked > .button:not(.cancel) {
+    display: none;
 }
 
 .exit-arrow {
