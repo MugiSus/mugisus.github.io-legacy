@@ -171,13 +171,13 @@ textarea:focus {
 
 .button-text {
     margin-top: 1.5vh;
-    height: 2.9vh;
+    height: 2.4vh;
 }
 
 .button {
     transition-property: transform;
     transition-duration: 150ms;
-    margin-top: 1vh;
+    margin-top: 0.8vh;
     height: 8.333vh;
     cursor: pointer;
 }

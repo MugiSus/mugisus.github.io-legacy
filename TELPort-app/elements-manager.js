@@ -1,14 +1,4 @@
-[...document.getElementsByClassName("modal-window")].forEach(element => element.addEventListener("click", event => event.stopPropagation()));
-
-document.getElementById("listen-button-tuning").addEventListener("click", () => {
-    listen_autoThreshold();
-});
-
-[...document.getElementById("listen-threshold-range-container").children].forEach((element, index) => element.addEventListener("change", (event) => {
-    event.stopPropagation();
-    threshold[index] = element.value * 1;
-    console.log(`threshold ${index} set: ${threshold[index]}`);
-}));
+// call
 
 document.getElementById("call-button-tuning").addEventListener("click", (event) => {
     call_callString(TuningString, 3600000);
@@ -28,6 +18,34 @@ document.getElementById("text-version").addEventListener("click", () => {
         console.error(err);
     });
 });
+
+
+// listen
+
+let listenLoopEnabled = false;
+
+document.getElementById("container").addEventListener("scroll", () => {
+    console.log(listenLoopEnabled);
+    if (document.getElementById("window-listen").getBoundingClientRect().left < document.getElementById("window-listen").clientWidth * 0.05) {
+        if (!listenLoopEnabled) {
+            listen_StartlistenStringLoop();
+            listenLoopEnabled = true;
+        }
+    } else if (listenLoopEnabled) {
+        initialize();
+        listenLoopEnabled = false;
+    }
+})
+
+document.getElementById("listen-button-tuning").addEventListener("click", () => {
+    listen_autoThreshold();
+});
+
+[...document.getElementById("listen-threshold-range-container").children].forEach((element, index) => element.addEventListener("change", (event) => {
+    event.stopPropagation();
+    threshold[index] = element.value * 1;
+    console.log(`threshold ${index} set: ${threshold[index]}`);
+}));
 
 
 // scroll manager

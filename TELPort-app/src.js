@@ -116,6 +116,7 @@ function listen_listenStringLoop() {
 
         if (heardBitCount) {
             document.getElementById("listen-textarea").value += heardStringRound;
+            document.getElementById("listen-textarea").scrollTop = document.getElementById("listen-textarea").scrollHeight;
         }
     }
     
