@@ -48,7 +48,6 @@ let listenLoopEnabled = false;
 [...document.getElementById("listen-threshold-range-container").children].forEach((element, index) => element.addEventListener("change", (event) => {
     event.stopPropagation();
     threshold[index] = element.value * 1;
-    console.log(`threshold ${index} set: ${threshold[index]}`);
 }));
 
 document.getElementById("listen-button-tuning").addEventListener("click", () => {
@@ -90,4 +89,3 @@ document.getElementById("listen-exit-arrow").addEventListener("click", () => {
 
 
 // localStorage
-

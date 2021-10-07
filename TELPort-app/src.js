@@ -17,7 +17,7 @@ const GainHighValue = 0.0075; // call
 const AudioContext = window.AudioContext || window.webkitAudioContext; // both (listen, call)
 let context; // both
 
-let speed = 200; // milliseconds // both
+let speed = 200; // both // milliseconds 
 
 let requestAnimationFrameID; // liten
 let intervalID; // call
@@ -88,8 +88,8 @@ async function listen_StartlistenStringLoop() {
     input.connect(analyser);
     
     analyser.fftSize = 8192;
-    analyser.maxDecibels = 0;
-    analyser.minDecibels = -100;
+    analyser.maxDecibels = 20;
+    analyser.minDecibels = -150;
     
     heardUint8Array = new Uint8Array(BytesPerRound);
     eachBitAmplitudes = new Uint8Array(BytesPerRound * 8);
@@ -138,12 +138,14 @@ function listen_listenStringLoop() {
 
 function listen_tuning() {
     let allThresholdTestsResult = [...new Array(256).keys()].map(tempThreshold => eachBitAmplitudes.reduce((currentBitCount, amplitudes) => currentBitCount + (amplitudes >= tempThreshold), 0));
-    console.log(allThresholdTestsResult);
 
-    lowestThreshold = allThresholdTestsResult.indexOf(TuningBits);
-    highestThreshold = allThresholdTestsResult.lastIndexOf(TuningBits);
+    let lowestThreshold = allThresholdTestsResult.indexOf(TuningBits);
+    let highestThreshold = allThresholdTestsResult.lastIndexOf(TuningBits);
 
     threshold[0] = lowestThreshold + (highestThreshold - lowestThreshold) * 0.7;
 
-    document.getElementsByClassName("threshold-range")[0].value = threshold[0];
+    [...document.getElementsByClassName("threshold-range")].forEach((element, index) => element.value = threshold[index]);
+
+    console.log(allThresholdTestsResult.join("\t"));
+    console.log(eachBitAmplitudes.join("\t"));
 }
