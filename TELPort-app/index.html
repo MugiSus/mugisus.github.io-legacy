@@ -1,22 +1,16 @@
 <!DOCTYPE html>
     <head>
         <title>TELPort: Soundwave Based Telecommunication Protocol</title>
+        <meta charset="UTF-8">
 
         <link rel="stylesheet" type="text/css" href="style.css">
-        <!-- アドレスバー等のブラウザのUIを非表示 -->
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <!-- default（Safariと同じ） / black（黒） / black-translucent（ステータスバーをコンテンツに含める） -->
         <meta name="apple-mobile-web-app-status-bar-style" content="default">
-        <!-- ホーム画面に表示されるアプリ名 -->
         <meta name="apple-mobile-web-app-title" content="TELPort">
-        <!-- ホーム画面に表示されるアプリアイコン -->
         <link rel="apple-touch-icon" href="telport-logo-6-192x192-ios.png">
-        
         <meta name="theme-color" content="#384944">
 
-        <!-- ウェブアプリマニフェストの読み込み -->
         <link rel="manifest" href="manifest.json">
-        <!-- ServiceWorkerの登録 -->
         <script>
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('service-worker.js').then(reg => {

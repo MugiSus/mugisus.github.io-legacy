@@ -203,7 +203,8 @@ textarea:focus {
     height: 100%;
 }
 
-.cancelable-button-container:not(.clicked) > .button.cancel, .cancelable-button-container.clicked > .button:not(.cancel) {
+.cancelable-button-container:not(.clicked) > .button.cancel,
+.cancelable-button-container.clicked > .button:not(.cancel) {
     display: none;
 }
 
