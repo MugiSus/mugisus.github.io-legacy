@@ -23,6 +23,7 @@ let requestAnimationFrameID; // liten
 let intervalID; // call
 
 let threshold, stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, eachBitAmplitudes, nextConfirmTime; // listen
+let multibytePrefix, multibytePrefixLength, heardStringRound // listen, string
 threshold = new Uint8Array(document.getElementById("listen-threshold-range-container").children.length);
 
 function initialize() {
@@ -96,6 +97,9 @@ async function listen_StartlistenStringLoop() {
     heardUint8Array = new Uint8Array(BytesPerRound);
     eachBitAmplitudes = new Uint8Array(BytesPerRound * 8);
     frequencyData = new Uint8Array(analyser.frequencyBinCount);
+
+    multibytePrefixLength = 0;
+    multibytePrefix = new Uint8Array();
     
     nextConfirmTime = new Date().getTime() + speed;
 
@@ -116,8 +120,11 @@ function listen_listenStringLoop() {
         }
     });
 
-    let heardStringRound = Array.from(heardUint8Array).map(byte => byte ? String.fromCodePoint(byte) : "").join("");
-
+    multibytePrefixLength = Math.max(heardUint8Array.findIndex((_, i, a) => a[a.length - i - 1] < 0x80));
+    heardStringRound = new TextDecoder().decode(Uint8Array.from([...multibytePrefix, ...heardUint8Array.slice(0, -multibytePrefixLength)])).replace(/\uFFFD/g, "");
+    multibytePrefix = multibytePrefixLength == -1 ? new Uint8Array() : heardUint8Array.slice(-multibytePrefixLength);
+    console.log(heardStringRound.length);
+    
     if (nextConfirmTime <= new Date().getTime()) {
         nextConfirmTime += speed * Math.ceil((new Date().getTime() - nextConfirmTime) / speed);
 

@@ -259,11 +259,11 @@ textarea:focus {
 
 #listen-text-heard-chars {
     color: var(--color-c85);
-    height: 8vh;
+    height: 7vh;
     font-style: italic;
     font-weight: 300;
-    font-size: 3vh;
-    line-height: 4vh;
+    font-size: 2.8vh;
+    line-height: 3.5vh;
     margin: 1vh;
 }
 
