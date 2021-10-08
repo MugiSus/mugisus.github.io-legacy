@@ -123,7 +123,6 @@ function listen_listenStringLoop() {
     multibytePrefixLength = Math.max(heardUint8Array.findIndex((_, i, a) => a[a.length - i - 1] < 0x80));
     heardStringRound = new TextDecoder().decode(Uint8Array.from([...multibytePrefix, ...heardUint8Array.slice(0, -multibytePrefixLength)])).replace(/\uFFFD/g, "");
     multibytePrefix = multibytePrefixLength == -1 ? new Uint8Array() : heardUint8Array.slice(-multibytePrefixLength);
-    console.log(heardStringRound.length);
     
     if (nextConfirmTime <= new Date().getTime()) {
         nextConfirmTime += speed * Math.ceil((new Date().getTime() - nextConfirmTime) / speed);
