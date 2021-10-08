@@ -68,7 +68,7 @@ function call_callString(string, speed) {
     intervalID = setInterval(function() {
         call_oneRound(stringUint8Codes.subarray(index * BytesPerRound, (index + 1) * BytesPerRound), speed);
         index++;
-        if (index * BytesPerRound > string.length) {
+        if (index * BytesPerRound > stringUint8Codes.length) {
             document.getElementById("call-button-send").parentElement.classList.remove("clicked");
             clearInterval(intervalID);
         }
@@ -120,14 +120,20 @@ function listen_listenStringLoop() {
         }
     });
 
-    multibytePrefixLength = Math.max(heardUint8Array.findIndex((_, i, a) => a[a.length - i - 1] < 0x80));
-    heardStringRound = new TextDecoder().decode(Uint8Array.from([...multibytePrefix, ...heardUint8Array.slice(0, -multibytePrefixLength)])).replace(/\uFFFD/g, "");
-    multibytePrefix = multibytePrefixLength == -1 ? new Uint8Array() : heardUint8Array.slice(-multibytePrefixLength);
+    multibytePrefixLength = Math.max(
+        0,
+        heardUint8Array.slice(-1)[0] >= 0xC2,
+        heardUint8Array.slice(-2)[0] >= 0xE0 && 2,
+        heardUint8Array.slice(-3)[0] >= 0xF0 && 3,
+    );
+    heardStringRound = new TextDecoder().decode(Uint8Array.from([...multibytePrefix, ...heardUint8Array])).replace(/\uFFFD|\u0000/g, "");
+    multibytePrefix = multibytePrefixLength ? heardUint8Array.slice(-multibytePrefixLength) : new Uint8Array();
     
     if (nextConfirmTime <= new Date().getTime()) {
         nextConfirmTime += speed * Math.ceil((new Date().getTime() - nextConfirmTime) / speed);
-
+        
         if (heardBitCount) {
+            console.log(multibytePrefix, heardUint8Array, multibytePrefixLength);
             document.getElementById("listen-textarea").value += heardStringRound;
             document.getElementById("listen-textarea").scrollTop = document.getElementById("listen-textarea").scrollHeight;
         }
@@ -150,7 +156,7 @@ function listen_tuning() {
     let lowestThreshold = allThresholdTestsResult.indexOf(TuningBits);
     let highestThreshold = allThresholdTestsResult.lastIndexOf(TuningBits);
 
-    threshold[0] = lowestThreshold + (highestThreshold - lowestThreshold) * 0.7;
+    threshold[0] = lowestThreshold + (highestThreshold - lowestThreshold) * 0.8;
 
     [...document.getElementsByClassName("threshold-range")].forEach((element, index) => element.value = threshold[index]);
 
