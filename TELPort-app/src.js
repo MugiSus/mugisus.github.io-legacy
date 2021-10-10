@@ -134,7 +134,6 @@ function listen_listenStringLoop() {
         multibytePrefix = multibytePrefixLength ? heardUint8Array.slice(-multibytePrefixLength) : new Uint8Array();
         
         if (heardBitCount) {
-            console.log(multibytePrefix, heardUint8Array, multibytePrefixLength);
             document.getElementById("listen-textarea").value += heardStringRound;
             document.getElementById("listen-textarea").scrollTop = document.getElementById("listen-textarea").scrollHeight;
         }
