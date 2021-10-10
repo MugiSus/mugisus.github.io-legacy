@@ -123,13 +123,13 @@ function listen_listenStringLoop() {
     heardStringRound = new TextDecoder().decode(Uint8Array.from([...multibytePrefix, ...heardUint8Array])).replace(/\uFFFD|\u0000/g, "");
     
     if (nextConfirmTime <= new Date().getTime()) {
-        nextConfirmTime += speed * Math.ceil((new Date().getTime() - nextConfirmTime) / speed);
+        nextConfirmTime += speed;
         
         multibytePrefixLength = Math.max(
             0,
             heardUint8Array.slice(-1)[0] >= 0xC2,
             heardUint8Array.slice(-2)[0] >= 0xE0 && 2,
-            heardUint8Array.slice(-3)[0] >= 0xF0 && 3,
+            heardUint8Array.slice(-3)[0] >= 0xF0 && 3,0
         );
         multibytePrefix = multibytePrefixLength ? heardUint8Array.slice(-multibytePrefixLength) : new Uint8Array();
         
