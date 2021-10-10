@@ -1,5 +1,7 @@
 
-let isFileMode = false // temporary. removed soon.
+let isFileMode = false; // temporary. removed soon.
+// Also, we're using FileReader API now only because it's easy to use, 
+// soon it will be replaced with Blob API which is Promise Based.
 
 document.getElementById("text-version").addEventListener("click", () => {
     fetch("dummy").then(() => {
