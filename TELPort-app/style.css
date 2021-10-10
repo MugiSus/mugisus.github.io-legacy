@@ -227,14 +227,38 @@ textarea:focus {
 
 #call-textarea {
     color: var(--color-c55);
-    height: 57vh;
+    height: 47vh;
 }
 
-#call-input-file-label {
-    
+#call-file-label {
+    display: flex;
+    cursor: pointer;
+    background-color: var(--color-c85);
+    width: 75vw;
+    height: 5vh;
+    margin: 1.5vh;
+    border-radius: 1vh;
+    align-items: center;
 }
 
-#call-input-file {
+#call-file-icon {
+    margin-left: 1.5vh;
+    height: 3vh;
+}
+
+#call-file-text {
+    margin-right: 1.5vh;
+    margin-left: 1.5vh;
+    font-size: 2vh;
+    color: var(--color-c55);
+    font-style: italic;
+    font-weight: 300;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#call-file {
     display: none;
 }
 

@@ -141,10 +141,10 @@ function listen_listenStringLoop() {
     
     if (heardBitCount) {
         document.getElementById("listen-text-heard-chars").classList.add("heard");
-        document.getElementById("listen-text-heard-chars").innerHTML = `[${heardStringRound.slice(0, BytesPerRound / 2)}<br>${heardStringRound.slice(BytesPerRound / 2, BytesPerRound)}]`
+        document.getElementById("listen-text-heard-chars").innerText = `[${heardStringRound.slice(0, BytesPerRound / 2)}\n${heardStringRound.slice(BytesPerRound / 2, BytesPerRound)}]`
     } else {
         document.getElementById("listen-text-heard-chars").classList.remove("heard");
-        document.getElementById("listen-text-heard-chars").innerHTML = `[...Waiting for<br>your input...]`
+        document.getElementById("listen-text-heard-chars").innerText = `[...Waiting for\nyour input...]`
     }
     
     requestAnimationFrameID = requestAnimationFrame(listen_listenStringLoop);

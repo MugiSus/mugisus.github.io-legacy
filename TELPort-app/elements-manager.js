@@ -14,17 +14,16 @@ document.getElementById("text-version").addEventListener("click", () => {
 // both
 
 [...document.getElementsByClassName("cancelable-button-container")].forEach(element => element.addEventListener("click", (event) => {
-    if (element.classList.toggle("clicked")) {
+    if (element.classList.toggle("clicked"))
         [...document.getElementsByClassName("cancelable-button-container")].forEach(element => {
             if (element != event.currentTarget) element.classList.remove("clicked");
         });
-    }
 }));
 
 
 // call
 
-document.getElementById("call-button-tuning").addEventListener("click", (event) => {
+document.getElementById("call-button-tuning").addEventListener("click", () => {
     call_callString(TuningString, 3600000);
 });
 
@@ -32,13 +31,17 @@ document.getElementById("call-button-tuning-cancel").addEventListener("click", (
     initialize();
 });
 
-document.getElementById("call-button-send").addEventListener("click", (event) => {
+document.getElementById("call-button-send").addEventListener("click", () => {
     call_callString(document.getElementById("call-textarea").value, speed);
 });
 
 document.getElementById("call-button-send-cancel").addEventListener("click", () => {
     initialize();
 });
+
+document.getElementById("call-file").addEventListener("change", (event) => {
+    document.getElementById("call-file-text").innerText = event.target.files[0].name;
+})
 
 
 // listen
