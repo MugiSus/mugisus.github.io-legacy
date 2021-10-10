@@ -129,7 +129,7 @@ function listen_listenStringLoop() {
             0,
             heardUint8Array.slice(-1)[0] >= 0xC2,
             heardUint8Array.slice(-2)[0] >= 0xE0 && 2,
-            heardUint8Array.slice(-3)[0] >= 0xF0 && 3,0
+            heardUint8Array.slice(-3)[0] >= 0xF0 && 3,
         );
         multibytePrefix = multibytePrefixLength ? heardUint8Array.slice(-multibytePrefixLength) : new Uint8Array();
         
