@@ -1,4 +1,6 @@
 
+let isFileMode = false // temporary. removed soon.
+
 document.getElementById("text-version").addEventListener("click", () => {
     fetch("dummy").then(() => {
         caches.keys().then((keys) => {
@@ -32,7 +34,10 @@ document.getElementById("call-button-tuning-cancel").addEventListener("click", (
 });
 
 document.getElementById("call-button-send").addEventListener("click", () => {
-    call_callString(document.getElementById("call-textarea").value, speed);
+    if (isFileMode)
+        call_callFile(document.getElementById("call-file").files[0], speed);
+    else
+        call_callString(document.getElementById("call-textarea").value, speed);
 });
 
 document.getElementById("call-button-send-cancel").addEventListener("click", () => {

@@ -58,17 +58,42 @@ function call_oneRound(uint8array, speed) {
     });
 }
 
+function call_callFile(file, speed) {
+    initialize();
+
+    let fileReader = new FileReader();
+    fileReader.addEventListener("load", (event) => {
+        const callingUint8Array = new Uint8Array(event.target.result);
+        console.log(callingUint8Array);
+
+        call_oneRound(callingUint8Array.subarray(0, BytesPerRound), speed);
+        let index = 0;
+        
+        intervalID = setInterval(function() {
+            index++;
+            call_oneRound(callingUint8Array.subarray(index * BytesPerRound, (index + 1) * BytesPerRound), speed);
+            if (index * BytesPerRound > callingUint8Array.length) {
+                document.getElementById("call-button-send").parentElement.classList.remove("clicked");
+                clearInterval(intervalID);
+            }
+        }, speed);
+    })
+
+    fileReader.readAsArrayBuffer(file);
+}
+
 function call_callString(string, speed) {
     initialize();
 
-    const stringUint8Codes = new TextEncoder().encode(string);
+    const callingUint8Array = new TextEncoder().encode(string);
 
-    call_oneRound(stringUint8Codes.subarray(0, BytesPerRound), speed);
-    let index = 1;
+    call_oneRound(callingUint8Array.subarray(0, BytesPerRound), speed);
+    let index = 0;
+
     intervalID = setInterval(function() {
-        call_oneRound(stringUint8Codes.subarray(index * BytesPerRound, (index + 1) * BytesPerRound), speed);
         index++;
-        if (index * BytesPerRound > stringUint8Codes.length) {
+        call_oneRound(callingUint8Array.subarray(index * BytesPerRound, (index + 1) * BytesPerRound), speed);
+        if (index * BytesPerRound > callingUint8Array.length) {
             document.getElementById("call-button-send").parentElement.classList.remove("clicked");
             clearInterval(intervalID);
         }
@@ -127,9 +152,9 @@ function listen_listenStringLoop() {
         
         multibytePrefixLength = Math.max(
             0,
-            heardUint8Array.slice(-1)[0] >= 0xC2,
-            heardUint8Array.slice(-2)[0] >= 0xE0 && 2,
-            heardUint8Array.slice(-3)[0] >= 0xF0 && 3,
+            heardUint8Array[heardUint8Array.length - 1] >= 0xC2,
+            heardUint8Array[heardUint8Array.length - 2] >= 0xE0 && 2,
+            heardUint8Array[heardUint8Array.length - 3] >= 0xF0 && 3,
         );
         multibytePrefix = multibytePrefixLength ? heardUint8Array.slice(-multibytePrefixLength) : new Uint8Array();
         
