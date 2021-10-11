@@ -106,6 +106,23 @@ function call_callString(string, speed) {
     }, speed);
 }
 
+function listen_getHeardUint8Array() {
+    analyser.getByteFrequencyData(frequencyData);
+
+    let heardUint8Array = new Uint8Array(BytesPerRound);
+    heardBitCount = 0;
+    
+    Frequencies.forEach((frequency, index) => {
+        eachBitAmplitudes[index] = frequencyData[Math.trunc(frequency / (context.sampleRate / analyser.fftSize))];
+        if (eachBitAmplitudes[index] >= threshold[0]) {
+            heardUint8Array[Math.trunc(index / 8)] |= 1 << index % 8;
+            heardBitCount++;
+        }
+    });
+
+    return heardUint8Array;
+}
+
 async function listen_StartlistenStringLoop() {
     initialize();
 
@@ -123,7 +140,7 @@ async function listen_StartlistenStringLoop() {
     
     analyser.fftSize = 8192;
     analyser.maxDecibels = 20;
-    analyser.minDecibels = -150;
+    analyser.minDecibels = -140;
     
     heardUint8Array = new Uint8Array(BytesPerRound);
     eachBitAmplitudes = new Uint8Array(BytesPerRound * 8);
@@ -138,18 +155,7 @@ async function listen_StartlistenStringLoop() {
 }
 
 function listen_listenStringLoop() {
-    analyser.getByteFrequencyData(frequencyData);
-
-    heardUint8Array = new Uint8Array(BytesPerRound);
-    heardBitCount = 0;
-    
-    Frequencies.forEach((frequency, index) => {
-        eachBitAmplitudes[index] = frequencyData[Math.trunc(frequency / (context.sampleRate / analyser.fftSize))];
-        if (eachBitAmplitudes[index] >= threshold[0]) {
-            heardUint8Array[Math.trunc(index / 8)] |= 1 << index % 8;
-            heardBitCount++;
-        }
-    });
+    heardUint8Array = listen_getHeardUint8Array();
 
     heardStringRound = new TextDecoder().decode(Uint8Array.from([...multibytePrefix, ...heardUint8Array])).replace(/\uFFFD|\u0000/g, "");
     

@@ -39,7 +39,7 @@ document.getElementById("call-button-tuning-cancel").addEventListener("click", (
 });
 
 document.getElementById("call-button-send").addEventListener("click", () => {
-    if (document.getElementById("call-mode-container").classList.contains("mode-text"))
+    if (document.getElementById("call-mode-selector-container").classList.contains("mode-text"))
         call_callString(document.getElementById("call-textarea").value, speed);
     else
         call_callFile(document.getElementById("call-file").files[0], speed);
