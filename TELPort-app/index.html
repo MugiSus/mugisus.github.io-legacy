@@ -23,12 +23,18 @@
         <div id="container">
             <div id="window-call" class="window">
                 <img id="call-exit-arrow" class="exit-arrow" src="exit-arrow.svg">
+                <div id="call-mode-container" class="mode-container mode-text">
+                    <img class="mode mode-text" src="call-mode-text.svg">
+                    <img class="mode mode-file" src="call-mode-file.svg">
+                </div>
                 <textarea id="call-textarea"></textarea>
-                <label id="call-file-label" for="call-file">
-                    <img id="call-file-icon" src="call-file-icon.svg">
-                    <div id="call-file-text">Select file...</div>
-                    <input id="call-file" type="file">
-                </label>
+                <div id="call-file-label-container" class="file-label-container">
+                    <label id="call-file-label" class="file-label" for="call-file">
+                        <img id="call-file-icon" src="call-file-icon.svg">
+                        <div id="call-file-text">Select file...</div>
+                        <input id="call-file" type="file">
+                    </label>
+                </div>
                 <img id="call-text-tuning" class="button-text" src="call-text-tuning.svg">
                 <div class="button-container cancelable-button-container">
                     <img id="call-button-tuning" class="button" src="call-button-tuning.svg">
@@ -68,6 +74,10 @@
     
             <div id="window-listen" class="window">
                 <img id="listen-exit-arrow" class="exit-arrow" src="exit-arrow.svg">
+                <div id="listen-mode-container" class="mode-container mode-text">
+                    <img class="mode mode-text" src="listen-mode-text.svg">
+                    <img class="mode mode-file" src="listen-mode-file.svg">
+                </div>
                 <textarea id="listen-textarea"></textarea>
                 <div id="listen-text-heard-chars">[...Waiting for<br>your input...]</div>
                 <div id="listen-threshold-range-container">

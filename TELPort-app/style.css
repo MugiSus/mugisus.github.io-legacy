@@ -172,6 +172,42 @@ textarea:focus {
     outline: none;
 }
 
+.mode-container {
+    position: relative;
+    margin-bottom: 3vh;
+    height: 5vh;
+    width: 35vh;
+    transition-property: transform;
+    transition-duration: 100ms;
+}
+
+.mode-container:active {
+    transform: translateY(10%);
+}
+
+.mode {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.mode-container.mode-text > .mode-file,
+.mode-container.mode-file > .mode-text {
+    display: none;
+}
+
+.mode-container.mode-file ~ textarea {
+    display: none;
+}
+
+.file-label-container {
+    margin-bottom: 1.5vh;
+}
+
+.mode-container.mode-text ~ .file-label-container {
+    display: none;
+}
+
 .button-text {
     margin-top: 1.5vh;
     height: 2.4vh;
@@ -227,7 +263,7 @@ textarea:focus {
 
 #call-textarea {
     color: var(--color-c55);
-    height: 47vh;
+    height: 48vh;
 }
 
 #call-file-label {
@@ -278,7 +314,7 @@ textarea:focus {
 
 #listen-textarea {
     color: var(--color-c25);
-    height: 32vh;
+    height: 24vh;
 }
 
 #listen-text-heard-chars {

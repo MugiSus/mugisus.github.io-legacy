@@ -61,7 +61,13 @@ function call_oneRound(uint8array, speed) {
 function call_callFile(file, speed) {
     initialize();
 
+    if (!file) {
+        call_callString("", speed);
+        return;
+    }
+
     let fileReader = new FileReader();
+    
     fileReader.addEventListener("load", (event) => {
         const callingUint8Array = new Uint8Array(event.target.result);
         console.log(callingUint8Array);

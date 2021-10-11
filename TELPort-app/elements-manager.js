@@ -1,5 +1,3 @@
-
-let isFileMode = false; // temporary. removed soon.
 // Also, we're using FileReader API now only because it's easy to use, 
 // soon it will be replaced with Blob API which is Promise Based.
 
@@ -24,6 +22,11 @@ document.getElementById("text-version").addEventListener("click", () => {
         });
 }));
 
+[...document.getElementsByClassName("mode-container")].forEach(element => element.addEventListener("click", (event) => {
+    element.classList.toggle("mode-file");
+    element.classList.toggle("mode-text");
+}));
+
 
 // call
 
@@ -36,10 +39,10 @@ document.getElementById("call-button-tuning-cancel").addEventListener("click", (
 });
 
 document.getElementById("call-button-send").addEventListener("click", () => {
-    if (isFileMode)
-        call_callFile(document.getElementById("call-file").files[0], speed);
-    else
+    if (document.getElementById("call-mode-container").classList.contains("mode-text"))
         call_callString(document.getElementById("call-textarea").value, speed);
+    else
+        call_callFile(document.getElementById("call-file").files[0], speed);
 });
 
 document.getElementById("call-button-send-cancel").addEventListener("click", () => {
