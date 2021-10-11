@@ -5,6 +5,7 @@ const cacheFiles = [
     "/TELPort-app/call-button-send-cancel.svg",
     "/TELPort-app/call-button-tuning.svg",
     "/TELPort-app/call-button-tuning-cancel.svg",
+    "/TELPort-app/call-file-icon-text.svg",
     "/TELPort-app/call-file-icon.svg",
     "/TELPort-app/call-mode-selector-file.svg",
     "/TELPort-app/call-mode-selector-text.svg",

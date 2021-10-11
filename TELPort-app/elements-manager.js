@@ -50,6 +50,7 @@ document.getElementById("call-button-send-cancel").addEventListener("click", () 
 });
 
 document.getElementById("call-file").addEventListener("change", (event) => {
+    event.target.parentElement.classList.add("selected");
     document.getElementById("call-file-text").innerText = event.target.files[0].name;
 })
 
@@ -68,7 +69,10 @@ document.getElementById("listen-button-tuning").addEventListener("click", () => 
 });
 
 document.getElementById("listen-button-receive").addEventListener("click", (event) => {
-    listen_StartlistenStringLoop();
+    if (document.getElementById("call-mode-selector-container").classList.contains("mode-text")) 
+        listen_startListenStringLoop();
+    else
+        listen_startListenFileLoop();
 });
 
 document.getElementById("listen-button-receive-cancel").addEventListener("click", (event) => {

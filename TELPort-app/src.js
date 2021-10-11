@@ -123,9 +123,7 @@ function listen_getHeardUint8Array() {
     return heardUint8Array;
 }
 
-async function listen_StartlistenStringLoop() {
-    initialize();
-
+async function listen_setup() {
     stream = await navigator.mediaDevices.getUserMedia({
         audio: {
             echoCancellation: false,
@@ -146,12 +144,24 @@ async function listen_StartlistenStringLoop() {
     eachBitAmplitudes = new Uint8Array(BytesPerRound * 8);
     frequencyData = new Uint8Array(analyser.frequencyBinCount);
 
+    nextConfirmTime = new Date().getTime() + speed;
+}
+
+async function listen_startListenStringLoop() {
+    initialize();
+    await listen_setup();
+
     multibytePrefixLength = 0;
     multibytePrefix = new Uint8Array();
-    
-    nextConfirmTime = new Date().getTime() + speed;
 
     listen_listenStringLoop();
+}
+
+async function listen_startListenFileLoop() {
+    initialize();
+    await listen_setup();
+
+    listen_listenFileLoop();
 }
 
 function listen_listenStringLoop() {
@@ -185,6 +195,11 @@ function listen_listenStringLoop() {
     }
     
     requestAnimationFrameID = requestAnimationFrame(listen_listenStringLoop);
+}
+
+function listen_listenFileLoop() {
+    
+    requestAnimationFrameID = requestAnimationFrame(listen_listenFileLoop);
 }
 
 function listen_tuning() {
