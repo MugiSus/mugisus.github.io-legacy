@@ -1,5 +1,5 @@
 // Also, we're using FileReader API now only because it's easy to use, 
-// soon it will be replaced with Blob API which is Promise Based.
+// soon it will be replaced with Blob API which is Promise based.
 
 document.getElementById("text-version").addEventListener("click", () => {
     fetch("dummy").then(() => {
@@ -25,6 +25,8 @@ document.getElementById("text-version").addEventListener("click", () => {
 [...document.getElementsByClassName("mode-selector-container")].forEach(element => element.addEventListener("click", (event) => {
     element.classList.toggle("mode-file");
     element.classList.toggle("mode-text");
+    initialize();
+    [...document.getElementsByClassName("cancelable-button-container")].forEach(element => element.classList.remove("clicked"));
 }));
 
 
@@ -73,7 +75,7 @@ document.getElementById("listen-button-tuning").addEventListener("click", () => 
 });
 
 document.getElementById("listen-button-receive").addEventListener("click", (event) => {
-    if (document.getElementById("call-mode-selector-container").classList.contains("mode-text")) 
+    if (document.getElementById("listen-mode-selector-container").classList.contains("mode-text")) 
         listen_startListenStringLoop();
     else
         listen_startListenFileLoop();

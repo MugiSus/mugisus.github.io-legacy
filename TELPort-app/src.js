@@ -167,7 +167,14 @@ async function listen_startListenFileLoop() {
 function listen_listenStringLoop() {
     heardUint8Array = listen_getHeardUint8Array();
 
-    heardStringRound = new TextDecoder().decode(Uint8Array.from([...multibytePrefix, ...heardUint8Array])).replace(/\uFFFD|\u0000/g, "");
+    
+    if (heardBitCount) {
+        heardStringRound = new TextDecoder().decode(Uint8Array.from([...multibytePrefix, ...heardUint8Array])).replace(/\uFFFD|\u0000/g, "");
+        document.getElementById("listen-text-heard-chars").innerText = `[${heardStringRound.slice(0, BytesPerRound / 2)}\n${heardStringRound.slice(BytesPerRound / 2, BytesPerRound)}]`;
+    } else {
+        heardStringRound = "";
+        document.getElementById("listen-text-heard-chars").innerText = `[...Waiting for\nyour input...]`;
+    }
     
     if (nextConfirmTime <= new Date().getTime()) {
         nextConfirmTime += speed;
@@ -186,19 +193,21 @@ function listen_listenStringLoop() {
         }
     }
     
-    if (heardBitCount) {
-        document.getElementById("listen-text-heard-chars").classList.add("heard");
-        document.getElementById("listen-text-heard-chars").innerText = `[${heardStringRound.slice(0, BytesPerRound / 2)}\n${heardStringRound.slice(BytesPerRound / 2, BytesPerRound)}]`
-    } else {
-        document.getElementById("listen-text-heard-chars").classList.remove("heard");
-        document.getElementById("listen-text-heard-chars").innerText = `[...Waiting for\nyour input...]`
-    }
     
     requestAnimationFrameID = requestAnimationFrame(listen_listenStringLoop);
 }
 
 function listen_listenFileLoop() {
-    
+    heardUint8Array = listen_getHeardUint8Array();
+
+    heardBytesString = [
+        Array.from(heardUint8Array.slice(0, BytesPerRound * 0.25)),
+        Array.from(heardUint8Array.slice(BytesPerRound * 0.25, BytesPerRound * 0.5)),
+        Array.from(heardUint8Array.slice(BytesPerRound * 0.5, BytesPerRound * 0.75)),
+        Array.from(heardUint8Array.slice(BytesPerRound * 0.75, BytesPerRound)),
+    ].map(arr => arr.map(byte => "0123456789ABCDEF"[Math.trunc(byte / 16)] + "0123456789ABCDEF"[byte % 16]).join(":"));
+    document.getElementById("listen-file-heard-bytes").innerText = `${heardBytesString.join("\n")}`;
+
     requestAnimationFrameID = requestAnimationFrame(listen_listenFileLoop);
 }
 
