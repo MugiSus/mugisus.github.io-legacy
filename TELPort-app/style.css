@@ -1,6 +1,11 @@
 @font-face {
-    font-family: 'Inter', 'Inconsolata';
-    src: url("Inter-VariableFont_slnt,wght.ttf"), url("Inconsolata_SemiExpanded-Regular.ttf");
+    font-family: 'Inter';
+    src: url("Inter-VariableFont_slnt,wght.ttf");
+}
+
+@font-face {
+    font-family: 'Inconsolata';
+    src: url("Inconsolata_SemiExpanded-Medium.ttf");
 }
 
 :root {
