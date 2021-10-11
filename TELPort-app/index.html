@@ -29,12 +29,12 @@
                 </div>
                 <div id="call-mode-content" class="mode-content">
                     <textarea id="call-textarea" class="mode-text"></textarea>
-                    <div id="call-file-label-container" class="mode-file file-label-container">
-                        <label id="call-file-label" class="file-label" for="call-file">
-                            <img id="call-file-icon" src="call-file-icon.svg">
-                            <img id="call-file-icon-text" src="call-file-icon-text.svg">
-                            <div id="call-file-text"></div>
-                            <input id="call-file" type="file">
+                    <div id="call-file-label-container" class="mode-file">
+                        <label class="call-file-label">
+                            <input class="call-file-input" type="file">
+                            <img class="call-file-icon" src="call-file-icon.svg">
+                            <img class="call-file-icon-text" src="call-file-icon-text.svg">
+                            <div class="call-file-text"></div>
                         </label>
                     </div>
                 </div>
@@ -84,6 +84,14 @@
                 <div id="listen-mode-content" class="mode-content">
                     <textarea id="listen-textarea" class="mode-text"></textarea>
                     <div id="listen-text-heard-chars" class="mode-text">[...Waiting for<br>your input...]</div>
+                    <div id="listen-file-downloader-container" class="mode-file">
+                        <a class="listen-file-downloader">
+                            <img class="listen-file-icon" src="listen-file-icon.svg">
+                            <img class="listen-file-icon-nofile" src="listen-file-icon-nofile.svg">
+                            <img class="listen-file-icon-nofile-text" src="listen-file-icon-nofile-text.svg">
+                            <div class="listen-file-text"></div>
+                        </a>
+                    </div>
                 </div>
                 <div id="listen-threshold-range-container">
                     <input type="range" class="listen-range threshold-range" min="0" max="255" step="1">

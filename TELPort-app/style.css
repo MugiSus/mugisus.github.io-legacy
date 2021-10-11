@@ -165,7 +165,6 @@ textarea {
     font-family: 'Inter';
     font-weight: 300;
     font-style: italic;
-    margin-bottom: 1.5vh;
 }
 
 textarea:focus {
@@ -257,16 +256,24 @@ textarea:focus {
 #call-mode-content {
     display: flex;
     align-items: center;
+    justify-content: center;
     flex-flow: column;
     height: 52vh
 }
 
 #call-textarea {
     color: var(--color-c55);
-    height: 90%;
+    height: 95%;
+    margin-bottom: 1.5vh;
 }
 
-#call-file-label {
+#call-file-label-container {
+    height: 90%;
+    overflow-y: scroll;
+    margin-bottom: 1.5vh;
+}
+
+.call-file-label {
     display: flex;
     cursor: pointer;
     background-color: var(--color-c85);
@@ -277,21 +284,21 @@ textarea:focus {
     align-items: center;
 }
 
-#call-file-icon {
+.call-file-icon {
     margin-left: 1.5vh;
     height: 3vh;
 }
 
-#call-file-icon-text {
+.call-file-icon-text {
     margin-left: 1.5vh;
     height: 2.2vh;
 }
 
-#call-file-label.selected > #call-file-icon-text {
+.call-file-label.selected > .call-file-icon-text {
     display: none;
 }
 
-#call-file-text {
+.call-file-text {
     margin-right: 1.5vh;
     margin-left: 1.5vh;
     font-size: 2vh;
@@ -303,7 +310,7 @@ textarea:focus {
     white-space: nowrap;
 }
 
-#call-file {
+.call-file-input {
     display: none;
 }
 
@@ -331,6 +338,59 @@ textarea:focus {
 #listen-textarea {
     color: var(--color-c25);
     height: 100%;
+    margin-bottom: 1.5vh;
+}
+
+#listen-file-downloader-container {
+    height: 90%;
+    overflow-y: scroll;
+    margin-bottom: 1.5vh;
+}
+
+.listen-file-downloader {
+    display: flex;
+    cursor: not-allowed;
+    width: 75vw;
+    height: 5vh;
+    margin: 1.5vh;
+    border-radius: 1vh;
+    align-items: center;
+    background-color: var(--color-c55);
+}
+
+.listen-file-downloader.exist {
+    cursor: pointer;
+    background-color: var(--color-c85);
+}
+
+.listen-file-icon,
+.listen-file-icon-nofile {
+    margin-left: 1.5vh;
+    height: 3vh;
+}
+
+.listen-file-icon-nofile-text {
+    margin-left: 1.5vh;
+    height: 2.2vh;
+}
+
+.listen-file-downloader:not(.exist) > .listen-file-icon,
+.listen-file-downloader:not(.exist) > .listen-file-text,
+.listen-file-downloader.exist > .listen-file-icon-nofile,
+.listen-file-downloader.exist > .listen-file-icon-nofile-text {
+    display: none;
+}
+
+.listen-file-text {
+    margin-right: 1.5vh;
+    margin-left: 1.5vh;
+    font-size: 2vh;
+    color: var(--color-c55);
+    font-style: italic;
+    font-weight: 400;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 #listen-text-heard-chars {

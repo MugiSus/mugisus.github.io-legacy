@@ -30,6 +30,14 @@ document.getElementById("text-version").addEventListener("click", () => {
 
 // call
 
+for (let i = 0; i < 19; i++) 
+    document.getElementById("call-file-label-container").appendChild(document.getElementsByClassName("call-file-label")[0].cloneNode(true));
+
+[...document.getElementsByClassName("call-file-input")].forEach(element => element.addEventListener("change", (event) => {
+    event.target.parentElement.classList.add("selected");
+    event.target.parentElement.getElementsByClassName("call-file-text")[0].innerText = event.target.files[0].name;
+}));
+
 document.getElementById("call-button-tuning").addEventListener("click", () => {
     call_callString(TuningString, 3600000);
 });
@@ -42,22 +50,18 @@ document.getElementById("call-button-send").addEventListener("click", () => {
     if (document.getElementById("call-mode-selector-container").classList.contains("mode-text"))
         call_callString(document.getElementById("call-textarea").value, speed);
     else
-        call_callFile(document.getElementById("call-file").files[0], speed);
+        call_callFile(document.getElementsByClassName("call-file-input")[0].files[0], speed);
 });
 
 document.getElementById("call-button-send-cancel").addEventListener("click", () => {
     initialize();
 });
 
-document.getElementById("call-file").addEventListener("change", (event) => {
-    event.target.parentElement.classList.add("selected");
-    document.getElementById("call-file-text").innerText = event.target.files[0].name;
-})
-
 
 // listen
 
-let listenLoopEnabled = false;
+for (let i = 0; i < 19; i++) 
+    document.getElementById("listen-file-downloader-container").appendChild(document.getElementsByClassName("listen-file-downloader")[0].cloneNode(true));
 
 [...document.getElementById("listen-threshold-range-container").children].forEach((element, index) => element.addEventListener("change", (event) => {
     event.stopPropagation();
