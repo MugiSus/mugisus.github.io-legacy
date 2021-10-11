@@ -172,7 +172,7 @@ textarea:focus {
     outline: none;
 }
 
-.mode-container {
+.mode-selector-container {
     position: relative;
     margin-bottom: 3vh;
     height: 5vh;
@@ -181,30 +181,24 @@ textarea:focus {
     transition-duration: 100ms;
 }
 
-.mode-container:active {
+.mode-selector-container:active {
     transform: translateY(10%);
 }
 
-.mode {
+.mode-selector {
     position: absolute;
     top: 0;
     left: 0;
+    height: 100%;
 }
 
-.mode-container.mode-text > .mode-file,
-.mode-container.mode-file > .mode-text {
+.mode-selector-container.mode-file + .mode-content > .mode-text,
+.mode-selector-container.mode-text + .mode-content > .mode-file {
     display: none;
 }
 
-.mode-container.mode-file ~ textarea {
-    display: none;
-}
-
-.file-label-container {
-    margin-bottom: 1.5vh;
-}
-
-.mode-container.mode-text ~ .file-label-container {
+.mode-selector-container.mode-text > .mode-file,
+.mode-selector-container.mode-file > .mode-text {
     display: none;
 }
 
@@ -251,7 +245,6 @@ textarea:focus {
     cursor: pointer;
 }
 
-
 /* call */
 
 #window-call {
@@ -261,9 +254,16 @@ textarea:focus {
     align-items: center;
 }
 
+#call-mode-content {
+    display: flex;
+    align-items: center;
+    flex-flow: column;
+    height: 52vh
+}
+
 #call-textarea {
     color: var(--color-c55);
-    height: 48vh;
+    height: 90%;
 }
 
 #call-file-label {
@@ -312,9 +312,16 @@ textarea:focus {
     align-items: center;
 }
 
+#listen-mode-content {
+    display: flex;
+    align-items: center;
+    flex-flow: column;
+    height: 36vh
+}
+
 #listen-textarea {
     color: var(--color-c25);
-    height: 24vh;
+    height: 100%;
 }
 
 #listen-text-heard-chars {

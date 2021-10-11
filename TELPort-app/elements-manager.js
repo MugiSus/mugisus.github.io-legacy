@@ -22,7 +22,7 @@ document.getElementById("text-version").addEventListener("click", () => {
         });
 }));
 
-[...document.getElementsByClassName("mode-container")].forEach(element => element.addEventListener("click", (event) => {
+[...document.getElementsByClassName("mode-selector-container")].forEach(element => element.addEventListener("click", (event) => {
     element.classList.toggle("mode-file");
     element.classList.toggle("mode-text");
 }));
