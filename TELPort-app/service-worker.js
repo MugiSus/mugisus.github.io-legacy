@@ -15,7 +15,7 @@ const cacheFiles = [
     "/TELPort-app/exit-arrow.svg",
     "/TELPort-app/Inconsolata_SemiExpanded-Regular.ttf",
     "/TELPort-app/index.html",
-    "/TELPort-app/Inter-VariableFont_slnt,wght.ttf",
+    "/TELPort-app/Inter-Regular.ttf",
     "/TELPort-app/listen-button-receive-cancel.svg",
     "/TELPort-app/listen-button-receive.svg",
     "/TELPort-app/listen-button-tuning.svg",
