@@ -1,6 +1,7 @@
 @font-face {
     font-family: 'Inter';
-    src: url("Inter-Regular.ttf");
+    font-weight: 400, 300;
+    src: url("Inter-Regular.ttf"), url("Inter-Light.ttf");
 }
 
 @font-face {
@@ -168,7 +169,7 @@ textarea {
     width: 75vw;
     font-size: 25px;
     font-family: 'Inter';
-    font-weight: 400;
+    font-weight: 300;
     font-style: italic;
 }
 
@@ -351,7 +352,7 @@ textarea:focus {
     color: var(--color-c85);
     height: 7vh;
     font-style: italic;
-    font-weight: 400;
+    font-weight: 300;
     font-size: 2.8vh;
     line-height: 3.5vh;
     margin: 1vh;
