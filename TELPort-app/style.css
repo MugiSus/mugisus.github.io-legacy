@@ -5,7 +5,7 @@
 
 @font-face {
     font-family: 'Inconsolata';
-    src: url("Inconsolata_SemiExpanded-Medium.ttf");
+    src: url("Inconsolata_SemiExpanded-Regular.ttf");
 }
 
 :root {
@@ -191,6 +191,7 @@ textarea:focus {
 
 .mode-selector {
     position: absolute;
+    cursor: pointer;
     top: 0;
     left: 0;
     height: 100%;

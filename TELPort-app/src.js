@@ -12,6 +12,7 @@ const Frequencies = new Array(8 * BytesPerRound).fill(0).map((_, i) => {
     return FirstFreuency + (44100 / 8192 * 4) * i;
 });
 
+
 const GainHighValue = 0.0075; // call
 
 const AudioContext = window.AudioContext || window.webkitAudioContext; // both (listen, call)
@@ -24,7 +25,11 @@ let intervalID; // call
 
 let threshold, stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, eachBitAmplitudes, nextConfirmTime; // listen
 let multibytePrefix, multibytePrefixLength, heardStringRound // listen, string
+let fullUint8Data // listen, file
 threshold = new Uint8Array(document.getElementById("listen-threshold-range-container").children.length);
+
+
+// both
 
 function initialize() {
     clearInterval(intervalID);
@@ -38,7 +43,10 @@ function initialize() {
     emptySource.stop();
 }
 
-function call_oneRound(uint8array, speed) {
+
+// call
+
+function call_callOneRound(uint8array, speed) {
     uint8array.forEach((byte, index) => {
         if (byte) {
             for (let i = 0; i < 8; i++) {
@@ -58,6 +66,24 @@ function call_oneRound(uint8array, speed) {
     });
 }
 
+function call_callFullRounds(uint8array, speed) {
+    call_callOneRound(Uint8Array.from([...new Uint8Array(4).fill(0xAA), ...new Uint8Array(4).map((_, index) => uint8array.length >> index * 8 & 0xFF)]), 500);
+
+    setTimeout(() => {
+        call_callOneRound(uint8array.subarray(0, BytesPerRound), speed);
+        let index = 0;
+        
+        intervalID = setInterval(function() {
+            index++;
+            call_callOneRound(uint8array.subarray(index * BytesPerRound, (index + 1) * BytesPerRound), speed);
+            if (index * BytesPerRound > uint8array.length) {
+                document.getElementById("call-button-send").parentElement.classList.remove("clicked");
+                clearInterval(intervalID);
+            }
+        }, speed);
+    }, 500)
+}
+
 function call_callFile(file, speed) {
     initialize();
 
@@ -70,41 +96,22 @@ function call_callFile(file, speed) {
     
     fileReader.addEventListener("load", (event) => {
         const callingUint8Array = new Uint8Array(event.target.result);
-        console.log(callingUint8Array);
-
-        call_oneRound(callingUint8Array.subarray(0, BytesPerRound), speed);
-        let index = 0;
         
-        intervalID = setInterval(function() {
-            index++;
-            call_oneRound(callingUint8Array.subarray(index * BytesPerRound, (index + 1) * BytesPerRound), speed);
-            if (index * BytesPerRound > callingUint8Array.length) {
-                document.getElementById("call-button-send").parentElement.classList.remove("clicked");
-                clearInterval(intervalID);
-            }
-        }, speed);
-    })
+        call_callFullRounds(callingUint8Array, speed);
+    });
 
     fileReader.readAsArrayBuffer(file);
 }
 
 function call_callString(string, speed) {
     initialize();
-
     const callingUint8Array = new TextEncoder().encode(string);
 
-    call_oneRound(callingUint8Array.subarray(0, BytesPerRound), speed);
-    let index = 0;
-
-    intervalID = setInterval(function() {
-        index++;
-        call_oneRound(callingUint8Array.subarray(index * BytesPerRound, (index + 1) * BytesPerRound), speed);
-        if (index * BytesPerRound > callingUint8Array.length) {
-            document.getElementById("call-button-send").parentElement.classList.remove("clicked");
-            clearInterval(intervalID);
-        }
-    }, speed);
+    call_callFullRounds(callingUint8Array, speed);
 }
+
+
+// listen
 
 function listen_getHeardUint8Array() {
     analyser.getByteFrequencyData(frequencyData);
@@ -161,12 +168,22 @@ async function listen_startListenFileLoop() {
     initialize();
     await listen_setup();
 
+    fullUint8Data = new Uint8Array();
+
     listen_listenFileLoop();
 }
 
 function listen_listenStringLoop() {
     heardUint8Array = listen_getHeardUint8Array();
 
+    if (heardUint8Array.slice(0, 4).every(value => value == 0xAA)) {
+        document.getElementById("listen-textarea").value += "";
+        nextConfirmTime = new Date().getTime() + speed;
+        console.log(
+            "Starting sound detected",
+            heardUint8Array.slice(4, 8).reduce((previous, current, index) => previous | current << index * 8)
+        );
+    }
     
     if (heardBitCount) {
         heardStringRound = new TextDecoder().decode(Uint8Array.from([...multibytePrefix, ...heardUint8Array])).replace(/\uFFFD|\u0000/g, "");
@@ -193,12 +210,19 @@ function listen_listenStringLoop() {
         }
     }
     
-    
     requestAnimationFrameID = requestAnimationFrame(listen_listenStringLoop);
 }
 
 function listen_listenFileLoop() {
     heardUint8Array = listen_getHeardUint8Array();
+
+    if (heardUint8Array.slice(0, 4).every(value => value == 0xAA)) {
+        nextConfirmTime = new Date().getTime() + speed;
+        console.log(
+            "Starting sound detected",
+            heardUint8Array.slice(4, 8).reduce((previous, current, index) => previous | current << index * 8)
+        );
+    }
 
     heardBytesString = [
         Array.from(heardUint8Array.slice(0, BytesPerRound * 0.25)),
