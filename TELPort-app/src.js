@@ -23,7 +23,7 @@ let speed = 200; // both // milliseconds
 let requestAnimationFrameID; // liten
 let intervalID; // call
 
-let threshold, stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, eachBitAmplitudes, nextConfirmTime, dataLength; // listen, both
+let threshold, stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, eachBitAmplitudes, nextConfirmTime, dataLength, bytesCount; // listen, both
 let multibytePrefix, multibytePrefixLength, heardStringRound // listen, string
 let fullUint8Data // listen, file
 threshold = new Uint8Array(document.getElementById("listen-threshold-range-container").children.length);
@@ -177,10 +177,12 @@ function listen_listenStringLoop() {
     heardUint8Array = listen_getHeardUint8Array();
 
     if (heardUint8Array.slice(0, 4).every(value => value == 0xAA)) {
-        document.getElementById("listen-textarea").value = "";
         nextConfirmTime = new Date().getTime() + speed * 0.8;
         dataLength = heardUint8Array.slice(4, 8).reduce((previous, current, index) => previous | current << index * 8);
         console.info(`<Starting sound detected.>\nSize: ${dataLength} Bytes\nEstimated time: ${Math.ceil(dataLength / BytesPerRound) * speed} msec`);
+        
+        document.getElementById("listen-textarea").value = "";
+        bytesCount = 0;
     }
     
     if (heardBitCount) {
@@ -192,8 +194,6 @@ function listen_listenStringLoop() {
     }
     
     if (nextConfirmTime <= new Date().getTime()) {
-        nextConfirmTime += speed;
-        
         multibytePrefixLength = Math.max(
             0,
             heardUint8Array[heardUint8Array.length - 1] >= 0xC2,
@@ -206,6 +206,9 @@ function listen_listenStringLoop() {
             document.getElementById("listen-textarea").value += heardStringRound;
             document.getElementById("listen-textarea").scrollTop = document.getElementById("listen-textarea").scrollHeight;
         }
+
+        nextConfirmTime += speed;
+        bytesCount += BytesPerRound;
     }
     
     requestAnimationFrameID = requestAnimationFrame(listen_listenStringLoop);
@@ -218,6 +221,18 @@ function listen_listenFileLoop() {
         nextConfirmTime = new Date().getTime() + speed * 0.8;
         dataLength = heardUint8Array.slice(4, 8).reduce((previous, current, index) => previous | current << index * 8);
         console.info(`<Starting sound detected.>\nSize: ${dataLength} Bytes\nEstimated time: ${Math.ceil(dataLength / BytesPerRound) * speed} msec`);
+
+        fullUint8Data = new Uint8Array(dataLength);
+        bytesCount = 0;
+    }
+
+    if (nextConfirmTime <= new Date().getTime()) {
+        for (let index = 0; index < BytesPerRound; index++) {
+            fullUint8Data[bytesCount + index] = heardUint8Array[index];
+        }
+
+        nextConfirmTime += speed;
+        bytesCount += BytesPerRound;
     }
 
     heardBytesString = [
