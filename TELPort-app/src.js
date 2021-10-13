@@ -23,7 +23,7 @@ let speed = 200; // both // milliseconds
 let requestAnimationFrameID; // liten
 let intervalID; // call
 
-let threshold, stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, eachBitAmplitudes, nextConfirmTime; // listen
+let threshold, stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, eachBitAmplitudes, nextConfirmTime, dataLength; // listen, both
 let multibytePrefix, multibytePrefixLength, heardStringRound // listen, string
 let fullUint8Data // listen, file
 threshold = new Uint8Array(document.getElementById("listen-threshold-range-container").children.length);
@@ -177,12 +177,10 @@ function listen_listenStringLoop() {
     heardUint8Array = listen_getHeardUint8Array();
 
     if (heardUint8Array.slice(0, 4).every(value => value == 0xAA)) {
-        document.getElementById("listen-textarea").value += "";
-        nextConfirmTime = new Date().getTime() + speed;
-        console.log(
-            "Starting sound detected",
-            heardUint8Array.slice(4, 8).reduce((previous, current, index) => previous | current << index * 8)
-        );
+        document.getElementById("listen-textarea").value = "";
+        nextConfirmTime = new Date().getTime() + speed * 0.8;
+        dataLength = heardUint8Array.slice(4, 8).reduce((previous, current, index) => previous | current << index * 8);
+        console.info(`<Starting sound detected.>\nsize: ${dataLength} Bytes\nEstimated time: ${Math.ceil(dataLength / BytesPerRound) * speed} msec`);
     }
     
     if (heardBitCount) {
@@ -217,11 +215,9 @@ function listen_listenFileLoop() {
     heardUint8Array = listen_getHeardUint8Array();
 
     if (heardUint8Array.slice(0, 4).every(value => value == 0xAA)) {
-        nextConfirmTime = new Date().getTime() + speed;
-        console.log(
-            "Starting sound detected",
-            heardUint8Array.slice(4, 8).reduce((previous, current, index) => previous | current << index * 8)
-        );
+        nextConfirmTime = new Date().getTime() + speed * 0.8;
+        dataLength = heardUint8Array.slice(4, 8).reduce((previous, current, index) => previous | current << index * 8);
+        console.info(`<Starting sound detected.>\nsize: ${dataLength} Bytes\nEstimated time: ${Math.ceil(dataLength / BytesPerRound) * speed} msec`);
     }
 
     heardBytesString = [
