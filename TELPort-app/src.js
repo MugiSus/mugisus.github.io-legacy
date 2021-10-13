@@ -180,7 +180,7 @@ function listen_listenStringLoop() {
         document.getElementById("listen-textarea").value = "";
         nextConfirmTime = new Date().getTime() + speed * 0.8;
         dataLength = heardUint8Array.slice(4, 8).reduce((previous, current, index) => previous | current << index * 8);
-        console.info(`<Starting sound detected.>\nsize: ${dataLength} Bytes\nEstimated time: ${Math.ceil(dataLength / BytesPerRound) * speed} msec`);
+        console.info(`<Starting sound detected.>\nSize: ${dataLength} Bytes\nEstimated time: ${Math.ceil(dataLength / BytesPerRound) * speed} msec`);
     }
     
     if (heardBitCount) {
@@ -217,7 +217,7 @@ function listen_listenFileLoop() {
     if (heardUint8Array.slice(0, 4).every(value => value == 0xAA)) {
         nextConfirmTime = new Date().getTime() + speed * 0.8;
         dataLength = heardUint8Array.slice(4, 8).reduce((previous, current, index) => previous | current << index * 8);
-        console.info(`<Starting sound detected.>\nsize: ${dataLength} Bytes\nEstimated time: ${Math.ceil(dataLength / BytesPerRound) * speed} msec`);
+        console.info(`<Starting sound detected.>\nSize: ${dataLength} Bytes\nEstimated time: ${Math.ceil(dataLength / BytesPerRound) * speed} msec`);
     }
 
     heardBytesString = [
