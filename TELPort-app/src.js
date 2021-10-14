@@ -237,7 +237,6 @@ function listen_listenFileLoop() {
         bytesCount += BytesPerRound;
 
         if (bytesCount > dataLength) {
-            
             let fileContent = fullByteData.subarray(fullByteData.indexOf(0) + 1);
             let fileName = new TextDecoder().decode(fullByteData.subarray(0, fullByteData.indexOf(0)));
             
@@ -249,6 +248,8 @@ function listen_listenFileLoop() {
             targetDownloaderElement.href = (window.URL || window.webkitURL).createObjectURL(blob);
             targetDownloaderElement.download = fileName;
             targetDownloaderElement.classList.add("exist");
+
+            targetDownloaderElement.parentElement.getElementsByClassName("listen-file-text")[0].innerText = fileName;
         }
     }
 

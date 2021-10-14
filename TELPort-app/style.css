@@ -367,6 +367,7 @@ textarea:focus {
 .listen-file-downloader {
     display: flex;
     cursor: not-allowed;
+    text-decoration: none;
     width: 75vw;
     height: 5vh;
     margin: 1.5vh;
@@ -402,7 +403,7 @@ textarea:focus {
     margin-right: 1.5vh;
     margin-left: 1.5vh;
     font-size: 2vh;
-    color: var(--color-c55);
+    color: var(--color-c45);
     font-style: italic;
     font-weight: 400;
     text-overflow: ellipsis;
