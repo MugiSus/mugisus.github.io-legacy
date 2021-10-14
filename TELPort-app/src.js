@@ -1,17 +1,17 @@
-const TuningString = "Tuning completed. It is time to telport.";
-const TuningBits = TuningString.split("").map(char => {
-    let bits = char.charCodeAt(0);
-    bits = (bits & 0x55) + (bits >> 1 & 0x55);
-    bits = (bits & 0x33) + (bits >> 2 & 0x33);
-    return bits = (bits & 0x0f) + (bits >> 4 & 0x0f);
-}).reduce((previous, current) => previous + current);
-
 const FFTsize = 8192;
 const FirstFreuency = (44100 / FFTsize) * 200;
 const BytesPerRound = 40;
 const Frequencies = new Array(8 * BytesPerRound).fill(0).map((_, i) => {
     return FirstFreuency + (44100 / FFTsize * 4) * i;
 });
+
+const TuningString = "Tuning completed. It is time to telport.".substring(0, BytesPerRound);
+const TuningBits = TuningString.split("").map(char => {
+    let bits = char.charCodeAt(0);
+    bits = (bits & 0x55) + (bits >> 1 & 0x55);
+    bits = (bits & 0x33) + (bits >> 2 & 0x33);
+    return bits = (bits & 0x0f) + (bits >> 4 & 0x0f);
+}).reduce((previous, current) => previous + current);
 
 const GainHighValue = 0.0075; // call
 
@@ -85,13 +85,13 @@ function call_callFullRounds(uint8array, speed) {
 }
 
 function call_callFile(file, speed) {
-    initialize();
 
     if (!file) {
         call_callString("", speed);
         return;
     }
 
+    initialize();
     let fileReader = new FileReader();
     
     fileReader.addEventListener("load", (event) => {
@@ -154,7 +154,7 @@ async function listen_setup() {
 
     bytesCount = 0;
     
-    nextConfirmTime = new Date().getTime() + speed;
+    nextConfirmTime = Infinity;
 }
 
 async function listen_startListenStringLoop() {
@@ -212,6 +212,12 @@ function listen_listenStringLoop() {
 
         nextConfirmTime += speed;
         bytesCount += BytesPerRound;
+
+        if (bytesCount > dataLength) {
+            nextConfirmTime = Infinity;
+
+            // copying program goes here
+        }
     }
     
     requestAnimationFrameID = requestAnimationFrame(listen_listenStringLoop);
@@ -250,6 +256,8 @@ function listen_listenFileLoop() {
             targetDownloaderElement.classList.add("exist");
 
             targetDownloaderElement.parentElement.getElementsByClassName("listen-file-text")[0].innerText = fileName;
+
+            nextConfirmTime = Infinity;
         }
     }
 
