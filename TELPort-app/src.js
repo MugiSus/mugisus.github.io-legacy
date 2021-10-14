@@ -25,7 +25,7 @@ let intervalID; // call
 
 let threshold, stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, eachBitAmplitudes, nextConfirmTime, dataLength, bytesCount; // listen, both
 let multibytePrefix, multibytePrefixLength, heardStringRound // listen, string
-let fullUint8Data // listen, file
+let fullByteData // listen, file
 threshold = new Uint8Array(document.getElementById("listen-threshold-range-container").children.length);
 
 
@@ -96,6 +96,7 @@ function call_callFile(file, speed) {
     
     fileReader.addEventListener("load", (event) => {
         const callingUint8Array = new Uint8Array(event.target.result);
+        console.log(callingUint8Array);
         
         call_callFullRounds(callingUint8Array, speed);
     });
@@ -151,6 +152,8 @@ async function listen_setup() {
     eachBitAmplitudes = new Uint8Array(BytesPerRound * 8);
     frequencyData = new Uint8Array(analyser.frequencyBinCount);
 
+    bytesCount = 0;
+    
     nextConfirmTime = new Date().getTime() + speed;
 }
 
@@ -168,7 +171,7 @@ async function listen_startListenFileLoop() {
     initialize();
     await listen_setup();
 
-    fullUint8Data = new Uint8Array();
+    fullByteData = new Uint8Array();
 
     listen_listenFileLoop();
 }
@@ -222,17 +225,27 @@ function listen_listenFileLoop() {
         dataLength = heardUint8Array.slice(4, 8).reduce((previous, current, index) => previous | current << index * 8);
         console.info(`<Starting sound detected.>\nSize: ${dataLength} Bytes\nEstimated time: ${Math.ceil(dataLength / BytesPerRound) * speed} msec`);
 
-        fullUint8Data = new Uint8Array(dataLength);
+        fullByteData = new Uint8Array(dataLength);
         bytesCount = 0;
     }
 
     if (nextConfirmTime <= new Date().getTime()) {
-        for (let index = 0; index < BytesPerRound; index++) {
-            fullUint8Data[bytesCount + index] = heardUint8Array[index];
-        }
+        for (let index = 0; index < BytesPerRound; index++) 
+            fullByteData[bytesCount + index] = heardUint8Array[index];
 
         nextConfirmTime += speed;
         bytesCount += BytesPerRound;
+
+        if (bytesCount > dataLength) {
+            console.log(fullByteData);
+
+            let blob = new Blob([fullByteData], {type: "text/plain"});
+            let targetDownloaderElement = document.getElementsByClassName("listen-file-downloader")[0];
+
+            targetDownloaderElement.href = (window.URL || window.webkitURL).createObjectURL(blob);
+            targetDownloaderElement.download = "download.txt";
+            targetDownloaderElement.classList.add("exist");
+        }
     }
 
     heardBytesString = [
