@@ -6,12 +6,12 @@ const TuningBits = TuningString.split("").map(char => {
     return bits = (bits & 0x0f) + (bits >> 4 & 0x0f);
 }).reduce((previous, current) => previous + current);
 
-const FirstFreuency = (44100 / 8192) * 200;
+const FFTsize = 8192;
+const FirstFreuency = (44100 / FFTsize) * 200;
 const BytesPerRound = 40;
 const Frequencies = new Array(8 * BytesPerRound).fill(0).map((_, i) => {
-    return FirstFreuency + (44100 / 8192 * 4) * i;
+    return FirstFreuency + (44100 / FFTsize * 4) * i;
 });
-
 
 const GainHighValue = 0.0075; // call
 
@@ -95,7 +95,7 @@ function call_callFile(file, speed) {
     let fileReader = new FileReader();
     
     fileReader.addEventListener("load", (event) => {
-        const callingUint8Array = new Uint8Array(event.target.result);
+        const callingUint8Array = Uint8Array.from([...new TextEncoder().encode(file.name), 0, ...new Uint8Array(event.target.result)]);
         console.log(callingUint8Array);
         
         call_callFullRounds(callingUint8Array, speed);
@@ -144,7 +144,7 @@ async function listen_setup() {
     analyser = context.createAnalyser();
     input.connect(analyser);
     
-    analyser.fftSize = 8192;
+    analyser.fftSize = FFTsize;
     analyser.maxDecibels = 20;
     analyser.minDecibels = -140;
     
@@ -237,13 +237,17 @@ function listen_listenFileLoop() {
         bytesCount += BytesPerRound;
 
         if (bytesCount > dataLength) {
-            console.log(fullByteData);
+            
+            let fileContent = fullByteData.subarray(fullByteData.indexOf(0) + 1);
+            let fileName = new TextDecoder().decode(fullByteData.subarray(0, fullByteData.indexOf(0)));
+            
+            console.log(fileContent, fileName);
 
-            let blob = new Blob([fullByteData], {type: "text/plain"});
+            let blob = new Blob([fileContent], {type: "text/plain"});
             let targetDownloaderElement = document.getElementsByClassName("listen-file-downloader")[0];
 
             targetDownloaderElement.href = (window.URL || window.webkitURL).createObjectURL(blob);
-            targetDownloaderElement.download = "download.txt";
+            targetDownloaderElement.download = fileName;
             targetDownloaderElement.classList.add("exist");
         }
     }
