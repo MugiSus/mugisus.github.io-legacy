@@ -1,4 +1,8 @@
-const TuningString = "Tuning completed. It is time to telport.";
+const FFTsize = 4096;
+const FirstFreuency = (44100 / FFTsize) * 80;
+const BytesPerRound = 32;
+
+const TuningString = "Tuning completed. It is time to telport.".slice(0, BytesPerRound);
 const TuningBits = TuningString.split("").map(char => {
     let bits = char.charCodeAt(0);
     bits = (bits & 0x55) + (bits >> 1 & 0x55);
@@ -6,12 +10,8 @@ const TuningBits = TuningString.split("").map(char => {
     return bits = (bits & 0x0f) + (bits >> 4 & 0x0f);
 }).reduce((previous, current) => previous + current);
 
-const FFTsize = 4096;
-const FirstFreuency = (44100 / FFTsize) * 80;
-const BytesPerRound = 32;
-
 const Frequencies = new Array(8 * BytesPerRound).fill(0).map((_, i) => {
-    return FirstFreuency + (44100 / FFTsize * 4) * i;
+    return FirstFreuency + (44100 / FFTsize * 3) * i;
 });
 
 const GainHighValue = 0.0075; // call
