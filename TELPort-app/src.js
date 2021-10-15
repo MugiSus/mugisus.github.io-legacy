@@ -6,9 +6,9 @@ const TuningBits = TuningString.split("").map(char => {
     return bits = (bits & 0x0f) + (bits >> 4 & 0x0f);
 }).reduce((previous, current) => previous + current);
 
-const FFTsize = 8192;
-const FirstFreuency = (44100 / FFTsize) * 200;
-const BytesPerRound = 40;
+const FFTsize = 4096;
+const FirstFreuency = (44100 / FFTsize) * 80;
+const BytesPerRound = 32;
 const Frequencies = new Array(8 * BytesPerRound).fill(0).map((_, i) => {
     return FirstFreuency + (44100 / FFTsize * 4) * i;
 });
@@ -18,14 +18,14 @@ const GainHighValue = 0.0075; // call
 const AudioContext = window.AudioContext || window.webkitAudioContext; // both (listen, call)
 let context; // both
 
-let speed = 200; // both // milliseconds 
+let speed = 150; // both // milliseconds 
 
 let requestAnimationFrameID; // liten
 let intervalID; // call
 
 let threshold, stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, eachBitAmplitudes, nextConfirmTime, dataLength, bytesCount; // listen, both
-let multibytePrefix, multibytePrefixLength, heardStringRound // listen, string
-let fullByteData // listen, file
+let multibytePrefix, multibytePrefixLength, heardStringRound; // listen, string
+let fullByteData; // listen, file
 threshold = new Uint8Array(document.getElementById("listen-threshold-range-container").children.length);
 
 
