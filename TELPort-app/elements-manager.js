@@ -41,7 +41,8 @@ for (let i = 0; i < 19; i++)
 }));
 
 document.getElementById("call-button-tuning").addEventListener("click", () => {
-    call_callString(TuningString, 3600000);
+    initialize();
+    call_callOneRound(new TextEncoder().encode(TuningString), 3600000);
 });
 
 document.getElementById("call-button-tuning-cancel").addEventListener("click", () => {

@@ -9,6 +9,7 @@ const TuningBits = TuningString.split("").map(char => {
 const FFTsize = 4096;
 const FirstFreuency = (44100 / FFTsize) * 80;
 const BytesPerRound = 32;
+
 const Frequencies = new Array(8 * BytesPerRound).fill(0).map((_, i) => {
     return FirstFreuency + (44100 / FFTsize * 4) * i;
 });
@@ -85,13 +86,13 @@ function call_callFullRounds(uint8array, speed) {
 }
 
 function call_callFile(file, speed) {
-    initialize();
 
     if (!file) {
         call_callString("", speed);
         return;
     }
 
+    initialize();
     let fileReader = new FileReader();
     
     fileReader.addEventListener("load", (event) => {
@@ -154,7 +155,7 @@ async function listen_setup() {
 
     bytesCount = 0;
     
-    nextConfirmTime = new Date().getTime() + speed;
+    nextConfirmTime = Infinity;
 }
 
 async function listen_startListenStringLoop() {
@@ -212,6 +213,12 @@ function listen_listenStringLoop() {
 
         nextConfirmTime += speed;
         bytesCount += BytesPerRound;
+
+        if (bytesCount > dataLength) {
+            nextConfirmTime = Infinity;
+
+            // copying program goes here
+        }
     }
     
     requestAnimationFrameID = requestAnimationFrame(listen_listenStringLoop);
@@ -250,6 +257,8 @@ function listen_listenFileLoop() {
             targetDownloaderElement.classList.add("exist");
 
             targetDownloaderElement.parentElement.getElementsByClassName("listen-file-text")[0].innerText = fileName;
+
+            nextConfirmTime = Infinity;
         }
     }
 
