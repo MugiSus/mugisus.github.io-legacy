@@ -134,10 +134,10 @@ let windowOrderArray = [...document.getElementById("container").children].map(el
 
 [...document.getElementsByClassName("interwindow-arrow")].forEach(element => {
     element.addEventListener("click", (event) => {
-        [...document.getElementsByClassName("cancelable-button-container")].forEach(element => element.classList.remove("clicked"));
+        let scrollIntoViewTarget = windowOrderArray[windowOrderArray.indexOf(event.target.parentElement.id) + (event.target.classList.contains("interwindow-arrow-right") ? 1 : -1)];
         if (scrollIntoViewTarget == "window-startup") {
+            [...document.getElementsByClassName("cancelable-button-container")].forEach(element => element.classList.remove("clicked"));
             initialize();
-            let scrollIntoViewTarget = windowOrderArray[windowOrderArray.indexOf(event.target.parentElement.id) + (event.target.classList.contains("interwindow-arrow-right") ? 1 : -1)];
         }
         document.getElementById(scrollIntoViewTarget).scrollIntoView({behavior: "smooth"});
     });
