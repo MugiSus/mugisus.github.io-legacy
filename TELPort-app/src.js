@@ -19,7 +19,7 @@ const AudioContext = window.AudioContext || window.webkitAudioContext; // both (
 let context; // both
 
 const StartingSoundSpeed = 500; // both // milliseconds
-let speed = 120; // both // milliseconds 
+let speed = 150; // both // milliseconds 
 
 let requestAnimationFrameID; // listen
 let intervalID; // call
@@ -261,8 +261,8 @@ function listen_listenFileLoop() {
         if (bytesCount > dataLength) {
             let file = {
                 index: fullListenedByteData[0],
-                name: new TextDecoder().decode(fullListenedByteData.subarray(1, fullListenedByteData.indexOf(0))),
-                content: fullListenedByteData.subarray(fullListenedByteData.indexOf(0) + 1),
+                name: new TextDecoder().decode(fullListenedByteData.subarray(1, fullListenedByteData.indexOf(0, 1))),
+                content: fullListenedByteData.subarray(fullListenedByteData.indexOf(0, 1) + 1),
             }
             
             console.log(file.name, file.index, file.content);
