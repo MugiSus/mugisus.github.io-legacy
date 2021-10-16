@@ -1,5 +1,9 @@
-// Also, we're using FileReader API now only because it's easy to use, 
-// soon it will be replaced with Blob API which is Promise based.
+let appendClonedElement =(parentElement, cloneTargetElement, times)=>  {
+    for (let i = 0; i < times; i++) 
+        parentElement.appendChild(cloneTargetElement.cloneNode(true));
+}
+
+// both
 
 document.getElementById("text-version").addEventListener("click", () => {
     fetch("dummy").then(() => {
@@ -11,9 +15,6 @@ document.getElementById("text-version").addEventListener("click", () => {
         console.error(err);
     });
 });
-
-
-// both
 
 [...document.getElementsByClassName("cancelable-button-container")].forEach(element => element.addEventListener("click", (event) => {
     if (element.classList.toggle("clicked"))
@@ -32,8 +33,11 @@ document.getElementById("text-version").addEventListener("click", () => {
 
 // call
 
-for (let i = 0; i < 19; i++) 
-    document.getElementById("call-file-label-container").appendChild(document.getElementsByClassName("call-file-label")[0].cloneNode(true));
+appendClonedElement(
+    document.getElementById("call-file-label-container"),
+    document.getElementsByClassName("call-file-label")[0],
+    20,
+);
 
 [...document.getElementsByClassName("call-file-input")].forEach(element => element.addEventListener("change", (event) => {
     event.target.parentElement.classList.add("selected");
@@ -52,8 +56,8 @@ document.getElementById("call-button-tuning-cancel").addEventListener("click", (
 document.getElementById("call-button-send").addEventListener("click", () => {
     if (document.getElementById("call-mode-selector-container").classList.contains("mode-text"))
         call_callString(document.getElementById("call-textarea").value, speed);
-    else
-        call_callFile(document.getElementsByClassName("call-file-input")[0].files[0], speed);
+    else 
+        call_callFile(document.getElementsByClassName("call-file-input")[0].files[0], 0, speed);
 });
 
 document.getElementById("call-button-send-cancel").addEventListener("click", () => {
@@ -63,8 +67,11 @@ document.getElementById("call-button-send-cancel").addEventListener("click", () 
 
 // listen
 
-for (let i = 0; i < 19; i++) 
-    document.getElementById("listen-file-downloader-container").appendChild(document.getElementsByClassName("listen-file-downloader")[0].cloneNode(true));
+appendClonedElement(
+    document.getElementById("listen-file-downloader-container"),
+    document.getElementsByClassName("listen-file-downloader")[0],
+    20,
+);
 
 [...document.getElementById("listen-threshold-range-container").children].forEach((element, index) => element.addEventListener("change", (event) => {
     event.stopPropagation();
@@ -86,6 +93,29 @@ document.getElementById("listen-button-receive-cancel").addEventListener("click"
     initialize();
 });
 
+
+// call visualiser
+
+appendClonedElement(
+    document.getElementById("call-visualiser-container"),
+    document.getElementsByClassName("call-visualiser-byte-container")[0],
+    BytesPerRound - 1
+);
+
+// listen visualiser
+
+appendClonedElement(
+    document.getElementById("listen-visualiser-container"),
+    document.getElementsByClassName("listen-visualiser-byte-container")[0],
+    BytesPerRound - 1
+);
+
+// visualiser
+
+Frequencies.forEach((frequency, index) => {
+    callVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].innerText = Math.trunc(frequency);
+    listenVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].innerText = Math.trunc(frequency);
+})
 
 // scroll manager
 

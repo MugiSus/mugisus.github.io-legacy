@@ -1,11 +1,11 @@
 @font-face {
-    font-family: 'Inter';
+    font-family: Inter;
     font-weight: 400, 300;
     src: url("Inter-Regular.ttf"), url("Inter-Light.ttf");
 }
 
 @font-face {
-    font-family: 'Inconsolata';
+    font-family: Inconsolata;
     src: url("Inconsolata_SemiExpanded-Regular.ttf");
 }
 
@@ -16,6 +16,7 @@
     --color-c70: #ABBAB6;
     --color-c55: #829993;
     --color-c45: #677D78;
+    --color-c35: #4F635D;
     --color-c25: #384944;
 }
 
@@ -469,4 +470,72 @@ textarea:focus {
     transform: scale(-1, 1);
     -webkit-transform: scale(-1, 1);
     -moz-transform: scale(-1, 1);
+}
+
+
+/* visualiser */
+
+.visualiser-container {
+    overflow-y: scroll;
+    height: 85vh;
+}
+
+.visualiser-byte-container {
+    display: flex;
+}
+
+.visualiser-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 4.444vh;
+    width: 4.444vh;
+    border-radius: 0.5vh;
+    margin: 0.5vh;
+    font-family: Inconsolata;
+    font-size: 1.5vh;
+    transition-property: background-color, color;
+    transition-duration: 0.1s;
+}
+
+.visualiser-box.ringing {
+    transition-duration: 0.05s;
+}
+
+/* call-visualiser */
+
+#window-call-visualiser {
+    position: relative;
+    background-color: var(--color-c98);
+    justify-content: center;
+    align-items: center;
+}
+
+.call-visualiser.visualiser-box {
+    color: var(--color-c70);
+    background-color: var(--color-c95);
+}
+
+.call-visualiser.visualiser-box.ringing {
+    color: var(--color-c95);
+    background-color: var(--color-c70);
+}
+
+/* listen-visualiser */
+
+#window-listen-visualiser {
+    position: relative;
+    background-color: var(--color-c35);
+    justify-content: center;
+    align-items: center;
+}
+
+.listen-visualiser.visualiser-box {
+    color: var(--color-c70);
+    background-color: var(--color-c45);
+}
+
+.listen-visualiser.visualiser-box.ringing {
+    color: var(--color-c25);
+    background-color: var(--color-c85);
 }

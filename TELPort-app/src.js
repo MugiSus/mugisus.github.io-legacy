@@ -1,6 +1,9 @@
 const FFTsize = 4096;
 const FirstFreuency = (44100 / FFTsize) * 80;
-const BytesPerRound = 32;
+const BytesPerRound = 40;
+const Frequencies = new Array(8 * BytesPerRound).fill(0).map((_, i) => {
+    return FirstFreuency + (44100 / FFTsize * 3) * i;
+});
 
 const TuningString = "Tuning completed. It is time to telport.".slice(0, BytesPerRound);
 const TuningBits = TuningString.split("").map(char => {
@@ -10,25 +13,26 @@ const TuningBits = TuningString.split("").map(char => {
     return bits = (bits & 0x0f) + (bits >> 4 & 0x0f);
 }).reduce((previous, current) => previous + current);
 
-const Frequencies = new Array(8 * BytesPerRound).fill(0).map((_, i) => {
-    return FirstFreuency + (44100 / FFTsize * 3) * i;
-});
-
 const GainHighValue = 0.0075; // call
 
 const AudioContext = window.AudioContext || window.webkitAudioContext; // both (listen, call)
 let context; // both
 
-let speed = 150; // both // milliseconds 
+const StartingSoundSpeed = 500; // both // milliseconds
+let speed = 120; // both // milliseconds 
 
-let requestAnimationFrameID; // liten
+let requestAnimationFrameID; // listen
 let intervalID; // call
 
-let threshold, stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, eachBitAmplitudes, nextConfirmTime, dataLength, bytesCount; // listen, both
+let stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, eachBitAmplitudes, nextConfirmTime, dataLength, bytesCount; // listen, both
 let multibytePrefix, multibytePrefixLength, heardStringRound; // listen, string
-let fullByteData; // listen, file
-threshold = new Uint8Array(document.getElementById("listen-threshold-range-container").children.length);
+let fullListenedByteData; // listen, file
 
+let threshold = new Uint8Array(document.getElementById("listen-threshold-range-container").children.length); // listen
+
+let visualise = true;
+let callVisualiserParent = document.getElementById("call-visualiser-container") // visualise
+let listenVisualiserParent = document.getElementById("listen-visualiser-container") // visualise
 
 // both
 
@@ -61,14 +65,20 @@ function call_callOneRound(uint8array, speed) {
                     oscillatorNode.connect(gainNode);
                     oscillatorNode.start(context.currentTime);
                     oscillatorNode.stop(context.currentTime + speed * 0.0009);
-                }
+
+                    if (visualise)
+                        callVisualiserParent.children[index].children[i].classList.add("ringing");
+                } else if (visualise) 
+                    callVisualiserParent.children[index].children[i].classList.remove("ringing");
             }
         }
     });
 }
 
 function call_callFullRounds(uint8array, speed) {
-    call_callOneRound(Uint8Array.from([...new Uint8Array(4).fill(0xAA), ...new Uint8Array(4).map((_, index) => uint8array.length >> index * 8 & 0xFF)]), 500);
+    let fullCalledByteData = Uint8Array.from([...new Uint8Array(4).fill(0xAA), ...new Uint8Array(4).map((_, index) => uint8array.length >> index * 8 & 0xFF)]);
+
+    call_callOneRound(fullCalledByteData, StartingSoundSpeed);
 
     setTimeout(() => {
         call_callOneRound(uint8array.subarray(0, BytesPerRound), speed);
@@ -82,10 +92,12 @@ function call_callFullRounds(uint8array, speed) {
                 clearInterval(intervalID);
             }
         }, speed);
-    }, 500)
+    }, StartingSoundSpeed);
+
+    return Math.ceil(fullCalledByteData.length / BytesPerRound) * speed + StartingSoundSpeed; 
 }
 
-function call_callFile(file, speed) {
+function call_callFile(file, index, speed) {
 
     if (!file) {
         call_callString("", speed);
@@ -96,7 +108,7 @@ function call_callFile(file, speed) {
     let fileReader = new FileReader();
     
     fileReader.addEventListener("load", (event) => {
-        const callingUint8Array = Uint8Array.from([...new TextEncoder().encode(file.name), 0, ...new Uint8Array(event.target.result)]);
+        const callingUint8Array = Uint8Array.from([index, ...new TextEncoder().encode(file.name), 0, ...new Uint8Array(event.target.result)]);
         console.log(callingUint8Array);
         
         call_callFullRounds(callingUint8Array, speed);
@@ -126,7 +138,10 @@ function listen_getHeardUint8Array() {
         if (eachBitAmplitudes[index] >= threshold[0]) {
             heardUint8Array[Math.trunc(index / 8)] |= 1 << index % 8;
             heardBitCount++;
-        }
+            if (visualise)
+                listenVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].classList.add("ringing");
+        } else if (visualise)
+            listenVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].classList.remove("ringing");
     });
 
     return heardUint8Array;
@@ -146,7 +161,7 @@ async function listen_setup() {
     input.connect(analyser);
     
     analyser.fftSize = FFTsize;
-    analyser.maxDecibels = 20;
+    analyser.maxDecibels = 40;
     analyser.minDecibels = -140;
     
     heardUint8Array = new Uint8Array(BytesPerRound);
@@ -172,7 +187,7 @@ async function listen_startListenFileLoop() {
     initialize();
     await listen_setup();
 
-    fullByteData = new Uint8Array();
+    fullListenedByteData = new Uint8Array();
 
     listen_listenFileLoop();
 }
@@ -232,31 +247,34 @@ function listen_listenFileLoop() {
         dataLength = heardUint8Array.slice(4, 8).reduce((previous, current, index) => previous | current << index * 8);
         console.info(`<Starting sound detected.>\nSize: ${dataLength} Bytes\nEstimated time: ${Math.ceil(dataLength / BytesPerRound) * speed} msec`);
 
-        fullByteData = new Uint8Array(dataLength);
+        fullListenedByteData = new Uint8Array(dataLength);
         bytesCount = 0;
     }
 
     if (nextConfirmTime <= new Date().getTime()) {
         for (let index = 0; index < BytesPerRound; index++) 
-            fullByteData[bytesCount + index] = heardUint8Array[index];
+            fullListenedByteData[bytesCount + index] = heardUint8Array[index];
 
         nextConfirmTime += speed;
         bytesCount += BytesPerRound;
 
         if (bytesCount > dataLength) {
-            let fileContent = fullByteData.subarray(fullByteData.indexOf(0) + 1);
-            let fileName = new TextDecoder().decode(fullByteData.subarray(0, fullByteData.indexOf(0)));
+            let file = {
+                index: fullListenedByteData[0],
+                name: new TextDecoder().decode(fullListenedByteData.subarray(1, fullListenedByteData.indexOf(0))),
+                content: fullListenedByteData.subarray(fullListenedByteData.indexOf(0) + 1),
+            }
             
-            console.log(fileContent, fileName);
+            console.log(file.name, file.index, file.content);
 
-            let blob = new Blob([fileContent], {type: "text/plain"});
-            let targetDownloaderElement = document.getElementsByClassName("listen-file-downloader")[0];
+            let blob = new Blob([file.content], {type: "text/plain"});
+            let targetDownloaderElement = document.getElementsByClassName("listen-file-downloader")[file.index];
 
             targetDownloaderElement.href = (window.URL || window.webkitURL).createObjectURL(blob);
-            targetDownloaderElement.download = fileName;
+            targetDownloaderElement.download = file.name;
             targetDownloaderElement.classList.add("exist");
 
-            targetDownloaderElement.parentElement.getElementsByClassName("listen-file-text")[0].innerText = fileName;
+            targetDownloaderElement.parentElement.getElementsByClassName("listen-file-text")[0].innerText = file.name;
 
             nextConfirmTime = Infinity;
         }
