@@ -129,17 +129,18 @@ document.getElementById("startup-listen-container").addEventListener("click", ()
     document.getElementById("window-listen").scrollIntoView({behavior: "smooth"});
 });
 
-document.getElementById("call-exit-arrow").addEventListener("click", () => {
-    [...document.getElementsByClassName("cancelable-button-container")].forEach(element => element.classList.remove("clicked"));
-    initialize();
-    document.getElementById("window-startup").scrollIntoView({behavior: "smooth"});
-});
 
-document.getElementById("listen-exit-arrow").addEventListener("click", () => {
-    [...document.getElementsByClassName("cancelable-button-container")].forEach(element => element.classList.remove("clicked"));
-    initialize();
-    document.getElementById("window-startup").scrollIntoView({behavior: "smooth"});
-});
+let windowOrderArray = [...document.getElementById("container").children].map(element => element.id);
+
+[...document.getElementsByClassName("interwindow-arrow")].forEach(element => {
+    element.addEventListener("click", (event) => {
+        [...document.getElementsByClassName("cancelable-button-container")].forEach(element => element.classList.remove("clicked"));
+        let scrollIntoViewTarget = windowOrderArray[windowOrderArray.indexOf(event.target.parentElement.id) + (event.target.classList.contains("interwindow-arrow-right") ? 1 : -1)];
+        if (scrollIntoViewTarget == "window-startup")
+            initialize();
+        document.getElementById(scrollIntoViewTarget).scrollIntoView({behavior: "smooth"});
+    });
+})
 
 
 // localStorage
