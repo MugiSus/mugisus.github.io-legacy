@@ -223,7 +223,7 @@ function listen_listenStringLoop() {
         
         if (heardBitCount) {
             document.getElementById("listen-textarea").value += heardStringRound;
-            document.getElementById("listen-textarea").scrollTop = document.getElementById("listen-textarea").scrollHeight;
+            //document.getElementById("listen-textarea").scrollTop = document.getElementById("listen-textarea").scrollHeight;
         }
 
         nextConfirmTime += speed;

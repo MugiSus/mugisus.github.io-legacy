@@ -517,7 +517,7 @@ textarea:focus {
 
 .call-visualiser.visualiser-box.ringing {
     color: var(--color-c95);
-    background-color: var(--color-c70);
+    background-color: var(--color-c55);
 }
 
 /* listen-visualiser */

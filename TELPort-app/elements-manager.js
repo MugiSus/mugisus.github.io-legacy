@@ -129,6 +129,13 @@ document.getElementById("startup-listen-container").addEventListener("click", ()
     document.getElementById("window-listen").scrollIntoView({behavior: "smooth"});
 });
 
+document.getElementById("container").addEventListener("scroll", () => {
+    let boundingClientRects = {
+        call: document.getElementById("window-call-visualiser").getBoundingClientRect(),
+        listen: document.getElementById("window-listen-visualiser").getBoundingClientRect()
+    }
+    visualise = boundingClientRects.call.left > -boundingClientRects.call.width * 0.95 || boundingClientRects.listen.left < boundingClientRects.listen.width * 0.95;
+})
 
 let windowOrderArray = [...document.getElementById("container").children].map(element => element.id);
 
@@ -142,6 +149,5 @@ let windowOrderArray = [...document.getElementById("container").children].map(el
         document.getElementById(scrollIntoViewTarget).scrollIntoView({behavior: "smooth"});
     });
 })
-
 
 // localStorage
