@@ -137,7 +137,7 @@ function listen_getHeardUint8Array() {
     
     Frequencies.forEach((frequency, index) => {
         amplitude = frequencyData[Math.trunc(frequency / (context.sampleRate / analyser.fftSize))];
-        let bits = amplitude >= threshold[0] + amplitude >= threshold[1] + amplitude >= threshold[2];
+        let bits = (amplitude >= threshold[0]) + (amplitude >= threshold[1]) + (amplitude >= threshold[2]);
 
         if (bits) {
             heardUint8Array[Math.trunc(index / 4)] |= bits << index % 4 * 2;
