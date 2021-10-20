@@ -475,8 +475,12 @@ textarea:focus {
 /* visualiser */
 
 .visualiser-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     overflow-y: scroll;
-    height: 85vh;
+    width: 90vw;
+    height: 80vh;
 }
 
 .visualiser-byte-container {
