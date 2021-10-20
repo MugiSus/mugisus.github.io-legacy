@@ -145,8 +145,8 @@ function listen_getHeardUint8Array() {
         }
 
         if (visualise) {
-            ListenVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].classList.toggle("ringing", amplitude >= threshold[0]);
-            ListenVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].style.opacity = VisualiserOpacities[bits];
+            ListenVisualiserParent.children[Math.trunc(index / 4)].children[index % 4].classList.toggle("ringing", bits);
+            ListenVisualiserParent.children[Math.trunc(index / 4)].children[index % 4].style.opacity = VisualiserOpacities[bits];
         }
 
         eachBitAmplitudes[index] = amplitude;
