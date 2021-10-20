@@ -17,10 +17,9 @@ document.getElementById("text-version").addEventListener("click", () => {
 });
 
 [...document.getElementsByClassName("cancelable-button-container")].forEach(element => element.addEventListener("click", (event) => {
-    if (element.classList.toggle("clicked"))
-        [...document.getElementsByClassName("cancelable-button-container")].forEach(element => {
-            if (element != event.currentTarget) element.classList.remove("clicked");
-        });
+    [...document.getElementsByClassName("cancelable-button-container")].forEach(element => 
+        element.classList.toggle("clicked", element == event.currentTarget && !element.classList.contains("clicked"))
+    );
 }));
 
 [...document.getElementsByClassName("mode-selector-container")].forEach(element => element.addEventListener("click", (event) => {
@@ -36,7 +35,7 @@ document.getElementById("text-version").addEventListener("click", () => {
 appendClonedElement(
     document.getElementById("call-file-label-container"),
     document.getElementsByClassName("call-file-label")[0],
-    20,
+    19,
 );
 
 [...document.getElementsByClassName("call-file-input")].forEach(element => element.addEventListener("change", (event) => {
@@ -113,8 +112,9 @@ appendClonedElement(
 // visualiser
 
 Frequencies.forEach((frequency, index) => {
-    callVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].innerText = Math.trunc(frequency);
-    listenVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].innerText = Math.trunc(frequency);
+    console.log(Math.trunc(index / 4), index % 4);
+    CallVisualiserParent.children[Math.trunc(index / 4)].children[index % 4].innerText = Math.trunc(frequency);
+    ListenVisualiserParent.children[Math.trunc(index / 4)].children[index % 4].innerText = Math.trunc(frequency);
 })
 
 // scroll manager
