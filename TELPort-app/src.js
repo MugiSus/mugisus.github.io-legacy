@@ -65,12 +65,12 @@ function call_callOneRound(uint8array, speed) {
                     oscillatorNode.connect(gainNode);
                     oscillatorNode.start(context.currentTime);
                     oscillatorNode.stop(context.currentTime + speed * 0.0009);
+                }
 
-                    if (visualise)
-                        callVisualiserParent.children[index].children[i].classList.add("ringing");
-                } else if (visualise) 
-                    callVisualiserParent.children[index].children[i].classList.remove("ringing");
+                if (visualise)
+                    callVisualiserParent.children[index].children[i].classList.toggle("ringing", (byte >> i) & 1);
             }
+
         }
     });
 }
@@ -135,13 +135,14 @@ function listen_getHeardUint8Array() {
     
     Frequencies.forEach((frequency, index) => {
         eachBitAmplitudes[index] = frequencyData[Math.trunc(frequency / (context.sampleRate / analyser.fftSize))];
+
         if (eachBitAmplitudes[index] >= threshold[0]) {
             heardUint8Array[Math.trunc(index / 8)] |= 1 << index % 8;
             heardBitCount++;
-            if (visualise)
-                listenVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].classList.add("ringing");
-        } else if (visualise)
-            listenVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].classList.remove("ringing");
+        }
+
+        if (visualise)
+            listenVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].classList.toggle("ringing", eachBitAmplitudes[index] >= threshold[0]);
     });
 
     return heardUint8Array;
