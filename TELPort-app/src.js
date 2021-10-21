@@ -1,7 +1,7 @@
 const FFTsize = 4096;
 const FirstFreuency = (44100 / FFTsize) * 80;
-const BytesPerRound = 64;
-const Frequencies = new Array(4 * BytesPerRound).fill(0).map((_, i) => {
+const BytesPerRound = 40;
+const Frequencies = new Array(8 * BytesPerRound).fill(0).map((_, i) => {
     return FirstFreuency + (44100 / FFTsize * 3) * i;
 });
 
@@ -13,7 +13,7 @@ const TuningBits = TuningString.split("").map(char => {
     return bits = (bits & 0x0f) + (bits >> 4 & 0x0f);
 }).reduce((previous, current) => previous + current);
 
-const GainValues = [0, 0.005, 0.0075, 0.01]; // call
+const GainHighValue = 0.0075; // call
 
 const AudioContext = window.AudioContext || window.webkitAudioContext; // both (listen, call)
 let context; // both
@@ -30,10 +30,9 @@ let fullListenedByteData; // listen, file
 
 let threshold = new Uint8Array(document.getElementById("listen-threshold-range-container").children.length); // listen
 
-let visualise = false;
-const CallVisualiserParent = document.getElementById("call-visualiser-container"); // visualise
-const ListenVisualiserParent = document.getElementById("listen-visualiser-container"); // visualise
-const VisualiserOpacities = [1, 0.6, 0.8, 1];
+let visualise = true;
+let callVisualiserParent = document.getElementById("call-visualiser-container") // visualise
+let listenVisualiserParent = document.getElementById("listen-visualiser-container") // visualise
 
 // both
 
@@ -55,23 +54,22 @@ function initialize() {
 function call_callOneRound(uint8array, speed) {
     uint8array.forEach((byte, index) => {
         if (byte) {
-            for (let i = 0; i < 8; i += 2) {
-                if ((byte >> i) & 3) {  
+            for (let i = 0; i < 8; i++) {
+                if ((byte >> i) & 1) {  
                     let gainNode = new GainNode(context);
                     gainNode.connect(context.destination);
-                    gainNode.gain.value = GainValues[(byte >> i) & 3];
+                    gainNode.gain.value = GainHighValue;
                     
                     let oscillatorNode = new OscillatorNode(context);
-                    oscillatorNode.frequency.value = Frequencies[(index * 8 + i) / 2];
+                    oscillatorNode.frequency.value = Frequencies[index * 8 + i];
                     oscillatorNode.connect(gainNode);
                     oscillatorNode.start(context.currentTime);
                     oscillatorNode.stop(context.currentTime + speed * 0.0009);
-                }
 
-                if (visualise) {
-                    CallVisualiserParent.children[index].children[i / 2].classList.toggle("ringing", (byte >> i) & 3);
-                    CallVisualiserParent.children[index].children[i / 2].style.opacity = VisualiserOpacities[(byte >> i) & 3];
-                }
+                    if (visualise)
+                        callVisualiserParent.children[index].children[i].classList.add("ringing");
+                } else if (visualise) 
+                    callVisualiserParent.children[index].children[i].classList.remove("ringing");
             }
         }
     });
@@ -136,20 +134,14 @@ function listen_getHeardUint8Array() {
     heardBitCount = 0;
     
     Frequencies.forEach((frequency, index) => {
-        amplitude = frequencyData[Math.trunc(frequency / (context.sampleRate / analyser.fftSize))];
-        let bits = (amplitude >= threshold[0]) + (amplitude >= threshold[1]) + (amplitude >= threshold[2]);
-
-        if (bits) {
-            heardUint8Array[Math.trunc(index / 4)] |= bits << index % 4 * 2;
-            heardBitCount += bits >> 1 & 1 + bits & 1;
-        }
-
-        if (visualise) {
-            ListenVisualiserParent.children[Math.trunc(index / 4)].children[index % 4].classList.toggle("ringing", bits);
-            ListenVisualiserParent.children[Math.trunc(index / 4)].children[index % 4].style.opacity = VisualiserOpacities[bits];
-        }
-
-        eachBitAmplitudes[index] = amplitude;
+        eachBitAmplitudes[index] = frequencyData[Math.trunc(frequency / (context.sampleRate / analyser.fftSize))];
+        if (eachBitAmplitudes[index] >= threshold[0]) {
+            heardUint8Array[Math.trunc(index / 8)] |= 1 << index % 8;
+            heardBitCount++;
+            if (visualise)
+                listenVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].classList.add("ringing");
+        } else if (visualise)
+            listenVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].classList.remove("ringing");
     });
 
     return heardUint8Array;
