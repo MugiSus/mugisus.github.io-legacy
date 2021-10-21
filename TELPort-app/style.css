@@ -455,6 +455,7 @@ textarea:focus {
     background: url("listen-slider-thumb.svg");
     background-size: contain;
     border-radius: 0.2vh;
+    box-shadow: none;
 }
 
 .listen-range::-moz-slider-thumb {
@@ -469,6 +470,7 @@ textarea:focus {
     background: url("listen-slider-thumb.svg");
     background-size: contain;
     border-radius: 0.2vh;
+    box-shadow: none;
 }
 
 
