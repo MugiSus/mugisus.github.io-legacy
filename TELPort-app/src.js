@@ -21,7 +21,7 @@ let context; // both
 const StartingSoundSpeed = 500; // both // milliseconds
 let speed = 150; // both // milliseconds 
 
-let requestAnimationFrameID; // listen
+let requestAnimationFrameID, lastCallbackTime; // listen
 let intervalID; // call
 
 let stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, eachBitAmplitudes, nextConfirmTime, dataLength, bytesCount; // listen, both
@@ -144,6 +144,10 @@ function listen_getHeardUint8Array() {
         if (visualise)
             listenVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].classList.toggle("ringing", eachBitAmplitudes[index] >= threshold[0]);
     });
+
+    let deltaTime = new Date().getTime() - lastCallbackTime;
+    document.getElementById("listen-text-callbackspeed").innerText = `${deltaTime}ms ${Math.trunc(1000 / deltaTime)}FPS`;
+    lastCallbackTime = new Date().getTime();
 
     return heardUint8Array;
 }
