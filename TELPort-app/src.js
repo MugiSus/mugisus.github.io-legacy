@@ -21,8 +21,8 @@ let context; // both
 const StartingSoundSpeed = 500; // both // milliseconds
 let speed = 150; // both // milliseconds 
 
-let requestAnimationFrameID, lastCallbackTime; // listen
-let intervalID; // call
+let listen_intervalID, lastCallbackTime; // listen
+let call_intervalID; // call
 
 let stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, eachBitAmplitudes, nextConfirmTime, dataLength, bytesCount; // listen, both
 let multibytePrefix, multibytePrefixLength, heardStringRound; // listen, string
@@ -37,8 +37,8 @@ let listenVisualiserParent = document.getElementById("listen-visualiser-containe
 // both
 
 function initialize() {
-    clearInterval(intervalID);
-    cancelAnimationFrame(requestAnimationFrameID);
+    clearInterval(call_intervalID);
+    clearInterval(listen_intervalID);
 
     if (context) context.close();
     context = new AudioContext();
@@ -84,12 +84,12 @@ function call_callFullRounds(uint8array, speed) {
         call_callOneRound(uint8array.subarray(0, BytesPerRound), speed);
         let index = 0;
         
-        intervalID = setInterval(function() {
+        call_intervalID = setInterval(function() {
             index++;
             call_callOneRound(uint8array.subarray(index * BytesPerRound, (index + 1) * BytesPerRound), speed);
             if (index * BytesPerRound > uint8array.length) {
                 document.getElementById("call-button-send").parentElement.classList.remove("clicked");
-                clearInterval(intervalID);
+                clearInterval(call_intervalID);
             }
         }, speed);
     }, StartingSoundSpeed);
@@ -185,7 +185,7 @@ async function listen_startListenStringLoop() {
     multibytePrefixLength = 0;
     multibytePrefix = new Uint8Array();
 
-    listen_listenStringLoop();
+    listen_intervalID = setInterval(listen_listenStringLoop, 1000 / 100);
 }
 
 async function listen_startListenFileLoop() {
@@ -194,7 +194,7 @@ async function listen_startListenFileLoop() {
 
     fullListenedByteData = new Uint8Array();
 
-    listen_listenFileLoop();
+    listen_intervalID = setInterval(listen_listenFileLoop, 1000 / 100);
 }
 
 function listen_listenStringLoop() {
@@ -240,8 +240,6 @@ function listen_listenStringLoop() {
             // copying program goes here
         }
     }
-    
-    requestAnimationFrameID = requestAnimationFrame(listen_listenStringLoop);
 }
 
 function listen_listenFileLoop() {
@@ -292,8 +290,6 @@ function listen_listenFileLoop() {
         Array.from(heardUint8Array.slice(BytesPerRound * 0.75, BytesPerRound)),
     ].map(arr => arr.map(byte => "0123456789ABCDEF"[Math.trunc(byte / 16)] + "0123456789ABCDEF"[byte % 16]).join(":"));
     document.getElementById("listen-file-heard-bytes").innerText = `${heardBytesString.join("\n")}`;
-
-    requestAnimationFrameID = requestAnimationFrame(listen_listenFileLoop);
 }
 
 function listen_tuning() {
