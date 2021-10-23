@@ -314,9 +314,15 @@ function listen_tuning() {
     console.log(allThresholdTestsResult.join("\t"));
     */
 
-    eachBitAmplitudes.forEach((amplitudes, index) => {
-        threshold[index] = amplitudes * 0.95
-    });
+    for (let index = 0; index < eachBitAmplitudes.length; index += 4) {
+        let thresholdLow = (eachBitAmplitudes[index] + eachBitAmplitudes[index + 1]) / 2;
+        let thresholdHigh = (eachBitAmplitudes[index + 2] + eachBitAmplitudes[index + 3]) / 2;
+        let thresholdResult = thresholdLow + (thresholdHigh - thresholdLow) * 0.9;
+        threshold[index] = thresholdResult;
+        threshold[index + 1] = thresholdResult;
+        threshold[index + 2] = thresholdResult;
+        threshold[index + 3] = thresholdResult;
+    }
 
     thresholdAve = threshold.reduce((previous, current) => previous + current) / threshold.length;
 
