@@ -311,5 +311,5 @@ function listen_tuning() {
     console.log(allThresholdTestsResult.join("\t"));
     */
 
-    threshold.map((_, index) => eachBitAmplitudes[index] * 0.95);
+    eachBitAmplitudes.forEach((amplitudes, index) => threshold[index] = amplitudes * 0.95);
 }
