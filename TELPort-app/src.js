@@ -1,6 +1,6 @@
 const FFTsize = 4096;
 const FirstFreuency = (44100 / FFTsize) * 80;
-const BytesPerRound = 24;
+const BytesPerRound = 20;
 const Frequencies = new Array(8 * BytesPerRound).fill(0).map((_, i) => {
     return FirstFreuency + (44100 / FFTsize * 5) * i;
 });
