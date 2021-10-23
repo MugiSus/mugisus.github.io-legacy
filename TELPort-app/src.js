@@ -21,7 +21,7 @@ const AudioContext = window.AudioContext || window.webkitAudioContext; // both (
 let context; // both
 
 const StartingSoundSpeed = 500; // both // milliseconds
-let speed = 200; // both // milliseconds 
+let speed = 180; // both // milliseconds 
 
 let requestAnimationFrameID, lastCallbackTime; // listen
 let intervalID; // call
@@ -36,6 +36,8 @@ let thresholdAve = 0;
 let visualise = true;
 const CallVisualiserParent = document.getElementById("call-visualiser-container") // visualise
 const ListenVisualiserParent = document.getElementById("listen-visualiser-container") // visualise
+
+document.getElementById("test-identifier").innerText = `${BytesPerRound * 8}-${speed}-${FFTsize}`;
 
 // both
 

@@ -72,6 +72,13 @@ body {
     z-index: 100;
 }
 
+#test-identifier {
+    padding: 0;
+    display: inline-block;
+    font-family: Inconsolata;
+    font-size: 0.7em;
+}
+
 
 /* startup */
 
