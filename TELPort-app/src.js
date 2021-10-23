@@ -319,7 +319,7 @@ function listen_tuning() {
         let thresholdLow = (eachBitAmplitudes[index * 4] + eachBitAmplitudes[index * 4 + 1]) / 2;
         let thresholdHigh = (eachBitAmplitudes[index * 4 + 2] + eachBitAmplitudes[index * 4 + 3]) / 2;
         console.log(eachBitAmplitudes.slice(index * 4, index * 4 + 4));
-        return thresholdLow + (thresholdHigh - thresholdLow) * 0.75;
+        return thresholdLow + (thresholdHigh - thresholdLow) * 0.6;
     })
 
     thresholdAve = threshold.reduce((previous, current) => previous + current) / threshold.length;
