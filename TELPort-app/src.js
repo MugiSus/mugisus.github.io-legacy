@@ -28,7 +28,7 @@ let stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, each
 let multibytePrefix, multibytePrefixLength, heardStringRound; // listen, string
 let fullListenedByteData; // listen, file
 
-let threshold = new Uint8Array(document.getElementById("listen-threshold-range-container").children.length); // listen
+let threshold = new Uint8Array(Frequencies.length); // listen
 
 let visualise = true;
 let callVisualiserParent = document.getElementById("call-visualiser-container") // visualise
@@ -136,7 +136,7 @@ function listen_getHeardUint8Array() {
     Frequencies.forEach((frequency, index) => {
         eachBitAmplitudes[index] = frequencyData[Math.trunc(frequency / (context.sampleRate / analyser.fftSize))];
 
-        if (eachBitAmplitudes[index] >= threshold[0]) {
+        if (eachBitAmplitudes[index] >= threshold[index]) {
             heardUint8Array[Math.trunc(index / 8)] |= 1 << index % 8;
             heardBitCount++;
         }
@@ -297,6 +297,7 @@ function listen_listenFileLoop() {
 }
 
 function listen_tuning() {
+    /*
     let allThresholdTestsResult = [...new Array(256).keys()].map(tempThreshold => eachBitAmplitudes.reduce((currentBitCount, amplitudes) => currentBitCount + (amplitudes >= tempThreshold), 0));
 
     let lowestThreshold = allThresholdTestsResult.indexOf(TuningBits);
@@ -306,6 +307,9 @@ function listen_tuning() {
 
     [...document.getElementsByClassName("threshold-range")].forEach((element, index) => element.value = threshold[index]);
 
-    console.log(allThresholdTestsResult.join("\t"));
     console.log(eachBitAmplitudes.join("\t"));
+    console.log(allThresholdTestsResult.join("\t"));
+    */
+
+    threshold.map((_, index) => eachBitAmplitudes[index] * 0.9);
 }

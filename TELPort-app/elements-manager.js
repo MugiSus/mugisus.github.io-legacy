@@ -46,7 +46,7 @@ appendClonedElement(
 
 document.getElementById("call-button-tuning").addEventListener("click", () => {
     initialize();
-    call_callOneRound(new TextEncoder().encode(TuningString), 3600000);
+    call_callOneRound(new Uint8Array(BytesPerRound).fill(255), 3600000);
 });
 
 document.getElementById("call-button-tuning-cancel").addEventListener("click", () => {
