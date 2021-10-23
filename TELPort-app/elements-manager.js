@@ -113,8 +113,8 @@ appendClonedElement(
 // visualiser
 
 Frequencies.forEach((frequency, index) => {
-    callVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].innerText = Math.trunc(frequency);
-    listenVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].innerText = Math.trunc(frequency);
+    CallVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].innerText = Math.trunc(frequency);
+    ListenVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].innerText = Math.trunc(frequency);
 })
 
 // scroll manager

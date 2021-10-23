@@ -31,8 +31,8 @@ let fullListenedByteData; // listen, file
 let threshold = new Uint8Array(Frequencies.length); // listen
 
 let visualise = true;
-let callVisualiserParent = document.getElementById("call-visualiser-container") // visualise
-let listenVisualiserParent = document.getElementById("listen-visualiser-container") // visualise
+const CallVisualiserParent = document.getElementById("call-visualiser-container") // visualise
+const ListenVisualiserParent = document.getElementById("listen-visualiser-container") // visualise
 
 // both
 
