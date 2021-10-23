@@ -5,6 +5,7 @@ const Frequencies = new Array(8 * BytesPerRound).fill(0).map((_, i) => {
     return FirstFreuency + (44100 / FFTsize * 5) * i;
 });
 
+/*
 const TuningString = "Tuning completed. It is time to telport.".slice(0, BytesPerRound);
 const TuningBits = TuningString.split("").map(char => {
     let bits = char.charCodeAt(0);
@@ -12,6 +13,7 @@ const TuningBits = TuningString.split("").map(char => {
     bits = (bits & 0x33) + (bits >> 2 & 0x33);
     return bits = (bits & 0x0f) + (bits >> 4 & 0x0f);
 }).reduce((previous, current) => previous + current);
+*/
 
 const GainHighValue = 0.0075; // call
 
@@ -29,6 +31,7 @@ let multibytePrefix, multibytePrefixLength, heardStringRound; // listen, string
 let fullListenedByteData; // listen, file
 
 let threshold = new Uint8Array(Frequencies.length); // listen
+let thresholdAve = 0;
 
 let visualise = true;
 const CallVisualiserParent = document.getElementById("call-visualiser-container") // visualise
@@ -311,5 +314,11 @@ function listen_tuning() {
     console.log(allThresholdTestsResult.join("\t"));
     */
 
-    eachBitAmplitudes.forEach((amplitudes, index) => threshold[index] = amplitudes * 0.95);
+    eachBitAmplitudes.forEach((amplitudes, index) => {
+        threshold[index] = amplitudes * 0.95
+    });
+
+    thresholdAve = threshold.reduce((previous, current) => previous + current) / threshold.length;
+
+    document.getElementsByClassName("threshold-range")[0].value = thresholdAve;
 }

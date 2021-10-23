@@ -46,7 +46,7 @@ appendClonedElement(
 
 document.getElementById("call-button-tuning").addEventListener("click", () => {
     initialize();
-    call_callOneRound(new Uint8Array(BytesPerRound).fill(255), 3600000);
+    call_callOneRound(new Uint8Array(BytesPerRound).fill(0xCC), 3600000);
 });
 
 document.getElementById("call-button-tuning-cancel").addEventListener("click", () => {
@@ -73,10 +73,11 @@ appendClonedElement(
     20,
 );
 
-[...document.getElementById("listen-threshold-range-container").children].forEach((element, index) => element.addEventListener("change", (event) => {
+document.getElementsByClassName("threshold-range")[0].addEventListener("change", (event) => {
+    threshold = threshold.map(threshold => threshold + (event.target.value - thresholdAve))
+    thresholdAve = event.target.value;
     event.stopPropagation();
-    threshold[index] = element.value * 1;
-}));
+});
 
 document.getElementById("listen-button-tuning").addEventListener("click", () => {
     listen_tuning();
