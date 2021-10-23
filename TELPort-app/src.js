@@ -317,7 +317,7 @@ function listen_tuning() {
     for (let index = 0; index < eachBitAmplitudes.length; index += 4) {
         let thresholdLow = (eachBitAmplitudes[index] + eachBitAmplitudes[index + 1]) / 2;
         let thresholdHigh = (eachBitAmplitudes[index + 2] + eachBitAmplitudes[index + 3]) / 2;
-        let thresholdResult = thresholdLow + (thresholdHigh - thresholdLow) * 0.9;
+        let thresholdResult = thresholdLow + (thresholdHigh - thresholdLow) * 0.85;
         threshold[index] = thresholdResult;
         threshold[index + 1] = thresholdResult;
         threshold[index + 2] = thresholdResult;
