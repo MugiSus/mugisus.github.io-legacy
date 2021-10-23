@@ -346,7 +346,7 @@ textarea:focus {
     display: flex;
     align-items: center;
     flex-flow: column;
-    height: 38vh
+    height: 45vh
 }
 
 #listen-textarea {
@@ -455,6 +455,7 @@ textarea:focus {
     background: url("listen-slider-thumb.svg");
     background-size: contain;
     border-radius: 0.2vh;
+    box-shadow: none;
 }
 
 .listen-range::-moz-slider-thumb {
@@ -469,6 +470,15 @@ textarea:focus {
     background: url("listen-slider-thumb.svg");
     background-size: contain;
     border-radius: 0.2vh;
+    box-shadow: none;
+}
+
+#listen-text-callbackspeed {
+    margin-top: 1vh;
+    font-family: Inconsolata;
+    font-size: 2vh;
+    font-style: italic;
+    color: var(--color-c85);
 }
 
 
@@ -480,7 +490,7 @@ textarea:focus {
     justify-content: center;
     overflow-y: scroll;
     width: 90vw;
-    height: 80vh;
+    height: 85vh;
 }
 
 .visualiser-byte-container {
