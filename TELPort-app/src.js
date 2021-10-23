@@ -268,7 +268,7 @@ function listen_listenFileLoop() {
 
         if (bytesCount > dataLength) {
             let file = {
-                index: fullListenedByteData[0],
+                index: fullListenedByteData[0] || 0,
                 name: new TextDecoder().decode(fullListenedByteData.subarray(1, fullListenedByteData.indexOf(0, 1))),
                 content: fullListenedByteData.subarray(fullListenedByteData.indexOf(0, 1) + 1),
             }
