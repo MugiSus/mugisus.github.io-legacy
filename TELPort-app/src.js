@@ -68,7 +68,7 @@ function call_callOneRound(uint8array, speed) {
                 }
 
                 if (visualise)
-                    callVisualiserParent.children[index].children[i].classList.toggle("ringing", (byte >> i) & 1);
+                    CallVisualiserParent.children[index].children[i].classList.toggle("ringing", (byte >> i) & 1);
             }
 
         }
@@ -142,7 +142,7 @@ function listen_getHeardUint8Array() {
         }
 
         if (visualise)
-            listenVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].classList.toggle("ringing", eachBitAmplitudes[index] >= threshold[0]);
+            ListenVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].classList.toggle("ringing", eachBitAmplitudes[index] >= threshold[0]);
     });
 
     let deltaTime = new Date().getTime() - lastCallbackTime;
