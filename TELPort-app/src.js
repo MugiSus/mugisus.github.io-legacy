@@ -1,8 +1,8 @@
-const FFTsize = 8192;
-const FirstFreuency = (44100 / FFTsize) * 160;
-const BytesPerRound = 20;
+const FFTsize = 4096;
+const FirstFreuency = (44100 / FFTsize) * 80;
+const BytesPerRound = 24;
 const Frequencies = new Array(8 * BytesPerRound).fill(0).map((_, i) => {
-    return FirstFreuency + (44100 / FFTsize * 8) * i;
+    return FirstFreuency + (44100 / FFTsize * 4) * i;
 });
 
 const TuningString = "Tuning completed. It is time to telport.".slice(0, BytesPerRound);
