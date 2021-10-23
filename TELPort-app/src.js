@@ -30,7 +30,7 @@ let stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, each
 let multibytePrefix, multibytePrefixLength, heardStringRound; // listen, string
 let fullListenedByteData; // listen, file
 
-let threshold = new Uint8Array(Frequencies.length); // listen
+let threshold = new Uint8Array(Frequencies.length / 4); // listen
 let thresholdAve = 0;
 
 let visualise = true;
@@ -139,7 +139,7 @@ function listen_getHeardUint8Array() {
     Frequencies.forEach((frequency, index) => {
         eachBitAmplitudes[index] = frequencyData[Math.trunc(frequency / (context.sampleRate / analyser.fftSize))];
 
-        if (eachBitAmplitudes[index] >= threshold[index]) {
+        if (eachBitAmplitudes[index] >= threshold[Math.trunc(index / 4)]) {
             heardUint8Array[Math.trunc(index / 8)] |= 1 << index % 8;
             heardBitCount++;
         }
@@ -314,15 +314,13 @@ function listen_tuning() {
     console.log(allThresholdTestsResult.join("\t"));
     */
 
-    for (let index = 0; index < eachBitAmplitudes.length; index += 4) {
-        let thresholdLow = (eachBitAmplitudes[index] + eachBitAmplitudes[index + 1]) / 2;
-        let thresholdHigh = (eachBitAmplitudes[index + 2] + eachBitAmplitudes[index + 3]) / 2;
-        let thresholdResult = thresholdLow + (thresholdHigh - thresholdLow) * 0.85;
-        threshold[index] = thresholdResult;
-        threshold[index + 1] = thresholdResult;
-        threshold[index + 2] = thresholdResult;
-        threshold[index + 3] = thresholdResult;
-    }
+    console.log(eachBitAmplitudes);
+    threshold = threshold.map((_, index) => {
+        let thresholdLow = (eachBitAmplitudes[index * 4] + eachBitAmplitudes[index * 4 + 1]) / 2;
+        let thresholdHigh = (eachBitAmplitudes[index * 4 + 2] + eachBitAmplitudes[index * 4 + 3]) / 2;
+        console.log(eachBitAmplitudes.slice(index * 4, index * 4 + 4));
+        return thresholdLow + (thresholdHigh - thresholdLow) * 0.85;
+    })
 
     thresholdAve = threshold.reduce((previous, current) => previous + current) / threshold.length;
 
