@@ -133,7 +133,7 @@ function call_callFile(file, index, speed) {
     let fileReader = new FileReader();
     
     fileReader.addEventListener("load", (event) => {
-        const callingUint8Array = Uint8Array.from([index + 0x41, calculateFletcher64(new Uint8Array(event.target.result)), ...new TextEncoder().encode(file.name), 0, ...new Uint8Array(event.target.result)]);
+        const callingUint8Array = Uint8Array.from([index + 0x41, ...calculateFletcher64(new Uint8Array(event.target.result)), ...new TextEncoder().encode(file.name), 0, ...new Uint8Array(event.target.result)]);
         console.log(callingUint8Array, calculateFletcher64(new Uint8Array(event.target.result)));
         
         call_callFullRounds(callingUint8Array, speed);
