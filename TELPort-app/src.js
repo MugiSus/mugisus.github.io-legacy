@@ -117,7 +117,7 @@ function call_callFile(file, index, speed) {
     let fileReader = new FileReader();
     
     fileReader.addEventListener("load", (event) => {
-        const callingUint8Array = Uint8Array.from([index, ...new TextEncoder().encode(file.name), 0, ...new Uint8Array(event.target.result)]);
+        const callingUint8Array = Uint8Array.from([index + 0x41, ...new TextEncoder().encode(file.name), 0, ...new Uint8Array(event.target.result)]);
         console.log(callingUint8Array);
         
         call_callFullRounds(callingUint8Array, speed);
@@ -276,10 +276,10 @@ function listen_listenFileLoop() {
         bytesCount += BytesPerRound;
 
         if (bytesCount > dataLength) {
-            let separatersIndex = fullListenedByteData.subarray(1, 512).reduce((previous, current, index) => (current == 0 && previous.push(index), previous), [])
+            let separatersIndex = fullListenedByteData.subarray(0, 512).reduce((previous, current, index) => (current == 0 && previous.push(index), previous), [])
             
             let file = {
-                index: fullListenedByteData[0] || 0,
+                index: fullListenedByteData[0] - 0x41,
                 name: new TextDecoder().decode(fullListenedByteData.subarray(1, separatersIndex[0])),
                 content: fullListenedByteData.subarray(separatersIndex[0] + 1, separatersIndex[1]),
                 checksum: fullListenedByteData.subarray(separatersIndex[1] + 1),
