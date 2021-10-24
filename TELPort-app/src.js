@@ -21,7 +21,7 @@ const AudioContext = window.AudioContext || window.webkitAudioContext; // both (
 let context; // both
 
 const StartingSoundSpeed = 500; // both // milliseconds
-let speed = 180; // both // milliseconds 
+let speed = 160; // both // milliseconds 
 
 let requestAnimationFrameID, lastCallbackTime; // listen
 let intervalID; // call
@@ -321,7 +321,7 @@ function listen_tuning() {
         let thresholdLow = (eachBitAmplitudes[index * 4] + eachBitAmplitudes[index * 4 + 1]) / 2;
         let thresholdHigh = (eachBitAmplitudes[index * 4 + 2] + eachBitAmplitudes[index * 4 + 3]) / 2;
         console.log(eachBitAmplitudes.slice(index * 4, index * 4 + 4));
-        return thresholdLow + (thresholdHigh - thresholdLow) * 0.8;
+        return thresholdLow + (thresholdHigh - thresholdLow) * 0.82;
     })
 
     thresholdAve = threshold.reduce((previous, current) => previous + current) / threshold.length;
