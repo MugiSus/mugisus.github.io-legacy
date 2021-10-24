@@ -21,7 +21,7 @@ const AudioContext = window.AudioContext || window.webkitAudioContext; // both (
 let context; // both
 
 const StartingSoundSpeed = 500; // both // milliseconds
-let speed = 180; // both // milliseconds 
+let speed = 160; // both // milliseconds 
 
 let requestAnimationFrameID, lastCallbackTime; // listen
 let intervalID; // call
@@ -147,7 +147,10 @@ function listen_getHeardUint8Array() {
         }
 
         if (visualise)
-            ListenVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].classList.toggle("ringing", eachBitAmplitudes[index] >= threshold[0]);
+            ListenVisualiserParent.children[Math.trunc(index / 8)].children[index % 8].classList.toggle(
+                "ringing",
+                eachBitAmplitudes[index] >= threshold[Math.trunc(index / 4)]
+            );
     });
 
     let deltaTime = new Date().getTime() - lastCallbackTime;
