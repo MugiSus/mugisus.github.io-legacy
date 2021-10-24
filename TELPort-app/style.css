@@ -410,7 +410,7 @@ textarea:focus {
 .listen-file-downloader:not(.exist) > .listen-file-text,
 .listen-file-downloader.exist > .listen-file-icon-nofile,
 .listen-file-downloader.exist > .listen-file-icon-nofile-text,
-.listen-file-downloader:not(.error) > .listen-file-icon-error {
+.listen-file-downloader:not(.verified) > .listen-file-icon-verified {
     display: none;
 }
 
@@ -426,7 +426,7 @@ textarea:focus {
     white-space: nowrap;
 }
 
-.listen-file-icon-error {
+.listen-file-icon-verified {
     margin-left: auto;
     margin-right: 1.25vh;
     height: 3vh;

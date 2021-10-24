@@ -312,8 +312,8 @@ function listen_listenFileLoop() {
             
             let contentChecksum = calculateFletcher64(file.content);
             targetDownloaderElement.classList.toggle(
-                "error", 
-                file.checksum.some((value, index) => value != contentChecksum[index])
+                "verified",
+                file.checksum.every((value, index) => value == contentChecksum[index])
             );
 
             console.log(file.checksum, contentChecksum);
@@ -352,7 +352,6 @@ function listen_tuning() {
     threshold = threshold.map((_, index) => {
         let thresholdLow = (eachBitAmplitudes[index * 4] + eachBitAmplitudes[index * 4 + 1]) / 2;
         let thresholdHigh = (eachBitAmplitudes[index * 4 + 2] + eachBitAmplitudes[index * 4 + 3]) / 2;
-        console.log(eachBitAmplitudes.slice(index * 4, index * 4 + 4));
         return thresholdLow + (thresholdHigh - thresholdLow) * 0.82;
     })
 
