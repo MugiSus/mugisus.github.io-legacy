@@ -53,8 +53,24 @@ function initialize() {
     emptySource.stop();
 }
 
-function fletcher32() {
-    
+function calculateFletcher64(uint8Array) {
+    let fletcherA = 0, fletcherB = 0;
+    for (let index = 0; index < uint8Array.length; index += 4) {
+        fletcherA += (uint8Array[index] | uint8Array[index + 1] << 8 | uint8Array[index + 2] << 16 | uint8Array[index + 3] << 24) >>> 0;
+        fletcherA %= 0xFFFFFFFE;
+        fletcherB += fletcherA;
+        fletcherB %= 0xFFFFFFFE;
+    }
+    return Uint8Array.from([
+        fletcherA >>> 24 & 0xFF,
+        fletcherA >>> 16 & 0xFF,
+        fletcherA >>> 8 & 0xFF,
+        fletcherA & 0xFF,
+        fletcherB >>> 24 & 0xFF,
+        fletcherB >>> 16 & 0xFF,
+        fletcherB >>> 8 & 0xFF,
+        fletcherB & 0xFF,
+    ]);
 }
 
 
@@ -117,8 +133,8 @@ function call_callFile(file, index, speed) {
     let fileReader = new FileReader();
     
     fileReader.addEventListener("load", (event) => {
-        const callingUint8Array = Uint8Array.from([index + 0x41, ...new TextEncoder().encode(file.name), 0, ...new Uint8Array(event.target.result)]);
-        console.log(callingUint8Array);
+        const callingUint8Array = Uint8Array.from([index + 0x41, ...new TextEncoder().encode(file.name), 0, ...new Uint8Array(event.target.result), 0, calculateFletcher64(new Uint8Array(event.target.result))]);
+        console.log(callingUint8Array, calculateFletcher64(new Uint8Array(event.target.result)));
         
         call_callFullRounds(callingUint8Array, speed);
     });
@@ -285,17 +301,25 @@ function listen_listenFileLoop() {
                 checksum: fullListenedByteData.subarray(separatersIndex[1] + 1),
             }
             
-            console.log(file.name, file.index, file.content);
-
+            console.log(file.name, file.index, file.content, file.checksum);
+            
             let blob = new Blob([file.content], {type: "text/plain"});
             let targetDownloaderElement = document.getElementsByClassName("listen-file-downloader")[file.index];
-
+            
             targetDownloaderElement.href = (window.URL || window.webkitURL).createObjectURL(blob);
             targetDownloaderElement.download = file.name;
             targetDownloaderElement.classList.add("exist");
+            
+            targetDownloaderElement.getElementsByClassName("listen-file-text")[0].innerText = file.name;
+            
+            let contentChecksum = calculateFletcher64(file.content);
+            targetDownloaderElement.classList.toggle(
+                "error", 
+                file.checksum.some((value, index) => value != contentChecksum[index])
+            );
 
-            targetDownloaderElement.parentElement.getElementsByClassName("listen-file-text")[0].innerText = file.name;
-
+            console.log(file.checksum, contentChecksum);
+                
             nextConfirmTime = Infinity;
         }
     }
