@@ -409,7 +409,8 @@ textarea:focus {
 .listen-file-downloader:not(.exist) > .listen-file-icon,
 .listen-file-downloader:not(.exist) > .listen-file-text,
 .listen-file-downloader.exist > .listen-file-icon-nofile,
-.listen-file-downloader.exist > .listen-file-icon-nofile-text {
+.listen-file-downloader.exist > .listen-file-icon-nofile-text,
+.listen-file-downloader:not(.error) > .listen-file-icon-error {
     display: none;
 }
 
@@ -423,6 +424,12 @@ textarea:focus {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+}
+
+.listen-file-icon-error {
+    margin-left: auto;
+    margin-right: 1.25vh;
+    height: 3vh;
 }
 
 #listen-file-heard-bytes {

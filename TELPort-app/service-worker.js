@@ -19,6 +19,7 @@ const cacheFiles = [
     "/TELPort-app/listen-button-receive-cancel.svg",
     "/TELPort-app/listen-button-receive.svg",
     "/TELPort-app/listen-button-tuning.svg",
+    "/TELPort-app/listen-file-icon-error.svg",
     "/TELPort-app/listen-file-icon-nofile-text.svg",
     "/TELPort-app/listen-file-icon-nofile.svg",
     "/TELPort-app/listen-file-icon.svg",

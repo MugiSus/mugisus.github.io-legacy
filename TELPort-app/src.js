@@ -53,6 +53,10 @@ function initialize() {
     emptySource.stop();
 }
 
+function fletcher32() {
+    
+}
+
 
 // call
 
@@ -272,10 +276,13 @@ function listen_listenFileLoop() {
         bytesCount += BytesPerRound;
 
         if (bytesCount > dataLength) {
+            let separatersIndex = fullListenedByteData.subarray(1, 512).reduce((previous, current, index) => (current == 0 && previous.push(index), previous), [])
+            
             let file = {
                 index: fullListenedByteData[0] || 0,
-                name: new TextDecoder().decode(fullListenedByteData.subarray(1, fullListenedByteData.indexOf(0, 1))),
-                content: fullListenedByteData.subarray(fullListenedByteData.indexOf(0, 1) + 1),
+                name: new TextDecoder().decode(fullListenedByteData.subarray(1, separatersIndex[0])),
+                content: fullListenedByteData.subarray(separatersIndex[0] + 1, separatersIndex[1]),
+                checksum: fullListenedByteData.subarray(separatersIndex[1] + 1),
             }
             
             console.log(file.name, file.index, file.content);
