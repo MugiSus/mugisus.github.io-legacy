@@ -1,6 +1,6 @@
 const FFTsize = 4096;
-const FirstFreuency = (44100 / FFTsize) * 80;
-const BytesPerRound = 20;
+const FirstFreuency = (44100 / FFTsize) * 65;
+const BytesPerRound = 24;
 const Frequencies = new Array(8 * BytesPerRound).fill(0).map((_, i) => {
     return FirstFreuency + (44100 / FFTsize * 5) * i;
 });
@@ -21,7 +21,7 @@ const AudioContext = window.AudioContext || window.webkitAudioContext; // both (
 let context; // both
 
 const StartingSoundSpeed = 500; // both // milliseconds
-let speed = 100; // both // milliseconds 
+let speed = 200; // both // milliseconds 
 
 let requestAnimationFrameID, lastCallbackTime; // listen
 let intervalID; // call
