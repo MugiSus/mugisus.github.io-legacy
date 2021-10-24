@@ -133,12 +133,10 @@ function call_callFile(file, index, speed) {
     let fileReader = new FileReader();
     
     fileReader.addEventListener("load", (event) => {
-        const Payload = Uint8Array.from([...new TextEncoder().encode(file.name), 0, ...new Uint8Array(event.target.result)]);
-        const CallingUint8Array = Uint8Array.from([index + 0x41, ...calculateFletcher64(Payload), ...Payload]);
-
-        console.log(CallingUint8Array, calculateFletcher64(Payload));
+        const callingUint8Array = Uint8Array.from([index + 0x41, ...calculateFletcher64(new Uint8Array(event.target.result)), ...new TextEncoder().encode(file.name), 0, ...new Uint8Array(event.target.result)]);
+        console.log(callingUint8Array, calculateFletcher64(new Uint8Array(event.target.result)));
         
-        call_callFullRounds(CallingUint8Array, speed);
+        call_callFullRounds(callingUint8Array, speed);
     });
 
     fileReader.readAsArrayBuffer(file);
@@ -294,31 +292,31 @@ function listen_listenFileLoop() {
         bytesCount += BytesPerRound;
 
         if (bytesCount > dataLength) {        
-            const File = {
+            let file = {
                 index: fullListenedByteData[0] - 0x41,
                 checksum: fullListenedByteData.subarray(1, 9),
                 name: new TextDecoder().decode(fullListenedByteData.subarray(9, fullListenedByteData.indexOf(0, 9))),
                 content: fullListenedByteData.subarray(fullListenedByteData.indexOf(0, 9) + 1),
             }
             
-            console.log(File.name, File.index, File.content, File.checksum);
+            console.log(file.name, file.index, file.content, file.checksum);
             
-            let blob = new Blob([File.content], {type: "text/plain"});
-            let targetDownloaderElement = document.getElementsByClassName("listen-File-downloader")[File.index];
+            let blob = new Blob([file.content], {type: "text/plain"});
+            let targetDownloaderElement = document.getElementsByClassName("listen-file-downloader")[file.index];
             
             targetDownloaderElement.href = (window.URL || window.webkitURL).createObjectURL(blob);
-            targetDownloaderElement.download = File.name;
+            targetDownloaderElement.download = file.name;
             targetDownloaderElement.classList.add("exist");
             
-            targetDownloaderElement.getElementsByClassName("listen-File-text")[0].innerText = File.name;
+            targetDownloaderElement.getElementsByClassName("listen-file-text")[0].innerText = file.name;
             
-            let contentChecksum = calculateFletcher64(fullListenedByteData.subarray(9));
+            let contentChecksum = calculateFletcher64(file.content);
             targetDownloaderElement.classList.toggle(
-                "error",
-                File.checksum.some((value, index) => value != contentChecksum[index])
+                "error", 
+                file.checksum.some((value, index) => value != contentChecksum[index])
             );
 
-            console.log(File.checksum, contentChecksum);
+            console.log(file.checksum, contentChecksum);
                 
             nextConfirmTime = Infinity;
         }
