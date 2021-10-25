@@ -378,12 +378,12 @@ textarea:focus {
 #listen-text-icon-verified {
     display: none;
     position: absolute;
-    right: 1vh;
-    top: 1vh;
+    right: -1.5vh;
+    top: -1.5vh;
     height: 3vh;
 }
 
-#listen-text-icon-verified.verified {
+.mode-text + .mode-content > #listen-text-icon-verified.verified {
     display: block;
 }
 
