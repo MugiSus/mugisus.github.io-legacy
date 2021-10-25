@@ -89,7 +89,7 @@ document.getElementsByClassName("threshold-range")[0].addEventListener("change",
 });
 
 document.getElementById("listen-button-tuning").addEventListener("click", () => {
-    setTimeout(listen_tuning, 200);
+    setTimeout(listen_tuning, 150);
 });
 
 document.getElementById("listen-button-receive").addEventListener("click", (event) => {
