@@ -281,14 +281,15 @@ function listen_listenStringLoop() {
 
         if (bytesCount > dataLength) {
             let fullListenedByteDataChecksum = calculateFletcher64(new TextEncoder().encode(document.getElementById("listen-textarea").value));
+            console.log(`  checksum-received: ${listenedChecksum.join(".")}\nchecksum-calculated: ${fullListenedByteDataChecksum.join(".")}`);
+            
             document.getElementById("listen-text-icon-verified").classList.toggle(
                 "verified",
                 listenedChecksum.every((value, index) => value == fullListenedByteDataChecksum[index])
             );
-            
-            console.log(`checksum-received: ${listenedChecksum.join(".")}\nchecksum-calculated: ${fullListenedByteDataChecksum.join(".")}`);
                 
-                // copying program maybe goes here
+            // copying program maybe goes here
+            
             nextConfirmTime = Infinity;
         }
     }
@@ -330,13 +331,12 @@ function listen_listenFileLoop() {
                 targetDownloaderElement.getElementsByClassName("listen-file-text")[0].innerText = file.name;
                 
                 let fullListenedByteDataChecksum = calculateFletcher64(fullListenedByteData);
-                console.log(listenedChecksum, fullListenedByteDataChecksum);
+                console.log(`  checksum-received: ${listenedChecksum.join(".")}\nchecksum-calculated: ${fullListenedByteDataChecksum.join(".")}`);
+
                 targetDownloaderElement.classList.toggle(
                     "verified",
                     listenedChecksum.every((value, index) => value == fullListenedByteDataChecksum[index])
                 );
-
-                console.log(`checksum-received: ${listenedChecksum.join(".")}\nchecksum-calculated: ${fullListenedByteDataChecksum.join(".")}`);
             }
 
             nextConfirmTime = Infinity;
