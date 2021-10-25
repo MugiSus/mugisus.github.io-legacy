@@ -356,7 +356,7 @@ textarea:focus {
     display: flex;
     align-items: center;
     flex-flow: column;
-    height: 45vh
+    height: 43vh
 }
 
 #listen-textarea {
