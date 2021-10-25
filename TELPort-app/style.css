@@ -395,7 +395,6 @@ textarea:focus {
 
 .listen-file-downloader {
     display: flex;
-    position: relative;
     cursor: not-allowed;
     text-decoration: none;
     width: 75vw;
@@ -443,10 +442,9 @@ textarea:focus {
 }
 
 .listen-file-icon-verified {
-    position: absolute;
+    margin-left: auto;
+    margin-right: 1.25vh;
     height: 3vh;
-    right: -1.5vh;
-    top: -1.5vh;
 }
 
 #listen-file-heard-bytes {
