@@ -28,6 +28,8 @@ html, body {
 }
 
 body {
+    -moz-appearance: none;
+    -webkit-appearance: none;
     box-sizing: border-box;
     font-family: Inter, Arial, Helvetica, sans-serif;
     text-align: center;
