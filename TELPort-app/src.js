@@ -282,7 +282,13 @@ function listen_listenStringLoop() {
         if (bytesCount > dataLength) {
             nextConfirmTime = Infinity;
 
-            // copying program goes here
+            let fullListenedByteDataChecksum = calculateFletcher64(new TextEncoder().encode(document.getElementById("listen-textarea").value));
+            document.getElementById("listen-text-icon-verified").classList.toggle(
+                "verified",
+                listenedChecksum.every((value, index) => value == fullListenedByteDataChecksum[index])
+            );
+
+            // copying program maybe goes here
         }
     }
     
