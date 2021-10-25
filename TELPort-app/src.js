@@ -62,14 +62,14 @@ function calculateFletcher64(uint8Array) {
         fletcherB %= 0xFFFFFFFE;
     }
     return Uint8Array.from([
-        fletcherA >>> 24 & 0xFF,
-        fletcherA >>> 16 & 0xFF,
-        fletcherA >>> 8 & 0xFF,
         fletcherA & 0xFF,
-        fletcherB >>> 24 & 0xFF,
-        fletcherB >>> 16 & 0xFF,
-        fletcherB >>> 8 & 0xFF,
+        fletcherA >>> 8 & 0xFF,
+        fletcherA >>> 16 & 0xFF,
+        fletcherA >>> 24 & 0xFF,
         fletcherB & 0xFF,
+        fletcherB >>> 8 & 0xFF,
+        fletcherB >>> 16 & 0xFF,
+        fletcherB >>> 24 & 0xFF,
     ]);
 }
 
@@ -323,7 +323,7 @@ function listen_listenFileLoop() {
                     file.checksum.every((value, index) => value == contentChecksum[index])
                 );
             }
-            
+
             nextConfirmTime = Infinity;
         }
     }
