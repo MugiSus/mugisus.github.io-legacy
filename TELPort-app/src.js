@@ -323,9 +323,7 @@ function listen_listenFileLoop() {
                     file.checksum.every((value, index) => value == contentChecksum[index])
                 );
             }
-
-            console.log(file.checksum, contentChecksum);
-                
+            
             nextConfirmTime = Infinity;
         }
     }
