@@ -281,7 +281,7 @@ function listen_listenStringLoop() {
 
         if (bytesCount > dataLength) {
             let fullListenedByteDataChecksum = calculateFletcher64(new TextEncoder().encode(document.getElementById("listen-textarea").value));
-            console.log(`  checksum-received: ${listenedChecksum.join(".")}\nchecksum-calculated: ${fullListenedByteDataChecksum.join(".")}`);
+            console.log(listenedChecksum, fullListenedByteDataChecksum);
             
             document.getElementById("listen-text-icon-verified").classList.toggle(
                 "verified",
@@ -331,7 +331,7 @@ function listen_listenFileLoop() {
                 targetDownloaderElement.getElementsByClassName("listen-file-text")[0].innerText = file.name;
                 
                 let fullListenedByteDataChecksum = calculateFletcher64(fullListenedByteData);
-                console.log(`  checksum-received: ${listenedChecksum.join(".")}\nchecksum-calculated: ${fullListenedByteDataChecksum.join(".")}`);
+                console.log(listenedChecksum, fullListenedByteDataChecksum);
 
                 targetDownloaderElement.classList.toggle(
                     "verified",
