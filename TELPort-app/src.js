@@ -106,6 +106,7 @@ function call_callFullRounds(uint8array, speed) {
         ...new Uint8Array(4).map((_, index) => uint8array.length >> index * 8 & 0xFF),
         ...calculateFletcher64(uint8array),
     ]);
+    console.log(calculateFletcher64(uint8array));
 
     call_callOneRound(fullCalledByteData, StartingSoundSpeed);
 
