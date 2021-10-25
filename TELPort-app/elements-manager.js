@@ -74,12 +74,17 @@ appendClonedElement(
 );
 
 [...document.getElementsByClassName("listen-file-downloader")].forEach(element => {
-    element.addEventListener("click", (event) => 
-        event.target.classList.contains("exist") && 
-        !event.target.classList.contains("verified") && 
-        !confirm("整合性の保証が無効です。データが破損している可能性がありますが、このまま開きますか？") && 
+    element.addEventListener("click", (event) => {
+        console.log(
+            !event.target.classList.contains("exist") || 
+            event.target.classList.contains("verified") || 
+            confirm("整合性の保証が無効です。データが破損している可能性がありますが、このまま開きますか？")
+        )
+        !event.target.classList.contains("exist") || 
+        event.target.classList.contains("verified") || 
+        confirm("整合性の保証が無効です。データが破損している可能性がありますが、このまま開きますか？") ||
         event.preventDefault()
-    )
+    })
 })
 
 document.getElementsByClassName("threshold-range")[0].addEventListener("change", (event) => {
