@@ -303,18 +303,20 @@ function listen_listenFileLoop() {
             
             let blob = new Blob([file.content], {type: "text/plain"});
             let targetDownloaderElement = document.getElementsByClassName("listen-file-downloader")[file.index];
-            
-            targetDownloaderElement.href = (window.URL || window.webkitURL).createObjectURL(blob);
-            targetDownloaderElement.download = file.name;
-            targetDownloaderElement.classList.add("exist");
-            
-            targetDownloaderElement.getElementsByClassName("listen-file-text")[0].innerText = file.name;
-            
-            let contentChecksum = calculateFletcher64(file.content);
-            targetDownloaderElement.classList.toggle(
-                "verified",
-                file.checksum.every((value, index) => value == contentChecksum[index])
-            );
+
+            if (targetDownloaderElement) {
+                targetDownloaderElement.href = (window.URL || window.webkitURL).createObjectURL(blob);
+                targetDownloaderElement.download = file.name;
+                targetDownloaderElement.classList.add("exist");
+                
+                targetDownloaderElement.getElementsByClassName("listen-file-text")[0].innerText = file.name;
+                
+                let contentChecksum = calculateFletcher64(file.content);
+                targetDownloaderElement.classList.toggle(
+                    "verified",
+                    file.checksum.every((value, index) => value == contentChecksum[index])
+                );
+            }
 
             console.log(file.checksum, contentChecksum);
                 
