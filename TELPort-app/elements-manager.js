@@ -77,7 +77,7 @@ appendClonedElement(
     element.addEventListener("click", (event) => {
         !event.target.classList.contains("exist") || 
         event.target.classList.contains("verified") || 
-        confirm("データ整合性の保証が無効です。ファイルが破損している可能性がありますが、このまま開きますか？") ||
+        confirm("整合性の保証が無効です。ファイルが破損している可能性がありますが、このまま開きますか？") ||
         event.preventDefault()
     })
 })
