@@ -168,7 +168,7 @@ function listen_detectStartingSound() {
         listenedChecksum = heardUint8Array.slice(8, 16);
 
         bytesCount = 0;
-        console.info(`<Starting sound detected.>\nsize: ${dataLength} Bytes\nEstimated time: ${Math.ceil(dataLength / BytesPerRound) * speed} msec\nchecksum: ${listenedChecksum}`);
+        console.info(`<Starting sound detected.>\nsize: ${dataLength} Bytes\nEstimated time: ${Math.ceil(dataLength / BytesPerRound) * speed} msec\nchecksum: ${listenedChecksum.join(".")}`);
 
         return true;
     }
@@ -280,15 +280,16 @@ function listen_listenStringLoop() {
         bytesCount += BytesPerRound;
 
         if (bytesCount > dataLength) {
-            nextConfirmTime = Infinity;
-
             let fullListenedByteDataChecksum = calculateFletcher64(new TextEncoder().encode(document.getElementById("listen-textarea").value));
             document.getElementById("listen-text-icon-verified").classList.toggle(
                 "verified",
                 listenedChecksum.every((value, index) => value == fullListenedByteDataChecksum[index])
             );
-
-            // copying program maybe goes here
+            
+            console.log(`checksum-received: ${listenedChecksum.join(".")}\nchecksum-calculated: ${fullListenedByteDataChecksum.join(".")}`);
+                
+                // copying program maybe goes here
+            nextConfirmTime = Infinity;
         }
     }
     
@@ -334,6 +335,8 @@ function listen_listenFileLoop() {
                     "verified",
                     listenedChecksum.every((value, index) => value == fullListenedByteDataChecksum[index])
                 );
+
+                console.log(`checksum-received: ${listenedChecksum.join(".")}\nchecksum-calculated: ${fullListenedByteDataChecksum.join(".")}`);
             }
 
             nextConfirmTime = Infinity;
