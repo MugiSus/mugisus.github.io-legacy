@@ -285,17 +285,17 @@ textarea:focus {
     align-items: center;
     justify-content: center;
     flex-flow: column;
-    height: 52vh
+    height: 51vh
 }
 
 #call-textarea {
     color: var(--color-c55);
-    height: 95%;
+    height: 100%;
     margin-bottom: 1.5vh;
 }
 
 #call-file-label-container {
-    height: 90%;
+    height: 100%;
     overflow-y: scroll;
     margin-bottom: 1.5vh;
 }
@@ -356,7 +356,7 @@ textarea:focus {
     display: flex;
     align-items: center;
     flex-flow: column;
-    height: 43vh
+    height: 42vh
 }
 
 #listen-textarea {
