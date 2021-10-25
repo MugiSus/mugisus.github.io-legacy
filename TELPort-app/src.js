@@ -26,7 +26,7 @@ let speed = 200; // both // milliseconds
 let requestAnimationFrameID, lastCallbackTime; // listen
 let intervalID; // call
 
-let stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, eachBitAmplitudes, nextConfirmTime, dataLength, bytesCount; // listen, both
+let stream, input, analyser, heardUint8Array, heardBitCount, frequencyData, eachBitAmplitudes, nextConfirmTime, dataLength, bytesCount, listenedChecksum; // listen, both
 let multibytePrefix, multibytePrefixLength, heardStringRound; // listen, string
 let fullListenedByteData; // listen, file
 
@@ -57,9 +57,9 @@ function calculateFletcher64(uint8Array) {
     let fletcherA = 0, fletcherB = 0;
     for (let index = 0; index < uint8Array.length; index += 4) {
         fletcherA += (uint8Array[index] | uint8Array[index + 1] << 8 | uint8Array[index + 2] << 16 | uint8Array[index + 3] << 24) >>> 0;
-        fletcherA %= 0xFFFFFFFE;
+        fletcherA %= 0xFFFFFFFF;
         fletcherB += fletcherA;
-        fletcherB %= 0xFFFFFFFE;
+        fletcherB %= 0xFFFFFFFF;
     }
     return Uint8Array.from([
         fletcherA & 0xFF,
@@ -101,17 +101,21 @@ function call_callOneRound(uint8array, speed) {
 }
 
 function call_callFullRounds(uint8array, speed) {
-    let fullCalledByteData = Uint8Array.from([...new Uint8Array(4).fill(0xAA), ...new Uint8Array(4).map((_, index) => uint8array.length >> index * 8 & 0xFF)]);
+    let fullCalledByteData = Uint8Array.from([
+        ...new Uint8Array(4).fill(0xAA),
+        ...new Uint8Array(4).map((_, index) => uint8array.length >> index * 8 & 0xFF),
+        ...calculateFletcher64(uint8array),
+    ]);
 
     call_callOneRound(fullCalledByteData, StartingSoundSpeed);
 
     setTimeout(() => {
-        call_callOneRound(uint8array.subarray(0, BytesPerRound), speed);
+        call_callOneRound(uint8array.slice(0, BytesPerRound), speed);
         let index = 0;
         
         intervalID = setInterval(function() {
             index++;
-            call_callOneRound(uint8array.subarray(index * BytesPerRound, (index + 1) * BytesPerRound), speed);
+            call_callOneRound(uint8array.slice(index * BytesPerRound, (index + 1) * BytesPerRound), speed);
             if (index * BytesPerRound > uint8array.length) {
                 document.getElementById("call-button-send").parentElement.classList.remove("clicked");
                 clearInterval(intervalID);
@@ -140,7 +144,6 @@ function call_callFile(file, index, speed) {
             0, 
             ...new Uint8Array(event.target.result)
         ]);
-        console.log(callingUint8Array, calculateFletcher64(new Uint8Array(event.target.result)));
         
         call_callFullRounds(callingUint8Array, speed);
     });
@@ -157,6 +160,19 @@ function call_callString(string, speed) {
 
 
 // listen
+
+function listen_detectStartingSound() {
+    if (heardUint8Array.slice(0, 4).every(value => value == 0xAA)) {
+        nextConfirmTime = new Date().getTime() + speed * 0.8;
+        dataLength = heardUint8Array.slice(4, 8).reduce((previous, current, index) => previous | current << index * 8);
+        listenedChecksum = heardUint8Array.slice(8, 16);
+
+        bytesCount = 0;
+        console.info(`<Starting sound detected.>\nsize: ${dataLength} Bytes\nEstimated time: ${Math.ceil(dataLength / BytesPerRound) * speed} msec\nchecksum: ${listenedChecksum}`);
+
+        return true;
+    }
+}
 
 function listen_getHeardUint8Array() {
     analyser.getByteFrequencyData(frequencyData);
@@ -234,13 +250,8 @@ async function listen_startListenFileLoop() {
 function listen_listenStringLoop() {
     heardUint8Array = listen_getHeardUint8Array();
 
-    if (heardUint8Array.slice(0, 4).every(value => value == 0xAA)) {
-        nextConfirmTime = new Date().getTime() + speed * 0.8;
-        dataLength = heardUint8Array.slice(4, 8).reduce((previous, current, index) => previous | current << index * 8);
-        console.info(`<Starting sound detected.>\nSize: ${dataLength} Bytes\nEstimated time: ${Math.ceil(dataLength / BytesPerRound) * speed} msec`);
-        
+    if (listen_detectStartingSound()) {
         document.getElementById("listen-textarea").value = "";
-        bytesCount = 0;
     }
     
     if (heardBitCount) {
@@ -281,13 +292,8 @@ function listen_listenStringLoop() {
 function listen_listenFileLoop() {
     heardUint8Array = listen_getHeardUint8Array();
 
-    if (heardUint8Array.slice(0, 4).every(value => value == 0xAA)) {
-        nextConfirmTime = new Date().getTime() + speed * 0.8;
-        dataLength = heardUint8Array.slice(4, 8).reduce((previous, current, index) => previous | current << index * 8);
-        console.info(`<Starting sound detected.>\nSize: ${dataLength} Bytes\nEstimated time: ${Math.ceil(dataLength / BytesPerRound) * speed} msec`);
-
+    if (listen_detectStartingSound()) {
         fullListenedByteData = new Uint8Array(dataLength);
-        bytesCount = 0;
     }
 
     if (nextConfirmTime <= new Date().getTime()) {
@@ -300,12 +306,11 @@ function listen_listenFileLoop() {
         if (bytesCount > dataLength) {        
             let file = {
                 index: fullListenedByteData[0] - 0x41,
-                checksum: fullListenedByteData.subarray(1, 9),
-                name: new TextDecoder().decode(fullListenedByteData.subarray(9, fullListenedByteData.indexOf(0, 9))),
-                content: fullListenedByteData.subarray(fullListenedByteData.indexOf(0, 9) + 1),
+                name: new TextDecoder().decode(fullListenedByteData.slice(1, fullListenedByteData.indexOf(0))),
+                content: fullListenedByteData.slice(fullListenedByteData.indexOf(0) + 1),
             }
             
-            console.log(file.name, file.index, file.content, file.checksum);
+            console.log(file.name, file.index, file.content);
             
             let blob = new Blob([file.content], {type: "text/plain"});
             let targetDownloaderElement = document.getElementsByClassName("listen-file-downloader")[file.index];
@@ -317,10 +322,11 @@ function listen_listenFileLoop() {
                 
                 targetDownloaderElement.getElementsByClassName("listen-file-text")[0].innerText = file.name;
                 
-                let contentChecksum = calculateFletcher64(file.content);
+                let fullListenedByteDataChecksum = calculateFletcher64(fullListenedByteData);
+                console.log(listenedChecksum, fullListenedByteDataChecksum);
                 targetDownloaderElement.classList.toggle(
                     "verified",
-                    file.checksum.every((value, index) => value == contentChecksum[index])
+                    listenedChecksum.every((value, index) => value == fullListenedByteDataChecksum[index])
                 );
             }
 
