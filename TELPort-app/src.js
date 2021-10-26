@@ -54,22 +54,16 @@ function initialize() {
 }
 
 function calculateFletcher64(uint8Array) {
-    let fletcherA = 0, fletcherB = 0;
-    for (let index = 0; index < uint8Array.length; index += 4) {
-        fletcherA += (uint8Array[index] | uint8Array[index + 1] << 8 | uint8Array[index + 2] << 16 | uint8Array[index + 3] << 24) >>> 0;
-        fletcherA %= 0xFFFFFFFF;
-        fletcherB += fletcherA;
-        fletcherB %= 0xFFFFFFFF;
-    }
+    let fletcherResult = uint8Array.reduce((previous, current) => [(previous[0] + current) % 0xFFFFFFFF, (previous[1] + (previous[0] + current)) % 0xFFFFFFFF], [0, 0]);
     return Uint8Array.from([
-        fletcherA & 0xFF,
-        fletcherA >>> 8 & 0xFF,
-        fletcherA >>> 16 & 0xFF,
-        fletcherA >>> 24 & 0xFF,
-        fletcherB & 0xFF,
-        fletcherB >>> 8 & 0xFF,
-        fletcherB >>> 16 & 0xFF,
-        fletcherB >>> 24 & 0xFF,
+        fletcherResult[0] & 0xFF,
+        fletcherResult[0] >>> 8 & 0xFF,
+        fletcherResult[0] >>> 16 & 0xFF,
+        fletcherResult[0] >>> 24 & 0xFF,
+        fletcherResult[1] & 0xFF,
+        fletcherResult[1] >>> 8 & 0xFF,
+        fletcherResult[1] >>> 16 & 0xFF,
+        fletcherResult[1] >>> 24 & 0xFF,
     ]);
 }
 
