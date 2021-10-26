@@ -29,6 +29,7 @@ const cacheFiles = [
     "/TELPort-app/listen-text-receive.svg",
     "/TELPort-app/listen-text-tuning.svg",
     "/TELPort-app/manifest.json",
+    "/TELPort-app/recall-tester.js",
     "/TELPort-app/src.js",
     "/TELPort-app/startup-call-icon.svg",
     "/TELPort-app/startup-call-title-ja.svg",

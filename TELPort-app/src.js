@@ -15,7 +15,7 @@ const TuningBits = TuningString.split("").map(char => {
 }).reduce((previous, current) => previous + current);
 */
 
-const GainHighValue = 0.0075; // call
+const GainHighValue = 0.001; // call
 
 const AudioContext = window.AudioContext || window.webkitAudioContext; // both (listen, call)
 let context; // both
@@ -66,7 +66,6 @@ function calculateFletcher64(uint8Array) {
         fletcherResult[1] >>> 24 & 0xFF,
     ]);
 }
-
 
 // call
 
@@ -331,6 +330,10 @@ function listen_listenFileLoop() {
                     "verified",
                     listenedChecksum.every((value, index) => value == fullListenedByteDataChecksum[index])
                 );
+            }
+
+            if (file.name == "TELPortRecallTester.telprt") { // if this is the tester file
+                targetDownloaderElement.getElementsByClassName("listen-file-text")[0].innerText = `${RecallTester_calculateRecall(file.content) * 100}% [RECALL TESTER]`;
             }
 
             nextConfirmTime = Infinity;
