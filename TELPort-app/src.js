@@ -1,6 +1,6 @@
 const FFTsize = 4096;
 const FirstFreuency = (44100 / FFTsize) * 55;
-const BytesPerRound = 28;
+const BytesPerRound = 25;
 const Frequencies = new Array(8 * BytesPerRound).fill(0).map((_, i) => {
     return FirstFreuency + (44100 / FFTsize * 5) * i;
 });
@@ -335,7 +335,7 @@ function listen_listenFileLoop() {
             }
 
             if (file.name == "TELPortRecallTester.telprt") { // if this is the tester file
-                targetDownloaderElement.getElementsByClassName("listen-file-text")[0].innerText = `${recallTester_calculateRecall(file.content) * 100}% [RECALL TESTER]`;
+                targetDownloaderElement.getElementsByClassName("listen-file-text")[0].innerText = `${recallTester_calculateRecall(file.content) * 100}% [TELPORT RECALL TESTER]`;
             }
 
             nextConfirmTime = Infinity;
