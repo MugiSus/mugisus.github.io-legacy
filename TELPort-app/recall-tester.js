@@ -67,7 +67,7 @@ const RecallTester_RandomConstantArray = new Uint8Array([
 
 function recallTester_calculateRecall(uint8array) {
     return uint8array.reduce((previous, current, index) => {
-        let bits = current ^ RecallTester_RandomConstantArray[index];
+        let bits = current ^ ~RecallTester_RandomConstantArray[index];
         bits = (bits & 0x55) + (bits >> 1 & 0x55);
         bits = (bits & 0x33) + (bits >> 2 & 0x33);
         bits = (bits & 0x0f) + (bits >> 4 & 0x0f)
