@@ -138,6 +138,8 @@ function call_callFile(file, index, speed) {
             ...new Uint8Array(event.target.result)
         ]);
         
+        console.log(event.target.result);
+
         call_callFullRounds(callingUint8Array, speed);
     });
 
@@ -280,7 +282,7 @@ function listen_listenStringLoop() {
                 "verified",
                 listenedChecksum.every((value, index) => value == fullListenedByteDataChecksum[index])
             );
-                
+            
             // copying program maybe goes here
             
             nextConfirmTime = Infinity;
