@@ -1,47 +1,48 @@
-@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@800&family=Zen+Maru+Gothic:wght@500;600;900&display=swap');
 
-body{
+body {
+    font-family: 'Zen Maru Gothic', sans-serif;
     text-align: center;
     margin: 0;
-    background-color: #181818;
+    background-color: rgb(51, 48, 45);
     overflow-x: hidden;
 }
 
-::-webkit-scrollbar{
+::-webkit-scrollbar {
     display: none;
 }
 
-#icon{
-    width: 20vw;
-    border-radius: 10vw;
-    box-shadow: 0px 0px 4vw #ffffbb88;
+#icon {
+    width: 20rem;
+    border-radius: 50%;
+    box-shadow: 0px 0px 4rem #ffffbb88;
     opacity: 0.3;
     transition-duration: 1s;
     cursor: pointer;
 }
 
-#icon:hover{
+#icon:hover {
     opacity: 0.9;
-    border-radius: 1vw;
-    transform: translateY(-1vw);
+    border-radius: 5%;
+    transform: translateY(-1rem);
     transition-duration: 0.5s;
 }
 
-#icon:active{
-    transform: translateY(-0.5vw);
+#icon:active {
+    transform: translateY(-0.5rem);
     transition-duration: 0.2s;
 }
 
-#icon-description-checkbox{
+#icon-description-checkbox {
     display: none;
 }
 
-#icon-description{
-    font-size: 1vw;
+#icon-description {
+    font-size: 1.1rem;
     font-weight: 600;
     overflow: hidden;
     display: inline-block;
-    height: 5vw;
+    height: 2rem;
     opacity: 0;
     transform: rotateX(-85deg);
     transform-origin: top;
@@ -49,108 +50,106 @@ body{
     transition-duration: 1s;
 }
 
-#icon-description-checkbox:checked + #icon-description-label + #icon-description{
+#icon-description-checkbox:checked + #icon-description-label + #icon-description {
     transition-timing-function: ease;
     transition-duration: 1s;
     transform: rotateX(0deg);
-    height: 10vw;
+    height: 10rem;
     opacity: 1;
 }
 
-#content{
-    font-family: 'M PLUS Rounded 1c';
-    font-weight: 500;
-    font-size: 1.1vw;
-    color: #a0a0a0;
-    padding-left: 10vw;
-    padding-right: 10vw;
-}
-
-#canvas{
+#canvas {
     position: fixed;
     left: 0px;
     top: 0px; 
     z-index: -2147483647;
 }
 
-#page-title{
-    margin-top: 100vh;
-    color: #e0e0e0;
-    font-weight: 800;
-    font-size: 6vw;
+#content {
+    width: 80%;
+    margin: 0 auto;
+    color: rgb(187, 177, 166);
+    font-weight: 500;
+    font-size: 1.2rem;
 }
 
-#item-title{
-    color: #c0c0c0;
+.page-title {
+    margin-top: 100vh;
+    color: rgb(212, 199, 184);
     font-weight: 800;
-    font-size: 4vw;
+    font-size: 5rem;
+}
+
+.item-title {
+    color: rgb(212, 199, 184);
+    font-weight: 800;
+    font-size: 4rem;
 }
 
 #yearsold {
-    /*font-size: 1vw;*/
-    animation: gaming 2s linear infinite;
+    animation: birthday-gaming 2s linear infinite;
 }
 
-@keyframes gaming {
+@keyframes birthday-gaming {
     0% {
         color: #ffbbff;
-        text-shadow: 0px 0px 1vw #ffddff;
+        text-shadow: 0 0 1rem #ffddff;
     }
     33% {
         color: #ffff88;
-        text-shadow: 0px 0px 1vw #ffffdd;
+        text-shadow: 0 0 1rem #ffffdd;
     }
     66% {
         color: #88ffff;
-        text-shadow: 0px 0px 1vw #ddffff;
+        text-shadow: 0 0 1rem #ddffff;
     }
     100% {
         color: #ffbbff;
-        text-shadow: 0px 0px 1vw #ffddff;
+        text-shadow: 0 0 1rem #ffddff;
     }
 }
 
-#watermark{
-    font-family: 'M PLUS Rounded 1c';
+#mugisus-regexp {
+    color: rgb(180, 158, 138);
+    background-color: rgba(22, 21, 21, 0.75);
+    padding: 0.3rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+#watermark {
     position: fixed;
     width: 100vw;
     text-align: center;
     bottom: 0px;
     color: #c0c0c040;
     font-weight: 800;
-    font-size: 1.2vw;
+    font-size: 1rem;
 }
 
-#tips{
+#tips {
     color: #c0c0c040;
-    font-size: 1vw;
-    margin-bottom: 5vw;
+    font-size: 1rem;
+    margin-bottom: 5rem;
 }
 
-.social-icons{
-    height: 3vw;
-    width: 3vw;
-    margin-left: 0.5vw;
-    margin-right: 0.5vw;
+.social-icons {
+    height: 3.5rem;
+    margin: 0 0.5rem;
 }
 
-.social-icons-desctiption{
+.social-icons-desctiption {
     position: absolute;
     text-align: center;
     display: inline;
 }
 
-.lang{
-    height: 1.5vw;
-}
-
-a{
-    color: #b0b0b0;
-    font-size: 1.5vw;
+.project-link {
+    font-size: 1.6rem;
+    color: rgb(216, 193, 157);
     transition-duration: 0.5s;
 }
 
-a:hover{
+.project-link:hover {
     opacity: 0.6;
     transition-duration: 0.15s;
 }

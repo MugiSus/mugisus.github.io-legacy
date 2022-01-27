@@ -8,58 +8,70 @@
 
         <div id="content">
 
-            <p id="page-title">MugiSus's Site</p>
-            <p id="item-title">About me</p>
+            <p class="page-title">MugiSus's Site</p>
+            <p class="item-title">About me</p>
 
             <input type="checkbox" id="icon-description-checkbox">
             <label id="icon-description-label"><img src="index/oyagiopened.png" id="icon"><br></label>
             <span id="icon-description">
                 ▲<br>
                 MugiSusのアイコンです。<br>
-                独自にデザインしたオリジナルキャラクターを、ベクター編集ソフト"Inkscape"で描画したものです。<br>
+                独自のオリジナルキャラクターを、ベクター編集ソフト"Inkscape"で描画したものです。<br>
                 静岡県浜松市に実在する、交通信号機がモデルです。
             </span><br>
 
             国立木更津工業高等専門学校 本科 情報工学科在籍中の<span id="yearsold"></span>歳です。<br>
-            ハンドルネームはMugiSusで これは むぎすす と発音します。<br>
-            麦煤 と書くことがあります。<br><br>
+            ハンドルネームは MugiSus で これは むぎすす と発音します。<br>
+            漢字だと 麦煤 と書くことがあります。<br>
+            正規表現は <code id="mugisus-regexp">/MugiSus|むぎ(すす)?|麦煤?/gi</code> です。<br><br>
             
-            言語は主に JavaScript (HTML+CSS) C# C を使用しています。 Rust C++ TypeScript は勉強中です<br>
-            Node.js や Python による Reactアプリ や Discord Bot の開発経験があります。<br>
-            ちなみに使用しているエディタはVSCodeです。Vimではありません。Emacsでもありません<br><br>
+            言語は主に JavaScript (HTML+CSS) C# C がつかえます。 Rust C++ TypeScript は勉強中です。<br>
+            Node.js や Python による Discord Bot の開発経験があります。<br>
+            ちなみに使用しているエディタはVSCodeです。Vimではありません。Emacsでもありません。<br><br>
 
             フロントエンド・高レイヤを得意としています。<br>
             Unityでゲームを作ったりJavaScirptでこういうページやブラウザゲームを作ったりしています。<br>
-            学生寮のネットワーク保守委員会に所属していますが、その縁でごくたまにCTFの大会に出たりもしています。<br><br>
+            学生寮のネットワーク保守委員会副委員長、そのご縁でごくたまにCTFの大会に出ることもあります。でもネットワークできません。<br><br>
+
+            U-17未踏ジュニア2021「TELPort」で採択、同年スーパークリエータ認定済みです。<br><br>
 
             デザインと絵はすこしだけですが、できます<br>
 
-            <p id="item-title">Products</p>
+            <p class="item-title">Products</p>
             自身の作品のうち一部を紹介します。<br><br>
 
-            <a href = "./logicsim_v2/index.html">Logic-Circuit-Simulator-V2</a><br>
-            新・論理回路シミュレータ(グラフィック強化のため、めちゃくちゃ重い) 性能は前作を上回っている(UI作成中)<br>
-            <a href = "./LogicSim/index.html">Logic-Circuit-Simulator</a><br>
-            論理回路シミュレータ<br>
-            <a href = "./morser/index.html">Morser</a><br>
-            モールス信号をキーボードで高速で打ち込む(D,F,J,Kキーで操作)<br>
-            <a href = "./wave/index.html">wave</a><br>
-            初期の作品で、ただクリックして波紋を楽しむだけ<br>
-            <a href = "./game_of_life/index.html">game of life</a><br>
-            Conway's Game of Life 有限空間のライフゲームです (Pでポーズ)<br>
-            <a href = "./game_of_life_inf/index.html">game of life inf</a><br>
-            理論上無限空間のライフゲームです<br>
+            <a class="project-link" href = "./TELPort">TELPort</a><br>
+            あらゆるデータを複数の周波数と振幅の合成波に変換し、空間と時間を活用した通信を実現するプロトコル、及び、プログレッシブ・ウェブ・アプリ。<br>
+            2kbpsを超える通信速度を計測しています。続々高速化予定です。<br>
+            未踏ジュニア2021採択プロジェクトです。<br><br>
 
-            <p id="item-title">Links</p>
-            <a href = "https://twitter.com/MugiSus" target="_blank" rel="noopener noreferrer"><img src="index/Twitter_circle_bule.png" class="social-icons"></a>
-            <a href = "https://github.com/MugiSus" target="_blank" rel="noopener noreferrer"><img src="index/GitHub-Mark-Light-120px-plus.png" class="social-icons"></a>
-            <a href = "https://scratch.mit.edu/users/MMGISS" target="_blank" rel="noopener noreferrer"><img src="index/scratch-icon.png" class="social-icons"></a>
+            <a class="project-link" href = "./logicsim_v2/index.html">Logic-Circuit-Simulator-V2</a><br>
+            新・論理回路シミュレータ(グラフィック強化のため、めちゃくちゃ重い) 性能は前作を上回っている(UI作成中)<br>
+            <a class="project-link" href = "./LogicSim/index.html">Logic-Circuit-Simulator</a><br>
+            論理回路シミュレータ<br>
+            <a class="project-link" href = "./morser/index.html">Morser</a><br>
+            モールス信号をキーボードで高速で打ち込む(D,F,J,Kキーで操作)<br>
+            <a class="project-link" href = "./wave/index.html">wave</a><br>
+            初期の作品で、ただクリックして波紋を楽しむだけ<br>
+            <a class="project-link" href = "./game_of_life/index.html">game of life</a><br>
+            Conway's Game of Life 有限空間のライフゲームです (Pでポーズ)<br>
+            <a class="project-link" href = "./game_of_life_inf/index.html">game of life inf</a><br>
+            理論上無限空間のライフゲームです<br>
+            <a class="project-link" href = "./lifegameJS">lifegameJS</a><br>
+            理論上無限空間かつスゲー高速なライフゲームです<br>
+
+            <p class="item-title">Links</p>
+            <a href="https://twitter.com/MugiSus" target="_blank" rel="noopener noreferrer"><img src="index/Twitter_circle_bule.png" class="social-icons"></a>
+            <a href="https://github.com/MugiSus" target="_blank" rel="noopener noreferrer"><img src="index/GitHub-Mark-Light-120px-plus.png" class="social-icons"></a>
+            <a href="https://scratch.mit.edu/users/MMGISS" target="_blank" rel="noopener noreferrer"><img src="index/scratch-icon.png" class="social-icons"></a>
             <br><br><br><br>
 
             <p id="tips">
                 Tips: このサイトは 生のHTML 生のCSS 生のJavaScript によって作成されています<br>
                 つまりすべて自作です<br>
-                つかれました
+                つかれました<br><br>
+
+                というか生のHTMLしか使えないの普通にダメだとおもうので今度Next.jsかなんかでこのサイト作り直します
             </p>
             
         </div>
