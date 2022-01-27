@@ -12,6 +12,14 @@ body {
     display: none;
 }
 
+#content {
+    width: 80%;
+    margin: 0 auto;
+    color: rgb(187, 177, 166);
+    font-weight: 500;
+    font-size: 1.2rem;
+}
+
 #icon {
     width: 20rem;
     border-radius: 50%;
@@ -63,14 +71,6 @@ body {
     left: 0px;
     top: 0px; 
     z-index: -2147483647;
-}
-
-#content {
-    width: 80%;
-    margin: 0 auto;
-    color: rgb(187, 177, 166);
-    font-weight: 500;
-    font-size: 1.2rem;
 }
 
 .page-title {
