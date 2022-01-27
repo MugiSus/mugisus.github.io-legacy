@@ -86,7 +86,7 @@ body {
     font-size: 4rem;
 }
 
-#yearsold {
+#yearsold.birthday-gaming {
     animation: birthday-gaming 2s linear infinite;
 }
 

@@ -147,8 +147,8 @@ function Main() {
 window.addEventListener("load", ()=>{
     let yearsold = document.getElementById("yearsold");
     let date = new Date();
-    yearsold.innerHTML = (date.getFullYear() - 2003) - (date.getMonth() < 4 || date.getMonth() == 4 && date.getDate() < 5)
-    if (!(date.getMonth() == 4 && date.getDate() == 5)) yearsold.style.animation = "none";
+    yearsold.innerHTML = (date.getFullYear() - 2003) - (date.getMonth() < 4 || date.getMonth() == 4 && date.getDate() < 5);
+    if (date.getMonth() == 4 && date.getDate() == 5) yearsold.classList.add("birthday-gaming");
 
     scrolly = -window.pageYOffset;
     Main();
