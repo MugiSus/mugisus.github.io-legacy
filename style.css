@@ -134,7 +134,10 @@ body {
 
 .social-icons {
     height: 3.5rem;
-    margin: 0 0.5rem;
+}
+
+.social-icons-href {
+    margin: 0 0.5rem
 }
 
 .social-icons-desctiption {
