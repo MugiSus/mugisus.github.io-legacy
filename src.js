@@ -34,14 +34,14 @@ class bubble {
         this.x = x;
         this.y = y;
         this.size = 5 + Math.random() * 5;
-        this.ax = -5 + Math.random() * 10;
-        this.ay = -1;
+        this.ax = -10 + Math.random() * 20;
+        this.ay = 1;
     }
 
     draw() {
         ctx.moveTo(this.x + this.size, this.y);
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        this.x += this.ax *= 0.99;
+        this.x += this.ax *= 0.98;
         this.y += Math.max(this.ay += -0.10, -15);
     }
 }
