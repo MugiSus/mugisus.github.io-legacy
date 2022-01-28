@@ -6,74 +6,86 @@
     </head>
     <body>
 
-        <div id="content">
+        <div id="top-margin"></div>
 
+        <div id="content">
             <p class="page-title">MugiSus's Site</p>
             <p class="item-title">About me</p>
 
             <input type="checkbox" id="icon-description-checkbox">
-            <label id="icon-description-label"><img src="index/oyagiopened.png" id="icon"><br></label>
-            <span id="icon-description">
+            <label id="icon-description-label"><img src="index/oyagiopened.png" id="icon"></label>
+            <p id="icon-description">
                 ▲<br>
                 MugiSusのアイコンです。<br>
                 独自でデザインしたキャラクターをベクター編集ソフト"Inkscape"で描画したものです。<br>
                 静岡県浜松市の信号機がモデルです。
-            </span><br>
-
-            国立木更津工業高等専門学校 本科 情報工学科在籍中の<span id="yearsold"></span>歳です。<br>
-            ハンドルネームは MugiSus で これは むぎすす と発音します。<br>
-            漢字だと 麦煤 と書くことがあります。<br>
-            正規表現は <code id="mugisus-regexp">/MugiSus|むぎ(すす)?|麦煤?/gi</code> です。<br><br>
-            
-            言語は主に JavaScript (HTML+CSS) C# C がつかえます。 C++ TypeScript と Next.js は勉強中です。<br>
-            Node.js や Python による Discord Bot の開発経験があります。<br>
-            ちなみに使用しているエディタはVSCodeです。Vimではありません。Emacsでもありません。<br><br>
-
-            フロントエンド・高レイヤを得意としています。<br>
-            Unityでゲームを作ったりJavaScirptでこういうページやブラウザゲームを作ったりしています。<br>
-            学生寮のネットワーク保守委員会に所属しており、そのご縁でごくたまにCTFの大会に出ることもあります。でもネットワークできません。<br><br>
-
-            <a href="https://jr.mitou.org/" target="_blank" rel="noopener noreferrer">U-17未踏ジュニア</a>に2021年度<br>
-            「<a href="https://jr.mitou.org/projects/2021/telport" target="_blank" rel="noopener noreferrer">TELPort/テルポート：音波による高速通信プロトコル及び、スピーカーとマイクを介した送受信アプリ</a>」<br>
-            で採択、同年未踏ジュニアスーパークリエータ認定を受けました。<br><br>
-
-            デザインと絵はすこしだけですが、できます<br>
+            </p>
+            <p class="text">
+                国立木更津工業高等専門学校 本科 情報工学科在籍中の<span id="yearsold"></span>歳です。<br>
+                ハンドルネームは MugiSus で これは むぎすす と発音します。<br>
+                漢字だと 麦煤 と書くことがあります。<br>
+                正規表現は <code id="mugisus-regexp">/MugiSus|むぎ(すす)?|麦煤?/gi</code> です。
+            </p>
+            <p class="text">
+                言語は主に JavaScript (HTML+CSS) C# C がつかえます。 C++ TypeScript と Next.js は勉強中です。<br>
+                Node.js や Python による Discord Bot の開発経験があります。<br>
+                ちなみに使用しているエディタはVSCodeです。Vimではありません。Emacsでもありません。
+            </p>
+            <p class="text">
+                フロントエンド・高レイヤを得意としています。<br>
+                Unityでゲームを作ったりJavaScirptでこういうページやブラウザゲームを作ったりしています。<br>
+                学生寮のネットワーク保守委員会に所属しており、そのご縁でごくたまにCTFの大会に出ることもあります。でもネットワークできません。
+            </p>
+            <p class="text">
+                <a href="https://jr.mitou.org/" target="_blank" rel="noopener noreferrer">U-17未踏ジュニア</a>に2021年度<br>
+                「<a href="https://jr.mitou.org/projects/2021/telport" target="_blank" rel="noopener noreferrer">TELPort/テルポート：音波による高速通信プロトコル及び、スピーカーとマイクを介した送受信アプリ</a>」<br>
+                で採択、同年未踏ジュニアスーパークリエータ認定を受けました。
+            </p>
+            <p class="text">
+                デザインと絵はすこしだけですが、できます
+            </p>
 
             <p class="item-title">Products</p>
-            自身の作品のうち一部を紹介します。<br><br>
+            <p class="text">
+                自身の作品のうち一部を紹介します。
+            </p>
 
-            <a class="project-link" href = "./TELPort">TELPort</a><br>
-            あらゆるデータを複数の周波数と振幅の合成波に変換し、空間と時間を活用した通信を実現するプロトコル、及びそのプログレッシブ・ウェブ・アプリ。<br>
-            2kbpsを超える通信速度を計測しています。続々高速化予定です。<br>
-            未踏ジュニア2021採択プロジェクトです。<br><br>
-
-            <a class="project-link" href = "./logicsim_v2/index.html">Logic-Circuit-Simulator-V2</a><br>
-            新・論理回路シミュレータ(グラフィック強化のため、めちゃくちゃ重い) 性能は前作を上回っている(UI作成中)<br>
-            <a class="project-link" href = "./LogicSim/index.html">Logic-Circuit-Simulator</a><br>
-            論理回路シミュレータ<br>
-            <a class="project-link" href = "./morser/index.html">Morser</a><br>
-            モールス信号をキーボードで高速で打ち込む(D,F,J,Kキーで操作)<br>
-            <a class="project-link" href = "./wave/index.html">wave</a><br>
-            初期の作品で、ただクリックして波紋を楽しむだけ<br>
-            <a class="project-link" href = "./game_of_life/index.html">game of life</a><br>
-            Conway's Game of Life 有限空間のライフゲームです (Pでポーズ)<br>
-            <a class="project-link" href = "./game_of_life_inf/index.html">game of life inf</a><br>
-            理論上無限空間のライフゲームです<br>
-            <a class="project-link" href = "./lifegameJS">lifegameJS</a><br>
-            理論上無限空間かつスゲー高速なライフゲームです (powered by WebGL)<br>
+            <p class="text">
+                <a class="project-link" href = "./TELPort">TELPort</a><br>
+                あらゆるデータを複数の周波数と振幅の合成波に変換し、空間と時間を活用した通信を実現するプロトコル、及びそのプログレッシブ・ウェブ・アプリ。<br>
+                2kbpsを超える通信速度を計測しています。続々高速化予定です。<br>
+                未踏ジュニア2021採択プロジェクトです。
+            </p>
+            <p class="text">
+                <a class="project-link" href = "./LogicSim/index.html">Logic-Circuit-Simulator</a><br>
+                論理回路シミュレータ<br>
+                <a class="project-link" href = "./logicsim_v2/index.html">Logic-Circuit-Simulator-V2</a><br>
+                新・論理回路シミュレータ(グラフィック強化のため、めちゃくちゃ重い)<br>計算性能自体は前作を大幅に上回ってます(UI作成中)<br>
+                <a class="project-link" href = "./morser/index.html">Morser</a><br>
+                モールス信号をキーボードで高速で打ち込みます(D,F,J,Kキーで操作)<br>
+                <a class="project-link" href = "./wave/index.html">wave</a><br>
+                初期の作品で、ただクリックして波紋を楽しむだけ<br>
+                <a class="project-link" href = "./game_of_life/index.html">game of life</a><br>
+                Conway's Game of Life 有限空間のライフゲームです (Pキーでポーズ)<br>
+                <a class="project-link" href = "./game_of_life_inf/index.html">game of life inf</a><br>
+                理論上無限空間のライフゲームです<br>
+                <a class="project-link" href = "./lifegameJS">lifegameJS</a><br>
+                理論上無限空間かつスゲー高速なライフゲームです (powered by WebGL)
+            </p>
 
             <p class="item-title">Links</p>
-            <a href="https://twitter.com/MugiSus" target="_blank" rel="noopener noreferrer" class="social-icons-href"><img src="index/Twitter_circle_bule.png" class="social-icons"></a>
-            <a href="https://github.com/MugiSus" target="_blank" rel="noopener noreferrer" class="social-icons-href"><img src="index/GitHub-Mark-Light-120px-plus.png" class="social-icons"></a>
-            <a href="https://scratch.mit.edu/users/MMGISS" target="_blank" rel="noopener noreferrer" class="social-icons-href"><img src="index/scratch-icon.png" class="social-icons"></a>
-            <br><br><br><br>
+            <div id="social-link-container">
+                <a href="https://twitter.com/MugiSus" target="_blank" rel="noopener noreferrer" class="social-icons-href"><img src="index/Twitter_circle_bule.png" class="social-icons"></a>
+                <a href="https://github.com/MugiSus" target="_blank" rel="noopener noreferrer" class="social-icons-href"><img src="index/GitHub-Mark-Light-120px-plus.png" class="social-icons"></a>
+                <a href="https://scratch.mit.edu/users/MMGISS" target="_blank" rel="noopener noreferrer" class="social-icons-href"><img src="index/scratch-icon.png" class="social-icons"></a>
+            </div>
 
             <p id="tips">
                 Tips: このサイトは 生のHTML 生のCSS 生のJavaScript によって作成されています<br>
                 つまりすべて自作です<br>
                 つかれました<br><br>
 
-                というか生のHTMLしか使えないの普通にダメだとおもうので今度Next.jsかなんかでこのサイト作り直します
+                というか生のHTMLしか使えないの普通に人材としてダメだとおもうので今度Next.jsかなんかでこのサイト作り直します
             </p>
             
         </div>
