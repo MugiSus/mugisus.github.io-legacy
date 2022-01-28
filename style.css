@@ -57,11 +57,9 @@ body {
 #icon-description {
     font-size: 1.1rem;
     font-weight: 600;
-    overflow: hidden;
-    display: inline-block;
     height: 0rem;
     opacity: 0;
-    transform: rotateX(-85deg);
+    transform: rotateX(-80deg);
     transform-origin: top;
     transition-timing-function: ease;
     transition-duration: 1s;
