@@ -122,16 +122,6 @@ body {
     border-radius: 0.25rem;
 }
 
-#watermark {
-    position: fixed;
-    width: 100vw;
-    text-align: center;
-    bottom: 0px;
-    color: #c0c0c040;
-    font-weight: 700;
-    font-size: 1.2rem;
-}
-
 #tips {
     color: #c0c0c040;
     font-size: 1rem;
@@ -161,6 +151,19 @@ body {
     color: rgb(216, 193, 157);
 }
 
+.prod-year {
+    margin-left: 0.5rem;
+    font-size: 1rem;
+}
+
+.prod-year::before {
+    content: "(";
+}
+
+.prod-year::after {
+    content: ")";
+}
+
 a {
     color: inherit;
     transition-property: opacity;
@@ -169,4 +172,14 @@ a {
 
 a:hover {
     opacity: 0.6;
+}
+
+#watermark {
+    position: fixed;
+    width: 100vw;
+    text-align: center;
+    bottom: 0px;
+    color: #c0c0c040;
+    font-weight: 700;
+    font-size: 1.2rem;
 }

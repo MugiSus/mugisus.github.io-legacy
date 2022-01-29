@@ -20,7 +20,7 @@ Resize();
 let GetWavePath =(amplitude, wavelength, phase)=> {
     let path = new Path2D();
     path.moveTo(-1600, 300 + Math.sin((-1600 / wavelength + phase) * Math.PI * 2) * amplitude);
-    for (let x = -1600; x <= 1600; x += 32)
+    for (let x = -1600; x <= 1600; x += 100)
         path.lineTo(x, 300 + Math.sin((x / wavelength + phase) * Math.PI * 2) * amplitude);
     return path;
 }
