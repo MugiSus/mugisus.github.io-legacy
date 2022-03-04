@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@800&family=Zen+Maru+Gothic:wght@500;600;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@800&family=Zen+Maru+Gothic:wght@500;600;900&family=Inconsolata:wght@500&display=swap');
 
 body {
     font-family: 'Zen Maru Gothic', sans-serif;
@@ -116,6 +116,7 @@ body {
 }
 
 #mugisus-regexp {
+    font-family: Inconsolata;
     color: rgb(180, 158, 138);
     background-color: rgba(22, 21, 21, 0.75);
     padding: 0.3rem 0.5rem;
